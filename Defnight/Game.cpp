@@ -3,64 +3,66 @@
 
 Game::Game()
 {
-	this->dt = 0.f;
-	this->graphicsSettings.loadFromFile("external/config/graphics.ini");
-
-	if (this->graphicsSettings.fullscreen)
-		this->window.create(this->graphicsSettings.resolution, "Defnight", sf::Style::Fullscreen);
-	else
-		this->window.create(this->graphicsSettings.resolution, "Defnight", sf::Style::Titlebar | sf::Style::Close);
-
-	this->window.setVerticalSyncEnabled(this->graphicsSettings.verticalSync);
-	this->window.setKeyRepeatEnabled(false);
-
-	bool isFullHD = false;
-	this->scale = 1.f;
-	if (this->graphicsSettings.resolution.width >= 1920 && this->graphicsSettings.resolution.height >= 1080) {
-		this->scale = 1.5f;
-		isFullHD = true;
-	}
-	this->gridSize = 64.f * this->scale;
-
-
-	bool isWsad = false;
-	bool isFps = false;
-
-	std::ifstream ifs("external/config/supported_keys.ini");
-	if (ifs.is_open()) {
-		ifs >> isWsad;
-		ifs >> isFps;
-	}
-	ifs.close();
-
-	sf::Image icon;
-	icon.loadFromFile("external/assets/logo.png");
-	this->window.setIcon(32, 32, icon.getPixelsPtr());
-
-	if (isWsad) {
-		this->klawisze.push_back(sf::Keyboard::Key::W);
-		this->klawisze.push_back(sf::Keyboard::Key::S);
-		this->klawisze.push_back(sf::Keyboard::Key::A);
-		this->klawisze.push_back(sf::Keyboard::Key::D);
-	}
-	else {
-		this->klawisze.push_back(sf::Keyboard::Key::Up);
-		this->klawisze.push_back(sf::Keyboard::Key::Down);
-		this->klawisze.push_back(sf::Keyboard::Key::Left);
-		this->klawisze.push_back(sf::Keyboard::Key::Right);
-	}
-
-	this->menu.init(this->scale, this->klawisze, isFullHD, this->graphicsSettings.fullscreen, this->graphicsSettings.verticalSync, isWsad, isFps);
+	init();
 }
 
 Game::~Game()
 {
-	
+	delete this->window;
+
+	while (!this->states.empty()) {
+		delete this->states.top();
+		this->states.pop();
+	}
 }
 
-void Game::check_events()
+void Game::init()
 {
-	while (window.pollEvent(this->sfEvent)) {
+	this->window = NULL;
+	this->dt = 0.f;
+	this->gridSize = 64.f;
+	this->sfEvent.type = sf::Event::GainedFocus;
+
+	this->graphicsSettings.load();
+
+	if (this->graphicsSettings.fullscreen)
+		this->window = new sf::RenderWindow(this->graphicsSettings.resolution, "Defnight", sf::Style::Fullscreen);
+	else
+		this->window = new sf::RenderWindow(this->graphicsSettings.resolution, "Defnight", sf::Style::Titlebar | sf::Style::Close);
+
+	this->window->setFramerateLimit(this->graphicsSettings.fpsLimit);
+
+	sf::Image icon;
+	icon.loadFromFile("external/assets/logo.png");
+	this->window->setIcon(32, 32, icon.getPixelsPtr());
+
+	std::ifstream ifs("external/config/supported_keys.ini");
+	if (ifs.is_open()) {
+		std::string key = "";
+		int key_value = 0;
+
+		while (ifs >> key >> key_value) {
+			this->supportedKeys[key] = key_value;
+		}
+	}
+	ifs.close();
+
+	if (!this->font.loadFromFile("external/font/PressStart2P-vaV7.ttf")) {
+		throw("ERROR - COULDN'T FIND FONT");
+	}
+
+	const sf::VideoMode vm = this->graphicsSettings.resolution;
+
+	this->fps = 0;
+	this->fpsTimer = 0.f;
+	this->fpsCounter = new gui::Text(&this->font, "", calcChar(16, vm), calcX(4, vm), calcY(4, vm), sf::Color(255, 255, 255), false);
+
+	this->states.push(new MainMenuState(this->gridSize, this->window, &this->graphicsSettings, &this->supportedKeys, &this->font, &this->states));
+}
+
+void Game::checkEvents()
+{
+	while (this->window->pollEvent(this->sfEvent)) {
 		if (this->sfEvent.type == sf::Event::Closed) {
 			this->close();
 		}
@@ -69,27 +71,56 @@ void Game::check_events()
 
 void Game::close()
 {
-	this->window.close();
+	this->window->close();
 }
-
 
 void Game::draw()
 {
-	this->window.clear();
-	this->menu.draw(this->window);
-	this->window.display();
+	this->window->clear();
+	if (!this->states.empty()) this->states.top()->draw();
+	this->fpsCounter->draw(*this->window);
+	this->window->display();
 }
 
 void Game::update()
 {
 	this->dt = this->dtClock.restart().asSeconds();
-	this->check_events();
-	this->menu.update(this->window, this->dt);
+
+	++this->fps;
+	this->fpsTimer += dt;
+
+	if (this->fpsTimer >= 1.f) {
+		this->fpsCounter->setText(std::to_string(this->fps) + " FPS");
+		this->fps = 0;
+		this->fpsTimer = 0.f;
+	}
+
+	this->checkEvents();
+	if (!this->states.empty()) {
+		if (this->window->hasFocus()) {
+			this->states.top()->update(this->dt);
+
+			if (this->states.top()->getQuit()) {
+				this->states.top()->endState();
+				delete this->states.top();
+				this->states.pop();
+			}
+			else if (this->states.top()->getReseted()) {
+				while (!this->states.empty()) {
+					delete this->states.top();
+					this->states.pop();
+				}
+				this->close();
+				this->init();
+			}
+		}
+	}
+	else this->close();
 }
 
 void Game::run()
 {
-	while (this->window.isOpen()) {
+	while (this->window->isOpen()) {
 		this->update();
 		this->draw();
 	}

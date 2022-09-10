@@ -1,4 +1,5 @@
-#pragma once
+#ifndef FUNCTIONS_H
+#define FUNCTIONS_H
 
 #include <algorithm>
 #include <fstream>
@@ -7,7 +8,10 @@
 #include <math.h>
 #include <stack>
 #include <string>
+#include <sstream>
 #include <vector>
+#include <unordered_map>
+#include <utility>
 #include "Random.h"
 
 // SFML
@@ -17,20 +21,11 @@
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 
-void createRectangle(sf::RectangleShape& nazwa, const float& szerokosc, const float& wysokosc, const float& pozycjaX, const float& pozycjaY,
-	const sf::Uint8& R, const sf::Uint8& G, const sf::Uint8& B);
+const float calcX(const float& x, const sf::VideoMode& vm);
+const float calcY(const float& y, const sf::VideoMode& vm);
 
-void createTransparentRect(sf::RectangleShape& nazwa, const float& szerokosc, const float& wysokosc, const float& pozycjaX, const float& pozycjaY, const float& grubosc);
-
-void createText(sf::Text& nazwa, const sf::Font& czcionka, const float& rozmiarCzcionki, const std::string& napis, const float& pozycjaX, const float& pozycjaY,
-	const sf::Uint8& R, const sf::Uint8& G, const sf::Uint8& B);
-
-void createSprite(sf::Sprite& sprite, sf::Texture& tekstura, const std::string& sciezka_tekstury, const float& skala);
-void createSprite(sf::Sprite& sprite, sf::Texture& tekstura, const float& skala);
-void createSprite(sf::Sprite& sprite, sf::Texture& tekstura, const std::string& sciezka_tekstury, const float& skala, const float& pozycjaX, const float& pozycjaY);
-void createSprite(sf::Sprite& sprite, sf::Texture& tekstura, const float& skala, const float& pozycjaX, const float& pozycjaY);
-
-void cameraMove(sf::Sprite& sprite, const float& scale, sf::Sprite& background, sf::View& view);
+const float calcScale(const float& x, const sf::VideoMode& vm);
+const unsigned calcChar(const float& size, const sf::VideoMode& vm);
 
 const float getAngle(float x1, float y1, float x2, float y2);
 
@@ -39,3 +34,8 @@ const float vectorDistance(sf::Vector2f vec1, sf::Vector2f vec2);
 
 void center(sf::Text& text, const float& x);
 void center(sf::Sprite& sprite, const float& x);
+
+const bool sight(const sf::FloatRect& rect,
+    const sf::Vector2f& a_p1, const sf::Vector2f& a_p2);
+
+#endif

@@ -1,28 +1,38 @@
-#pragma once
+#ifndef GAME_H
+#define GAME_H
+
 #include "MainMenuState.h"
 
 class Game
 {
-private:
-	GraphicsSettings graphicsSettings;
-	sf::RenderWindow window;
-	sf::Event sfEvent;
-	std::vector<sf::Keyboard::Key> klawisze;
-	float scale;
-
-	sf::Clock dtClock;
-	float dt;
-
-	float gridSize;
-
-	MainMenuState menu;
 public:
 	Game();
 	virtual ~Game();
-	
-	void check_events();
+
+	void init();
+
+	void checkEvents();
 	void close();
 	void draw();
 	void update();
 	void run();
+private:
+	sf::RenderWindow* window;
+	GraphicsSettings graphicsSettings;
+	sf::Event sfEvent;
+	std::unordered_map<std::string, int> supportedKeys;
+
+	sf::Clock dtClock;
+	float dt;
+
+	sf::Font font;
+	gui::Text* fpsCounter;
+	uint16_t fps;
+	float fpsTimer;
+
+	std::stack<State*> states;
+
+	float gridSize;
 };
+
+#endif

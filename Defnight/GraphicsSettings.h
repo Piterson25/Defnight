@@ -1,17 +1,21 @@
-#pragma once
+#ifndef GRAPHICSSETTINGS_H
+#define GRAPHICSSETTINGS_H
 
 class GraphicsSettings
 {
 public:
-
 	GraphicsSettings();
 
+	std::string path;
 	sf::VideoMode resolution;
 	bool fullscreen;
-	bool verticalSync;
+	uint16_t fpsLimit;
+	std::string language;
 
 	std::vector<sf::VideoMode> videoModes;
 
-	void saveToFile(const std::string path);
-	void loadFromFile(const std::string path);
+	void save();
+	void load();
 };
+
+#endif

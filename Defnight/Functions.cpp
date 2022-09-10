@@ -1,84 +1,23 @@
 #include "Functions.h"
 
-void createRectangle(sf::RectangleShape& nazwa, const float& szerokosc, const float& wysokosc, const float& pozycjaX, const float& pozycjaY, const sf::Uint8& R, const sf::Uint8& G, const sf::Uint8& B)
+const float calcX(const float& x, const sf::VideoMode& vm)
 {
-	nazwa.setSize(sf::Vector2f(szerokosc, wysokosc));
-	nazwa.setPosition(pozycjaX, pozycjaY);
-	nazwa.setFillColor(sf::Color(R, G, B));
+	return std::floor(static_cast<float>(x * (vm.width / 1280.f)));
 }
 
-void createTransparentRect(sf::RectangleShape& nazwa, const float& szerokosc, const float& wysokosc, const float& pozycjaX, const float& pozycjaY, const float& grubosc)
+const float calcY(const float& y, const sf::VideoMode& vm)
 {
-	nazwa.setSize(sf::Vector2f(szerokosc, wysokosc));
-	nazwa.setPosition(pozycjaX, pozycjaY);
-	nazwa.setFillColor(sf::Color::Transparent);
-	nazwa.setOutlineColor(sf::Color::Transparent);
-	nazwa.setOutlineThickness(grubosc);
+	return std::floor(static_cast<float>(y * (vm.height / 720.f)));
 }
 
-void createText(sf::Text& nazwa, const sf::Font& czcionka, const float& rozmiarCzcionki, const std::string& napis, const float& pozycjaX, const float& pozycjaY, const sf::Uint8& R, const sf::Uint8& G, const sf::Uint8& B)
+const float calcScale(const float& x, const sf::VideoMode& vm)
 {
-	nazwa.setFont(czcionka);
-	nazwa.setString(napis);
-	nazwa.setCharacterSize(unsigned(rozmiarCzcionki));
-	nazwa.setFillColor(sf::Color(R, G, B));
-	nazwa.setPosition(pozycjaX, pozycjaY);
+	return static_cast<float>(x * (vm.width / 1280.f));
 }
 
-void createSprite(sf::Sprite& sprite, sf::Texture& tekstura, const std::string& sciezka_tekstury, const float& skala)
+const unsigned calcChar(const float& size, const sf::VideoMode& vm)
 {
-	tekstura.loadFromFile(sciezka_tekstury);
-	sprite.setTexture(tekstura);
-	sprite.setScale(skala, skala);
-}
-
-void createSprite(sf::Sprite& sprite, sf::Texture& tekstura, const float& skala)
-{
-	sprite.setTexture(tekstura);
-	sprite.setScale(skala, skala);
-}
-
-void createSprite(sf::Sprite& sprite, sf::Texture& tekstura, const std::string& sciezka_tekstury, const float& skala, const float& pozycjaX, const float& pozycjaY)
-{
-	tekstura.loadFromFile(sciezka_tekstury);
-	sprite.setTexture(tekstura);
-	sprite.setScale(skala, skala);
-	sprite.setPosition(sf::Vector2f(pozycjaX, pozycjaY));
-}
-
-void createSprite(sf::Sprite& sprite, sf::Texture& tekstura, const float& skala, const float& pozycjaX, const float& pozycjaY)
-{
-	sprite.setTexture(tekstura);
-	sprite.setScale(skala, skala);
-	sprite.setPosition(sf::Vector2f(pozycjaX, pozycjaY));
-}
-
-void cameraMove(sf::Sprite& sprite, const float& scale, sf::Sprite& background, sf::View& view)
-{
-	if ((sprite.getPosition().x <= 608 * scale ||
-		sprite.getPosition().x >= background.getGlobalBounds().width - 672 * scale) ||
-		(sprite.getPosition().y <= 200 * scale ||
-			sprite.getPosition().y >= background.getGlobalBounds().height - 392 * scale)) {
-
-		if ((sprite.getPosition().x <= 608 * scale ||
-			sprite.getPosition().x >= background.getGlobalBounds().width - 672 * scale) &&
-			(sprite.getPosition().y <= 200 * scale ||
-				sprite.getPosition().y >= background.getGlobalBounds().height - 392 * scale))
-		{
-			view.setCenter(sf::Vector2f(view.getCenter().x, view.getCenter().y));
-		}
-		else {
-			if (sprite.getPosition().x <= 608 * scale ||
-				sprite.getPosition().x >= background.getGlobalBounds().width - 672 * scale) {
-				view.setCenter(sf::Vector2f(view.getCenter().x, sprite.getPosition().y + 32 * scale));
-			}
-			if (sprite.getPosition().y <= 200 * scale ||
-				sprite.getPosition().y >= background.getGlobalBounds().height - 392 * scale) {
-				view.setCenter(sf::Vector2f(sprite.getPosition().x + 32 * scale, view.getCenter().y));
-			}
-		}
-	}
-	else view.setCenter(sf::Vector2f(sprite.getPosition().x + 32 * scale, sprite.getPosition().y + 32 * scale));
+	return static_cast<unsigned>(std::floor(static_cast<float>(size * (vm.height / 720.f))));
 }
 
 const float getAngle(float x1, float y1, float x2, float y2)
@@ -97,10 +36,8 @@ const float getAngle(float x1, float y1, float x2, float y2)
 
 	float angle = acos(scalar_product) * 180.0f / 3.1415f;
 
-	if (x2 - x1 < 0.0f)
-		return angle;
-	else
-		return -angle;
+	if (x2 - x1 < 0.0f) return angle;
+	else return -angle;
 }
 
 const float vectorDistance(const float x1, const float y1, const float x2, const float y2)
@@ -126,4 +63,46 @@ void center(sf::Text& text, const float& x)
 void center(sf::Sprite& sprite, const float& x)
 {
 	sprite.setPosition(float(int(x - (sprite.getLocalBounds().width) / 2)), sprite.getPosition().y);
+}
+
+const bool sight(const sf::FloatRect& rect, const sf::Vector2f& a_p1, const sf::Vector2f& a_p2)
+{
+    float minX = std::min(a_p1.x, a_p2.x);
+    float maxX = std::max(a_p1.x, a_p2.x);
+
+    if (maxX > rect.left + rect.width) {
+        maxX = rect.left + rect.width;
+    }
+
+    if (minX < rect.left) {
+        minX = rect.left;
+    }
+
+    if (minX > maxX) return false;
+
+    float minY = a_p1.y;
+    float maxY = a_p2.y;
+
+    float dx = a_p2.x - a_p1.x;
+    if (std::abs(dx) > 0.000001f) {
+        auto k = (a_p2.y - a_p1.y) / dx;
+        auto b = a_p1.y - k * a_p1.x;
+        minY = k * minX + b;
+        maxY = k * maxX + b;
+    }
+
+    if (minY > maxY) {
+        std::swap(minY, maxY);
+    }
+
+    if (maxY > rect.top + rect.height) {
+        maxY = rect.top + rect.height;
+    }
+
+    if (minY < rect.top) {
+        minY = rect.top;
+    }
+
+    if (minY > maxY) return false;
+    return true;
 }

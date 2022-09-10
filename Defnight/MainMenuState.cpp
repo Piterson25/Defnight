@@ -1,17 +1,11 @@
 #include "Functions.h"
 #include "MainMenuState.h"
 
-MainMenuState::MainMenuState()
+MainMenuState::MainMenuState(const float& gridSize, sf::RenderWindow* window, GraphicsSettings* grap,
+	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states)
+	: State(gridSize, window, grap, supportedKeys, font, states)
 {
-	this->font.loadFromFile("external/font/PressStart2P-vaV7.ttf");
-	this->scale = 1.f;
-	this->state = 0;
-	this->fps = 0;
-	this->mycha = false;
-	this->select_map_texture.loadFromFile("external/assets/select_map.png");
-	this->select_hero_texture.loadFromFile("external/assets/select_hero.png");
-	this->select_difficulty_texture.loadFromFile("external/assets/select_difficulty.png");
-	this->difficulty_texture.loadFromFile("external/assets/difficulty_icons.png");
+	initGUI();
 }
 
 MainMenuState::~MainMenuState()
@@ -19,435 +13,421 @@ MainMenuState::~MainMenuState()
 
 }
 
-void MainMenuState::init(float& scale, std::vector<sf::Keyboard::Key>& klawisze, const bool& isFullhd, const bool& isFullscreen, const bool& isVsync, const bool& isWsad, const bool& isFps)
+void MainMenuState::initGUI()
 {
-	this->scale = scale;
-	this->klawisze = klawisze;
+	const sf::VideoMode vm = this->graphicsSettings->resolution;
 
-	// Licznik FPSow
-	createText(this->fpsCounter, this->font, 16 * this->scale, "", 4 * this->scale, 4 * this->scale, 255, 255, 255);
+	this->page = 0;
+	this->keysClick["Escape"].first = false;
+	this->keysClick["Escape"].second = false;
 
-	// Tytul
-	createSprite(this->title, this->title_texture, "external/assets/title.png", this->scale);
-	this->title.setPosition(640 * this->scale, 144 * this->scale);
-	center(this->title, 640 * this->scale);
+	// PAGE 0 - Loading
 
-	// Wyjscie
-	createRectangle(this->dimBackground, 1280 * this->scale, 720 * this->scale, 0.f, 0.f, 0, 0, 0);
-	this->dimBackground.setFillColor(sf::Color(0, 0, 0, 192));
+	this->introCooldown = 0.f;
+	this->dimAlpha = 0.f;
+	this->sprites["LOGO"] = new gui::Sprite("external/assets/logo.png", calcX(640, vm), calcY(232, vm), calcScale(8, vm), true);
+	this->sprites["LOGO"]->setColor(sf::Color(255, 255, 255, 0));
+
+	// PAGE 1
+
+	this->sprites["TITLE"] = new gui::Sprite("external/assets/title.png", calcX(640, vm), calcY(144, vm), calcScale(1, vm), true);
+
+	this->text_buttons["PLAY"] = new gui::ButtonText(&this->font, this->lang["PLAY"], calcChar(32, vm), calcX(640, vm), calcY(370, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
+	this->text_buttons["SETTINGS"] = new gui::ButtonText(&this->font, this->lang["SETTINGS"], calcChar(32, vm), calcX(640, vm), calcY(466, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
+	this->text_buttons["QUIT"] = new gui::ButtonText(&this->font, this->lang["QUIT"], calcChar(32, vm), calcX(640, vm), calcY(558, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
+
+	this->texts["VERSION"] = new gui::Text(&this->font, "v0.1.8", calcChar(16, vm), calcX(1272, vm), calcY(700, vm), sf::Color(255, 255, 255), false);
+	this->texts["VERSION"]->setPosition(sf::Vector2f(calcX(1272, vm) - this->texts["VERSION"]->getWidth(), calcY(700, vm)));
+
 	this->quitwindow = false;
-	createText(this->quitText, this->font, 32 * this->scale, "", 250 * this->scale, 250 * this->scale, 255, 255, 255);
-	this->quitText.setString(L"Czy na pewno chcesz wyjœæ z gry?");
-	this->quitText.setPosition(640 * this->scale - this->quitText.getGlobalBounds().width / 2, this->quitText.getPosition().y);
+	this->dimBackground.setSize(sf::Vector2f(static_cast<float>(vm.width), static_cast<float>(vm.height)));
+	this->dimBackground.setFillColor(sf::Color(0, 0, 0, 192));
 
-	createText(this->yes, this->font, 32 * this->scale, "Tak", 488 * this->scale, 306 * this->scale, 255, 255, 255);
+	this->texts["ARE_YOU_SURE"] = new gui::Text(&this->font, this->lang["ARE_YOU_SURE"], calcChar(32, vm), calcX(640, vm), calcY(250, vm), sf::Color(255, 255, 255), true);
+	this->text_buttons["YES"] = new gui::ButtonText(&this->font, this->lang["YES"], calcChar(32, vm), calcX(488, vm), calcY(306, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+	this->text_buttons["NO"] = new gui::ButtonText(&this->font, this->lang["NO"], calcChar(32, vm), calcX(704, vm), calcY(306, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
 
-	createText(this->no, this->font, 32 * this->scale, "Nie", 704 * this->scale, 306 * this->scale, 255, 255, 255);
 
-	// Przycisk graj
-	createText(this->play, this->font, 32 * this->scale, "Graj", 580 * this->scale, 370 * this->scale, 255, 255, 255);
-	// Przycisk ustawienia
-	createText(this->settings, this->font, 32 * this->scale, "Ustawienia", 482 * this->scale, 466 * this->scale, 255, 255, 255);
-	// Przycisk wyjdŸ
-	createText(this->quit, this->font, 32 * this->scale, "", 562 * this->scale, 558 * this->scale, 255, 255, 255);
-	this->quit.setString(L"WyjdŸ");
-	// Wersja
-	createText(this->version, this->font, 16 * this->scale, "v0.1.7", 1280 * this->scale, 720 * this->scale, 255, 255, 255);
-	this->version.setPosition(1280 * this->scale - this->version.getGlobalBounds().width - 32 * this->scale, 720 * this->scale - this->version.getGlobalBounds().height - 32 * this->scale);
+	// PAGE 2
 
-	// Przycisk cofnij
-	createSprite(this->go_back, this->go_back_texture, "external/assets/go_back.png", 4 * this->scale);
-	this->go_back.setPosition(1192 * this->scale, 24 * this->scale);
+	this->sprites["GO_BACK"] = new gui::Sprite("external/assets/go_back.png", calcX(1192, vm), calcY(24, vm), calcX(4, vm), false);
+	this->sprite_buttons["GO_BACK"] = new gui::ButtonSprite("external/assets/select_go_back.png", calcX(1192, vm), calcY(24, vm), calcX(4, vm), false);
 
-	// Ustawienia
-	createText(this->settings_text, this->font, 32 * this->scale, "USTAWIENIA", 0, 96 * this->scale, 255, 255, 255);
-	this->settings_text.setPosition(float(unsigned(640 * this->scale - this->settings_text.getGlobalBounds().width / 2)), this->settings_text.getPosition().y);
+	this->map_name = "";
+	this->texts["CHOOSE_MAP"] = new gui::Text(&this->font, this->lang["CHOOSE_MAP"], calcChar(32, vm), calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
+	this->sprite_buttons["SELECT_MAP1"] = new gui::ButtonSprite("external/assets/select_map.png", calcX(24, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprites["MAP1"] = new gui::Sprite("external/assets/ruins.png", calcX(48, vm), calcY(272, vm), calcScale(0.5f, vm), false);
+	this->texts["RUINS"] = new gui::Text(&this->font, this->lang["RUINS"], calcChar(32, vm), calcX(176, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
 
-	this->isFullHD = isFullhd;
-	this->isFullscreen = isFullscreen;
-	this->isVsync = isVsync;
-	this->isWsad = isWsad;
-	this->isFps = isFps;
-	createText(this->fullhd, this->font, 32 * this->scale, "1920x1080", 256 * this->scale, 224 * this->scale, 255, 255, 255);
-	createText(this->hd, this->font, 32 * this->scale, "1280x720", 736 * this->scale, 224 * this->scale, 255, 255, 255);
-	if (isFullHD) fullhd.setStyle(sf::Text::Underlined);
-	else hd.setStyle(sf::Text::Underlined);
 
-	createText(this->yesFullscreen, this->font, 32 * this->scale, "Fullscreen", 256 * this->scale, 280 * this->scale, 255, 255, 255);
-	createText(this->noFullscreen, this->font, 32 * this->scale, "W oknie", 736 * this->scale, 280 * this->scale, 255, 255, 255);
-	if (isFullscreen) yesFullscreen.setStyle(sf::Text::Underlined);
-	else noFullscreen.setStyle(sf::Text::Underlined);
+	// PAGE 3
 
-	createText(this->yesVsync, this->font, 32 * this->scale, "Vsync", 256 * this->scale, 344 * this->scale, 255, 255, 255);
-	createText(this->noVsync, this->font, 32 * this->scale, "Bez Vsync", 736 * this->scale, 344 * this->scale, 255, 255, 255);
-	if (isVsync) yesVsync.setStyle(sf::Text::Underlined);
-	else noVsync.setStyle(sf::Text::Underlined);
+	this->hero_name = "";
+	this->texts["CHOOSE_HERO"] = new gui::Text(&this->font, this->lang["CHOOSE_HERO"], calcChar(32, vm), calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
+	this->sprite_buttons["SELECT_HERO1"] = new gui::ButtonSprite("external/assets/select_hero.png", calcX(64, vm), calcY(256, vm), calcScale(1, vm), false);
+	this->sprites["HERO1"] = new gui::Sprite("external/assets/upgrade_icons.png", calcX(88, vm), calcY(272, vm), calcScale(8, vm), false);
+	this->sprites["HERO1"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
+	this->texts["WARRIOR"] = new gui::Text(&this->font, this->lang["WARRIOR"], calcChar(32, vm), calcX(150, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
 
-	createText(this->wsad, this->font, 32 * this->scale, "WSAD", 256 * this->scale, 408 * this->scale, 255, 255, 255);
-	createText(this->strzalki, this->font, 32 * this->scale, "Strzalki", 736 * this->scale, 408 * this->scale, 255, 255, 255);
-	this->strzalki.setString(L"Strza³ki");
-	if (isWsad) wsad.setStyle(sf::Text::Underlined);
-	else strzalki.setStyle(sf::Text::Underlined);
+	this->choosing_hero = false;
 
-	createText(this->fpsOn, this->font, 32 * this->scale, "", 256 * this->scale, 472 * this->scale, 255, 255, 255);
-	this->fpsOn.setString(L"W³acz FPS");
-	createText(this->fpsOff, this->font, 32 * this->scale, "", 736 * this->scale, 472 * this->scale, 255, 255, 255);
-	this->fpsOff.setString(L"Wy³acz FPS");
-	if (isFps) fpsOn.setStyle(sf::Text::Underlined);
-	else fpsOff.setStyle(sf::Text::Underlined);
+	this->text_buttons["CHOOSE"] = new gui::ButtonText(&this->font, this->lang["CHOOSE"], calcChar(32, vm), calcX(200, vm), calcY(570, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+	this->sprites["HERO_PREVIEW"] = new gui::Sprite("external/assets/upgrade_icons.png", calcX(640, vm), calcY(512, vm), calcScale(8, vm), true);
+	this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
+	this->sprites["HERO_PREVIEW"]->center(calcX(640, vm));
+	this->sprites["HP_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(860, vm), calcY(526, vm), calcScale(1, vm), true);
+	this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, 264, 22));
+	this->sprites["HP_BAR"]->center(calcX(860, vm));
+	this->texts["HP"] = new gui::Text(&this->font, "HP:10/10", calcChar(16, vm), calcX(860, vm), calcY(530, vm), sf::Color(255, 255, 255), true);
 
-	createText(this->apply, this->font, 32 * this->scale, "Zastosuj", 600 * this->scale, 624 * this->scale, 255, 255, 255);
-	this->apply.setPosition(640 * this->scale - this->apply.getGlobalBounds().width / 2, this->apply.getPosition().y);
+	this->attributes_texture.loadFromFile("external/assets/icons.png");
+	for (short i = 0; i < 8; ++i) {
+		sf::Sprite att;
+		att.setTexture(this->attributes_texture);
+		sf::IntRect intRect(i * 16, 0, 16, 16);
+		att.setTextureRect(intRect);
+		att.setScale(calcScale(2, vm), calcScale(2, vm));
+		this->attribute_vec.push_back(att);
+	}
 
-	createText(this->closequit, this->font, 16 * this->scale, "", 600 * this->scale, 200 * this->scale, 182, 60, 53);
-	this->closequit.setString(L"Uruchom ponownie gre aby zastosowaæ");
-	this->closequit.setPosition(float(unsigned(640 * this->scale - this->closequit.getGlobalBounds().width / 2)), this->closequit.getPosition().y);
-	this->applybool = false;
+	this->abilities_texture.loadFromFile("external/assets/abilities_icons.png");
+	for (short i = 0; i < 3; ++i) {
+		sf::Sprite upgrade;
+		upgrade.setTexture(this->abilities_texture);
+		sf::IntRect intRect(i * 16, 0, 16, 16);
+		upgrade.setTextureRect(intRect);
+		upgrade.setScale(calcScale(4, vm), calcScale(4, vm));
+		this->abilities_vec.push_back(upgrade);
+	}
 
-	// Wybór mapy
-	createText(this->chooseMap_text, this->font, 32 * this->scale, "WYBIERZ MAPE:", 0, 96 * this->scale, 255, 255, 255);
-	center(this->chooseMap_text, 640 * this->scale);
-
-	// Przycisk pierwszej mapy
-	createSprite(this->select_map, this->select_map_texture, this->scale);
-	this->select_map.setPosition(24 * this->scale, 248 * this->scale);
+	this->sprites["ARMOR"] = new gui::Sprite(attribute_vec[7], calcX(728, vm), calcY(564, vm), calcScale(2, vm), false);
+	this->texts["ARMOR"] = new gui::Text(&this->font, "3", calcChar(16, vm), calcX(744, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
+	this->sprites["REG"] = new gui::Sprite(attribute_vec[5], calcX(792, vm), calcY(564, vm), calcScale(2, vm), false);
+	this->texts["REG"] = new gui::Text(&this->font, "1", calcChar(16, vm), calcX(808, vm), calcY(618, vm), sf::Color(182, 60, 53), true);
+	this->sprites["ATTACK"] = new gui::Sprite(attribute_vec[1], calcX(856, vm), calcY(564, vm), calcScale(2, vm), false);
+	this->texts["ATTACK"] = new gui::Text(&this->font, "3", calcChar(16, vm), calcX(872, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
+	this->sprites["ATTACK_SPEED"] = new gui::Sprite(attribute_vec[2], calcX(920, vm), calcY(564, vm), calcScale(2, vm), false);
+	this->texts["ATTACK_SPEED"] = new gui::Text(&this->font, "3", calcChar(16, vm), calcX(936, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
+	this->sprites["SPEED"] = new gui::Sprite(attribute_vec[3], calcX(984, vm), calcY(564, vm), calcScale(2, vm), false);
+	this->texts["SPEED"] = new gui::Text(&this->font, "4", calcChar(16, vm), calcX(1000, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
+	this->sprites["CRITICAL"] = new gui::Sprite(attribute_vec[4], calcX(1048, vm), calcY(564, vm), calcScale(2, vm), false);
+	this->texts["CRITICAL"] = new gui::Text(&this->font, "10%", calcChar(16, vm), calcX(1064, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
 	
-	// Miniaturka pierwszej mapy
-	createSprite(this->mapa1, this->background_texture, "external/assets/background.png", 0.5f * this->scale);
-	this->mapa1.setPosition(48 * this->scale, 272 * this->scale);
-	// Napis pierwszej mapy
-	createText(this->mapName, this->font, 32 * this->scale, "Ruiny", 300 * this->scale, 200 * this->scale, 255, 255, 255);
-	this->mapName.setPosition(float(unsigned(this->mapa1.getPosition().x + 128 * this->scale - this->mapName.getGlobalBounds().width / 2)), this->mapName.getPosition().y);
+	this->sprites["ABILITY1"] = new gui::Sprite(abilities_vec[0], calcX(528, vm), calcY(526, vm), calcScale(2, vm), true);
+	this->sprites["ABILITY2"] = new gui::Sprite(abilities_vec[1], calcX(528, vm), calcY(574, vm), calcScale(2, vm), true);
+	this->sprites["ABILITY3"] = new gui::Sprite(abilities_vec[2], calcX(528, vm), calcY(622, vm), calcScale(2, vm), true);
 
 
-	// Wybór postaci
-	createText(this->chooseClass_text, this->font, 32 * this->scale, "WYBIERZ POSTAC:", 0, 96 * this->scale, 255, 255, 255);
-	center(this->chooseClass_text, 640 * this->scale);
+	// PAGE 4
 
-	// Przycisk pierwszej postaci
-	createSprite(this->select_hero, this->select_hero_texture, this->scale);
-	this->select_hero.setPosition(64 * this->scale, 256 * this->scale);
-	// Miniaturka wojownika
-	createSprite(this->wojownik, this->player, "external/assets/heroes/wojownik.png", 1.f);
-	this->wojownik.setTextureRect(sf::IntRect(0, 32, 16, 16));
-	this->wojownik.setScale(8 * this->scale, 8 * this->scale);
-	this->wojownik.setPosition(88 * this->scale, 272 * this->scale);
-	// Napis wojownika
-	createText(this->className, this->font, 32 * this->scale, "Wojownik", 300 * this->scale, 200 * this->scale, 255, 255, 255);
-	this->className.setPosition(float(unsigned(this->wojownik.getPosition().x + 64 * this->scale - this->className.getGlobalBounds().width / 2)), this->className.getPosition().y);
+	this->difficulty_name = "";
+	this->texts["CHOOSE_DIFFICULTY"] = new gui::Text(&this->font, this->lang["CHOOSE_DIFFICULTY"], calcChar(32, vm), calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
 
-	// Poziom trudnoœci
-	createText(this->chooseDifficulty_text, this->font, 32 * this->scale, "WYBIERZ TRUDNOSC:", 0, 96 * this->scale, 255, 255, 255);
-	center(this->chooseDifficulty_text, 640 * this->scale);
+	this->sprite_buttons["SELECT_DIFFICULTY1"] = new gui::ButtonSprite("external/assets/select_difficulty.png", calcX(32, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprite_buttons["SELECT_DIFFICULTY2"] = new gui::ButtonSprite("external/assets/select_difficulty.png", calcX(448, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprite_buttons["SELECT_DIFFICULTY3"] = new gui::ButtonSprite("external/assets/select_difficulty.png", calcX(864, vm), calcY(184, vm), calcScale(1, vm), false);
 
-	createSprite(this->easy, this->difficulty_texture, 16 * this->scale, 168 * this->scale, 272 * this->scale);
-	this->easy.setTextureRect(sf::IntRect(0, 0, 7, 6));
-	createSprite(this->normal, this->difficulty_texture, 16 * this->scale, 584 * this->scale, 272 * this->scale);
-	this->normal.setTextureRect(sf::IntRect(7, 0, 7, 6));
-	createSprite(this->hard, this->difficulty_texture, 16 * this->scale, 1000 * this->scale, 272 * this->scale);
-	this->hard.setTextureRect(sf::IntRect(14, 0, 7, 6));
+	this->sprites["DIFFICULTY1"] = new gui::Sprite("external/assets/difficulty_icons.png", calcX(168, vm), calcY(272, vm), calcScale(16, vm), false);
+	this->sprites["DIFFICULTY1"]->setTextureRect(sf::IntRect(0, 0, 7, 6));
+	this->sprites["DIFFICULTY2"] = new gui::Sprite("external/assets/difficulty_icons.png", calcX(584, vm), calcY(272, vm), calcScale(16, vm), false);
+	this->sprites["DIFFICULTY2"]->setTextureRect(sf::IntRect(7, 0, 7, 6));
+	this->sprites["DIFFICULTY3"] = new gui::Sprite("external/assets/difficulty_icons.png", calcX(1000, vm), calcY(272, vm), calcScale(16, vm), false);
+	this->sprites["DIFFICULTY3"]->setTextureRect(sf::IntRect(14, 0, 7, 6));
 
-	createText(this->easy_text, this->font, 32 * this->scale, "LATWY", 224 * this->scale, 400 * this->scale, 255, 255, 255);
-	center(this->easy_text, 224 * this->scale);
-	createText(this->normal_text, this->font, 32 * this->scale, "NORMALNY", 640 * this->scale, 400 * this->scale, 255, 255, 255);
-	center(this->normal_text, 640 * this->scale);
-	createText(this->hard_text, this->font, 32 * this->scale, "TRUDNY", 1056 * this->scale, 400 * this->scale, 255, 255, 255);
-	center(this->hard_text, 1056 * this->scale);
-
-	createSprite(this->select_easy, this->select_difficulty_texture, this->scale, 32 * this->scale, 184 * this->scale);
-	createSprite(this->select_normal, this->select_difficulty_texture, this->scale, 448 * this->scale, 184 * this->scale);
-	createSprite(this->select_hard, this->select_difficulty_texture, this->scale, 864 * this->scale, 184 * this->scale);
-
-	createText(this->easy_desc, this->font, 16 * this->scale, "Potwory maja:\n\n-25% HP\n\n-25% atak", 224 * this->scale, 460 * this->scale, 182, 60, 53);
-	center(this->easy_desc, 224 * this->scale);
-	createText(this->normal_desc, this->font, 16 * this->scale, "Brak zmiany u potworów", 640 * this->scale, 460 * this->scale, 182, 60, 53);
-	center(this->normal_desc, 640 * this->scale);
-	createText(this->hard_desc, this->font, 16 * this->scale, "Potwory maja:\n\n+25% HP\n\n+25% atak", 1056 * this->scale, 460 * this->scale, 182, 60, 53);
-	center(this->hard_desc, 1056 * this->scale);
+	this->texts["EASY"] = new gui::Text(&this->font, this->lang["EASY"], calcChar(32, vm), calcX(224, vm), calcY(400, vm), sf::Color(255, 255, 255), true);
+	this->texts["NORMAL"] = new gui::Text(&this->font, this->lang["NORMAL"], calcChar(32, vm), calcX(640, vm), calcY(400, vm), sf::Color(255, 255, 255), true);
+	this->texts["HARD"] = new gui::Text(&this->font, this->lang["HARD"], calcChar(32, vm), calcX(1056, vm), calcY(400, vm), sf::Color(255, 255, 255), true);
+	this->texts["EASY_DESC"] = new gui::Text(&this->font, this->lang["MONSTERS_HAVE"] + "\n\n-25% HP\n\n-25% " + this->lang["ATTACK"], calcChar(16, vm), calcX(224, vm), calcY(460, vm), sf::Color(182, 60, 53), true);
+	this->texts["NORMAL_DESC"] = new gui::Text(&this->font, this->lang["NORMAL_DESC"], calcChar(16, vm), calcX(640, vm), calcY(460, vm), sf::Color(182, 60, 53), true);
+	this->texts["HARD_DESC"] = new gui::Text(&this->font, this->lang["MONSTERS_HAVE"] + "\n\n+25% HP\n\n+25% " + this->lang["ATTACK"], calcChar(16, vm), calcX(1056, vm), calcY(460, vm), sf::Color(182, 60, 53), true);
 
 }
 
-void MainMenuState::update(sf::RenderWindow& window, const float& dt)
+void MainMenuState::resetGUI()
 {
-	if (this->isFps) {
+	for (auto it = this->texts.begin(); it != this->texts.end(); ++it)
+	{
+		delete it->second;
+	}
+	this->texts.clear();
 
-		this->fps++;
+	for (auto it = this->text_buttons.begin(); it != this->text_buttons.end(); ++it)
+	{
+		delete it->second;
+	}
+	this->text_buttons.clear();
 
-		if (this->fpsClock.getElapsedTime().asSeconds() >= 1.f) {
-			this->fpsCounter.setString("FPS:" + std::to_string(int(this->fps)));
-			this->fps = 0;
-			this->fpsClock.restart();
+	for (auto it = this->sprites.begin(); it != this->sprites.end(); ++it)
+	{
+		delete it->second;
+	}
+	this->sprites.clear();
+
+	for (auto it = this->sprite_buttons.begin(); it != this->sprite_buttons.end(); ++it)
+	{
+		delete it->second;
+	}
+	this->sprite_buttons.clear();
+
+	initGUI();
+}
+
+void MainMenuState::update(const float& dt)
+{
+	this->updateMousePositions();
+	
+	switch (this->page) {
+	case 0:
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+			this->page = 1;
+			break;
 		}
+
+		this->introCooldown += dt;
+
+		if (this->introCooldown > 1.f) {
+			if (this->introCooldown > 5.f) {
+				this->page = 1;
+				break;
+			}
+			else {
+				if (this->introCooldown < 3.f) {
+					if (this->dimAlpha < 1.f) {
+						this->dimAlpha += dt;
+					}
+					if (this->dimAlpha > 1.f) {
+						this->dimAlpha = 1.f;
+					}
+				}
+				else if (this->introCooldown < 5.f && this->introCooldown > 3.f) {
+					if (this->dimAlpha > 0.f) {
+						this->dimAlpha -= dt;
+					}
+					if (this->dimAlpha < 0.f) {
+						this->dimAlpha = 0.f;
+					}
+					
+				}
+				this->sprites["LOGO"]->setColor(sf::Color(255, 255, 255, static_cast<sf::Uint8>(this->dimAlpha * 255.f)));
+			}
+		}
+		break;
+	case 1:
+		if (!quitwindow) {
+			this->text_buttons["PLAY"]->update(this->mousePosWindow);
+			this->text_buttons["SETTINGS"]->update(this->mousePosWindow);
+			this->text_buttons["QUIT"]->update(this->mousePosWindow);
+
+			if (this->text_buttons["PLAY"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				this->map_name = "";
+				this->page = 2;
+			}
+			else if (this->text_buttons["SETTINGS"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				this->states->push(new SettingsState(this->gridSize, this->window, this->graphicsSettings, this->supportedKeys, &this->font, this->states));
+			}
+			else if (this->text_buttons["QUIT"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				this->quitwindow = true;
+			}
+		}
+		else {
+			this->text_buttons["YES"]->update(this->mousePosWindow);
+			this->text_buttons["NO"]->update(this->mousePosWindow);
+
+			if (this->text_buttons["YES"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				this->endState(); 
+			}
+			else if (this->text_buttons["NO"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				this->quitwindow = false;
+			}
+		}
+		break;
+	case 2:
+		this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
+		if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
+			this->setMouseClick(true);
+			--this->page;
+			this->map_name = "";
+		}
+
+		this->sprite_buttons["SELECT_MAP1"]->update(this->mousePosWindow);
+		if (this->sprite_buttons["SELECT_MAP1"]->isPressed() && !this->getMouseClick()) {
+			this->setMouseClick(true);
+			this->map_name = "ruins";
+			this->page = 3;
+			this->sprite_buttons["SELECT_MAP1"]->setTransparent();
+		}
+		break;
+	case 3:
+		this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
+		if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
+			this->setMouseClick(true);
+			--this->page;
+			this->hero_name = "";
+			this->choosing_hero = false;
+		}
+
+		this->sprite_buttons["SELECT_HERO1"]->update(this->mousePosWindow);
+		if (this->sprite_buttons["SELECT_HERO1"]->isPressed() && !this->getMouseClick()) {
+			this->setMouseClick(true);
+			this->choosing_hero = true;
+			this->sprite_buttons["SELECT_HERO1"]->setTransparent();
+			this->hero_name = "warrior";
+		}
+
+		if (this->choosing_hero) {
+			this->text_buttons["CHOOSE"]->update(this->mousePosWindow);
+			if (this->text_buttons["CHOOSE"]->isPressed() && !this->getMouseClick()) {
+				this->page = 4;
+			}
+		}
+		break;
+	case 4:
+		this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
+		if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
+			this->setMouseClick(true);
+			--this->page;
+			this->difficulty_name = "";
+			this->choosing_hero = false;
+		}
+
+		this->sprite_buttons["SELECT_DIFFICULTY1"]->update(this->mousePosWindow);
+		this->sprite_buttons["SELECT_DIFFICULTY2"]->update(this->mousePosWindow);
+		this->sprite_buttons["SELECT_DIFFICULTY3"]->update(this->mousePosWindow);
+		if (this->sprite_buttons["SELECT_DIFFICULTY1"]->isPressed() && !this->getMouseClick()) {
+			this->setMouseClick(true);
+			this->difficulty_name = "easy";
+			this->page = 1;
+			this->states->push(new GameState(this->gridSize, this->window, this->graphicsSettings, this->supportedKeys, &this->font, this->states, this->map_name, this->hero_name, this->difficulty_name));
+			this->sprite_buttons["SELECT_DIFFICULTY1"]->setTransparent();
+			this->choosing_hero = false;
+		}
+		else if (this->sprite_buttons["SELECT_DIFFICULTY2"]->isPressed() && !this->getMouseClick()) {
+			this->setMouseClick(true);
+			this->difficulty_name = "normal";
+			this->page = 1;
+			this->states->push(new GameState(this->gridSize, this->window, this->graphicsSettings, this->supportedKeys, &this->font, this->states, this->map_name, this->hero_name, this->difficulty_name));
+			this->sprite_buttons["SELECT_DIFFICULTY2"]->setTransparent();
+			this->choosing_hero = false;
+		}
+		else if (this->sprite_buttons["SELECT_DIFFICULTY3"]->isPressed() && !this->getMouseClick()) {
+			this->setMouseClick(true);
+			this->difficulty_name = "hard";
+			this->page = 1;
+			this->states->push(new GameState(this->gridSize, this->window, this->graphicsSettings, this->supportedKeys, &this->font, this->states, this->map_name, this->hero_name, this->difficulty_name));
+			this->sprite_buttons["SELECT_DIFFICULTY3"]->setTransparent();
+			this->choosing_hero = false;
+		}
+		break;
 	}
 
-	
+	this->updateMouseClick();
 
-	if (this->state == 0) {
-		this->state0(window);
-	}
-	else if (this->state == 1) {
-		this->state1(window);
-	}
-	else if (this->state == 2) {
-		this->state2(window);
-	}
-	else if (this->state == 3) {
-		this->state3(window);
-	}
-	else if (this->state == 4) {
-		this->gra.update(window, dt, this->state);
-	}
-	else if (this->state == 5) {
-		this->state5(window);
+	if (!this->quitwindow && this->page > 0) {
+		this->updateKeysClick("Escape", sf::Keyboard::Escape);
+
+		if (this->getKeysClick1("Escape") && !this->getKeysClick2("Escape")) {
+			this->setKeysClick("Escape", true);
+			if (this->page == 1) this->quitwindow = true;
+			else --this->page;
+		}
+		this->setKeysClick("Escape", this->getKeysClick1("Escape"));
 	}
 
-
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Left) == false) this->mycha = false;
-	else this->mycha = true;
 }
 
-void MainMenuState::draw(sf::RenderWindow& window)
+void MainMenuState::draw(sf::RenderTarget* target)
 {
-	if (this->state == 0) {
-		window.draw(this->title);
-		window.draw(this->play);
-		window.draw(this->settings);
-		window.draw(this->quit);
-		window.draw(this->version);
+	if (!target) target = this->window;
+
+	switch (this->page) {
+	case 0:
+		this->sprites["LOGO"]->draw(*target);
+		break;
+	case 1:
+		this->sprites["TITLE"]->draw(*target);
+
+		this->text_buttons["PLAY"]->draw(*target);
+		this->text_buttons["SETTINGS"]->draw(*target);
+		this->text_buttons["QUIT"]->draw(*target);
+
+		this->texts["VERSION"]->draw(*target);
 		if (this->quitwindow) {
-			window.draw(this->dimBackground);
-			window.draw(this->quitText);
-			window.draw(this->yes);
-			window.draw(this->no);
+			target->draw(dimBackground);
+			this->texts["ARE_YOU_SURE"]->draw(*target);
+
+			this->text_buttons["YES"]->draw(*target);
+			this->text_buttons["NO"]->draw(*target);
 		}
-	}
-	else if (this->state == 1) {
-		window.draw(this->chooseMap_text);
-		window.draw(this->select_map);
-		window.draw(this->mapa1);
-		window.draw(this->mapName);
-		window.draw(this->go_back);
-	}
-	else if (this->state == 2) {
-		window.draw(this->chooseClass_text);
-		window.draw(this->select_hero);
-		window.draw(this->wojownik);
-		window.draw(this->className);
-		window.draw(this->go_back);
-		//window.draw(this->test);
-	}
-	else if (this->state == 3) {
-		window.draw(this->chooseDifficulty_text);
-		window.draw(this->easy);
-		window.draw(this->easy_text);
-		window.draw(this->select_easy);
-		window.draw(this->easy_desc);
-		window.draw(this->normal);
-		window.draw(this->normal_text);
-		window.draw(this->select_normal);
-		window.draw(this->normal_desc);
-		window.draw(this->hard);
-		window.draw(this->hard_text);
-		window.draw(this->select_hard);
-		window.draw(this->hard_desc);
-		window.draw(this->go_back);
-	}
-	else if (this->state == 4) {
-		this->gra.draw(window);
-	}
-	else if (this->state == 5) {
-		window.draw(this->settings_text);
-		window.draw(this->go_back);
-		window.draw(this->fullhd);
-		window.draw(this->hd);
-		window.draw(this->yesFullscreen);
-		window.draw(this->noFullscreen);
-		window.draw(this->yesVsync);
-		window.draw(this->noVsync);
-		window.draw(this->wsad);
-		window.draw(this->strzalki);
-		window.draw(this->fpsOn);
-		window.draw(this->fpsOff);
-		window.draw(this->apply);
-		if (this->applybool)
-			window.draw(this->closequit);
+		break;
+	case 2:
+		this->sprites["GO_BACK"]->draw(*target);
+		this->sprite_buttons["GO_BACK"]->draw(*target);
+
+		this->texts["CHOOSE_MAP"]->draw(*target);
+		this->sprites["MAP1"]->draw(*target);
+		this->sprite_buttons["SELECT_MAP1"]->draw(*target);
 		
-	}
+		this->texts["RUINS"]->draw(*target);
+		break;
+	case 3:
+		this->sprites["GO_BACK"]->draw(*target);
+		this->sprite_buttons["GO_BACK"]->draw(*target);
 
-	if (this->isFps) window.draw(this->fpsCounter);
-}
+		this->texts["CHOOSE_HERO"]->draw(*target);
+		this->sprites["HERO1"]->draw(*target);
+		this->sprite_buttons["SELECT_HERO1"]->draw(*target);
 
-void MainMenuState::buttonText(sf::RenderWindow& window, sf::Text& text, const std::string& word)
-{
-	if (text.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window)))) {
-		text.setFillColor(sf::Color(192, 192, 192));
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->mycha == false) {
-			if (word == "start") this->state = 1;
-			else if (word == "settings") this->state = 5;
-			else if (word == "zastosuj") {
-				//this->saveConfig();
-				//this->loadConfig(window);
-				this->applybool = true;
-			}
-			else if (word == "quit") this->quitwindow = true;
-			else if (word == "tak") window.close();
-			else if (word == "nie") this->quitwindow = false;
-			this->mycha = true;
-			text.setFillColor(sf::Color(255, 255, 255));
+		this->texts["WARRIOR"]->draw(*target);
+
+		if (this->choosing_hero) {
+			this->text_buttons["CHOOSE"]->draw(*target);
+
+			this->sprites["ABILITY1"]->draw(*target);
+			this->sprites["ABILITY2"]->draw(*target);
+			this->sprites["ABILITY3"]->draw(*target);
+
+			this->sprites["HERO_PREVIEW"]->draw(*target);
+			this->sprites["HP_BAR"]->draw(*target);
+			this->texts["HP"]->draw(*target);
+
+			this->sprites["ARMOR"]->draw(*target);
+			this->texts["ARMOR"]->draw(*target);
+			this->sprites["REG"]->draw(*target);
+			this->texts["REG"]->draw(*target);
+			this->sprites["ATTACK"]->draw(*target);
+			this->texts["ATTACK"]->draw(*target);
+			this->sprites["ATTACK_SPEED"]->draw(*target);
+			this->texts["ATTACK_SPEED"]->draw(*target);
+			this->sprites["SPEED"]->draw(*target);
+			this->texts["SPEED"]->draw(*target);
+			this->sprites["CRITICAL"]->draw(*target);
+			this->texts["CRITICAL"]->draw(*target);
 		}
+		break;
+	case 4:
+		this->sprites["GO_BACK"]->draw(*target);
+		this->sprite_buttons["GO_BACK"]->draw(*target);
+
+		this->texts["CHOOSE_DIFFICULTY"]->draw(*target);
+
+		this->sprites["DIFFICULTY1"]->draw(*target);
+		this->sprites["DIFFICULTY2"]->draw(*target);
+		this->sprites["DIFFICULTY3"]->draw(*target);
+		this->sprite_buttons["SELECT_DIFFICULTY1"]->draw(*target);
+		this->sprite_buttons["SELECT_DIFFICULTY2"]->draw(*target);
+		this->sprite_buttons["SELECT_DIFFICULTY3"]->draw(*target);
+
+		this->texts["EASY"]->draw(*target);
+		this->texts["NORMAL"]->draw(*target);
+		this->texts["HARD"]->draw(*target);
+		this->texts["EASY_DESC"]->draw(*target);
+		this->texts["NORMAL_DESC"]->draw(*target);
+		this->texts["HARD_DESC"]->draw(*target);
+		break;
 	}
-	else {
-		text.setFillColor(sf::Color(255, 255, 255));
-	}
-}
-
-void MainMenuState::buttonTextChoice(sf::RenderWindow& window, sf::Text& text, const std::string& word)
-{
-	if (text.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window)))) {
-		text.setFillColor(sf::Color(192, 192, 192));
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->mycha == false) {
-			if (word == "fullhd") {
-				this->isFullHD = true;
-				this->hd.setStyle(sf::Text::Regular);
-			}
-			else if (word == "hd") {
-				this->isFullHD = false;
-				this->fullhd.setStyle(sf::Text::Regular);
-			}
-			else if (word == "fullscreen") {
-				this->isFullscreen = true;
-				this->noFullscreen.setStyle(sf::Text::Regular);
-			}
-			else if (word == "niefullscreen") {
-				this->isFullscreen = false;
-				this->yesFullscreen.setStyle(sf::Text::Regular);
-			}
-			else if (word == "vsync") {
-				this->isVsync = true;
-				this->noVsync.setStyle(sf::Text::Regular);
-			}
-			else if (word == "nievsync") {
-				this->isVsync = false;
-				this->yesVsync.setStyle(sf::Text::Regular);
-			}
-			else if (word == "wsad") {
-				this->isWsad = true;
-				this->strzalki.setStyle(sf::Text::Regular);
-			}
-			else if (word == "strzalki") {
-				this->isWsad = false;
-				this->wsad.setStyle(sf::Text::Regular);
-			}
-			else if (word == "fpson") {
-				this->isFps = true;
-				this->fpsOff.setStyle(sf::Text::Regular);
-			}
-			else if (word == "fpsoff") {
-				this->isFps = false;
-				this->fpsOn.setStyle(sf::Text::Regular);
-			}
-			this->mycha = true;
-			text.setStyle(sf::Text::Underlined);
-			text.setFillColor(sf::Color(255, 255, 255));
-		}
-	}
-	else {
-		text.setFillColor(sf::Color(255, 255, 255));
-	}
-}
-
-void MainMenuState::buttonSprite(sf::RenderWindow& window, sf::Sprite& spr, const std::string& word)
-{
-	if (spr.getGlobalBounds().contains(window.mapPixelToCoords(sf::Mouse::getPosition(window)))) {
-		if (word == "powrot") {
-			spr.setColor(sf::Color(192, 192, 192));
-		}
-		else spr.setColor(sf::Color::White);
-		
-		if (sf::Mouse::isButtonPressed(sf::Mouse::Left) && this->mycha == false) {
-
-			if (word == "mapa") this->state = 2;
-			else if (word == "wojownik") {
-				this->state = 3;
-			}
-			else if (word == "latwy") {
-				this->state = 4;
-				this->gra.init(this->scale, this->klawisze, "Ruiny", "Wojownik", "Latwy");
-			}
-			else if (word == "normalny") {
-				this->state = 4;
-				this->gra.init(this->scale, this->klawisze, "Ruiny", "Wojownik", "Normalny");
-			}
-			else if (word == "trudny") {
-				this->state = 4;
-				this->gra.init(this->scale, this->klawisze, "Ruiny", "Wojownik", "Trudny");
-			}
-			else if (word == "powrot") {
-				if (this->state == 5)
-					this->state = 0;
-				else this->state--;
-			}
-			this->mycha = true;
-
-			if (word == "powrot") {
-				spr.setColor(sf::Color::White);
-			}
-			else spr.setColor(sf::Color::Transparent);
-		}
-	}
-	else {
-		if (word == "powrot") {
-			spr.setColor(sf::Color::White);
-		}
-		else spr.setColor(sf::Color::Transparent);
-	}
-}
-
-void MainMenuState::state0(sf::RenderWindow& window)
-{
-	if (this->quitwindow == false) {
-		buttonText(window, this->play, "start");
-		buttonText(window, this->settings, "settings");
-		buttonText(window, this->quit, "quit");
-	}
-	else {
-		buttonText(window, this->yes, "tak");
-		buttonText(window, this->no, "nie");
-	}
-}
-
-void MainMenuState::state1(sf::RenderWindow& window)
-{
-	buttonSprite(window, this->select_map, "mapa");
-	buttonSprite(window, this->go_back, "powrot");
-}
-
-void MainMenuState::state2(sf::RenderWindow& window)
-{
-	buttonSprite(window, this->select_hero, "wojownik");
-	buttonSprite(window, this->go_back, "powrot");
-}
-
-void MainMenuState::state3(sf::RenderWindow& window)
-{
-	buttonSprite(window, this->select_easy, "latwy");
-	buttonSprite(window, this->select_normal, "normalny");
-	buttonSprite(window, this->select_hard, "trudny");
-	buttonSprite(window, this->go_back, "powrot");
-}
-
-void MainMenuState::state5(sf::RenderWindow& window)
-{
-	buttonSprite(window, this->go_back, "powrot");
-	buttonTextChoice(window, this->fullhd, "fullhd");
-	buttonTextChoice(window, this->hd, "hd");
-	buttonTextChoice(window, this->yesFullscreen, "fullscreen");
-	buttonTextChoice(window, this->noFullscreen, "niefullscreen");
-	buttonTextChoice(window, this->yesVsync, "vsync");
-	buttonTextChoice(window, this->noVsync, "nievsync");
-	buttonTextChoice(window, this->wsad, "wsad");
-	buttonTextChoice(window, this->strzalki, "strzalki");
-	buttonTextChoice(window, this->fpsOn, "fpson");
-	buttonTextChoice(window, this->fpsOff, "fpsoff");
-	buttonText(window, this->apply, "zastosuj");
 }

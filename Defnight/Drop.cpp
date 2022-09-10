@@ -1,13 +1,24 @@
 #include "Functions.h"
 #include "Drop.h"
 
-Drop::Drop()
+Drop::Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, sf::VideoMode& vm)
+	:name(name), worth(worth), vm(vm)
 {
-	this->scale = 1.f;
+	this->texture.loadFromFile("external/assets/drop.png");
+	this->sprite.setTexture(this->texture);
+	this->sprite.setPosition(posX, posY);
+	this->sprite.setScale(calcScale(2, vm), calcScale(2, vm));
+	this->sprite.setColor(sf::Color::Transparent);
+
+	if (this->name == "coin") this->sprite.setTextureRect(sf::IntRect(0, 0, 16, 16));
+	else this->sprite.setTextureRect(sf::IntRect(0, 16, 16, 16));
+
 	this->spinCooldown = 0.f;
-	this->worth = 0;
-	this->predkosc = sf::Vector2f(0.f, 0.f);
+	this->velocity = sf::Vector2f(0.f, 0.f);
 	this->angle = 0.f;
+
+	this->spawned = false;
+	this->spawnCountdown = 0.f;
 }
 
 Drop::~Drop()
@@ -15,13 +26,26 @@ Drop::~Drop()
 
 }
 
-void Drop::init(const float& scale, const sf::Vector2f& position, const std::string& name, const unsigned& worth)
+const std::string Drop::getName() const
 {
-	this->scale = scale;
-	createSprite(this->sprite, this->texture, 2 * this->scale);
-	this->sprite.setPosition(position);
-	this->worth = worth;
-	this->name = name;
+	return this->name;
+}
+
+const bool Drop::getSpawned() const
+{
+	return this->spawned;
+}
+
+void Drop::spawn(const float& dt)
+{
+	if (this->spawnCountdown < 0.25f) {
+		this->sprite.setColor(sf::Color(255, 255, 255, static_cast<sf::Uint8>(this->spawnCountdown * 1020.f)));
+		this->spawnCountdown += dt;
+	}
+	if (this->spawnCountdown >= 0.25) {
+		this->spawned = true;
+		this->sprite.setColor(sf::Color::White);
+	}
 }
 
 void Drop::spin(const float& dt)
@@ -42,9 +66,44 @@ void Drop::spin(const float& dt)
 	}
 }
 
-void Drop::move(const float& dt)
+void Drop::move(const float& posX, const float& posY, const float& dt)
 {
-	this->predkosc.x = 256.f * dt * this->scale * cos((3.1415f / 180) * this->angle);
-	this->predkosc.y = 256.f * dt * this->scale * sin((3.1415f / 180) * this->angle);
-	this->sprite.move(this->predkosc);
+	this->angle = getAngle(this->sprite.getPosition().x + calcX(8, vm), this->sprite.getPosition().y + calcY(8, vm), posX + calcX(32, vm), posY + calcY(32, vm)) + 90.f;
+	this->velocity.x = this->sprite.getGlobalBounds().width * 16.f * cos((3.1415f / 180) * this->angle) * dt;
+	this->velocity.y = this->sprite.getGlobalBounds().width * 16.f * sin((3.1415f / 180) * this->angle) * dt;
+	this->sprite.move(this->velocity);
+}
+
+const bool Drop::playerPick(Player* player, sf::Font* font, PlayerGUI* playerGUI, std::list<FloatingText*>& floatingTexts, const float& dt)
+{
+	const float distance = vectorDistance(sf::Vector2f(this->sprite.getPosition().x + calcX(8, vm), this->sprite.getPosition().y + calcY(8, vm)), sf::Vector2f(player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm)));
+	if (distance <= player->getReach() * calcX(64, vm)) {
+		this->move(player->getPosition().x, player->getPosition().y, dt);
+	}
+	if (distance <= player->getReach() * calcX(16, vm)) {
+		if (this->name == "coin") {
+			player->setGold(player->getGold() + this->worth);
+			playerGUI->update_Gold();
+			floatingTexts.push_back(new FloatingText(font, "+" + std::to_string(this->worth), calcChar(16, vm), this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y, sf::Color(255, 246, 76), vm));
+		}
+		else if (player->getHP() < player->getMaxHP()) {
+			player->setHP(player->getHP() + 1);
+			player->setIsRegenerating(true);
+			playerGUI->update_HP();
+			floatingTexts.push_back(new FloatingText(font, "+" + std::to_string(this->worth), calcChar(16, vm), this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y - calcY(16, vm), sf::Color(182, 60, 53), vm));				
+		}
+		return true;
+	}
+	return false;
+}
+
+void Drop::update(const float& dt)
+{
+	if (this->spawned) this->spin(dt);
+	else this->spawn(dt);
+}
+
+void Drop::draw(sf::RenderTarget& target)
+{
+	target.draw(this->sprite);
 }

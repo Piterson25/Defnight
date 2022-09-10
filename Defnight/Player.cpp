@@ -2,9 +2,58 @@
 #include "Player.h"
 
 
-Player::Player()
+Player::Player(const float& x, const float& y, const sf::VideoMode& vm, const std::string& hero_name)
 {
-	
+	this->texture.loadFromFile("external/assets/heroes/" + hero_name + ".png");
+	this->sprite.setTexture(this->texture);
+	this->sprite.setTextureRect(sf::IntRect(0, 32, 16, 16));
+	this->sprite.setScale(calcScale(4,vm), calcScale(4, vm));
+	this->sprite.setPosition(x, y);
+	this->sprite.setColor(sf::Color(255, 255, 255, 0));
+
+	this->shadow_texture.loadFromFile("external/assets/entity_shadow.png");
+	this->shadow.setTexture(this->shadow_texture);
+	this->shadow.setScale(calcScale(4, vm), calcScale(4, vm));
+	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52, vm));
+	this->shadow.setColor(sf::Color(255, 255, 255, 0));
+
+	this->ability_texture.loadFromFile("external/assets/abilities.png");
+	this->ability.setTexture(this->ability_texture);
+	this->ability.setScale(calcScale(4, vm), calcScale(4, vm));
+	this->ability.setTextureRect(sf::IntRect(0, 0, 16, 16));
+	this->ability.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52, vm));
+	this->ability.setColor(sf::Color(255, 255, 255, 0));
+
+	this->vm = vm;
+	this->name = hero_name;
+	this->level = 1;
+	this->lastMaxXP = 0;
+	this->maxXP = 40;
+	this->reg = 0;
+	this->reach = 1;
+	this->regCooldown = 0.f;
+	this->criticalChance = 0;
+	this->spawned = false;
+	this->spawnCountdown = 0.f;
+	this->isRegenerating = false;
+	this->isLeveling = false;
+	this->abilityActive = false;
+	this->abilityMaxTime = 0.f;
+	this->abilityTime = 0.f;
+	this->abilityCooldown = 0.f;
+
+	this->kills = 0;
+
+	if (this->name == "warrior") {
+		this->attack = 3;
+		this->attackSpeed = 3;
+		this->maxHP = 10;
+		this->HP = 10;
+		this->reg = 1;
+		this->speed = 4;
+		this->armor = 3;
+		this->criticalChance = 10;
+	}
 }
 
 Player::~Player()
@@ -12,283 +61,280 @@ Player::~Player()
 
 }
 
-void Player::init(float& scale, const std::string& nazwa)
+const uint16_t Player::getKills() const
 {
-	this->name = nazwa;
-	this->animationTime = 0.f;
-	this->step = 0;
-	this->attack = 3;
-	this->attackCooldown = 0;
-	this->attackSpeed = 3;
-	this->regCooldown = 0;
-	this->Level = 1;
-	this->Reg = 1;
-	this->maxhp = 10;
-	this->hp = 10;
-	this->maxxp = 40;
-	this->xp = 0;
-	this->speed = 4;
-	this->critical = 10;
-	this->reach = 1;
-	this->gold = 0;
-	this->predkosc = sf::Vector2f(0.f, 0.f);
-	this->punched = false;
-	this->punchedTime = 0.f;
-	this->attackAni = false;
-	this->up = false;
-	this->down = false;
-	this->left = true;
-	this->right = false;
-	this->dead = false;
-	this->abilityCounter = 0.f;
-	this->abilityCooldown = 0.f;
-	this->abilityDuration = 0.f;
-	this->abilityActive = false;
-
-	this->scale = scale;
-	this->sprite.setTexture(this->texture);
-	sf::IntRect intRect(0, 32, 16, 16);
-	this->sprite.setTextureRect(intRect);
-	this->sprite.setScale(4 * this->scale, 4 * this->scale);
-	this->sprite.setColor(sf::Color::White);
-
+	return this->kills;
 }
 
-void Player::controls(std::vector<sf::Keyboard::Key>& klawisze, const float& dt)
+const bool Player::getSpawned() const
 {
-	this->predkosc = sf::Vector2f(0.f, 0.f);
-
-	const float war = (this->speed * 0.2f + 0.8f) * 128.f * dt * this->scale;
-
-	if (sf::Keyboard::isKeyPressed(klawisze[0]))
-		this->predkosc.y += -(war);
-	if (sf::Keyboard::isKeyPressed(klawisze[1]))
-		this->predkosc.y += war;
-	if (sf::Keyboard::isKeyPressed(klawisze[2]))
-		this->predkosc.x += -(war);
-	if (sf::Keyboard::isKeyPressed(klawisze[3]))
-		this->predkosc.x += war;
+	return this->spawned;
 }
 
-void Player::collision(const std::vector<sf::Sprite>& obstacles)
+const uint16_t Player::getArmor() const
 {
-	for (const auto& e : obstacles) {
-		if (vectorDistance(this->sprite.getPosition(), e.getPosition()) < 256 * this->scale) {
+	return this->armor;
+}
 
-			sf::FloatRect playerBounds = this->sprite.getGlobalBounds();
-			sf::FloatRect wallBounds = e.getGlobalBounds();
+const unsigned Player::getReg() const
+{
+	return this->reg;
+}
 
-			sf::FloatRect nextPos = playerBounds;
-			nextPos.left += this->predkosc.x;
-			nextPos.top += this->predkosc.y;
+const unsigned Player::getMaxXP() const
+{
+	return this->maxXP;
+}
 
-			if (wallBounds.intersects(nextPos))
-			{
-				//Dolna kolizja
-				if (playerBounds.top < wallBounds.top
-					&& playerBounds.top + playerBounds.height < wallBounds.top + wallBounds.height
-					&& playerBounds.left < wallBounds.left + wallBounds.width
-					&& playerBounds.left + playerBounds.width > wallBounds.left)
-				{
-					this->predkosc.y = 0.f;
-					this->sprite.setPosition(playerBounds.left, wallBounds.top - playerBounds.height);
+const unsigned Player::getLastMaxXP() const
+{
+	return this->lastMaxXP;
+}
+
+const unsigned Player::getLevel() const
+{
+	return this->level;
+}
+
+const unsigned Player::getCriticalChance() const
+{
+	return this->criticalChance;
+}
+
+const bool Player::getRegenerating() const
+{
+	return this->isRegenerating;
+}
+
+const bool Player::getLeveling() const
+{
+	return this->isLeveling;
+}
+
+const float Player::getAbilityCooldown() const
+{
+	return this->abilityCooldown;
+}
+
+const float Player::getAbilityMaxTime() const
+{
+	return this->abilityMaxTime;
+}
+
+const float Player::getAbilityTime() const
+{
+	return this->abilityTime;
+}
+
+const bool Player::getAbilityActive() const
+{
+	return this->abilityActive;
+}
+
+void Player::setKills(const uint16_t& kills)
+{
+	this->kills = kills;
+}
+
+void Player::setCriticalChance(const unsigned& criticalChance)
+{
+	this->criticalChance = criticalChance;
+}
+
+void Player::setReg(const unsigned& reg)
+{
+	this->reg = reg;
+}
+
+void Player::setArmor(const uint16_t& armor)
+{
+	this->armor = armor;
+}
+
+void Player::setIsRegenerating(const bool& isRegenerating)
+{
+	this->isRegenerating = isRegenerating;
+}
+
+void Player::setIsLeveling(const bool& isLeveling)
+{
+	this->isLeveling = isLeveling;
+}
+
+void Player::setAbilityMaxTime(const float& abilityMaxTime)
+{
+	this->abilityMaxTime = abilityMaxTime;
+}
+
+void Player::setAbilityTime(const float& abilityTime)
+{
+	this->abilityTime = abilityTime;
+}
+
+void Player::setAbilityCooldown(const float& abilityCooldown)
+{
+	this->abilityCooldown = abilityCooldown;
+}
+
+void Player::attackMonster(sf::Font* font, std::list<Monster*>& monsters, std::list<FloatingText*>& floatingTexts)
+{
+	const sf::VideoMode vm = this->vm;
+	for (auto& monster : monsters) {
+		float distance = 0.f;
+		if (this->getLeft())
+			distance = vectorDistance(monster->getCenter().x, monster->getCenter().y, (this->getPosition().x + calcX(8, vm)), (this->getPosition().y + calcY(32, vm)));
+		else if (this->getRight())
+			distance = vectorDistance(monster->getCenter().x, monster->getCenter().y, (this->getPosition().x + calcX(56, vm)), (this->getPosition().y + calcY(32, vm)));
+		else if (this->getUp())
+			distance = vectorDistance(monster->getCenter().x, monster->getCenter().y, (this->getPosition().x + calcX(32, vm)), (this->getPosition().y + calcY(8, vm)));
+		else if (this->getDown())
+			distance = vectorDistance(monster->getCenter().x, monster->getCenter().y, (this->getPosition().x + calcX(32, vm)), (this->getPosition().y + calcY(56, vm)));
+
+		if (distance <= this->getReach() * calcX(32, vm)) {
+
+			if (!monster->isDead() && !monster->getPunched() && monster->getSpawned() && this->getIsAttacking() && this->getFrame() == 80) {
+				if ((unsigned(Random::Float() * 100.f) + 1) <= this->getCriticalChance()) {
+					const int attack = 2 * this->getAttack();
+					floatingTexts.push_back(new FloatingText(font, std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(233, 134, 39), this->vm));
+					if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);
+					else monster->setHP(monster->getHP() - attack);
 				}
-				//Gorna kolizja
-				else if (playerBounds.top > wallBounds.top
-					&& playerBounds.top + playerBounds.height > wallBounds.top + wallBounds.height
-					&& playerBounds.left < wallBounds.left + wallBounds.width
-					&& playerBounds.left + playerBounds.width > wallBounds.left)
-				{
-					this->predkosc.y = 0.f;
-					this->sprite.setPosition(playerBounds.left, wallBounds.top + wallBounds.height);
+				else {
+					const int attack = this->getAttack();
+					floatingTexts.push_back(new FloatingText(font, std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(255, 255, 255), this->vm));
+					if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);
+					else monster->setHP(monster->getHP() - attack);
 				}
-
-				//Prawa kolizja
-				if (playerBounds.left < wallBounds.left
-					&& playerBounds.left + playerBounds.width < wallBounds.left + wallBounds.width
-					&& playerBounds.top < wallBounds.top + wallBounds.height
-					&& playerBounds.top + playerBounds.height > wallBounds.top)
-				{
-					this->predkosc.x = 0.f;
-					this->sprite.setPosition(wallBounds.left - playerBounds.width, playerBounds.top);
-				}
-				//Lewa kolizja
-				else if (playerBounds.left > wallBounds.left
-					&& playerBounds.left + playerBounds.width > wallBounds.left + wallBounds.width
-					&& playerBounds.top < wallBounds.top + wallBounds.height
-					&& playerBounds.top + playerBounds.height > wallBounds.top)
-				{
-					this->predkosc.x = 0.f;
-					this->sprite.setPosition(wallBounds.left + wallBounds.width, playerBounds.top);
-				}
-
+				
+				monster->punch();
+				break;
 			}
-		}
 
-	}
-}
-
-void Player::damaged(const float& dt)
-{
-	if (this->punched) {
-		if (this->punchedTime < 1.f) {
-			this->punchedTime += 5.f * dt;
-			this->sprite.setColor(sf::Color(182, 60, 53));
-		}
-		if (this->punchedTime >= 1.f) {
-			this->punchedTime = 0.f;
-			this->sprite.setColor(sf::Color::White);
-			this->punched = false;
 		}
 	}
 }
 
-void Player::animation(const float& dt)
+const bool Player::addXP(const unsigned& monsterXP)
 {
-	if (this->predkosc.x < 0) {
-		this->left = true;
-		this->right = false;
-		this->up = false;
-		this->down = false;
+	this->setIsLeveling(true);
+	this->setXP(this->getXP() + monsterXP);
+
+	bool addedlevel = false;
+
+	while (this->XP >= this->maxXP) {
+		this->level++;
+		this->lastMaxXP = this->maxXP;
+		this->maxXP += (static_cast<unsigned>(Random::Float() * this->maxXP + this->maxXP));
+		addedlevel = true;
 	}
-	else if (this->predkosc.x > 0) {
-		this->left = false;
-		this->right = true;
-		this->up = false;
-		this->down = false;
+	if (addedlevel) return true;
+	return false;
+}
+
+void Player::spawn(const float& dt)
+{
+	if (this->spawnCountdown < 0.5f) {
+		this->sprite.setColor(sf::Color(255, 255, 255, static_cast<sf::Uint8>(this->spawnCountdown * 510.f)));
+		this->shadow.setColor(sf::Color(255, 255, 255, static_cast<sf::Uint8>(this->spawnCountdown * 510.f)));
+		this->spawnCountdown += dt;
 	}
-	else {
-		if (this->predkosc.y < 0) {
-			this->up = true;
-			this->down = false;
-			this->left = false;
-			this->right = false;
-		}
-		else if (this->predkosc.y > 0) {
-			this->up = false;
-			this->down = true;
-			this->left = false;
-			this->right = false;
-		}
-	}
-
-	if (this->attackAni && (this->predkosc.x != 0.f || this->predkosc.y != 0.f)) {
-
-		int y = 0;
-		if (this->left) y = 10;
-		else if (this->right) y = 11;
-		else {
-			if (this->up) y = 8;
-			else if (this->down) y = 9;
-		}
-
-		this->animationTime += (this->attackSpeed * 0.2f + 0.8f) * 8.f * dt;
-		if (this->animationTime >= 1.f) {
-			this->animationTime = 0.f;
-
-			sf::IntRect intRect(this->step, y * 16, 16, 16);
-			this->sprite.setTextureRect(intRect);
-			this->sprite.setScale(4 * this->scale, 4 * this->scale);
-
-			if (this->step == 112) {
-				this->step = 0;
-				this->attackAni = false;
-			}
-			else this->step += 16;
-		}
-	}
-	else if (this->attackAni) {
-		
-		int y = 0;
-		if (this->left) y = 6;
-		else if (this->right) y = 7;
-		else {
-			if (this->up) y = 4;
-			else if (this->down) y = 5;
-		}
-
-		this->animationTime += (this->attackSpeed * 0.2f + 0.8f) * 8.f * dt;
-		if (this->animationTime >= 1.f) {
-			this->animationTime = 0.f;
-
-			sf::IntRect intRect(this->step, y * 16, 16, 16);
-			this->sprite.setTextureRect(intRect);
-			this->sprite.setScale(4 * this->scale, 4 * this->scale);
-
-			if (this->step == 112) {
-				this->step = 0;
-				this->attackAni = false;
-			}
-			else this->step += 16;
-		}
-	}
-	else if (this->predkosc.x != 0.f || this->predkosc.y != 0.f) {
-		int y = 0;
-		if (this->predkosc.x < 0) y = 2;
-		else if (this->predkosc.x > 0) y = 3;
-		else {
-			if (this->predkosc.y < 0) y = 0;
-			else if (this->predkosc.y > 0) y = 1;
-		}
-
-		this->animationTime += (this->speed * 0.2f + 0.8f) * 4.f * dt;
-		if (this->animationTime >= 1.f) {
-			this->animationTime = 0.f;
-
-			sf::IntRect intRect(this->step, y * 16, 16, 16);
-			this->sprite.setTextureRect(intRect);
-			this->sprite.setScale(4 * this->scale, 4 * this->scale);
-
-			if (this->step == 112) this->step = 0;
-			else this->step += 16;
-		}
+	if (this->spawnCountdown >= 0.5f) {
+		this->spawned = true;
+		this->sprite.setColor(sf::Color::White);
+		this->shadow.setColor(sf::Color::White);
 	}
 }
 
-void Player::move()
+void Player::controls(const std::unordered_map<std::string, int>& keybinds, const float& dt)
 {
-	if (this->name == "Skaut" && this->abilityActive) {
-		this->predkosc.x *= 1.5f;
-		this->predkosc.y *= 1.5f;
-	}
-	this->sprite.move(this->predkosc);
-	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + 52 * this->scale);
+	this->velocity = sf::Vector2f(0.f, 0.f);
+
+	const float vel = ((this->speed * 0.2f + 0.8f) * 2.f * this->sprite.getGlobalBounds().width) * dt;
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_UP"))))
+		this->velocity.y += -(vel);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_DOWN"))))
+		this->velocity.y += vel;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_LEFT"))))
+		this->velocity.x += -(vel);
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_RIGHT"))))
+		this->velocity.x += vel;
+
+	if (this->name == "scout" && this->abilityActive)
+		this->velocity *= 1.5f;
 }
 
-bool Player::regeneration(const float& dt)
+const bool Player::regeneration(const float& dt)
 {
-	if (this->regCooldown < 1.f && this->hp < this->maxhp)
-		this->regCooldown += (this->Reg * 0.4f + 0.8f) / 4.f * dt;
+	if (this->regCooldown < 1.f && this->HP < this->maxHP)
+		this->regCooldown += (this->reg * 0.4f + 0.8f) / 4.f * dt;
+
 	if (this->regCooldown >= 1.f) {
-		this->regCooldown = 0;
-		if (this->hp < this->maxhp) {
-			this->hp++;
+		this->regCooldown = 0.f;
+		if (this->HP < this->maxHP) {
+			this->HP++;
 			return true;
 		}
 	}
 	return false;
 }
 
-void Player::attackLoad(const float& dt)
+void Player::abilityCounter(const float& dt)
 {
-	if (this->attackCooldown < 1.f) {
-		this->attackCooldown += this->attackSpeed * dt;
+	if (this->abilityMaxTime > 0.f && this->level >= 5) {
+		if (this->abilityCooldown < this->abilityMaxTime) {
+			this->abilityCooldown += dt;
+		}
+
+		if (this->abilityCooldown >= this->abilityTime && this->abilityActive) {
+			this->abilityActive = false;
+		}
+		else if (this->abilityCooldown >= this->abilityMaxTime) {
+			this->abilityCooldown = this->abilityMaxTime;
+			this->armor -= 10;
+		}
 	}
 }
 
-void Player::ability(sf::RenderWindow& window, std::list<Projectile>& pociski, Projectile pocisk, const sf::Texture& texture, const sf::View& view, const float& dt)
+const bool Player::checkIfAbility()
 {
-	if (this->name == "Ninja") {
-		pocisk.init(this->scale, "Shuriken", 2, 4, 3);
-		pocisk.texture = texture;
-		pocisk.sprite.setTexture(pocisk.texture);
-		pocisk.sprite.setTextureRect(sf::IntRect(0, 0, 4, 4));
-		pocisk.sprite.setScale(4 * this->scale, 4 * this->scale);
+	if (this->level >= 5) {
+		if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && this->abilityCooldown == this->abilityMaxTime) {
+			this->abilityActive = true;
+			this->abilityCooldown = 0.f;
 
-		pocisk.sprite.setPosition(this->sprite.getPosition().x + 32 * this->scale, this->sprite.getPosition().y + 32 * this->scale);
-		pocisk.calculateVelocity(sf::Vector2f(window.mapPixelToCoords(sf::Mouse::getPosition(window), view)), dt);
-		pocisk.sprite.setOrigin(2 * this->scale, 2 * this->scale);
-		pociski.push_back(pocisk);
+			if (this->name == "knight") {
+				this->ability.setTextureRect(sf::IntRect(0, 0, 16, 16));
+				this->armor += 10;
+			}
+			else if (this->name == "scout") this->ability.setTextureRect(sf::IntRect(16, 0, 16, 16));
+			this->ability.setColor(sf::Color(255, 255, 255, 128));
+			return true;
+		}
 	}
-	
+	return false;
+}
+
+void Player::doAbility(const sf::Vector2f& coords, std::list<Projectile*>& projectiles)
+{
+	if (this->name == "ninja") {
+		projectiles.push_back(new Projectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 3, 4, 3, coords, this->vm));
+	}
+}
+
+void Player::update(const float& dt)
+{
+	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52, this->vm));
+	this->ability.setPosition(this->sprite.getPosition());
+}
+
+void Player::draw(sf::RenderTarget& target)
+{
+	target.draw(this->sprite);
+	if (this->abilityActive && (this->name == "knight" || this->name == "scout")) target.draw(this->ability);
+}
+
+void Player::drawShadow(sf::RenderTarget& target)
+{
+	target.draw(this->shadow);
 }

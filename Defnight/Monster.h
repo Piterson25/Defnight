@@ -1,96 +1,45 @@
-#pragma once
+#ifndef MONSTER_H
+#define MONSTER_H
+
 #include "Projectile.h"
+#include "Player.h"
+#include "Entity.h"
+#include "FloatingText.h"
+
+class Projectile;
+class Player;
+class FloatingText;
 
 class Monster
+	: public Entity
 {
 public:
-	sf::Sprite sprite;
-	sf::Texture texture;
-	sf::Sprite shadow;
-	std::string name;
-	float scale;
-
-	float animationTime;
-	int step;
-	sf::Vector2f predkosc;
-
-	bool punched;
-	float punchedTime;
-	bool attackAni;
-	bool up;
-	bool down;
-	bool left;
-	bool right;
-
-	int attack;
-	float attackCooldown;
-	int attackSpeed;
-	int hp;
-	unsigned speed;
-	unsigned reach;
-	unsigned gold;
-	unsigned xp;
-
-	bool fired;
-	bool dead;
-	float deadCountdown;
-	float spawnCountdown;
-
-
-	sf::Vector2f BlockSize;
-	const size_t CollumsX = 32;
-	const size_t CollumsY = 32;
-
-	struct Node
-	{
-		bool isWall = false;
-		bool isVisited = false;
-		float FCost;
-		float HCost;
-		int x;
-		int y;
-		std::vector<Node*> Neighbours;
-		Node* parent;
-	};
-
-	std::vector<Node*> Nodes;
-	Node* Start;
-	Node* End;
-
-	float AStarCooldown;
-
-
-
-
-
-
-	Monster();
+	Monster(const float& x, const float& y, sf::Texture& texture, sf::Texture& shadow_texture, const sf::VideoMode& vm, const std::string& monster_name, const float& difficulty_mod);
 	virtual ~Monster();
 
-	void init(float& scale, const std::string& name, const int& attack, const int& attackSpeed, const int& hp, const int& speed,
-		const unsigned& gold, const unsigned& xp, const float& PlayerX, const float& PlayerY);
-	void collision(const std::list<Monster>& monsters);
+	virtual const bool getSpawned() const;
+	virtual const bool getDeadCountdown() const;
 
-	void animation(const float& dt);
-	void move();
+	const bool attackPlayer(Player* player, sf::Font* font, const std::vector<sf::Sprite>& obstacles, std::list<Projectile*>& projectiles, std::list<FloatingText*>& floatingTexts);
+	const bool sightCollision(const std::vector<sf::Sprite>& obstacles,
+		const sf::Vector2f& a_p1, const sf::Vector2f& a_p2);
+	void spawn(const float& dt);
+	const bool dying(const float& dt);
 
-	void damaged(const float& dt);
-	void spawning(const float& dt);
+	void AI(const sf::Vector2f& playerPosition, const float& dt);
 
-	void spawnProjectile(std::list<Projectile>& pociski, Projectile& pocisk, const sf::Texture& texture, const sf::Sprite& player, const float& dt);
+	void monsterCollision(const std::list<Monster*>& monsters);
 
-	void AI(const std::vector<sf::Sprite>& obstacles, const sf::Sprite& player, const std::list<Monster>& potwory, const float& PlayerX, const float& PlayerY, const float& dt);
+	void update(const float& dt);
+	void draw(sf::RenderTarget& target);
+	void drawShadow(sf::RenderTarget& target);
+private:
+	sf::VideoMode vm;
+	sf::Sprite shadow;
+	sf::Texture shadow_texture;
 
-	void initNodes(const float& PlayerX, const float& PlayerY);
-	void initNeighBours(Node* node);
-	void initDefNode(Node* node, const int& x, const int& y);
-
-	void updateNodes(std::vector<sf::Sprite>& obstacles, std::list<Monster>& potwory, const float& PlayerX, const float& PlayerY);
-	void AStarAlg();
-
-	virtual const sf::Vector2f getCenterPosition() const;
-
-
-	void drawing(sf::RenderWindow& window);
+	bool spawned;
+	float deadCountdown;
+	float spawnCountdown;
 };
-
+#endif
