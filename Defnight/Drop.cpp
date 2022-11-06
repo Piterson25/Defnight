@@ -1,7 +1,7 @@
 #include "Functions.h"
 #include "Drop.h"
 
-Drop::Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, sf::VideoMode& vm)
+Drop::Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, sf::VideoMode& vm, const float& soundVolume)
 	:name(name), worth(worth), vm(vm)
 {
 	this->texture.loadFromFile("external/assets/drop.png");
@@ -10,8 +10,14 @@ Drop::Drop(const std::string& name, const float& posX, const float& posY, const 
 	this->sprite.setScale(calcScale(2, vm), calcScale(2, vm));
 	this->sprite.setColor(sf::Color::Transparent);
 
-	if (this->name == "coin") this->sprite.setTextureRect(sf::IntRect(0, 0, 16, 16));
-	else this->sprite.setTextureRect(sf::IntRect(0, 16, 16, 16));
+	if (this->name == "coin") {
+		this->sprite.setTextureRect(sf::IntRect(0, 0, 16, 16));
+		this->buffer.loadFromFile("external/music/coin.wav");
+	}
+	else {
+		this->sprite.setTextureRect(sf::IntRect(0, 16, 16, 16));
+		this->buffer.loadFromFile("external/music/heart.wav");
+	}
 
 	this->spinCooldown = 0.f;
 	this->velocity = sf::Vector2f(0.f, 0.f);
@@ -19,6 +25,9 @@ Drop::Drop(const std::string& name, const float& posX, const float& posY, const 
 
 	this->spawned = false;
 	this->spawnCountdown = 0.f;
+
+	this->sound.setBuffer(this->buffer);
+	this->sound.setVolume(soundVolume);
 }
 
 Drop::~Drop()
@@ -84,14 +93,15 @@ const bool Drop::playerPick(Player* player, sf::Font* font, PlayerGUI* playerGUI
 		if (this->name == "coin") {
 			player->setGold(player->getGold() + this->worth);
 			playerGUI->update_Gold();
-			floatingTexts.push_back(new FloatingText(font, "+" + std::to_string(this->worth), calcChar(16, vm), this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y, sf::Color(255, 246, 76), vm));
+			floatingTexts.push_back(new FloatingText(font, "+" + std::to_string(this->worth), calcChar(16, vm), this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y, sf::Color(255, 246, 76), false, vm));
 		}
 		else if (player->getHP() < player->getMaxHP()) {
 			player->setHP(player->getHP() + 1);
 			player->setIsRegenerating(true);
 			playerGUI->update_HP();
-			floatingTexts.push_back(new FloatingText(font, "+" + std::to_string(this->worth), calcChar(16, vm), this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y - calcY(16, vm), sf::Color(182, 60, 53), vm));				
+			floatingTexts.push_back(new FloatingText(font, "+" + std::to_string(this->worth), calcChar(16, vm), this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y - calcY(16, vm), sf::Color(182, 60, 53), false, vm));				
 		}
+		this->sound.play();
 		return true;
 	}
 	return false;

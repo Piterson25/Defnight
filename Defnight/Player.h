@@ -13,9 +13,11 @@ class Player:
 	public Entity
 {
 public:
-	Player(const float& x, const float& y, const sf::VideoMode& vm, const std::string& hero_name);
+	Player(const float& x, const float& y, const sf::VideoMode& vm, const float& soundVolume, const std::string& hero_name);
 	virtual ~Player();
 
+	virtual const uint16_t getGold() const;
+	virtual const uint16_t getAttack() const;
 	virtual const uint16_t getKills() const;
 	virtual const bool getSpawned() const;
 	virtual const uint16_t getArmor() const;
@@ -31,6 +33,8 @@ public:
 	virtual const float getAbilityTime() const;
 	virtual const bool getAbilityActive() const;
 
+	void setGold(const uint16_t& gold);
+	void setAttack(const uint16_t& attack);
 	void setKills(const uint16_t& kills);
 	void setCriticalChance(const unsigned& CriticalChance);
 	void setReg(const unsigned& reg);
@@ -41,7 +45,7 @@ public:
 	void setAbilityTime(const float& abilityTime);
 	void setAbilityCooldown(const float& abilityCooldown);
 
-	void attackMonster(sf::Font* font, std::list<Monster*>& monsters, std::list<FloatingText*>& floatingTexts);
+	void attackMonster(sf::Font* font, const std::list<Monster*>& monsters, std::list<FloatingText*>& floatingTexts);
 	const bool addXP(const unsigned& monsterXP);
 	void spawn(const float& dt);
 	void controls(const std::unordered_map<std::string, int>& keybinds, const float& dt);
@@ -54,7 +58,6 @@ public:
 	void draw(sf::RenderTarget& target);
 	void drawShadow(sf::RenderTarget& target);
 private:
-	sf::VideoMode vm;
 	sf::Sprite shadow;
 	sf::Texture shadow_texture;
 	sf::Sprite ability;
@@ -73,10 +76,17 @@ private:
 	float regCooldown;
 	float spawnCountdown;
 
+	uint16_t attack;
+	uint16_t gold;
+
 	bool abilityActive;
 	float abilityCooldown;
 	float abilityTime;
 	float abilityMaxTime;
+	sf::SoundBuffer whoosh;
+	sf::SoundBuffer hit;
+	sf::Sound sound;
+	bool playedSound;
 };
 
 #endif

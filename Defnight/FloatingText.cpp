@@ -2,7 +2,8 @@
 #include "FloatingText.h"
 
 FloatingText::FloatingText(sf::Font* font, const std::string& text, const unsigned& charSize,
-	const float& posX, const float& posY, const sf::Color& color, sf::VideoMode& vm)
+	const float& posX, const float& posY, const sf::Color& color, const bool& isgui, sf::VideoMode& vm)
+	:gui(isgui)
 {
 	this->font = *font;
 
@@ -22,6 +23,11 @@ FloatingText::~FloatingText()
 const bool FloatingText::isOver() const
 {
 	return this->moveCooldown >= 1.5f;
+}
+
+const bool FloatingText::isGui() const
+{
+	return this->gui;
 }
 
 void FloatingText::update(const float& dt)

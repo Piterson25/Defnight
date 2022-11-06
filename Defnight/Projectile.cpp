@@ -108,17 +108,17 @@ const bool Projectile::sideWall(const sf::Vector2f& velocities, const sf::FloatR
 	return false;
 }
 
-void Projectile::obstacleCollision(const std::vector<sf::Sprite>& obstacles)
+void Projectile::obstacleCollision(const std::vector<Tile*>& tiles)
 {	
 	this->collided = false;
 
-	const float distance = 2 * obstacles.front().getGlobalBounds().width;
+	const float distance = 2 * tiles.front()->getGlobalBounds().width;
 
-	for (const auto& e : obstacles) {
-		if (vectorDistance(this->sprite.getPosition(), e.getPosition()) < distance && !this->collided && !this->collidedPlayer) {
+	for (const auto& e : tiles) {
+		if (vectorDistance(this->sprite.getPosition(), e->getPosition()) < distance && !this->collided && !this->collidedPlayer) {
 
 			sf::FloatRect projectileBounds = this->sprite.getGlobalBounds();
-			sf::FloatRect wallBounds = e.getGlobalBounds();
+			sf::FloatRect wallBounds = e->getGlobalBounds();
 
 			sf::FloatRect nextPos = projectileBounds;
 			nextPos.left += this->velocity.x;
@@ -324,13 +324,13 @@ void Projectile::monsterCollision(Monster* monster, sf::Font* font, Player* play
 			if (this->collidedMonster) {
 				if ((unsigned(Random::Float() * 100.f) + 1) <= player->getCriticalChance()) {
 					const int attack = 2 * this->getAttack();
-					floatingTexts.push_back(new FloatingText(font, std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(233, 134, 39), this->vm));
+					floatingTexts.push_back(new FloatingText(font, std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(233, 134, 39), false, this->vm));
 					if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);
 					else monster->setHP(monster->getHP() - attack);
 				}
 				else {
 					const int attack = this->getAttack();
-					floatingTexts.push_back(new FloatingText(font, std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(255, 255, 255), this->vm));
+					floatingTexts.push_back(new FloatingText(font, std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(255, 255, 255), false, this->vm));
 					if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);
 					else monster->setHP(monster->getHP() - attack);
 				}

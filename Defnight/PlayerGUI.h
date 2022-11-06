@@ -5,10 +5,12 @@
 #include "Gui.h"
 #include "FloatingText.h"
 
+class FloatingText;
+
 class PlayerGUI
 {
 public:
-	PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const std::string& heroName, 
+	PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const float& soundVolume, const std::string& heroName,
 		const std::string& difficulty_name, std::unordered_map<std::string, std::string>& lang);
 	virtual ~PlayerGUI();
 
@@ -25,7 +27,8 @@ public:
 	void setAbilityIcon();
 	void setIsEscape(const bool& escape);
 	void updatePaused(bool& paused);
-	const bool updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked);
+	void updateArmor();
+	const bool updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, std::list<FloatingText*>& floatingTexts);
 
 	const bool getIsEscape() const;
 	const bool getIsLeveling() const;
@@ -36,11 +39,11 @@ public:
 	void updateKills();
 	void updateMonsterCountWave(const std::string& language, const unsigned& wave, const size_t& monsterCount);
 	void updateMonsterCount(const size_t& monsterCount);
-	const uint16_t updateEscapeButton(const sf::Vector2i& mousePos, const bool& mouseClicked);
+	const uint8_t updateEscapeButton(const sf::Vector2i& mousePos, const bool& mouseClicked);
 	const bool updateButtons(const sf::Vector2i& mousePos, const bool& mouseClicked);
 	const bool updateLevelUpButtons(const sf::Vector2i& mousePos, const bool& mouseClicked);
 	const bool updateUpgradeButtons(const sf::Vector2i& mousePos, const bool& mouseClicked);
-	const uint16_t updateDeathScreenButtons(const sf::Vector2i& mousePos, const bool& mouseClicked);
+	const uint8_t updateDeathScreenButtons(const sf::Vector2i& mousePos, const bool& mouseClicked);
 	void update(sf::Vector2f& mousePosView, const float& waveCountdown, const float& dt);
 	void draw(sf::RenderTarget& target);
 private:
@@ -67,6 +70,10 @@ private:
 	unsigned option1_val;
 	unsigned option2_val;
 
+	uint16_t item1Price;
+	uint16_t item2Price;
+	uint16_t item3Price;
+
 	float titleCooldown;
 	float waveCountdown;
 
@@ -80,6 +87,10 @@ private:
 	std::unordered_map<std::string, gui::Text*> texts;
 	std::unordered_map<std::string, gui::ButtonSprite*> sprite_buttons;
 	std::unordered_map<std::string, gui::Sprite*> sprites;
+
+	sf::SoundBuffer levelup;
+	sf::SoundBuffer gameover;
+	sf::Sound sound;
 };
 
 #endif

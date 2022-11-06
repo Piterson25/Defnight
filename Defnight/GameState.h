@@ -8,12 +8,14 @@
 #include "PlayerGUI.h"
 #include "FloatingText.h"
 #include "Drop.h"
+#include "Tile.h"
+#include "SettingsState.h"
 
 class GameState :
 	public State
 {
 public:
-	GameState(const float& gridSize, sf::RenderWindow* window, GraphicsSettings* grap,
+	GameState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
 		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states,
 		const std::string& map_name, const std::string& hero_name, const std::string& difficulty_name);
 	virtual ~GameState();
@@ -30,6 +32,10 @@ private:
 	sf::View view;
 	sf::View viewHUD;
 
+	sf::Music music;
+	std::vector<std::string> tracks;
+	size_t currentTrackNumber;
+
 	std::unordered_map<std::string, gui::ButtonText*> text_buttons;
 	std::unordered_map<std::string, gui::Text*> texts;
 	std::unordered_map<std::string, gui::ButtonSprite*> sprite_buttons;
@@ -39,7 +45,8 @@ private:
 	sf::Texture background_texture;
 
 	sf::Texture tiles_texture;
-	std::vector<sf::Sprite> obstacles;
+	sf::VertexArray vertexArray;
+	std::vector<Tile*> tiles;
 
 	Player* player;
 	PlayerGUI* playerGUI;
@@ -48,12 +55,14 @@ private:
 	std::list<Monster*> monsters;
 	std::vector<short> monsterIDs;
 
-	unsigned wave;
-	unsigned sumHP;
+	uint16_t wave;
+	uint16_t sumHP;
 	float waveCountdown;
 
 	std::list<FloatingText*> floatingTexts;
 
+	sf::SoundBuffer coinBuffer;
+	sf::Sound coinSound;
 	std::list<Drop*> drops;
 
 	std::list<Projectile*> projectiles;

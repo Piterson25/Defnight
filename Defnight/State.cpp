@@ -1,8 +1,8 @@
 #include "Functions.h"
 #include "State.h"
 
-State::State(const float& gridSize, sf::RenderWindow* window, GraphicsSettings* grap, std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states)
-	:gridSize(gridSize), window(window), graphicsSettings(grap), supportedKeys(supportedKeys), states(states)
+State::State(const float& gridSize, sf::RenderWindow* window, GameSettings* grap, std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states)
+	:gridSize(gridSize), window(window), gameSettings(grap), supportedKeys(supportedKeys), states(states)
 {
 	this->quit = false;
 	this->paused = false;
@@ -13,7 +13,7 @@ State::State(const float& gridSize, sf::RenderWindow* window, GraphicsSettings* 
 	this->font = *font;
 
 	std::ifstream f;
-	if (this->graphicsSettings->language == "polish") {
+	if (this->gameSettings->language == "polish") {
 		f.open(L"external/languages/polish.ini");
 	}
 	else {

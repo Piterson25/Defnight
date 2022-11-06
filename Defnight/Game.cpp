@@ -23,14 +23,14 @@ void Game::init()
 	this->gridSize = 64.f;
 	this->sfEvent.type = sf::Event::GainedFocus;
 
-	this->graphicsSettings.load();
+	this->gameSettings.load();
 
-	if (this->graphicsSettings.fullscreen)
-		this->window = new sf::RenderWindow(this->graphicsSettings.resolution, "Defnight", sf::Style::Fullscreen);
+	if (this->gameSettings.fullscreen)
+		this->window = new sf::RenderWindow(this->gameSettings.resolution, "Defnight", sf::Style::Fullscreen);
 	else
-		this->window = new sf::RenderWindow(this->graphicsSettings.resolution, "Defnight", sf::Style::Titlebar | sf::Style::Close);
+		this->window = new sf::RenderWindow(this->gameSettings.resolution, "Defnight", sf::Style::Titlebar | sf::Style::Close);
 
-	this->window->setFramerateLimit(this->graphicsSettings.fpsLimit);
+	this->window->setFramerateLimit(this->gameSettings.fpsLimit);
 
 	sf::Image icon;
 	icon.loadFromFile("external/assets/logo.png");
@@ -51,13 +51,13 @@ void Game::init()
 		throw("ERROR - COULDN'T FIND FONT");
 	}
 
-	const sf::VideoMode vm = this->graphicsSettings.resolution;
+	const sf::VideoMode vm = this->gameSettings.resolution;
 
 	this->fps = 0;
 	this->fpsTimer = 0.f;
 	this->fpsCounter = new gui::Text(&this->font, "", calcChar(16, vm), calcX(4, vm), calcY(4, vm), sf::Color(255, 255, 255), false);
 
-	this->states.push(new MainMenuState(this->gridSize, this->window, &this->graphicsSettings, &this->supportedKeys, &this->font, &this->states));
+	this->states.push(new MainMenuState(this->gridSize, this->window, &this->gameSettings, &this->supportedKeys, &this->font, &this->states));
 }
 
 void Game::checkEvents()
@@ -78,7 +78,7 @@ void Game::draw()
 {
 	this->window->clear();
 	if (!this->states.empty()) this->states.top()->draw();
-	this->fpsCounter->draw(*this->window);
+	if (this->gameSettings.fpsCounterOn) this->fpsCounter->draw(*this->window);
 	this->window->display();
 }
 
@@ -86,13 +86,15 @@ void Game::update()
 {
 	this->dt = this->dtClock.restart().asSeconds();
 
-	++this->fps;
-	this->fpsTimer += dt;
+	if (this->gameSettings.fpsCounterOn) {
+		++this->fps;
+		this->fpsTimer += dt;
 
-	if (this->fpsTimer >= 1.f) {
-		this->fpsCounter->setText(std::to_string(this->fps) + " FPS");
-		this->fps = 0;
-		this->fpsTimer = 0.f;
+		if (this->fpsTimer >= 1.f) {
+			this->fpsCounter->setText(std::to_string(this->fps) + " FPS");
+			this->fps = 0;
+			this->fpsTimer = 0.f;
+		}
 	}
 
 	this->checkEvents();

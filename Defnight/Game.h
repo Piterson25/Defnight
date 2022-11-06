@@ -18,7 +18,7 @@ public:
 	void run();
 private:
 	sf::RenderWindow* window;
-	GraphicsSettings graphicsSettings;
+	GameSettings gameSettings;
 	sf::Event sfEvent;
 	std::unordered_map<std::string, int> supportedKeys;
 

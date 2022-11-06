@@ -1,7 +1,7 @@
 #include "Functions.h"
 #include "SettingsState.h"
 
-SettingsState::SettingsState(const float& gridSize, sf::RenderWindow* window, GraphicsSettings* grap, 
+SettingsState::SettingsState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap, 
 	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states)
 	: State(gridSize, window, grap, supportedKeys, font, states)
 {
@@ -15,7 +15,7 @@ SettingsState::~SettingsState()
 
 void SettingsState::initGUI()
 {
-	const sf::VideoMode vm = this->graphicsSettings->resolution;
+	const sf::VideoMode vm = this->gameSettings->resolution;
 
 	this->mode = vm;
 
@@ -24,7 +24,7 @@ void SettingsState::initGUI()
 	this->keysClick["Escape"].first = false;
 	this->keysClick["Escape"].second = false;
 
-	for (auto& v : sf::VideoMode::getFullscreenModes()) {
+	for (const auto& v : sf::VideoMode::getFullscreenModes()) {
 		if (static_cast<float>(v.width) / v.height == 16.f / 9.f) this->videoModes.push_back(v);
 	}
 
@@ -35,21 +35,21 @@ void SettingsState::initGUI()
 	for (size_t i = 0; i < this->videoModes.size(); ++i) {
 		if (this->videoModes[i] == vm) {
 			this->id = i;
-			this->text_buttons["RESOLUTION"] = new gui::ButtonText(&this->font, this->lang["RESOLUTION"] + std::to_string(this->videoModes[this->id].width) + "x" + std::to_string(this->videoModes[this->id].height), calcChar(32, vm), calcX(96, vm), calcY(192, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+			this->text_buttons["RESOLUTION"] = new gui::ButtonText(&this->font, this->lang["RESOLUTION"] + std::to_string(this->videoModes[this->id].width) + "x" + std::to_string(this->videoModes[this->id].height), calcChar(16, vm), calcX(96, vm), calcY(192, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
 			break;
 		}
 	}
 
-	if (this->graphicsSettings->fullscreen) {
+	if (this->gameSettings->fullscreen) {
 		this->fullscreen = true;
-		this->text_buttons["FULLSCREEN"] = new gui::ButtonText(&this->font, this->lang["FULLSCREEN"] + this->lang["YES"], calcChar(32, vm), calcX(96, vm), calcY(292, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+		this->text_buttons["FULLSCREEN"] = new gui::ButtonText(&this->font, this->lang["FULLSCREEN"] + this->lang["YES"], calcChar(16, vm), calcX(96, vm), calcY(242, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
 	}
 	else {
 		this->fullscreen = false;
-		this->text_buttons["FULLSCREEN"] = new gui::ButtonText(&this->font, this->lang["FULLSCREEN"] + this->lang["NO"], calcChar(32, vm), calcX(96, vm), calcY(292, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+		this->text_buttons["FULLSCREEN"] = new gui::ButtonText(&this->font, this->lang["FULLSCREEN"] + this->lang["NO"], calcChar(16, vm), calcX(96, vm), calcY(242, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
 	}
 
-	this->fpsLimit = this->graphicsSettings->fpsLimit;
+	this->fpsLimit = this->gameSettings->fpsLimit;
 
 	this->fpsLimits.push_back(60);
 	this->fpsLimits.push_back(120);
@@ -59,26 +59,66 @@ void SettingsState::initGUI()
 	this->fps_id = 0;
 
 	for (size_t i = 0; i < this->fpsLimits.size(); ++i) {
-		if (this->fpsLimits[i] == this->graphicsSettings->fpsLimit) {
+		if (this->fpsLimits[i] == this->gameSettings->fpsLimit) {
 			this->fps_id = i;
 			if (this->fpsLimits[i] == 0) 
-				this->text_buttons["FPS_LIMIT"] = new gui::ButtonText(&this->font, this->lang["FPS_LIMIT"] + this->lang["NO_LIMIT"], calcChar(32, vm), calcX(96, vm), calcY(392, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+				this->text_buttons["FPS_LIMIT"] = new gui::ButtonText(&this->font, this->lang["FPS_LIMIT"] + this->lang["NO_LIMIT"], calcChar(16, vm), calcX(96, vm), calcY(292, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
 			else 
-				this->text_buttons["FPS_LIMIT"] = new gui::ButtonText(&this->font, this->lang["FPS_LIMIT"] + std::to_string(this->fpsLimits[this->fps_id]), calcChar(32, vm), calcX(96, vm), calcY(392, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+				this->text_buttons["FPS_LIMIT"] = new gui::ButtonText(&this->font, this->lang["FPS_LIMIT"] + std::to_string(this->fpsLimits[this->fps_id]), calcChar(16, vm), calcX(96, vm), calcY(292, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
 			break;
 		}
 	}
 
-	if (this->graphicsSettings->language == "english") {
-		this->language = "english";
-		this->text_buttons["LANGUAGE"] = new gui::ButtonText(&this->font, this->lang["LANGUAGE"] + this->lang["ENGLISH"], calcChar(32, vm), calcX(96, vm), calcY(492, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
-	}
-	else if (this->graphicsSettings->language == "polish") {
-		this->language = "polish";
-		this->text_buttons["LANGUAGE"] = new gui::ButtonText(&this->font, this->lang["LANGUAGE"] + this->lang["POLISH"], calcChar(32, vm), calcX(96, vm), calcY(492, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+	this->musicVolume = this->gameSettings->musicVolume;
+	this->musicVolume_id = 0;
+	for (uint16_t i = 0; i <= 100; i += 10) {
+		this->musicVolumes.push_back(i);
 	}
 
-	this->text_buttons["APPLY"] = new gui::ButtonText(&this->font, this->lang["APPLY"], calcChar(32, vm), calcX(640, vm), calcY(592, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
+	for (size_t i = 0; i < this->musicVolumes.size(); ++i) {
+		if (this->musicVolumes[i] == this->musicVolume) {
+			this->musicVolume_id = i;
+			this->text_buttons["MUSIC"] = new gui::ButtonText(&this->font, this->lang["MUSIC"] + std::to_string(this->musicVolumes[this->musicVolume_id]) + "%", calcChar(16, vm), calcX(96, vm), calcY(342, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+			break;
+		}
+	}
+	
+
+	this->soundsVolume = this->gameSettings->soundsVolume;
+	this->soundsVolume_id = 0;
+	for (uint16_t i = 0; i <= 100; i += 10) {
+		this->soundsVolumes.push_back(i);
+	}
+
+	for (size_t i = 0; i < this->soundsVolumes.size(); ++i) {
+		if (this->soundsVolumes[i] == this->soundsVolume) {
+			this->soundsVolume_id = i;
+			this->text_buttons["SOUNDS"] = new gui::ButtonText(&this->font, this->lang["SOUNDS"] + std::to_string(this->soundsVolumes[this->soundsVolume_id]) + "%", calcChar(16, vm), calcX(96, vm), calcY(392, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+			break;
+		}
+	}
+
+
+	if (this->gameSettings->language == "english") {
+		this->language = "english";
+		this->text_buttons["LANGUAGE"] = new gui::ButtonText(&this->font, this->lang["LANGUAGE"] + this->lang["ENGLISH"], calcChar(16, vm), calcX(96, vm), calcY(442, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+	}
+	else if (this->gameSettings->language == "polish") {
+		this->language = "polish";
+		this->text_buttons["LANGUAGE"] = new gui::ButtonText(&this->font, this->lang["LANGUAGE"] + this->lang["POLISH"], calcChar(16, vm), calcX(96, vm), calcY(442, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+	}
+
+	if (this->gameSettings->fpsCounterOn) {
+		this->fpsCounterOn = true;
+		this->text_buttons["FPS_COUNTER"] = new gui::ButtonText(&this->font, this->lang["FPS_COUNTER"] + this->lang["ON"], calcChar(16, vm), calcX(96, vm), calcY(492, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+	}
+	else {
+		this->fpsCounterOn = false;
+		this->text_buttons["FPS_COUNTER"] = new gui::ButtonText(&this->font, this->lang["FPS_COUNTER"] + this->lang["OFF"], calcChar(16, vm), calcX(96, vm), calcY(492, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+	}
+
+	this->text_buttons["APPLY"] = new gui::ButtonText(&this->font, this->lang["APPLY"], calcChar(32, vm), calcX(1000, vm), calcY(592, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+	this->text_buttons["APPLY"]->setPosition(sf::Vector2f(calcX(1184, vm) - this->text_buttons["APPLY"]->getWidth(), calcY(592, vm)));
 }
 
 void SettingsState::resetGUI()
@@ -163,6 +203,32 @@ void SettingsState::update(const float& dt)
 		this->fpsLimit = this->fpsLimits[this->fps_id];
 	}
 
+	this->text_buttons["MUSIC"]->update(this->mousePosWindow);
+	if (this->text_buttons["MUSIC"]->isPressed() && !this->getMouseClick()) {
+		this->setMouseClick(true);
+
+		++this->musicVolume_id;
+		if (this->musicVolume_id == this->musicVolumes.size()) {
+			this->musicVolume_id = 0;
+		}
+
+		this->text_buttons["MUSIC"]->setText(this->lang["MUSIC"] + std::to_string(this->musicVolumes[this->musicVolume_id]) + "%");
+		this->musicVolume = this->musicVolumes[this->musicVolume_id];
+	}
+
+	this->text_buttons["SOUNDS"]->update(this->mousePosWindow);
+	if (this->text_buttons["SOUNDS"]->isPressed() && !this->getMouseClick()) {
+		this->setMouseClick(true);
+
+		++this->soundsVolume_id;
+		if (this->soundsVolume_id == this->soundsVolumes.size()) {
+			this->soundsVolume_id = 0;
+		}
+
+		this->text_buttons["SOUNDS"]->setText(this->lang["SOUNDS"] + std::to_string(this->soundsVolumes[this->soundsVolume_id]) + "%");
+		this->soundsVolume = this->soundsVolumes[this->soundsVolume_id];
+	}
+
 	this->text_buttons["LANGUAGE"]->update(this->mousePosWindow);
 	if (this->text_buttons["LANGUAGE"]->isPressed() && !this->getMouseClick()) {
 		this->setMouseClick(true);
@@ -177,14 +243,31 @@ void SettingsState::update(const float& dt)
 		}
 	}
 
+	this->text_buttons["FPS_COUNTER"]->update(this->mousePosWindow);
+	if (this->text_buttons["FPS_COUNTER"]->isPressed() && !this->getMouseClick()) {
+		this->setMouseClick(true);
+
+		if (this->fpsCounterOn) {
+			this->fpsCounterOn = false;
+			this->text_buttons["FPS_COUNTER"]->setText(this->lang["FPS_COUNTER"] + this->lang["OFF"]);
+		}
+		else {
+			this->fpsCounterOn = true;
+			this->text_buttons["FPS_COUNTER"]->setText(this->lang["FPS_COUNTER"] + this->lang["ON"]);
+		}
+	}
+
 	this->text_buttons["APPLY"]->update(this->mousePosWindow);
 	if (this->text_buttons["APPLY"]->isPressed() && !this->getMouseClick()) {
 		this->setMouseClick(true);
-		this->graphicsSettings->resolution = this->mode;
-		this->graphicsSettings->fullscreen = this->fullscreen;
-		this->graphicsSettings->fpsLimit = this->fpsLimit;
-		this->graphicsSettings->language = this->language;
-		this->graphicsSettings->save();
+		this->gameSettings->resolution = this->mode;
+		this->gameSettings->fullscreen = this->fullscreen;
+		this->gameSettings->fpsLimit = this->fpsLimit;
+		this->gameSettings->language = this->language;
+		this->gameSettings->musicVolume = this->musicVolume;
+		this->gameSettings->soundsVolume = this->soundsVolume;
+		this->gameSettings->fpsCounterOn = this->fpsCounterOn;
+		this->gameSettings->save();
 
 		this->reseted = true;
 	}
@@ -210,6 +293,9 @@ void SettingsState::draw(sf::RenderTarget* target)
 	this->text_buttons["RESOLUTION"]->draw(*target);
 	this->text_buttons["FULLSCREEN"]->draw(*target);
 	this->text_buttons["FPS_LIMIT"]->draw(*target);
+	this->text_buttons["MUSIC"]->draw(*target);
+	this->text_buttons["SOUNDS"]->draw(*target);
 	this->text_buttons["LANGUAGE"]->draw(*target);
+	this->text_buttons["FPS_COUNTER"]->draw(*target);
 	this->text_buttons["APPLY"]->draw(*target);
 }

@@ -1,13 +1,15 @@
 #include "Functions.h"
 #include "Player.h"
 
-
-Player::Player(const float& x, const float& y, const sf::VideoMode& vm, const std::string& hero_name)
+Player::Player(const float& x, const float& y, const sf::VideoMode& vm, const float& soundVolume, const std::string& hero_name)
 {
+	this->vm = vm;
+	this->name = hero_name;
+
 	this->texture.loadFromFile("external/assets/heroes/" + hero_name + ".png");
 	this->sprite.setTexture(this->texture);
 	this->sprite.setTextureRect(sf::IntRect(0, 32, 16, 16));
-	this->sprite.setScale(calcScale(4,vm), calcScale(4, vm));
+	this->sprite.setScale(calcScale(4, vm), calcScale(4, vm));
 	this->sprite.setPosition(x, y);
 	this->sprite.setColor(sf::Color(255, 255, 255, 0));
 
@@ -24,8 +26,12 @@ Player::Player(const float& x, const float& y, const sf::VideoMode& vm, const st
 	this->ability.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52, vm));
 	this->ability.setColor(sf::Color(255, 255, 255, 0));
 
-	this->vm = vm;
-	this->name = hero_name;
+	this->whoosh.loadFromFile("external/music/swipe.wav");
+	this->hit.loadFromFile("external/music/hit.wav");
+	this->sound.setBuffer(this->whoosh);
+	this->sound.setVolume(soundVolume);
+	this->playedSound = false;
+
 	this->level = 1;
 	this->lastMaxXP = 0;
 	this->maxXP = 40;
@@ -41,6 +47,8 @@ Player::Player(const float& x, const float& y, const sf::VideoMode& vm, const st
 	this->abilityMaxTime = 0.f;
 	this->abilityTime = 0.f;
 	this->abilityCooldown = 0.f;
+
+	this->gold = 0;
 
 	this->kills = 0;
 
@@ -59,6 +67,16 @@ Player::Player(const float& x, const float& y, const sf::VideoMode& vm, const st
 Player::~Player()
 {
 
+}
+
+const uint16_t Player::getGold() const
+{
+	return this->gold;
+}
+
+const uint16_t Player::getAttack() const
+{
+	return this->attack;
 }
 
 const uint16_t Player::getKills() const
@@ -131,6 +149,16 @@ const bool Player::getAbilityActive() const
 	return this->abilityActive;
 }
 
+void Player::setGold(const uint16_t& gold)
+{
+	this->gold = gold;
+}
+
+void Player::setAttack(const uint16_t& attack)
+{
+	this->attack = attack;
+}
+
 void Player::setKills(const uint16_t& kills)
 {
 	this->kills = kills;
@@ -176,34 +204,32 @@ void Player::setAbilityCooldown(const float& abilityCooldown)
 	this->abilityCooldown = abilityCooldown;
 }
 
-void Player::attackMonster(sf::Font* font, std::list<Monster*>& monsters, std::list<FloatingText*>& floatingTexts)
+void Player::attackMonster(sf::Font* font, const std::list<Monster*>& monsters, std::list<FloatingText*>& floatingTexts)
 {
 	const sf::VideoMode vm = this->vm;
-	for (auto& monster : monsters) {
-		float distance = 0.f;
-		if (this->getLeft())
-			distance = vectorDistance(monster->getCenter().x, monster->getCenter().y, (this->getPosition().x + calcX(8, vm)), (this->getPosition().y + calcY(32, vm)));
-		else if (this->getRight())
-			distance = vectorDistance(monster->getCenter().x, monster->getCenter().y, (this->getPosition().x + calcX(56, vm)), (this->getPosition().y + calcY(32, vm)));
-		else if (this->getUp())
-			distance = vectorDistance(monster->getCenter().x, monster->getCenter().y, (this->getPosition().x + calcX(32, vm)), (this->getPosition().y + calcY(8, vm)));
-		else if (this->getDown())
-			distance = vectorDistance(monster->getCenter().x, monster->getCenter().y, (this->getPosition().x + calcX(32, vm)), (this->getPosition().y + calcY(56, vm)));
+	for (const auto& monster : monsters) {
+		const float distance = this->attackDistance(monster, this);
 
-		if (distance <= this->getReach() * calcX(32, vm)) {
+		if ((hasVelocity() && distance <= this->getReach() * calcX(32, vm)) || (!hasVelocity() && distance <= this->getReach() * calcX(48, vm))) {
 
 			if (!monster->isDead() && !monster->getPunched() && monster->getSpawned() && this->getIsAttacking() && this->getFrame() == 80) {
 				if ((unsigned(Random::Float() * 100.f) + 1) <= this->getCriticalChance()) {
 					const int attack = 2 * this->getAttack();
-					floatingTexts.push_back(new FloatingText(font, std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(233, 134, 39), this->vm));
+					floatingTexts.push_back(new FloatingText(font, std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(233, 134, 39), false, this->vm));
 					if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);
 					else monster->setHP(monster->getHP() - attack);
 				}
 				else {
 					const int attack = this->getAttack();
-					floatingTexts.push_back(new FloatingText(font, std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(255, 255, 255), this->vm));
+					floatingTexts.push_back(new FloatingText(font, std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(255, 255, 255), false, this->vm));
 					if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);
 					else monster->setHP(monster->getHP() - attack);
+				}
+
+				if (this->sound.getStatus() == sf::Sound::Stopped && !this->playedSound) {
+					this->sound.setBuffer(this->hit);
+					this->sound.play();
+					this->playedSound = true;
 				}
 				
 				monster->punch();
@@ -288,10 +314,12 @@ void Player::abilityCounter(const float& dt)
 
 		if (this->abilityCooldown >= this->abilityTime && this->abilityActive) {
 			this->abilityActive = false;
+			if (this->name == "knight") {
+				this->armor -= 5;
+			}
 		}
-		else if (this->abilityCooldown >= this->abilityMaxTime) {
+		else if (this->abilityCooldown > this->abilityMaxTime) {
 			this->abilityCooldown = this->abilityMaxTime;
-			this->armor -= 10;
 		}
 	}
 }
@@ -305,7 +333,6 @@ const bool Player::checkIfAbility()
 
 			if (this->name == "knight") {
 				this->ability.setTextureRect(sf::IntRect(0, 0, 16, 16));
-				this->armor += 10;
 			}
 			else if (this->name == "scout") this->ability.setTextureRect(sf::IntRect(16, 0, 16, 16));
 			this->ability.setColor(sf::Color(255, 255, 255, 128));
@@ -320,12 +347,24 @@ void Player::doAbility(const sf::Vector2f& coords, std::list<Projectile*>& proje
 	if (this->name == "ninja") {
 		projectiles.push_back(new Projectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 3, 4, 3, coords, this->vm));
 	}
+	else if (this->name == "knight") {
+		this->armor += 5;
+	}
 }
 
 void Player::update(const float& dt)
 {
 	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52, this->vm));
 	this->ability.setPosition(this->sprite.getPosition());
+
+	if (this->isAttacking && this->frame == 80 && this->sound.getStatus() == sf::Sound::Stopped && !this->playedSound) {
+		this->sound.setBuffer(this->whoosh);
+		this->sound.play();
+		this->playedSound = true;
+	}
+	if (this->sound.getStatus() == sf::Sound::Stopped && this->playedSound && this->frame != 80) {
+		this->playedSound = false;
+	}
 }
 
 void Player::draw(sf::RenderTarget& target)

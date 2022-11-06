@@ -1,12 +1,12 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include "GraphicsSettings.h"
+#include "GameSettings.h"
 
 class State
 {
 public:
-	State(const float& gridSize, sf::RenderWindow* window, GraphicsSettings* grap,
+	State(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
 		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states);
 	virtual ~State();
 
@@ -34,7 +34,7 @@ public:
 protected:
 	std::stack<State*>* states;
 	sf::RenderWindow* window;
-	GraphicsSettings* graphicsSettings;
+	GameSettings* gameSettings;
 	std::unordered_map<std::string, int>* supportedKeys;
 	std::unordered_map<std::string, int> keybinds;
 	std::unordered_map<std::string, std::string> lang;

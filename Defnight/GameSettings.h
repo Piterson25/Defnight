@@ -1,0 +1,24 @@
+#ifndef GAMESETTINGS_H
+#define GAMESETTINGS_H
+
+class GameSettings
+{
+public:
+	GameSettings();
+
+	std::string path;
+	sf::VideoMode resolution;
+	bool fullscreen;
+	uint16_t fpsLimit;
+	bool fpsCounterOn;
+	float musicVolume;
+	float soundsVolume;
+	std::string language;
+
+	std::vector<sf::VideoMode> videoModes;
+
+	void save();
+	void load();
+};
+
+#endif

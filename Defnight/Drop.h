@@ -12,7 +12,7 @@ class FloatingText;
 class Drop
 {
 public:
-	Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, sf::VideoMode& vm);
+	Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, sf::VideoMode& vm, const float& soundVolume);
 	virtual ~Drop();
 
 	virtual const std::string getName() const;
@@ -36,6 +36,8 @@ private:
 	unsigned worth;
 	float angle;
 	sf::VideoMode vm;
+	sf::SoundBuffer buffer;
+	sf::Sound sound;
 
 	bool spawned;
 	float spawnCountdown;

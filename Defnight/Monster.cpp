@@ -1,9 +1,11 @@
 #include "Functions.h"
 #include "Monster.h"
 
-Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Texture& shadow_texture, const sf::VideoMode& vm, const std::string& monster_name, const float& difficulty_mod)
-	:vm(vm)
+Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Texture& shadow_texture, const std::vector<Tile*>& tiles, 
+	const sf::VideoMode& vm, const float& soundVolume, const std::string& monster_name, const float& difficulty_mod, const float& wave_mod)
 {
+	this->vm = vm;
+
 	this->texture = texture;
 	this->sprite.setTexture(this->texture);
 	this->sprite.setTextureRect(sf::IntRect(0, 32, 16, 16));
@@ -22,43 +24,70 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 	this->spawnCountdown = 0.f;
 	this->deadCountdown = 0.f;
 	this->spawned = false;
+	this->activateAI = false;
+
+	this->punchSound.loadFromFile("external/music/punch.wav");
+	this->sound.setBuffer(this->punchSound);
+	this->sound.setVolume(soundVolume);
+	this->playedSound = false;
+
+	this->BlockSize.x = calcX(64, vm);
+	this->BlockSize.y = calcY(64, vm);
+
+	this->Current = nullptr;
+
+	this->initNodes();
+	for (auto& e : tiles) {
+		Nodes[static_cast<size_t>(e->getPosition().x / this->BlockSize.x)][static_cast<size_t>(e->getPosition().y / this->BlockSize.y)].isWall = true;
+	}
+	
 
 	if (this->name == "goblin") {
-		this->attack = static_cast<unsigned>(1 * difficulty_mod);
+		this->attack = static_cast<unsigned>(1 * difficulty_mod * wave_mod);
 		this->attackSpeed = 2;
-		this->HP = static_cast<unsigned>(3 * difficulty_mod);
+		this->HP = static_cast<unsigned>(3 * difficulty_mod * wave_mod);
 		this->speed = 2;
 		this->gold = 1;
-		this->XP = 5;
+		this->XP = static_cast<unsigned>(5 * wave_mod);
 	}
 	else if (this->name == "spider") {
-		this->attack = static_cast<unsigned>(2 * difficulty_mod);
+		this->attack = static_cast<unsigned>(2 * difficulty_mod * wave_mod);
 		this->attackSpeed = 3;
-		this->HP = static_cast<unsigned>(7 * difficulty_mod);
+		this->HP = static_cast<unsigned>(7 * difficulty_mod * wave_mod);
 		this->speed = 3;
 		this->gold = 2;
-		this->XP = 10;
+		this->XP = static_cast<unsigned>(10 * wave_mod);
 	}
 	else if (this->name == "orc") {
-		this->attack = static_cast<unsigned>(3 * difficulty_mod);
+		this->attack = static_cast<unsigned>(3 * difficulty_mod * wave_mod);
 		this->attackSpeed = 2;
-		this->HP = static_cast<unsigned>(12 * difficulty_mod);
+		this->HP = static_cast<unsigned>(12 * difficulty_mod * wave_mod);
 		this->speed = 2;
 		this->gold = 3;
-		this->XP = 17;
+		this->XP = static_cast<unsigned>(17 * wave_mod);
 	}
 	else if (this->name == "cyclope") {
-		this->attack = static_cast<unsigned>(4 * difficulty_mod);
+		this->attack = static_cast<unsigned>(4 * difficulty_mod * wave_mod);
 		this->attackSpeed = 1;
-		this->HP = static_cast<unsigned>(18 * difficulty_mod);
+		this->HP = static_cast<unsigned>(18 * difficulty_mod * wave_mod);
 		this->speed = 1;
 		this->gold = 4;
-		this->XP = 26;
+		this->XP = static_cast<unsigned>(26 * wave_mod);
 	}
 }
 
 Monster::~Monster()
 {
+}
+
+const uint16_t Monster::getGold() const
+{
+	return this->gold;
+}
+
+const uint16_t Monster::getAttack() const
+{
+	return this->attack;
 }
 
 const bool Monster::getSpawned() const
@@ -72,53 +101,56 @@ const bool Monster::getDeadCountdown() const
 	return false;
 }
 
-const bool Monster::attackPlayer(Player* player, sf::Font* font, const std::vector<sf::Sprite>& obstacles, std::list<Projectile*>& projectiles, std::list<FloatingText*>& floatingTexts)
+const bool Monster::attackPlayer(Player* player, sf::Font* font, const std::vector<Tile*>& tiles, std::list<Projectile*>& projectiles, std::list<FloatingText*>& floatingTexts)
 {
-	float distance = 0.f;
-	if (this->getLeft())
-		distance = vectorDistance(player->getCenter().x, player->getCenter().y, (this->getPosition().x + calcX(8, vm)), (this->getPosition().y + calcY(32, vm)));
-	else if (this->getRight())
-		distance = vectorDistance(player->getCenter().x, player->getCenter().y, (this->getPosition().x + calcX(56, vm)), (this->getPosition().y + calcY(32, vm)));
-	else if (this->getUp())
-		distance = vectorDistance(player->getCenter().x, player->getCenter().y, (this->getPosition().x + calcX(32, vm)), (this->getPosition().y + calcY(8, vm)));
-	else if (this->getDown())
-		distance = vectorDistance(player->getCenter().x, player->getCenter().y, (this->getPosition().x + calcX(32, vm)), (this->getPosition().y + calcY(56, vm)));
+	const float distance = this->attackDistance(player, this);
 
 	if (this->name == "cyclope" && distance <= this->reach * 8.f * calcX(64, vm)) {
-		if (!sightCollision(obstacles, sf::Vector2f(this->getPosition().x + calcX(24, vm), this->getPosition().y + calcY(36, vm)), player->getCenter())) {
+		if (!sightCollision(tiles, sf::Vector2f(this->getPosition().x + calcX(24, vm), this->getPosition().y + calcY(36, vm)), player->getCenter())) {
 			this->doAttack();
 			if (!player->isDead() && !player->getPunched() && this->getIsAttacking() && this->getFrame() == 80) {
 				if (this->getAttack() > 0) {
 					projectiles.push_back(new Projectile("stone", this->getPosition().x + calcX(24, vm), this->getPosition().y + calcY(36, vm), this->getAttack(), 1, 1, sf::Vector2f(player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm)), this->vm));
 					this->isAttacking = false;
+
+					if (this->sound.getStatus() == sf::Sound::Stopped && !this->playedSound) {
+						this->sound.play();
+						this->playedSound = true;
+					}
 				}
 			}
 		}
 	}
-	else if (distance <= this->getReach() * calcX(48, vm)) {
+	else if ((hasVelocity() && distance <= this->getReach() * calcX(32, vm)) || (!hasVelocity() && distance <= this->getReach() * calcX(48, vm))) {
 		this->doAttack();
 		if (!player->isDead() && !player->getPunched() && this->getIsAttacking() && this->getFrame() == 80) {
 			int Lattack = static_cast<int>(round(this->attack - (this->attack * player->getArmor() * 0.05f)));
 
 			if (Lattack > 0) {
-				floatingTexts.push_back(new FloatingText(font, std::to_string(-Lattack), calcChar(16, vm), player->getPosition().x + calcX(48, vm), player->getPosition().y + calcY(32, vm), sf::Color(228, 92, 95), this->vm));
+				floatingTexts.push_back(new FloatingText(font, std::to_string(-Lattack), calcChar(16, vm), player->getPosition().x + calcX(48, vm), player->getPosition().y + calcY(32, vm), sf::Color(228, 92, 95), false, this->vm));
 				if (static_cast<int>(player->getHP() - Lattack) < 0) player->setHP(0);
 				else player->setHP(player->getHP() - Lattack);
-				
+
+				if (this->sound.getStatus() == sf::Sound::Stopped && !this->playedSound) {
+					this->sound.play();
+					this->playedSound = true;
+				}
+
 				player->punch();
 
 				return true;
 			}
 		}
 	}
+
 	return false;
 }
 
-const bool Monster::sightCollision(const std::vector<sf::Sprite>& obstacles, const sf::Vector2f& a_p1, const sf::Vector2f& a_p2)
+const bool Monster::sightCollision(const std::vector<Tile*>& tiles, const sf::Vector2f& a_p1, const sf::Vector2f& a_p2)
 {
-	for (auto& obs : obstacles) {
-		if (vectorDistance(this->sprite.getPosition(), obs.getPosition()) <= 20.f * calcX(32, vm)) {
-			if (sight(obs.getGlobalBounds(), a_p1, a_p2)) {
+	for (const auto& obs : tiles) {
+		if (vectorDistance(this->sprite.getPosition(), obs->getPosition()) <= 20.f * calcX(32, vm)) {
+			if (sight(obs->getGlobalBounds(), a_p1, a_p2)) {
 				return true;
 			}
 		}
@@ -155,21 +187,111 @@ const bool Monster::dying(const float& dt)
 	return false;
 }
 
-void Monster::AI(const sf::Vector2f& playerPosition, const float& dt)
+void Monster::setGold(const uint16_t& gold)
+{
+	this->gold = gold;
+}
+
+void Monster::setAttack(const uint16_t& attack)
+{
+	this->attack = attack;
+}
+
+void Monster::resetNodes(Player* player)
+{
+	Start = &Nodes[int(player->getPosition().x / this->BlockSize.x)][int(player->getPosition().y / this->BlockSize.y)];
+
+	End = &Nodes[int(this->sprite.getPosition().x / this->BlockSize.x)][int(this->sprite.getPosition().y / this->BlockSize.y)];
+
+	for (short x = 0; x < CollumsX; ++x)
+	{
+		for (short y = 0; y < CollumsY; ++y)
+		{
+			Nodes[x][y].isVisited = false;
+			Nodes[x][y].parent = nullptr;
+			Nodes[x][y].FCost = 0.f;
+			Nodes[x][y].HCost = 0.f;
+		}
+	}
+
+	AStarAlg();
+
+	this->activateAI = true;
+	this->Current = End;
+
+	this->greens.clear();
+}
+
+void Monster::AI(const std::vector<Tile*>& tiles, Player* player, const float& dt)
 {
 	this->velocity = sf::Vector2f(0.f, 0.f);
-
 	const float vel = ((this->speed * 0.2f + 0.8f) * 2 * this->sprite.getGlobalBounds().width) * dt;
 
-	if (playerPosition.x > this->sprite.getPosition().x) 
-		this->velocity.x += vel;
-	if (playerPosition.x < this->sprite.getPosition().x) 
-		this->velocity.x += -(vel);
-	if (playerPosition.y > this->sprite.getPosition().y) 
-		this->velocity.y += vel;
-	if (playerPosition.y < this->sprite.getPosition().y) 
-		this->velocity.y += -(vel);
-	
+	if (!sightCollision(tiles, this->getCenter(), player->getCenter())) {
+
+		if (player->getPosition().x > this->sprite.getPosition().x)
+			this->velocity.x += vel;
+		else if (player->getPosition().x < this->sprite.getPosition().x)
+			this->velocity.x += -(vel);
+		if (player->getPosition().y > this->sprite.getPosition().y)
+			this->velocity.y += vel;
+		else if (player->getPosition().y < this->sprite.getPosition().y)
+			this->velocity.y += -(vel);
+
+		if (this->activateAI) this->activateAI = false;
+	}
+	else {
+		if (!this->activateAI) {
+			resetNodes(player);
+		}
+		if (this->activateAI) {
+			if (Current != nullptr)
+			{
+				sf::Vector2f docelowy_punkt(Current->x * BlockSize.x, Current->y * BlockSize.y);
+
+				sf::RectangleShape t;
+				t.setSize(sf::Vector2f(16, 16));
+				t.setFillColor(sf::Color::Green);
+				t.setPosition(sf::Vector2f(Current->x * BlockSize.x + 24, Current->y * BlockSize.y + 24));
+
+				this->greens.push_back(t);
+
+				if (docelowy_punkt.x > this->sprite.getPosition().x) {
+					if (this->sprite.getPosition().x + vel > docelowy_punkt.x)
+						this->sprite.setPosition(docelowy_punkt.x, sprite.getPosition().y);
+					else this->velocity.x = vel;
+				}
+				else if (docelowy_punkt.x < this->sprite.getPosition().x) {
+					if (this->sprite.getPosition().x - vel < docelowy_punkt.x)
+						this->sprite.setPosition(docelowy_punkt.x, sprite.getPosition().y);
+					else this->velocity.x = -(vel);
+				}
+				if (docelowy_punkt.y > this->sprite.getPosition().y) {
+					if (this->sprite.getPosition().y + vel > docelowy_punkt.y)
+						this->sprite.setPosition(sprite.getPosition().x, docelowy_punkt.y);
+					else this->velocity.y = vel;
+				}
+				else if (docelowy_punkt.y < this->sprite.getPosition().y) {
+					if (this->sprite.getPosition().y - vel < docelowy_punkt.y)
+						this->sprite.setPosition(sprite.getPosition().x, docelowy_punkt.y);
+					else this->velocity.y = -(vel);
+				}
+				
+				if (int(this->sprite.getPosition().x / this->BlockSize.x) == int(Current->x) &&
+					int(this->sprite.getPosition().y / this->BlockSize.y) == int(Current->y)) {
+					if (Current->parent != nullptr) {
+						Current = Current->parent;
+					}
+					else resetNodes(player);
+				}
+			}
+			else {
+				this->activateAI = false;
+			}
+		}
+
+	}
+
 	if (this->velocity.x != 0.f && this->velocity.y != 0.f) {
 		this->velocity.x /= 1.44f;
 		this->velocity.y /= 1.44f;
@@ -234,14 +356,102 @@ void Monster::monsterCollision(const std::list<Monster*>& monsters)
 void Monster::update(const float& dt)
 {
 	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52, this->vm));
+	if (this->sound.getStatus() == sf::Sound::Stopped && this->playedSound && this->frame != 80) {
+		this->playedSound = false;
+	}
 }
 
 void Monster::draw(sf::RenderTarget& target)
 {
 	target.draw(this->sprite);
+	//for(auto& e : greens)
+	//target.draw(e);
 }
 
 void Monster::drawShadow(sf::RenderTarget& target)
 {
 	target.draw(this->shadow);
+}
+
+void Monster::initNodes()
+{
+	for (short x = 0; x < CollumsX; ++x)
+	{
+		Nodes.push_back(new Node[CollumsY]);
+		for (short y = 0; y < CollumsY; ++y)
+		{
+			Nodes[x][y].x = x;
+			Nodes[x][y].y = y;
+			Nodes[x][y].isWall = false;
+			Nodes[x][y].isVisited = false;
+			Nodes[x][y].parent = nullptr;
+			Nodes[x][y].FCost = 0.f;
+			Nodes[x][y].HCost = 0.f;
+		}
+	}
+
+	for (short x = 0; x < CollumsX; ++x)
+		for (short y = 0; y < CollumsY; ++y)
+		{
+			if (Nodes[x][y].x > 0) Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(Nodes[x][y].x - 1)][Nodes[x][y].y]);
+			if (Nodes[x][y].y > 0) Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][Nodes[x][y].y - 1]);
+			if (Nodes[x][y].x < CollumsX - 1) Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(Nodes[x][y].x + 1)][Nodes[x][y].y]);
+			if (Nodes[x][y].y < CollumsY - 1) Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][Nodes[x][y].y + 1]);
+		}
+
+	Start = nullptr;
+	End = nullptr;
+}
+
+void Monster::AStarAlg()
+{
+	for (int x = 0; x < CollumsX; x++)
+		for (int y = 0; y < CollumsY; y++)
+		{
+			Nodes[x][y].isVisited = false;
+			Nodes[x][y].FCost = 100000.f;
+			Nodes[x][y].HCost = 100000.f;
+			Nodes[x][y].parent = nullptr;
+		}
+
+	auto GetDist = [](Node* P1, Node* P2) { return vectorDistance(float(P2->x), float(P1->x), float(P2->y), float(P2->y)); };
+
+	Node* CurrentNode = Start;
+	Start->HCost = 0.0f;
+	Start->FCost = float(GetDist(Start, End));
+
+	std::vector<Node*> NodesToTest;
+	NodesToTest.push_back(Start);
+
+
+	while (!NodesToTest.empty())
+	{
+		std::sort(NodesToTest.begin(), NodesToTest.end(), [](const Node* a, const Node* b) { return a->FCost < b->FCost; });
+
+		while (!NodesToTest.empty() && NodesToTest.front()->isVisited)
+			NodesToTest.erase(NodesToTest.begin());
+
+		if (NodesToTest.empty())
+			break;
+
+		CurrentNode = NodesToTest.front();
+		CurrentNode->isVisited = true;
+
+
+		for (auto nodeNeighbour : CurrentNode->Neighbours)
+		{
+			if (!nodeNeighbour->isVisited && !nodeNeighbour->isWall)
+				NodesToTest.push_back(nodeNeighbour);
+
+			auto BestNode = CurrentNode->HCost + GetDist(CurrentNode, nodeNeighbour);
+
+			if (BestNode < nodeNeighbour->HCost)
+			{
+				nodeNeighbour->parent = CurrentNode;
+				nodeNeighbour->HCost = float(BestNode);
+
+				nodeNeighbour->FCost = nodeNeighbour->HCost + float(GetDist(nodeNeighbour, End));
+			}
+		}
+	}
 }

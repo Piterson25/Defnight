@@ -22,7 +22,6 @@ const unsigned calcChar(const float& size, const sf::VideoMode& vm)
 
 const float getAngle(float x1, float y1, float x2, float y2)
 {
-	sf::Vector2f up(0, 1);
 	sf::Vector2f p0(x1, y1);
 	sf::Vector2f p1(x2, y2);
 	sf::Vector2f q = p1 - p0;
@@ -45,14 +44,14 @@ const float vectorDistance(const float x1, const float y1, const float x2, const
 	const float dx = x2 - x1;
 	const float dy = y2 - y1;
 
-	return float(sqrt(pow(dx, 2) + pow(dy, 2)));
+    return sqrtf(dx * dx + dy * dy);
 }
 
 const float vectorDistance(sf::Vector2f vec1, sf::Vector2f vec2)
 {
 	const sf::Vector2f dVec = vec2 - vec1;
 
-	return float(sqrt(pow(dVec.x, 2) + pow(dVec.y, 2)));
+	return sqrtf(dVec.x * dVec.x + dVec.y * dVec.y);
 }
 
 void center(sf::Text& text, const float& x)

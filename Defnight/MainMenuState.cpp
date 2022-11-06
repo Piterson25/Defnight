@@ -1,11 +1,17 @@
 #include "Functions.h"
 #include "MainMenuState.h"
 
-MainMenuState::MainMenuState(const float& gridSize, sf::RenderWindow* window, GraphicsSettings* grap,
+MainMenuState::MainMenuState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
 	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states)
 	: State(gridSize, window, grap, supportedKeys, font, states)
 {
 	initGUI();
+	if (!this->music.openFromFile("external/music/main_menu.ogg")) {
+		throw("ERROR - COULDN'T FIND MUSIC");
+	}
+	this->music.setLoop(true);
+	this->music.play();
+	this->music.setVolume(this->gameSettings->musicVolume);
 }
 
 MainMenuState::~MainMenuState()
@@ -15,11 +21,16 @@ MainMenuState::~MainMenuState()
 
 void MainMenuState::initGUI()
 {
-	const sf::VideoMode vm = this->graphicsSettings->resolution;
+	const sf::VideoMode vm = this->gameSettings->resolution;
 
 	this->page = 0;
 	this->keysClick["Escape"].first = false;
 	this->keysClick["Escape"].second = false;
+
+	this->fading = false;
+	this->appearing = false;
+	this->dimBackground.setSize(sf::Vector2f(static_cast<float>(vm.width), static_cast<float>(vm.height)));
+	this->dimBackground.setFillColor(sf::Color(0, 0, 0, 0));
 
 	// PAGE 0 - Loading
 
@@ -30,18 +41,35 @@ void MainMenuState::initGUI()
 
 	// PAGE 1
 
+	Random::Init();
+
+	this->mapVelocity = sf::Vector2f(32.f * cos((3.1415f / 180.f)), 32.f * cos((3.1415f / 180.f)));
+	this->mapRotate = Random::Float() * 360.f - 90.f;
+
+	this->mapView.setSize(sf::Vector2f(static_cast<float>(vm.width), static_cast<float>(vm.height)));
+	this->mapView.setCenter(static_cast<float>(vm.width / 2), static_cast<float>(vm.height / 2));
+
+	this->map_texture.loadFromFile("external/assets/ruins.png");
+	this->map.setTexture(this->map_texture);
+	this->map.setScale(calcScale(4, vm), calcScale(4, vm));
+	this->map.setPosition(256.f, 256.f);
+	this->map.setOrigin(256.f, 256.f);
+	this->map.setRotation(this->mapRotate);
+
+	this->dimMap.setSize(sf::Vector2f(static_cast<float>(vm.width), static_cast<float>(vm.height)));
+	this->dimMap.setFillColor(sf::Color(0, 0, 0, 192));
+
 	this->sprites["TITLE"] = new gui::Sprite("external/assets/title.png", calcX(640, vm), calcY(144, vm), calcScale(1, vm), true);
 
 	this->text_buttons["PLAY"] = new gui::ButtonText(&this->font, this->lang["PLAY"], calcChar(32, vm), calcX(640, vm), calcY(370, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
 	this->text_buttons["SETTINGS"] = new gui::ButtonText(&this->font, this->lang["SETTINGS"], calcChar(32, vm), calcX(640, vm), calcY(466, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
 	this->text_buttons["QUIT"] = new gui::ButtonText(&this->font, this->lang["QUIT"], calcChar(32, vm), calcX(640, vm), calcY(558, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
 
-	this->texts["VERSION"] = new gui::Text(&this->font, "v0.1.8", calcChar(16, vm), calcX(1272, vm), calcY(700, vm), sf::Color(255, 255, 255), false);
+	this->texts["VERSION"] = new gui::Text(&this->font, "v0.2.0", calcChar(16, vm), calcX(1272, vm), calcY(700, vm), sf::Color(255, 255, 255), false);
 	this->texts["VERSION"]->setPosition(sf::Vector2f(calcX(1272, vm) - this->texts["VERSION"]->getWidth(), calcY(700, vm)));
 
 	this->quitwindow = false;
-	this->dimBackground.setSize(sf::Vector2f(static_cast<float>(vm.width), static_cast<float>(vm.height)));
-	this->dimBackground.setFillColor(sf::Color(0, 0, 0, 192));
+	
 
 	this->texts["ARE_YOU_SURE"] = new gui::Text(&this->font, this->lang["ARE_YOU_SURE"], calcChar(32, vm), calcX(640, vm), calcY(250, vm), sf::Color(255, 255, 255), true);
 	this->text_buttons["YES"] = new gui::ButtonText(&this->font, this->lang["YES"], calcChar(32, vm), calcX(488, vm), calcY(306, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
@@ -174,156 +202,189 @@ void MainMenuState::resetGUI()
 
 void MainMenuState::update(const float& dt)
 {
+	if (this->music.getStatus() == sf::SoundSource::Status::Stopped)
+	{
+		this->music.play();
+	}
+
 	this->updateMousePositions();
-	
-	switch (this->page) {
-	case 0:
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
-			this->page = 1;
+
+	if (this->page >= 1) {
+		if (!this->map.getGlobalBounds().intersects(this->mapView.getViewport())) {
+			this->mapVelocity = sf::Vector2f(32.f * cos((3.1415f / 180.f)), 32.f * cos((3.1415f / 180.f)));
+			this->mapRotate = Random::Float() * 360.f - 90.f;
+			this->map.setPosition(256.f, 256.f);
+			this->map.setRotation(this->mapRotate);
+		}
+		this->map.move(this->mapVelocity * dt);
+	}
+
+	if (this->fading) {
+		fadingEffect(dt);
+	}
+	else {
+		switch (this->page) {
+		case 0:
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+				this->page = 1;
+				this->dimAlpha = 1.f;
+				this->fading = true;
+				this->appearing = true;
+				break;
+			}
+
+			this->introCooldown += dt;
+
+			if (this->introCooldown > 1.f) {
+				if (this->introCooldown > 5.f) {
+					this->page = 1;
+					this->dimAlpha = 1.f;
+					this->fading = true;
+					this->appearing = true;
+					break;
+				}
+				else {
+					if (this->introCooldown < 3.f) {
+						if (this->dimAlpha < 1.f) {
+							this->dimAlpha += dt;
+						}
+						if (this->dimAlpha > 1.f) {
+							this->dimAlpha = 1.f;
+						}
+					}
+					else if (this->introCooldown < 5.f && this->introCooldown > 3.f) {
+						if (this->dimAlpha > 0.f) {
+							this->dimAlpha -= dt;
+						}
+						if (this->dimAlpha < 0.f) {
+							this->dimAlpha = 0.f;
+						}
+
+					}
+					this->sprites["LOGO"]->setColor(sf::Color(255, 255, 255, static_cast<sf::Uint8>(this->dimAlpha * 255.f)));
+				}
+			}
+			break;
+		case 1:
+			
+
+			if (!quitwindow) {
+				this->text_buttons["PLAY"]->update(this->mousePosWindow);
+				this->text_buttons["SETTINGS"]->update(this->mousePosWindow);
+				this->text_buttons["QUIT"]->update(this->mousePosWindow);
+
+				if (this->text_buttons["PLAY"]->isPressed() && !this->getMouseClick()) {
+					this->setMouseClick(true);
+					this->map_name = "";
+					this->page = 2;
+				}
+				else if (this->text_buttons["SETTINGS"]->isPressed() && !this->getMouseClick()) {
+					this->setMouseClick(true);
+					this->states->push(new SettingsState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->states));
+				}
+				else if (this->text_buttons["QUIT"]->isPressed() && !this->getMouseClick()) {
+					this->setMouseClick(true);
+					this->quitwindow = true;
+				}
+			}
+			else {
+				this->text_buttons["YES"]->update(this->mousePosWindow);
+				this->text_buttons["NO"]->update(this->mousePosWindow);
+
+				if (this->text_buttons["YES"]->isPressed() && !this->getMouseClick()) {
+					this->setMouseClick(true);
+					this->endState();
+				}
+				else if (this->text_buttons["NO"]->isPressed() && !this->getMouseClick()) {
+					this->setMouseClick(true);
+					this->quitwindow = false;
+				}
+			}
+			break;
+		case 2:
+			this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
+			if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				--this->page;
+				this->map_name = "";
+			}
+
+			this->sprite_buttons["SELECT_MAP1"]->update(this->mousePosWindow);
+			if (this->sprite_buttons["SELECT_MAP1"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				this->map_name = "ruins";
+				this->page = 3;
+				this->sprite_buttons["SELECT_MAP1"]->setTransparent();
+			}
+			break;
+		case 3:
+			this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
+			if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				--this->page;
+				this->hero_name = "";
+				this->choosing_hero = false;
+			}
+
+			this->sprite_buttons["SELECT_HERO1"]->update(this->mousePosWindow);
+			if (this->sprite_buttons["SELECT_HERO1"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				this->choosing_hero = true;
+				this->sprite_buttons["SELECT_HERO1"]->setTransparent();
+				this->hero_name = "warrior";
+			}
+
+			if (this->choosing_hero) {
+				this->text_buttons["CHOOSE"]->update(this->mousePosWindow);
+				if (this->text_buttons["CHOOSE"]->isPressed() && !this->getMouseClick()) {
+					this->page = 4;
+				}
+			}
+			break;
+		case 4:
+			this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
+			if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				--this->page;
+				this->difficulty_name = "";
+				this->choosing_hero = false;
+			}
+
+			this->sprite_buttons["SELECT_DIFFICULTY1"]->update(this->mousePosWindow);
+			this->sprite_buttons["SELECT_DIFFICULTY2"]->update(this->mousePosWindow);
+			this->sprite_buttons["SELECT_DIFFICULTY3"]->update(this->mousePosWindow);
+			if (this->sprite_buttons["SELECT_DIFFICULTY1"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				this->difficulty_name = "easy";
+				this->page = 1;
+				this->music.stop();
+				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->states, this->map_name, this->hero_name, this->difficulty_name));
+				this->sprite_buttons["SELECT_DIFFICULTY1"]->setTransparent();
+				this->choosing_hero = false;
+			}
+			else if (this->sprite_buttons["SELECT_DIFFICULTY2"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				this->difficulty_name = "normal";
+				this->page = 1;
+				this->music.stop();
+				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->states, this->map_name, this->hero_name, this->difficulty_name));
+				this->sprite_buttons["SELECT_DIFFICULTY2"]->setTransparent();
+				this->choosing_hero = false;
+			}
+			else if (this->sprite_buttons["SELECT_DIFFICULTY3"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				this->difficulty_name = "hard";
+				this->page = 1;
+				this->music.stop();
+				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->states, this->map_name, this->hero_name, this->difficulty_name));
+				this->sprite_buttons["SELECT_DIFFICULTY3"]->setTransparent();
+				this->choosing_hero = false;
+			}
 			break;
 		}
 
-		this->introCooldown += dt;
-
-		if (this->introCooldown > 1.f) {
-			if (this->introCooldown > 5.f) {
-				this->page = 1;
-				break;
-			}
-			else {
-				if (this->introCooldown < 3.f) {
-					if (this->dimAlpha < 1.f) {
-						this->dimAlpha += dt;
-					}
-					if (this->dimAlpha > 1.f) {
-						this->dimAlpha = 1.f;
-					}
-				}
-				else if (this->introCooldown < 5.f && this->introCooldown > 3.f) {
-					if (this->dimAlpha > 0.f) {
-						this->dimAlpha -= dt;
-					}
-					if (this->dimAlpha < 0.f) {
-						this->dimAlpha = 0.f;
-					}
-					
-				}
-				this->sprites["LOGO"]->setColor(sf::Color(255, 255, 255, static_cast<sf::Uint8>(this->dimAlpha * 255.f)));
-			}
-		}
-		break;
-	case 1:
-		if (!quitwindow) {
-			this->text_buttons["PLAY"]->update(this->mousePosWindow);
-			this->text_buttons["SETTINGS"]->update(this->mousePosWindow);
-			this->text_buttons["QUIT"]->update(this->mousePosWindow);
-
-			if (this->text_buttons["PLAY"]->isPressed() && !this->getMouseClick()) {
-				this->setMouseClick(true);
-				this->map_name = "";
-				this->page = 2;
-			}
-			else if (this->text_buttons["SETTINGS"]->isPressed() && !this->getMouseClick()) {
-				this->setMouseClick(true);
-				this->states->push(new SettingsState(this->gridSize, this->window, this->graphicsSettings, this->supportedKeys, &this->font, this->states));
-			}
-			else if (this->text_buttons["QUIT"]->isPressed() && !this->getMouseClick()) {
-				this->setMouseClick(true);
-				this->quitwindow = true;
-			}
-		}
-		else {
-			this->text_buttons["YES"]->update(this->mousePosWindow);
-			this->text_buttons["NO"]->update(this->mousePosWindow);
-
-			if (this->text_buttons["YES"]->isPressed() && !this->getMouseClick()) {
-				this->setMouseClick(true);
-				this->endState(); 
-			}
-			else if (this->text_buttons["NO"]->isPressed() && !this->getMouseClick()) {
-				this->setMouseClick(true);
-				this->quitwindow = false;
-			}
-		}
-		break;
-	case 2:
-		this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
-		if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
-			this->setMouseClick(true);
-			--this->page;
-			this->map_name = "";
-		}
-
-		this->sprite_buttons["SELECT_MAP1"]->update(this->mousePosWindow);
-		if (this->sprite_buttons["SELECT_MAP1"]->isPressed() && !this->getMouseClick()) {
-			this->setMouseClick(true);
-			this->map_name = "ruins";
-			this->page = 3;
-			this->sprite_buttons["SELECT_MAP1"]->setTransparent();
-		}
-		break;
-	case 3:
-		this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
-		if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
-			this->setMouseClick(true);
-			--this->page;
-			this->hero_name = "";
-			this->choosing_hero = false;
-		}
-
-		this->sprite_buttons["SELECT_HERO1"]->update(this->mousePosWindow);
-		if (this->sprite_buttons["SELECT_HERO1"]->isPressed() && !this->getMouseClick()) {
-			this->setMouseClick(true);
-			this->choosing_hero = true;
-			this->sprite_buttons["SELECT_HERO1"]->setTransparent();
-			this->hero_name = "warrior";
-		}
-
-		if (this->choosing_hero) {
-			this->text_buttons["CHOOSE"]->update(this->mousePosWindow);
-			if (this->text_buttons["CHOOSE"]->isPressed() && !this->getMouseClick()) {
-				this->page = 4;
-			}
-		}
-		break;
-	case 4:
-		this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
-		if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
-			this->setMouseClick(true);
-			--this->page;
-			this->difficulty_name = "";
-			this->choosing_hero = false;
-		}
-
-		this->sprite_buttons["SELECT_DIFFICULTY1"]->update(this->mousePosWindow);
-		this->sprite_buttons["SELECT_DIFFICULTY2"]->update(this->mousePosWindow);
-		this->sprite_buttons["SELECT_DIFFICULTY3"]->update(this->mousePosWindow);
-		if (this->sprite_buttons["SELECT_DIFFICULTY1"]->isPressed() && !this->getMouseClick()) {
-			this->setMouseClick(true);
-			this->difficulty_name = "easy";
-			this->page = 1;
-			this->states->push(new GameState(this->gridSize, this->window, this->graphicsSettings, this->supportedKeys, &this->font, this->states, this->map_name, this->hero_name, this->difficulty_name));
-			this->sprite_buttons["SELECT_DIFFICULTY1"]->setTransparent();
-			this->choosing_hero = false;
-		}
-		else if (this->sprite_buttons["SELECT_DIFFICULTY2"]->isPressed() && !this->getMouseClick()) {
-			this->setMouseClick(true);
-			this->difficulty_name = "normal";
-			this->page = 1;
-			this->states->push(new GameState(this->gridSize, this->window, this->graphicsSettings, this->supportedKeys, &this->font, this->states, this->map_name, this->hero_name, this->difficulty_name));
-			this->sprite_buttons["SELECT_DIFFICULTY2"]->setTransparent();
-			this->choosing_hero = false;
-		}
-		else if (this->sprite_buttons["SELECT_DIFFICULTY3"]->isPressed() && !this->getMouseClick()) {
-			this->setMouseClick(true);
-			this->difficulty_name = "hard";
-			this->page = 1;
-			this->states->push(new GameState(this->gridSize, this->window, this->graphicsSettings, this->supportedKeys, &this->font, this->states, this->map_name, this->hero_name, this->difficulty_name));
-			this->sprite_buttons["SELECT_DIFFICULTY3"]->setTransparent();
-			this->choosing_hero = false;
-		}
-		break;
 	}
+
 
 	this->updateMouseClick();
 
@@ -344,11 +405,16 @@ void MainMenuState::draw(sf::RenderTarget* target)
 {
 	if (!target) target = this->window;
 
+	
+
 	switch (this->page) {
 	case 0:
 		this->sprites["LOGO"]->draw(*target);
 		break;
 	case 1:
+		target->draw(this->map);
+		target->draw(this->dimMap);
+
 		this->sprites["TITLE"]->draw(*target);
 
 		this->text_buttons["PLAY"]->draw(*target);
@@ -357,7 +423,6 @@ void MainMenuState::draw(sf::RenderTarget* target)
 
 		this->texts["VERSION"]->draw(*target);
 		if (this->quitwindow) {
-			target->draw(dimBackground);
 			this->texts["ARE_YOU_SURE"]->draw(*target);
 
 			this->text_buttons["YES"]->draw(*target);
@@ -430,4 +495,29 @@ void MainMenuState::draw(sf::RenderTarget* target)
 		this->texts["HARD_DESC"]->draw(*target);
 		break;
 	}
+
+	target->draw(dimBackground);
+}
+
+void MainMenuState::fadingEffect(const float& dt)
+{
+	if (this->appearing) {
+		if (this->dimAlpha > 0.f) {
+			this->dimAlpha -= dt;
+			if (this->dimAlpha < 0.f) {
+				this->dimAlpha = 0.f;
+				this->fading = false;
+			}
+		}
+	}
+	else {
+		if (this->dimAlpha < 1.f) {
+			this->dimAlpha += dt;
+			if (this->dimAlpha > 1.f) {
+				this->dimAlpha = 1.f;
+				this->fading = false;
+			}
+		}
+	}
+	this->dimBackground.setFillColor(sf::Color(0, 0, 0, static_cast<sf::Uint8>(this->dimAlpha * 255.f)));
 }

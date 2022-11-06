@@ -32,6 +32,16 @@ const std::string gui::ButtonText::getText() const
 	return this->text.getString();
 }
 
+const float gui::ButtonText::getWidth() const
+{
+	return this->text.getGlobalBounds().width;
+}
+
+void gui::ButtonText::setPosition(const sf::Vector2f& position)
+{
+	this->text.setPosition(position);
+}
+
 void gui::ButtonText::setText(const std::string& text)
 {
 	this->text.setString(text);

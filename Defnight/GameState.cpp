@@ -1,13 +1,23 @@
 #include "Functions.h"
 #include "GameState.h"
 
-GameState::GameState(const float& gridSize, sf::RenderWindow* window, GraphicsSettings* grap,
+GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
 	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states,
 	const std::string& map_name, const std::string& hero_name, const std::string& difficulty_name)
 	: State(gridSize, window, grap, supportedKeys, font, states)
 {
 
-	const sf::VideoMode vm = this->graphicsSettings->resolution;
+	const sf::VideoMode vm = this->gameSettings->resolution;
+
+	this->currentTrackNumber = 0;
+	this->tracks.push_back("battle1.ogg");
+	this->tracks.push_back("battle2.ogg");
+	this->tracks.push_back("battle3.ogg");
+	this->tracks.push_back("battle4.ogg");
+	this->tracks.push_back("battle5.ogg");
+
+	this->music.setVolume(this->gameSettings->musicVolume);
+	this->music.pause();
 
 	this->background_texture.loadFromFile("external/assets/" + map_name + ".png");
 	this->background.setTexture(this->background_texture);
@@ -23,25 +33,50 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GraphicsSe
 	}
 	ifs.close();
 
-	sf::Sprite obstacle;
 	this->tiles_texture.loadFromFile("external/assets/tiles.png");
-	obstacle.setTexture(this->tiles_texture);
-	obstacle.setScale(calcScale(4, vm), calcScale(4, vm));
-	obstacle.setTextureRect(sf::IntRect(48, 16, 16, 16));
+	this->vertexArray.setPrimitiveType(sf::Quads);
+	this->vertexArray.resize(static_cast<size_t>(calcX(64, vm) * calcY(64, vm) * 4.f));
 	std::ifstream mapa("external/maps/" + map_name + ".txt");
 	float x = 0.f, y = 0.f, pos = calcX(this->gridSize, vm);
+	size_t t = 0;
+	const sf::Vector2f tile = sf::Vector2f(calcX(64, vm), calcY(64, vm));
 	if (mapa.is_open()) {
 		std::string temp;
 		while (std::getline(mapa, temp)) {
 			for (size_t i = 0; i < temp.size(); ++i) {
 				if (temp[i] == '#') {
-					obstacle.setPosition(x, y);
-					this->obstacles.push_back(obstacle);
+					this->tiles.push_back(new Tile(x, y, tile, "wall"));
+					sf::Vertex* quad = &this->vertexArray[t * 4];
+
+					quad[0].position = sf::Vector2f(x, y);
+					quad[1].position = sf::Vector2f(x + calcX(64, vm), y);
+					quad[2].position = sf::Vector2f(x + calcX(64, vm), y + calcY(64, vm));
+					quad[3].position = sf::Vector2f(x, y + calcY(64, vm));
+
+					quad[0].texCoords = sf::Vector2f(48, 16);
+					quad[1].texCoords = sf::Vector2f(64, 16);
+					quad[2].texCoords = sf::Vector2f(64, 32);
+					quad[3].texCoords = sf::Vector2f(48, 32);
+				}
+				else if (temp[i] == '@') {
+					this->tiles.push_back(new Tile(x, y, tile, "wall"));
+					sf::Vertex* quad = &this->vertexArray[t * 4];
+
+					quad[0].position = sf::Vector2f(x, y);
+					quad[1].position = sf::Vector2f(x + calcX(64, vm), y);
+					quad[2].position = sf::Vector2f(x + calcX(64, vm), y + calcY(64, vm));
+					quad[3].position = sf::Vector2f(x, y + calcY(64, vm));
+
+					quad[0].texCoords = sf::Vector2f(64, 16);
+					quad[1].texCoords = sf::Vector2f(80, 16);
+					quad[2].texCoords = sf::Vector2f(80, 32);
+					quad[3].texCoords = sf::Vector2f(64, 32);
 				}
 				else if (temp[i] == 'S') {
-					this->player = new Player(x, y, vm, hero_name);
+					this->player = new Player(x, y, vm, this->gameSettings->soundsVolume, hero_name);
 				}
 				x += pos;
+				t++;
 			}
 			x = 0.f;
 			y += pos;
@@ -49,7 +84,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GraphicsSe
 	}
 	mapa.close();
 
-	this->playerGUI = new PlayerGUI(&this->font, this->player, this->graphicsSettings->resolution, hero_name, difficulty_name, this->lang);
+	this->playerGUI = new PlayerGUI(&this->font, this->player, this->gameSettings->resolution, this->gameSettings->soundsVolume, hero_name, difficulty_name, this->lang);
 
 	if (difficulty_name == "easy") this->difficultyModifier = 0.75f;
 	else if (difficulty_name == "hard") this->difficultyModifier = 1.25f;
@@ -99,8 +134,9 @@ void GameState::resetGUI()
 void GameState::prepareWave()
 {
 	this->wave++;
-	this->sumHP += unsigned(Random::Float() * this->sumHP) + 1;
-	unsigned monstersHP = this->sumHP;
+	if (this->wave % 10 == 0) this->sumHP = 100;
+	else this->sumHP += static_cast<uint16_t>(Random::Float() * this->sumHP) + 1;
+	uint16_t monstersHP = this->sumHP;
 	short t = 0;
 	while (monstersHP > 0) {
 		if (monstersHP >= 18 && this->wave >= 7) 
@@ -130,17 +166,19 @@ void GameState::prepareWave()
 			break;
 		}
 	}
-	this->playerGUI->updateMonsterCountWave(this->graphicsSettings->language, this->wave, this->monsterIDs.size());
+	this->playerGUI->updateMonsterCountWave(this->gameSettings->language, this->wave, this->monsterIDs.size());
 }
 
 void GameState::spawnMonsters()
 {
-	const sf::VideoMode vm = this->graphicsSettings->resolution;
+	const sf::VideoMode vm = this->gameSettings->resolution;
+
+	const float wave_mod = 1.f + static_cast<uint16_t>(this->wave / 10.f);
 
 	for (const auto& id : this->monsterIDs) {
 		uint16_t rx = static_cast<uint16_t>(Random::Float() * 32.f), ry = static_cast<uint16_t>(Random::Float() * 32.f);
-		for (size_t i = 0; i < this->obstacles.size(); ++i) {
-			while ((this->obstacles[i].getPosition().x == calcX(this->gridSize * rx, vm) && this->obstacles[i].getPosition().y == calcY(this->gridSize * ry, vm)) ||
+		for (size_t i = 0; i < this->tiles.size(); ++i) {
+			while ((this->tiles[i]->getPosition().x == calcX(this->gridSize * rx, vm) && this->tiles[i]->getPosition().y == calcY(this->gridSize * ry, vm)) ||
 				vectorDistance(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->player->getPosition().x, this->player->getPosition().y) <= calcX(3.f * this->gridSize, vm))
 			{
 				rx = static_cast<uint16_t>(Random::Float() * 32.f);
@@ -159,21 +197,24 @@ void GameState::spawnMonsters()
 		switch (id)
 		{
 		case 0:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["GOBLIN"], this->textures["SHADOW"], vm, "goblin", this->difficultyModifier));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["GOBLIN"], this->textures["SHADOW"], this->tiles, vm, this->gameSettings->soundsVolume, "goblin", this->difficultyModifier, wave_mod));
 			break;
 		case 1:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["SPIDER"], this->textures["SHADOW"], vm, "spider", this->difficultyModifier));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["SPIDER"], this->textures["SHADOW"], this->tiles, vm, this->gameSettings->soundsVolume, "spider", this->difficultyModifier, wave_mod));
 			break;
 		case 2:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["ORC"], this->textures["SHADOW"], vm, "orc", this->difficultyModifier));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["ORC"], this->textures["SHADOW"], this->tiles, vm, this->gameSettings->soundsVolume, "orc", this->difficultyModifier, wave_mod));
 			break;
 		case 3:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["CYCLOPE"], this->textures["SHADOW"], vm, "cyclope", this->difficultyModifier));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["CYCLOPE"], this->textures["SHADOW"], this->tiles, vm, this->gameSettings->soundsVolume, "cyclope", this->difficultyModifier, wave_mod));
 			break;
 		default:
 			break;
 		}
 	}
+
+	this->coinBuffer.loadFromFile("external/music/swipe.wav");
+	this->coinSound.setBuffer(this->coinBuffer);
 }
 
 void GameState::draw(sf::RenderTarget* target)
@@ -190,9 +231,7 @@ void GameState::draw(sf::RenderTarget* target)
 
 	this->player->drawShadow(*target);
 
-	for (const auto& obs : this->obstacles) {
-		target->draw(obs);
-	}
+	target->draw(this->vertexArray, &this->tiles_texture);
 
 	for (const auto& proj : this->projectiles) {
 		proj->draw(*target);
@@ -202,23 +241,35 @@ void GameState::draw(sf::RenderTarget* target)
 		drop->draw(*target);
 	}
 
+	this->player->draw(*target);
+
 	for (const auto& monster : this->monsters) {
 		monster->draw(*target);
 	}
 
-	this->player->draw(*target);
-
 	for (const auto& text : floatingTexts) {
-		text->draw(*target);
+		if(!text->isGui()) text->draw(*target);
 	}
 
 	target->setView(this->viewHUD);
 
 	this->playerGUI->draw(*target);
+
+	for (const auto& text : floatingTexts) {
+		if (text->isGui() && this->playerGUI->getIsShopping()) text->draw(*target);
+	}
 }
 
 void GameState::update(const float& dt)
 {
+	if (this->music.getStatus() == sf::SoundSource::Status::Stopped)
+	{
+		this->currentTrackNumber = static_cast<size_t>(Random::Float() * this->tracks.size());
+
+		this->music.openFromFile("external/music/" + this->tracks[this->currentTrackNumber]);
+		this->music.play();
+	}
+
 	this->updateMousePositions(&this->viewHUD);
 
 	if (this->playerGUI->updateButtons(this->mousePosWindow, this->getMouseClick())) {
@@ -245,7 +296,11 @@ void GameState::update(const float& dt)
 		if (this->getKeysClick1("Escape") && !this->getKeysClick2("Escape")) {
 			this->setKeysClick("Escape", true);
 			this->playerGUI->updatePaused(this->paused);
-
+			if (this->paused) {
+				this->music.pause();
+			}
+			else this->music.play();
+			
 		}
 		this->setKeysClick("Escape", this->getKeysClick1("Escape"));
 
@@ -261,6 +316,10 @@ void GameState::update(const float& dt)
 		}
 		else if (result == 3) {
 			this->paused = false;
+			this->music.play();
+		}
+		else if (result == 4) {
+			this->states->push(new SettingsState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->states));
 		}
 	}
 
@@ -272,16 +331,16 @@ void GameState::update(const float& dt)
 
 			if (this->player->getPunched()) this->player->smashed(dt);
 
-			if (this->player->getVelocity() != sf::Vector2f(0.f, 0.f)) {
-				this->player->obstacleCollision(this->obstacles);
+			if (this->player->hasVelocity()) {
+				this->player->obstacleCollision(this->tiles);
 
 				this->player->move();
 
 				this->player->update(dt);
 				
-				const float _32 = calcX(32, this->graphicsSettings->resolution);
-				const bool osY = this->player->getPosition().y <= calcY(200, this->graphicsSettings->resolution) || this->player->getPosition().y >= this->background.getGlobalBounds().height - calcY(392, this->graphicsSettings->resolution);
-				const bool osX = this->player->getPosition().x <= calcX(608, this->graphicsSettings->resolution) || this->player->getPosition().x >= this->background.getGlobalBounds().width - calcX(672, this->graphicsSettings->resolution);
+				const float _32 = calcX(32, this->gameSettings->resolution);
+				const bool osY = this->player->getPosition().y <= calcY(200, this->gameSettings->resolution) || this->player->getPosition().y >= this->background.getGlobalBounds().height - calcY(392, this->gameSettings->resolution);
+				const bool osX = this->player->getPosition().x <= calcX(608, this->gameSettings->resolution) || this->player->getPosition().x >= this->background.getGlobalBounds().width - calcX(672, this->gameSettings->resolution);
 
 				if (osX || osY) {
 					if (osX && osY) {
@@ -301,9 +360,9 @@ void GameState::update(const float& dt)
 
 			this->player->loadAttack(dt);
 
-			if (this->mousePosView.y > calcY(128, this->graphicsSettings->resolution)) {
+			if (this->mousePosView.y > calcY(128, this->gameSettings->resolution)) {
 				if (this->playerGUI->getIsShopping()) {
-					if (this->mousePosView.x > calcX(292, this->graphicsSettings->resolution) && this->mouseClick)
+					if (this->mousePosView.x > calcX(292, this->gameSettings->resolution) && this->mouseClick)
 						this->player->doAttack();
 				}
 				else if (this->mouseClick) this->player->doAttack();
@@ -311,11 +370,13 @@ void GameState::update(const float& dt)
 				if (this->player->checkIfAbility()) {
 					this->player->doAbility(sf::Vector2f(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window), this->view)), this->projectiles);
 					this->playerGUI->setAbilityIcon();
+					this->playerGUI->updateArmor();
 				}
 			}
 			this->player->spawn(dt);
 			this->player->animation(dt);
 			this->player->abilityCounter(dt);
+			this->playerGUI->updateArmor();
 			this->playerGUI->update_ability(dt);
 
 		}
@@ -334,7 +395,7 @@ void GameState::update(const float& dt)
 				}
 				this->setKeysClick("E", this->getKeysClick1("E"));
 
-				if (this->playerGUI->updateShop(this->mousePosWindow, this->getMouseClick())) {
+				if (this->playerGUI->updateShop(this->mousePosWindow, this->getMouseClick(), this->floatingTexts)) {
 					this->setMouseClick(true);
 				}
 				
@@ -354,7 +415,7 @@ void GameState::update(const float& dt)
 				this->monsterIDs.clear();
 			}
 			else {
-				const sf::VideoMode vm = this->graphicsSettings->resolution;
+				const sf::VideoMode vm = this->gameSettings->resolution;
 				this->player->attackMonster(&this->font, this->monsters, this->floatingTexts);
 				for (const auto& monster : this->monsters) {
 					if (monster->getSpawned()) {
@@ -365,15 +426,15 @@ void GameState::update(const float& dt)
 							monster->smashed(dt);
 						}
 						else {
-							monster->AI(this->player->getPosition(), dt);
-							if (monster->getVelocity() != sf::Vector2f(0.f, 0.f)) {
-								monster->obstacleCollision(this->obstacles);
+							monster->AI(this->tiles, this->player, dt);
+							if (monster->hasVelocity()) {
+								monster->obstacleCollision(this->tiles);
 								monster->monsterCollision(this->monsters);
 								monster->move();
 								monster->update(dt);
 							}
 							monster->loadAttack(dt);
-							if (monster->attackPlayer(this->player, &this->font, this->obstacles, this->projectiles, this->floatingTexts)) {
+							if (monster->attackPlayer(this->player, &this->font, this->tiles, this->projectiles, this->floatingTexts)) {
 								this->playerGUI->update_HP();
 							}
 							monster->animation(dt);
@@ -388,9 +449,9 @@ void GameState::update(const float& dt)
 							this->pauseState();
 						}
 						this->playerGUI->update_XP();
-						drops.push_back(new Drop("coin", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y + calcY(16, vm), (*monster)->getGold(), this->graphicsSettings->resolution));
+						drops.push_back(new Drop("coin", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y + calcY(16, vm), (*monster)->getGold(), this->gameSettings->resolution, this->gameSettings->soundsVolume));
 						if (int(Random::Float() * 4) == 0) {
-							drops.push_back(new Drop("heart", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y, 1, this->graphicsSettings->resolution));
+							drops.push_back(new Drop("heart", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y, 1, this->gameSettings->resolution, this->gameSettings->soundsVolume));
 						}
 						monster = this->monsters.erase(monster);
 
@@ -407,7 +468,7 @@ void GameState::update(const float& dt)
 		this->playerGUI->updating_HP(dt);
 
 		for (const auto& proj : this->projectiles) {
-			proj->obstacleCollision(this->obstacles);
+			proj->obstacleCollision(this->tiles);
 			proj->playerCollision(this->player);
 			for (const auto& monster : this->monsters) {
 				proj->monsterCollision(monster, &this->font, this->player, this->floatingTexts);
@@ -415,7 +476,7 @@ void GameState::update(const float& dt)
 			}
 			proj->update(dt);
 		}
-		const sf::VideoMode vm = this->graphicsSettings->resolution;
+		const sf::VideoMode vm = this->gameSettings->resolution;
 		for (auto proj = this->projectiles.begin(); proj != this->projectiles.end();) {
 			if ((*proj)->getHP() == 0) {
 				proj = this->projectiles.erase(proj);
@@ -429,7 +490,7 @@ void GameState::update(const float& dt)
 
 					this->player->punch();
 
-					this->floatingTexts.push_back(new FloatingText(&this->font, "-" + std::to_string(attack), calcChar(16, vm), this->player->getPosition().x + calcX(32, vm), this->player->getPosition().y + calcY(32, vm), sf::Color(228, 92, 95), this->graphicsSettings->resolution));
+					this->floatingTexts.push_back(new FloatingText(&this->font, "-" + std::to_string(attack), calcChar(16, vm), this->player->getPosition().x + calcX(32, vm), this->player->getPosition().y + calcY(32, vm), sf::Color(228, 92, 95), false, this->gameSettings->resolution));
 					this->playerGUI->update_HP();
 				}
 

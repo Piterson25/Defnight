@@ -7,7 +7,7 @@ class SettingsState :
 	public State
 {
 public:
-	SettingsState(const float& gridSize, sf::RenderWindow* window, GraphicsSettings* grap,
+	SettingsState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
 		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states);
 	virtual ~SettingsState();
 
@@ -25,6 +25,13 @@ private:
 	bool fullscreen;
 	uint16_t fpsLimit;
 	std::vector<uint16_t> fpsLimits;
+	bool fpsCounterOn;
+	float musicVolume;
+	size_t musicVolume_id;
+	std::vector<uint16_t> musicVolumes;
+	float soundsVolume;
+	size_t soundsVolume_id;
+	std::vector<uint16_t> soundsVolumes;
 	std::string language;
 
 	std::unordered_map<std::string, gui::ButtonText*> text_buttons;

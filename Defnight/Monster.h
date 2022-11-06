@@ -14,19 +14,23 @@ class Monster
 	: public Entity
 {
 public:
-	Monster(const float& x, const float& y, sf::Texture& texture, sf::Texture& shadow_texture, const sf::VideoMode& vm, const std::string& monster_name, const float& difficulty_mod);
+	Monster(const float& x, const float& y, sf::Texture& texture, sf::Texture& shadow_texture, const std::vector<Tile*>& tiles, const sf::VideoMode& vm, const float& soundVolume, const std::string& monster_name, const float& difficulty_mod, const float& wave_mod);
 	virtual ~Monster();
 
+	virtual const uint16_t getGold() const;
+	virtual const uint16_t getAttack() const;
 	virtual const bool getSpawned() const;
 	virtual const bool getDeadCountdown() const;
 
-	const bool attackPlayer(Player* player, sf::Font* font, const std::vector<sf::Sprite>& obstacles, std::list<Projectile*>& projectiles, std::list<FloatingText*>& floatingTexts);
-	const bool sightCollision(const std::vector<sf::Sprite>& obstacles,
-		const sf::Vector2f& a_p1, const sf::Vector2f& a_p2);
+	const bool attackPlayer(Player* player, sf::Font* font, const std::vector<Tile*>& tiles, std::list<Projectile*>& projectiles, std::list<FloatingText*>& floatingTexts);
+	const bool sightCollision(const std::vector<Tile*>& tiles, const sf::Vector2f& a_p1, const sf::Vector2f& a_p2);
 	void spawn(const float& dt);
 	const bool dying(const float& dt);
 
-	void AI(const sf::Vector2f& playerPosition, const float& dt);
+	void setGold(const uint16_t& gold);
+	void setAttack(const uint16_t& attack);
+
+	void AI(const std::vector<Tile*>& tiles, Player* player, const float& dt);
 
 	void monsterCollision(const std::list<Monster*>& monsters);
 
@@ -34,12 +38,47 @@ public:
 	void draw(sf::RenderTarget& target);
 	void drawShadow(sf::RenderTarget& target);
 private:
-	sf::VideoMode vm;
 	sf::Sprite shadow;
 	sf::Texture shadow_texture;
+
+	uint16_t gold;
+	uint16_t attack;
 
 	bool spawned;
 	float deadCountdown;
 	float spawnCountdown;
+
+	sf::Vector2f BlockSize;
+	const size_t CollumsX = 32;
+	const size_t CollumsY = 32;
+
+	bool activateAI;
+
+	struct Node
+	{
+		bool isWall = false;
+		bool isVisited = false;
+		float FCost = 0.f;
+		float HCost = 0.f;
+		int x = 0;
+		int y = 0;
+		std::vector<Node*> Neighbours = {};
+		Node* parent = nullptr;
+	};
+
+	std::vector<Node*> Nodes;
+	Node* Start;
+	Node* End;
+	Node* Current;
+
+	std::vector<sf::RectangleShape> greens;
+
+	void resetNodes(Player* player);
+	void initNodes();
+	void AStarAlg();
+
+	sf::SoundBuffer punchSound;
+	sf::Sound sound;
+	bool playedSound;
 };
 #endif

@@ -3,16 +3,15 @@
 
 Entity::Entity()
 {
+	this->vm = sf::VideoMode();
 	this->velocity = sf::Vector2f(0.f, 0.f);
 	this->name = "";
-	this->attack = 0;
 	this->attackSpeed = 0;
 	this->maxHP = 0;
 	this->HP = 0;
 	this->XP = 0;
 	this->speed = 0;
 	this->reach = 0;
-	this->gold = 0;
 
 	this->up = false;
 	this->left = true;
@@ -43,7 +42,7 @@ const sf::Texture& Entity::getTexture() const
 	return this->texture;
 }
 
-const sf::Vector2f Entity::getVelocity() const
+const sf::Vector2f& Entity::getVelocity() const
 {
 	return this->velocity;
 }
@@ -57,6 +56,12 @@ const bool Entity::isDead() const
 {
 	if (this->HP == 0) return true;
 	return false;
+}
+
+const bool Entity::hasVelocity() const
+{
+	if (this->velocity != sf::Vector2f(0.f, 0.f)) return true;
+	else return false;
 }
 
 const bool Entity::getLeft() const
@@ -82,11 +87,6 @@ const bool Entity::getDown() const
 const bool Entity::getIsAttacking() const
 {
 	return this->isAttacking;
-}
-
-const unsigned Entity::getAttack() const
-{
-	return this->attack;
 }
 
 const unsigned Entity::getAttackSpeed() const
@@ -119,11 +119,6 @@ const unsigned Entity::getReach() const
 	return this->reach;
 }
 
-const unsigned Entity::getGold() const
-{
-	return this->gold;
-}
-
 const unsigned Entity::getPunched() const
 {
 	return this->punched;
@@ -139,7 +134,40 @@ const sf::Vector2f Entity::getCenter() const
 	return sf::Vector2f(this->sprite.getPosition().x + (this->sprite.getGlobalBounds().width * 0.5f), this->sprite.getPosition().y + (this->sprite.getGlobalBounds().height * 0.5f));
 }
 
-const std::string Entity::getName() const
+const sf::Vector2f Entity::getLeftCenter() const
+{
+	return sf::Vector2f(this->sprite.getPosition().x + (this->sprite.getGlobalBounds().width * 0.125f), this->sprite.getPosition().y + (this->sprite.getGlobalBounds().height * 0.5f));
+}
+
+const sf::Vector2f Entity::getUpCenter() const
+{
+	return sf::Vector2f(this->sprite.getPosition().x + (this->sprite.getGlobalBounds().width * 0.5f), this->sprite.getPosition().y + (this->sprite.getGlobalBounds().height * 0.125f));
+}
+
+const sf::Vector2f Entity::getDownCenter() const
+{
+	return sf::Vector2f(this->sprite.getPosition().x + (this->sprite.getGlobalBounds().width * 0.5f), this->sprite.getPosition().y + (this->sprite.getGlobalBounds().height * 0.875f));
+}
+
+const sf::Vector2f Entity::getRightCenter() const
+{
+	return sf::Vector2f(this->sprite.getPosition().x + (this->sprite.getGlobalBounds().width * 0.875f), this->sprite.getPosition().y + (this->sprite.getGlobalBounds().height * 0.5f));
+}
+
+const float Entity::attackDistance(Entity* e1, Entity* e2) const
+{
+	if (this->left)
+		return vectorDistance(e1->getCenter(), e2->getLeftCenter());
+	else if (this->right)
+		return vectorDistance(e1->getCenter(), e2->getRightCenter());
+	else if (this->up)
+		return vectorDistance(e1->getCenter(), e2->getUpCenter());
+	else if (this->down)
+		return vectorDistance(e1->getCenter(), e2->getDownCenter());
+	return 1000.f;
+}
+
+const std::string& Entity::getName() const
 {
 	return this->name;
 }
@@ -165,10 +193,6 @@ void Entity::setPosition(const float& x, const float& y)
 	this->sprite.setPosition(x, y);
 }
 
-void Entity::setAttack(const unsigned& attack)
-{
-	this->attack = attack;
-}
 
 void Entity::setAttackSpeed(const unsigned& attackSpeed)
 {
@@ -200,11 +224,6 @@ void Entity::setReach(const unsigned& reach)
 	this->reach = reach;
 }
 
-void Entity::setGold(const unsigned& gold)
-{
-	this->gold = gold;
-}
-
 void Entity::setName(const std::string& name)
 {
 	this->name = name;
@@ -225,15 +244,15 @@ void Entity::doAttack()
 	}
 }
 
-void Entity::obstacleCollision(const std::vector<sf::Sprite>& obstacles)
+void Entity::obstacleCollision(const std::vector<Tile*>& tiles)
 {
-	const float distance = 2 * obstacles.front().getGlobalBounds().width;
+	const float distance = 2 * tiles.front()->getGlobalBounds().width;
 
-	for (const auto& e : obstacles) {
-		if (vectorDistance(this->sprite.getPosition(), e.getPosition()) < distance) {
+	for (const auto& e : tiles) {
+		if (vectorDistance(this->sprite.getPosition(), e->getPosition()) < distance) {
 
 			sf::FloatRect playerBounds = this->sprite.getGlobalBounds();
-			sf::FloatRect wallBounds = e.getGlobalBounds();
+			sf::FloatRect wallBounds = e->getGlobalBounds();
 
 			sf::FloatRect nextPos = playerBounds;
 			nextPos.left += this->velocity.x;
@@ -413,14 +432,4 @@ void Entity::smashed(const float& dt)
 void Entity::move()
 {
 	this->sprite.move(this->velocity);
-}
-
-void Entity::update(const float& dt)
-{
-
-}
-
-void Entity::draw(sf::RenderTarget& target)
-{
-
 }

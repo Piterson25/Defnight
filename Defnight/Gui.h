@@ -14,7 +14,9 @@ namespace gui {
 
 		const bool isPressed() const;
 		const std::string getText() const;
+		const float getWidth() const;
 
+		void setPosition(const sf::Vector2f& position);
 		void setText(const std::string& text);
 		void center(const float& posX);
 
