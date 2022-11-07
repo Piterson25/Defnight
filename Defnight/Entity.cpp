@@ -332,6 +332,9 @@ void Entity::animation(const float& dt)
 			this->right = false;
 		}
 	}
+
+	uint8_t monsterTile = 1;
+	if (this->name == "minotaur") monsterTile = 2;
 		
 	if (this->isAttacking && (this->velocity.x != 0.f || this->velocity.y != 0.f)) {
 		
@@ -347,14 +350,14 @@ void Entity::animation(const float& dt)
 		if (this->animationCooldown >= 1.f) {
 			this->animationCooldown = 0.f;
 		
-			sf::IntRect intRect(this->frame, y * 16, 16, 16);
+			sf::IntRect intRect(this->frame, y * 16 * monsterTile, 16 * monsterTile, 16 * monsterTile);
 			this->sprite.setTextureRect(intRect);
 		
-			if (this->frame == 112) {
+			if (this->frame == 112 * monsterTile) {
 				this->frame = 0;
 				this->isAttacking = false;
 			}
-			else this->frame += 16;
+			else this->frame += 16 * monsterTile;
 		}
 	}
 	else if (this->isAttacking) {
@@ -371,14 +374,14 @@ void Entity::animation(const float& dt)
 		if (this->animationCooldown >= 1.f) {
 			this->animationCooldown = 0.f;
 		
-			sf::IntRect intRect(this->frame, y * 16, 16, 16);
+			sf::IntRect intRect(this->frame, y * 16 * monsterTile, 16 * monsterTile, 16 * monsterTile);
 			this->sprite.setTextureRect(intRect);
 		
-			if (this->frame == 112) {
+			if (this->frame == 112 * monsterTile) {
 				this->frame = 0;
 				this->isAttacking = false;
 			}
-			else this->frame += 16;
+			else this->frame += 16 * monsterTile;
 		}
 	}
 	else if (this->velocity.x != 0.f || this->velocity.y != 0.f) {
@@ -394,11 +397,11 @@ void Entity::animation(const float& dt)
 		if (this->animationCooldown >= 1.f) {
 			this->animationCooldown = 0.f;
 		
-			sf::IntRect intRect(this->frame, y * 16, 16, 16);
+			sf::IntRect intRect(this->frame, y * 16 * monsterTile, 16 * monsterTile, 16 * monsterTile);
 			this->sprite.setTextureRect(intRect);
 		
-			if (this->frame == 112) this->frame = 0;
-			else this->frame += 16;
+			if (this->frame == 112 * monsterTile) this->frame = 0;
+			else this->frame += 16 * monsterTile;
 		}
 	}
 }

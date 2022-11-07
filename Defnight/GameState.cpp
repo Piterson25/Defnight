@@ -110,6 +110,8 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->textures["ORC"] = texture;
 	texture.loadFromFile("external/assets/monsters/cyclope.png");
 	this->textures["CYCLOPE"] = texture;
+	texture.loadFromFile("external/assets/monsters/minotaur.png");
+	this->textures["MINOTAUR"] = texture;
 	texture.loadFromFile("external/assets/entity_shadow.png");
 	this->textures["SHADOW"] = texture;
 
@@ -134,12 +136,14 @@ void GameState::resetGUI()
 void GameState::prepareWave()
 {
 	this->wave++;
-	if (this->wave % 10 == 0) this->sumHP = 100;
+	if (this->wave % 10 == 0) this->sumHP = 69;
 	else this->sumHP += static_cast<uint16_t>(Random::Float() * this->sumHP) + 1;
 	uint16_t monstersHP = this->sumHP;
 	short t = 0;
 	while (monstersHP > 0) {
-		if (monstersHP >= 18 && this->wave >= 7) 
+		if (monstersHP >= 69 && this->wave >= 10) 
+			t = 4;
+		else if (monstersHP >= 18 && this->wave >= 7) 
 			t = static_cast<short>(Random::Float() * 4.f);
 		else if (monstersHP >= 12 && this->wave >= 5) 
 			t = static_cast<short>(Random::Float() * 3.f);
@@ -163,6 +167,9 @@ void GameState::prepareWave()
 			break;
 		case 3:
 			monstersHP -= 18;
+			break;
+		case 4:
+			monstersHP -= 69;
 			break;
 		}
 	}
@@ -208,13 +215,13 @@ void GameState::spawnMonsters()
 		case 3:
 			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["CYCLOPE"], this->textures["SHADOW"], this->tiles, vm, this->gameSettings->soundsVolume, "cyclope", this->difficultyModifier, wave_mod));
 			break;
+		case 4:
+			this->monsters.push_back(new Monster(calcX(this->gridSize * 16, vm), calcY(this->gridSize * 16, vm), this->textures["MINOTAUR"], this->textures["SHADOW"], this->tiles, vm, this->gameSettings->soundsVolume, "minotaur", this->difficultyModifier, wave_mod));
+			break;
 		default:
 			break;
 		}
 	}
-
-	this->coinBuffer.loadFromFile("external/music/swipe.wav");
-	this->coinSound.setBuffer(this->coinBuffer);
 }
 
 void GameState::draw(sf::RenderTarget* target)
@@ -517,6 +524,14 @@ void GameState::update(const float& dt)
 			this->paused = true;
 			this->player->setIsRegenerating(false);
 			this->playerGUI->update_HP();
+		}
+
+		for (auto& s : this->sounds) {
+			s.play();
+		}
+		for (auto s = this->sounds.begin(); s != this->sounds.end();) {
+			if (s->hasStopped()) s = this->sounds.erase(s);
+			else ++s;
 		}
 	}
 

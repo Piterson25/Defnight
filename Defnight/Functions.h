@@ -2,6 +2,7 @@
 #define FUNCTIONS_H
 
 #include <algorithm>
+#include <deque>
 #include <fstream>
 #include <iostream>
 #include <list>

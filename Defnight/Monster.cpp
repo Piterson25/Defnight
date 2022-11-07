@@ -5,10 +5,14 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 	const sf::VideoMode& vm, const float& soundVolume, const std::string& monster_name, const float& difficulty_mod, const float& wave_mod)
 {
 	this->vm = vm;
+	this->name = monster_name;
+
+	uint8_t monsterTile = 1;
+	if (this->name == "minotaur") monsterTile = 2;
 
 	this->texture = texture;
 	this->sprite.setTexture(this->texture);
-	this->sprite.setTextureRect(sf::IntRect(0, 32, 16, 16));
+	this->sprite.setTextureRect(sf::IntRect(0, 32 * monsterTile, 16 * monsterTile, 16 * monsterTile));
 	this->sprite.setScale(calcScale(4, vm), calcScale(4, vm));
 	this->sprite.setPosition(x, y);
 	this->sprite.setColor(sf::Color(255, 255, 255, 0));
@@ -16,10 +20,9 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 	this->shadow_texture = shadow_texture;
 	this->shadow.setTexture(this->shadow_texture);
 	this->shadow.setScale(calcScale(4, vm), calcScale(4, vm));
-	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52, vm));
+	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52 * monsterTile, vm));
 	this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
-	this->name = monster_name;
 	this->reach = 1;
 	this->spawnCountdown = 0.f;
 	this->deadCountdown = 0.f;
@@ -73,6 +76,14 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 		this->speed = 1;
 		this->gold = 4;
 		this->XP = static_cast<unsigned>(26 * wave_mod);
+	}
+	else if (this->name == "minotaur") {
+		this->attack = static_cast<unsigned>(7 * difficulty_mod * wave_mod);
+		this->attackSpeed = 1;
+		this->HP = static_cast<unsigned>(69 * difficulty_mod * wave_mod);
+		this->speed = 1;
+		this->gold = 25;
+		this->XP = static_cast<unsigned>(100 * wave_mod);
 	}
 }
 
