@@ -2,7 +2,7 @@
 #include "Monster.h"
 
 Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Texture& shadow_texture, const std::vector<Tile*>& tiles, 
-	const sf::VideoMode& vm, const float& soundVolume, const std::string& monster_name, const float& difficulty_mod, const float& wave_mod)
+	const sf::VideoMode& vm, const std::string& monster_name, const float& difficulty_mod, const float& wave_mod)
 {
 	this->vm = vm;
 	this->name = monster_name;
@@ -20,7 +20,7 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 	this->shadow_texture = shadow_texture;
 	this->shadow.setTexture(this->shadow_texture);
 	this->shadow.setScale(calcScale(4, vm), calcScale(4, vm));
-	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52 * monsterTile, vm));
+	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(static_cast<float>(52 * monsterTile), vm));
 	this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
 	this->reach = 1;
@@ -29,9 +29,6 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 	this->spawned = false;
 	this->activateAI = false;
 
-	this->punchSound.loadFromFile("external/music/punch.wav");
-	this->sound.setBuffer(this->punchSound);
-	this->sound.setVolume(soundVolume);
 	this->playedSound = false;
 
 	this->BlockSize.x = calcX(64, vm);
@@ -112,7 +109,7 @@ const bool Monster::getDeadCountdown() const
 	return false;
 }
 
-const bool Monster::attackPlayer(Player* player, sf::Font* font, const std::vector<Tile*>& tiles, std::list<Projectile*>& projectiles, std::list<FloatingText*>& floatingTexts)
+const bool Monster::attackPlayer(Player* player, sf::Font* font, const std::vector<Tile*>& tiles, std::list<Projectile*>& projectiles, std::list<FloatingText*>& floatingTexts, SoundEngine* soundEngine)
 {
 	const float distance = this->attackDistance(player, this);
 
@@ -124,8 +121,8 @@ const bool Monster::attackPlayer(Player* player, sf::Font* font, const std::vect
 					projectiles.push_back(new Projectile("stone", this->getPosition().x + calcX(24, vm), this->getPosition().y + calcY(36, vm), this->getAttack(), 1, 1, sf::Vector2f(player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm)), this->vm));
 					this->isAttacking = false;
 
-					if (this->sound.getStatus() == sf::Sound::Stopped && !this->playedSound) {
-						this->sound.play();
+					if (!this->playedSound) {
+						soundEngine->addSound("punch");
 						this->playedSound = true;
 					}
 				}
@@ -142,8 +139,8 @@ const bool Monster::attackPlayer(Player* player, sf::Font* font, const std::vect
 				if (static_cast<int>(player->getHP() - Lattack) < 0) player->setHP(0);
 				else player->setHP(player->getHP() - Lattack);
 
-				if (this->sound.getStatus() == sf::Sound::Stopped && !this->playedSound) {
-					this->sound.play();
+				if (!this->playedSound) {
+					soundEngine->addSound("punch");
 					this->playedSound = true;
 				}
 
@@ -367,7 +364,7 @@ void Monster::monsterCollision(const std::list<Monster*>& monsters)
 void Monster::update(const float& dt)
 {
 	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52, this->vm));
-	if (this->sound.getStatus() == sf::Sound::Stopped && this->playedSound && this->frame != 80) {
+	if (this->playedSound && this->frame != 80) {
 		this->playedSound = false;
 	}
 }

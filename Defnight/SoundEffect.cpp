@@ -10,7 +10,7 @@ SoundEffect::SoundEffect(const std::string& name, const float& volume)
         this->sound.setBuffer(buffer);
     }
 	this->sound.setVolume(volume);
-	this->sound.stop();
+    this->sound.play();
 }
 
 SoundEffect::~SoundEffect()

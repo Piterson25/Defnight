@@ -4,16 +4,18 @@
 #include "Monster.h"
 #include "Entity.h"
 #include "FloatingText.h"
+#include "SoundEngine.h"
 
 class Monster;
 class FloatingText;
 class Projectile;
+class SoundEngine;
 
 class Player: 
 	public Entity
 {
 public:
-	Player(const float& x, const float& y, const sf::VideoMode& vm, const float& soundVolume, const std::string& hero_name);
+	Player(const float& x, const float& y, const sf::VideoMode& vm, const std::string& hero_name);
 	virtual ~Player();
 
 	virtual const uint16_t getGold() const;
@@ -45,7 +47,7 @@ public:
 	void setAbilityTime(const float& abilityTime);
 	void setAbilityCooldown(const float& abilityCooldown);
 
-	void attackMonster(sf::Font* font, const std::list<Monster*>& monsters, std::list<FloatingText*>& floatingTexts);
+	void attackMonster(sf::Font* font, const std::list<Monster*>& monsters, std::list<FloatingText*>& floatingTexts, SoundEngine* soundEngine);
 	const bool addXP(const unsigned& monsterXP);
 	void spawn(const float& dt);
 	void controls(const std::unordered_map<std::string, int>& keybinds, const float& dt);
@@ -53,6 +55,7 @@ public:
 	void abilityCounter(const float& dt);
 	const bool checkIfAbility();
 	void doAbility(const sf::Vector2f& coords, std::list<Projectile*>& projectiles);
+	void swipeSound(SoundEngine* soundEngine);
 
 	void update(const float& dt);
 	void draw(sf::RenderTarget& target);
@@ -83,9 +86,7 @@ private:
 	float abilityCooldown;
 	float abilityTime;
 	float abilityMaxTime;
-	sf::SoundBuffer whoosh;
-	sf::SoundBuffer hit;
-	sf::Sound sound;
+	
 	bool playedSound;
 };
 

@@ -19,6 +19,8 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->music.setVolume(this->gameSettings->musicVolume);
 	this->music.pause();
 
+	this->soundEngine = new SoundEngine(this->gameSettings->soundsVolume);
+
 	this->background_texture.loadFromFile("external/assets/" + map_name + ".png");
 	this->background.setTexture(this->background_texture);
 	this->background.setScale(calcScale(4, vm), calcScale(4, vm));
@@ -73,7 +75,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 					quad[3].texCoords = sf::Vector2f(64, 32);
 				}
 				else if (temp[i] == 'S') {
-					this->player = new Player(x, y, vm, this->gameSettings->soundsVolume, hero_name);
+					this->player = new Player(x, y, vm, hero_name);
 				}
 				x += pos;
 				t++;
@@ -204,19 +206,19 @@ void GameState::spawnMonsters()
 		switch (id)
 		{
 		case 0:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["GOBLIN"], this->textures["SHADOW"], this->tiles, vm, this->gameSettings->soundsVolume, "goblin", this->difficultyModifier, wave_mod));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["GOBLIN"], this->textures["SHADOW"], this->tiles, vm, "goblin", this->difficultyModifier, wave_mod));
 			break;
 		case 1:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["SPIDER"], this->textures["SHADOW"], this->tiles, vm, this->gameSettings->soundsVolume, "spider", this->difficultyModifier, wave_mod));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["SPIDER"], this->textures["SHADOW"], this->tiles, vm, "spider", this->difficultyModifier, wave_mod));
 			break;
 		case 2:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["ORC"], this->textures["SHADOW"], this->tiles, vm, this->gameSettings->soundsVolume, "orc", this->difficultyModifier, wave_mod));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["ORC"], this->textures["SHADOW"], this->tiles, vm, "orc", this->difficultyModifier, wave_mod));
 			break;
 		case 3:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["CYCLOPE"], this->textures["SHADOW"], this->tiles, vm, this->gameSettings->soundsVolume, "cyclope", this->difficultyModifier, wave_mod));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["CYCLOPE"], this->textures["SHADOW"], this->tiles, vm, "cyclope", this->difficultyModifier, wave_mod));
 			break;
 		case 4:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * 16, vm), calcY(this->gridSize * 16, vm), this->textures["MINOTAUR"], this->textures["SHADOW"], this->tiles, vm, this->gameSettings->soundsVolume, "minotaur", this->difficultyModifier, wave_mod));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * 16, vm), calcY(this->gridSize * 16, vm), this->textures["MINOTAUR"], this->textures["SHADOW"], this->tiles, vm, "minotaur", this->difficultyModifier, wave_mod));
 			break;
 		default:
 			break;
@@ -305,6 +307,7 @@ void GameState::update(const float& dt)
 			this->playerGUI->updatePaused(this->paused);
 			if (this->paused) {
 				this->music.pause();
+				this->soundEngine->stopSounds();
 			}
 			else this->music.play();
 			
@@ -324,6 +327,7 @@ void GameState::update(const float& dt)
 		else if (result == 3) {
 			this->paused = false;
 			this->music.play();
+			this->soundEngine->playSounds();
 		}
 		else if (result == 4) {
 			this->states->push(new SettingsState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->states));
@@ -344,6 +348,7 @@ void GameState::update(const float& dt)
 				this->player->move();
 
 				this->player->update(dt);
+				this->player->swipeSound(this->soundEngine);
 				
 				const float _32 = calcX(32, this->gameSettings->resolution);
 				const bool osY = this->player->getPosition().y <= calcY(200, this->gameSettings->resolution) || this->player->getPosition().y >= this->background.getGlobalBounds().height - calcY(392, this->gameSettings->resolution);
@@ -423,7 +428,7 @@ void GameState::update(const float& dt)
 			}
 			else {
 				const sf::VideoMode vm = this->gameSettings->resolution;
-				this->player->attackMonster(&this->font, this->monsters, this->floatingTexts);
+				this->player->attackMonster(&this->font, this->monsters, this->floatingTexts, this->soundEngine);
 				for (const auto& monster : this->monsters) {
 					if (monster->getSpawned()) {
 						if (monster->isDead()) {
@@ -441,7 +446,7 @@ void GameState::update(const float& dt)
 								monster->update(dt);
 							}
 							monster->loadAttack(dt);
-							if (monster->attackPlayer(this->player, &this->font, this->tiles, this->projectiles, this->floatingTexts)) {
+							if (monster->attackPlayer(this->player, &this->font, this->tiles, this->projectiles, this->floatingTexts, this->soundEngine)) {
 								this->playerGUI->update_HP();
 							}
 							monster->animation(dt);
@@ -452,13 +457,13 @@ void GameState::update(const float& dt)
 				for (auto monster = this->monsters.begin(); monster != this->monsters.end();) {
 					if ((*monster)->getDeadCountdown()) {
 						if (this->player->addXP((*monster)->getXP())) {
-							this->playerGUI->update_level();
+							this->playerGUI->update_level(this->soundEngine);
 							this->pauseState();
 						}
 						this->playerGUI->update_XP();
-						drops.push_back(new Drop("coin", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y + calcY(16, vm), (*monster)->getGold(), this->gameSettings->resolution, this->gameSettings->soundsVolume));
+						drops.push_back(new Drop("coin", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y + calcY(16, vm), (*monster)->getGold(), this->gameSettings->resolution));
 						if (int(Random::Float() * 4) == 0) {
-							drops.push_back(new Drop("heart", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y, 1, this->gameSettings->resolution, this->gameSettings->soundsVolume));
+							drops.push_back(new Drop("heart", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y, 1, this->gameSettings->resolution));
 						}
 						monster = this->monsters.erase(monster);
 
@@ -472,7 +477,7 @@ void GameState::update(const float& dt)
 			}
 		}
 		this->playerGUI->updating_XP(dt);
-		this->playerGUI->updating_HP(dt);
+		this->playerGUI->updating_HP(this->soundEngine, dt);
 
 		for (const auto& proj : this->projectiles) {
 			proj->obstacleCollision(this->tiles);
@@ -514,7 +519,7 @@ void GameState::update(const float& dt)
 		}
 
 		for (auto drop = this->drops.begin(); drop != this->drops.end();) {
-			if ((*drop)->getSpawned() && (*drop)->playerPick(this->player, &this->font, this->playerGUI, this->floatingTexts, dt)) {
+			if ((*drop)->getSpawned() && (*drop)->playerPick(this->player, &this->font, this->playerGUI, this->floatingTexts, this->soundEngine, dt)) {
 				drop = this->drops.erase(drop);
 			}
 			else ++drop;
@@ -526,13 +531,7 @@ void GameState::update(const float& dt)
 			this->playerGUI->update_HP();
 		}
 
-		for (auto& s : this->sounds) {
-			s.play();
-		}
-		for (auto s = this->sounds.begin(); s != this->sounds.end();) {
-			if (s->hasStopped()) s = this->sounds.erase(s);
-			else ++s;
-		}
+		this->soundEngine->deleteSound();
 	}
 
 	this->playerGUI->update(this->mousePosView, this->waveCountdown, dt);

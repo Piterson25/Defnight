@@ -1,7 +1,7 @@
 #include "Functions.h"
 #include "Player.h"
 
-Player::Player(const float& x, const float& y, const sf::VideoMode& vm, const float& soundVolume, const std::string& hero_name)
+Player::Player(const float& x, const float& y, const sf::VideoMode& vm, const std::string& hero_name)
 {
 	this->vm = vm;
 	this->name = hero_name;
@@ -26,10 +26,6 @@ Player::Player(const float& x, const float& y, const sf::VideoMode& vm, const fl
 	this->ability.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52, vm));
 	this->ability.setColor(sf::Color(255, 255, 255, 0));
 
-	this->whoosh.loadFromFile("external/music/swipe.wav");
-	this->hit.loadFromFile("external/music/hit.wav");
-	this->sound.setBuffer(this->whoosh);
-	this->sound.setVolume(soundVolume);
 	this->playedSound = false;
 
 	this->level = 1;
@@ -204,7 +200,7 @@ void Player::setAbilityCooldown(const float& abilityCooldown)
 	this->abilityCooldown = abilityCooldown;
 }
 
-void Player::attackMonster(sf::Font* font, const std::list<Monster*>& monsters, std::list<FloatingText*>& floatingTexts)
+void Player::attackMonster(sf::Font* font, const std::list<Monster*>& monsters, std::list<FloatingText*>& floatingTexts, SoundEngine* soundEngine)
 {
 	const sf::VideoMode vm = this->vm;
 	for (const auto& monster : monsters) {
@@ -226,9 +222,8 @@ void Player::attackMonster(sf::Font* font, const std::list<Monster*>& monsters, 
 					else monster->setHP(monster->getHP() - attack);
 				}
 
-				if (this->sound.getStatus() == sf::Sound::Stopped && !this->playedSound) {
-					this->sound.setBuffer(this->hit);
-					this->sound.play();
+				if (!this->playedSound) {
+					soundEngine->addSound("hit");
 					this->playedSound = true;
 				}
 				
@@ -352,19 +347,21 @@ void Player::doAbility(const sf::Vector2f& coords, std::list<Projectile*>& proje
 	}
 }
 
+void Player::swipeSound(SoundEngine* soundEngine)
+{
+	if (this->isAttacking && this->frame == 80 && !this->playedSound) {
+		soundEngine->addSound("swipe");
+		this->playedSound = true;
+	}
+	if ( this->playedSound && this->frame != 80) {
+		this->playedSound = false;
+	}
+}
+
 void Player::update(const float& dt)
 {
 	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52, this->vm));
 	this->ability.setPosition(this->sprite.getPosition());
-
-	if (this->isAttacking && this->frame == 80 && this->sound.getStatus() == sf::Sound::Stopped && !this->playedSound) {
-		this->sound.setBuffer(this->whoosh);
-		this->sound.play();
-		this->playedSound = true;
-	}
-	if (this->sound.getStatus() == sf::Sound::Stopped && this->playedSound && this->frame != 80) {
-		this->playedSound = false;
-	}
 }
 
 void Player::draw(sf::RenderTarget& target)

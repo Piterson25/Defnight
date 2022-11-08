@@ -181,10 +181,6 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->texts["ITEM2_PRICE"] = new gui::Text(&this->font, std::to_string(this->item2Price), calcChar(16, vm), calcX(208, vm), calcY(368, vm), sf::Color(255, 246, 76), false);
 	this->texts["ITEM3_PRICE"] = new gui::Text(&this->font, std::to_string(this->item3Price), calcChar(16, vm), calcX(208, vm), calcY(496, vm), sf::Color(255, 246, 76), false);
 
-	this->levelup.loadFromFile("external/music/levelup.wav");
-	this->gameover.loadFromFile("external/music/gameover.wav");
-	this->sound.setBuffer(this->levelup);
-	this->sound.setVolume(soundVolume);
 }
 
 PlayerGUI::~PlayerGUI()
@@ -308,9 +304,9 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 	}
 }
 
-void PlayerGUI::update_level()
+void PlayerGUI::update_level(SoundEngine* soundEngine)
 {
-	this->sound.play();
+	soundEngine->addSound("levelup");
 	this->isLeveling = true;
 	this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 22));
 	this->texts["LEVEL"]->setText("Level " + std::to_string(this->player->getLevel()));
@@ -359,8 +355,6 @@ void PlayerGUI::update_HP()
 	if (this->player->isDead()) {
 		this->hp_bar_barrier = 0.f;
 		this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, 0, 22));
-		this->sound.setBuffer(this->gameover);
-		this->sound.play();
 	}
 	else this->hp_bar_barrier = static_cast<float>(this->player->getHP()) / this->player->getMaxHP();
 
@@ -368,7 +362,7 @@ void PlayerGUI::update_HP()
 	this->texts["HP"]->center(calcX(640, vm));
 }
 
-void PlayerGUI::updating_HP(const float& dt)
+void PlayerGUI::updating_HP(SoundEngine* soundEngine, const float& dt)
 {
 	if (this->player->regeneration(dt) && !this->player->isDead()) {
 		this->texts["HP"]->setText("HP:" + std::to_string(this->player->getHP()) + "/" + std::to_string(this->player->getMaxHP()));
@@ -381,6 +375,7 @@ void PlayerGUI::updating_HP(const float& dt)
 		this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, 0, 22));
 		this->text_buttons["QUIT"]->setPosition(sf::Vector2f(calcX(640, vm), calcY(488, vm)));
 		this->text_buttons["QUIT"]->center(calcX(640, vm));
+		soundEngine->addSound("gameover");
 	}
 
 	const int width = this->sprites["HP_BAR"]->getTextureRect().width;

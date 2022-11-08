@@ -10,7 +10,7 @@
 #include "Drop.h"
 #include "Tile.h"
 #include "SettingsState.h"
-#include "SoundEffect.h"
+#include "SoundEngine.h"
 
 class GameState :
 	public State
@@ -62,7 +62,7 @@ private:
 
 	std::list<FloatingText*> floatingTexts;
 
-	std::deque<SoundEffect> sounds;
+	SoundEngine* soundEngine;
 
 	std::list<Drop*> drops;
 

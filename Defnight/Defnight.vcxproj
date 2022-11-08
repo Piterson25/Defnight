@@ -165,6 +165,8 @@
     <ClCompile Include="Projectile.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="SettingsState.cpp" />
+    <ClCompile Include="SoundEffect.cpp" />
+    <ClCompile Include="SoundEngine.cpp" />
     <ClCompile Include="State.cpp" />
     <ClCompile Include="Tile.cpp" />
   </ItemGroup>
@@ -184,6 +186,8 @@
     <ClInclude Include="Projectile.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="SettingsState.h" />
+    <ClInclude Include="SoundEffect.h" />
+    <ClInclude Include="SoundEngine.h" />
     <ClInclude Include="State.h" />
     <ClInclude Include="Tile.h" />
   </ItemGroup>

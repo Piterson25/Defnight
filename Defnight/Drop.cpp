@@ -1,7 +1,7 @@
 #include "Functions.h"
 #include "Drop.h"
 
-Drop::Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, sf::VideoMode& vm, const float& soundVolume)
+Drop::Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, sf::VideoMode& vm)
 	:name(name), worth(worth), vm(vm)
 {
 	this->texture.loadFromFile("external/assets/drop.png");
@@ -12,11 +12,9 @@ Drop::Drop(const std::string& name, const float& posX, const float& posY, const 
 
 	if (this->name == "coin") {
 		this->sprite.setTextureRect(sf::IntRect(0, 0, 16, 16));
-		this->buffer.loadFromFile("external/music/coin.wav");
 	}
 	else {
 		this->sprite.setTextureRect(sf::IntRect(0, 16, 16, 16));
-		this->buffer.loadFromFile("external/music/heart.wav");
 	}
 
 	this->spinCooldown = 0.f;
@@ -25,9 +23,6 @@ Drop::Drop(const std::string& name, const float& posX, const float& posY, const 
 
 	this->spawned = false;
 	this->spawnCountdown = 0.f;
-
-	this->sound.setBuffer(this->buffer);
-	this->sound.setVolume(soundVolume);
 }
 
 Drop::~Drop()
@@ -83,7 +78,7 @@ void Drop::move(const float& posX, const float& posY, const float& dt)
 	this->sprite.move(this->velocity);
 }
 
-const bool Drop::playerPick(Player* player, sf::Font* font, PlayerGUI* playerGUI, std::list<FloatingText*>& floatingTexts, const float& dt)
+const bool Drop::playerPick(Player* player, sf::Font* font, PlayerGUI* playerGUI, std::list<FloatingText*>& floatingTexts, SoundEngine* soundEngine, const float& dt)
 {
 	const float distance = vectorDistance(sf::Vector2f(this->sprite.getPosition().x + calcX(8, vm), this->sprite.getPosition().y + calcY(8, vm)), sf::Vector2f(player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm)));
 	if (distance <= player->getReach() * calcX(64, vm)) {
@@ -94,14 +89,16 @@ const bool Drop::playerPick(Player* player, sf::Font* font, PlayerGUI* playerGUI
 			player->setGold(player->getGold() + this->worth);
 			playerGUI->update_Gold();
 			floatingTexts.push_back(new FloatingText(font, "+" + std::to_string(this->worth), calcChar(16, vm), this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y, sf::Color(255, 246, 76), false, vm));
+			soundEngine->addSound("coin");
 		}
 		else if (player->getHP() < player->getMaxHP()) {
 			player->setHP(player->getHP() + 1);
 			player->setIsRegenerating(true);
 			playerGUI->update_HP();
 			floatingTexts.push_back(new FloatingText(font, "+" + std::to_string(this->worth), calcChar(16, vm), this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y - calcY(16, vm), sf::Color(182, 60, 53), false, vm));				
+			soundEngine->addSound("heart");
 		}
-		this->sound.play();
+
 		return true;
 	}
 	return false;

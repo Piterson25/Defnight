@@ -4,8 +4,10 @@
 #include "Player.h"
 #include "Gui.h"
 #include "FloatingText.h"
+#include "SoundEngine.h"
 
 class FloatingText;
+class SoundEngine;
 
 class PlayerGUI
 {
@@ -17,11 +19,11 @@ public:
 	void update_options(unsigned& option_id, unsigned& option_val, std::vector<short>& id_vector, gui::Text* text, gui::Sprite* sprite, const float& pos);
 	void levelUpPlayer(unsigned& option_id, unsigned& option_val);
 	void upgradePlayer(const std::string& name);
-	void update_level();
+	void update_level(SoundEngine* soundEngine);
 	void update_XP();
 	void updating_XP(const float& dt);
 	void update_HP();
-	void updating_HP(const float& dt);
+	void updating_HP(SoundEngine* soundEngine, const float& dt);
 	void update_Gold();
 	void update_ability(const float& dt);
 	void setAbilityIcon();
@@ -88,9 +90,6 @@ private:
 	std::unordered_map<std::string, gui::ButtonSprite*> sprite_buttons;
 	std::unordered_map<std::string, gui::Sprite*> sprites;
 
-	sf::SoundBuffer levelup;
-	sf::SoundBuffer gameover;
-	sf::Sound sound;
 };
 
 #endif

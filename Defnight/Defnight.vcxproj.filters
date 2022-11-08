@@ -24,6 +24,9 @@
     <Filter Include="Game">
       <UniqueIdentifier>{8141c0d3-b104-4f87-b114-da9fc65fc700}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Sounds">
+      <UniqueIdentifier>{69ca86f2-c4fb-495b-92c5-15b3fd980e54}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Drop.cpp">
@@ -80,6 +83,12 @@
     <ClCompile Include="Tile.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
+    <ClCompile Include="SoundEffect.cpp">
+      <Filter>Sounds</Filter>
+    </ClCompile>
+    <ClCompile Include="SoundEngine.cpp">
+      <Filter>Sounds</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Drop.h">
@@ -132,6 +141,12 @@
     </ClInclude>
     <ClInclude Include="Tile.h">
       <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEffect.h">
+      <Filter>Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="SoundEngine.h">
+      <Filter>Sounds</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
