@@ -245,15 +245,15 @@ void Entity::doAttack()
 	}
 }
 
-void Entity::obstacleCollision(const std::vector<Tile*>& tiles)
+void Entity::obstacleCollision(TileMap* tileMap)
 {
-	const float distance = 2 * tiles.front()->getGlobalBounds().width;
+	const float distance = 2 * tileMap->getGlobalBounds(0).width;
 
-	for (const auto& e : tiles) {
-		if (vectorDistance(this->sprite.getPosition(), e->getPosition()) < distance) {
+	for (size_t i = 0; i < tileMap->getSize(); ++i) {
+		if (vectorDistance(this->sprite.getPosition(), tileMap->getPosition(i)) < distance) {
 
 			sf::FloatRect playerBounds = this->sprite.getGlobalBounds();
-			sf::FloatRect wallBounds = e->getGlobalBounds();
+			sf::FloatRect wallBounds = tileMap->getGlobalBounds(i);
 
 			sf::FloatRect nextPos = playerBounds;
 			nextPos.left += this->velocity.x;

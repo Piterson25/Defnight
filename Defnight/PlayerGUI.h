@@ -3,10 +3,10 @@
 
 #include "Player.h"
 #include "Gui.h"
-#include "FloatingText.h"
+#include "FloatingTextSystem.h"
 #include "SoundEngine.h"
 
-class FloatingText;
+class FloatingTextSystem;
 class SoundEngine;
 
 class PlayerGUI
@@ -30,7 +30,7 @@ public:
 	void setIsEscape(const bool& escape);
 	void updatePaused(bool& paused);
 	void updateArmor();
-	const bool updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, std::list<FloatingText*>& floatingTexts);
+	const bool updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, FloatingTextSystem* floatingTextSystem);
 
 	const bool getIsEscape() const;
 	const bool getIsLeveling() const;

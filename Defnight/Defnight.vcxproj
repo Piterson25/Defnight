@@ -149,7 +149,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="DropSystem.cpp" />
     <ClCompile Include="FloatingText.cpp" />
+    <ClCompile Include="FloatingTextSystem.cpp" />
     <ClCompile Include="Gui.cpp" />
     <ClCompile Include="Drop.cpp" />
     <ClCompile Include="Entity.cpp" />
@@ -170,9 +172,12 @@
     <ClCompile Include="State.cpp" />
     <ClCompile Include="stdafx.cpp" />
     <ClCompile Include="Tile.cpp" />
+    <ClCompile Include="TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DropSystem.h" />
     <ClInclude Include="FloatingText.h" />
+    <ClInclude Include="FloatingTextSystem.h" />
     <ClInclude Include="Gui.h" />
     <ClInclude Include="Drop.h" />
     <ClInclude Include="Entity.h" />
@@ -192,6 +197,7 @@
     <ClInclude Include="State.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Tile.h" />
+    <ClInclude Include="TileMap.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

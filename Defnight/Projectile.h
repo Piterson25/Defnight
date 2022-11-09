@@ -3,12 +3,13 @@
 
 #include "Player.h"
 #include "Monster.h"
-#include "FloatingText.h"
+#include "FloatingTextSystem.h"
+#include "TileMap.h"
 
 class Player;
 class Monster;
-class FloatingText;
-class Tile;
+class FloatingTextSystem;
+class TileMap;
 
 class Projectile
 {
@@ -28,9 +29,9 @@ public:
 	void calculateVelocity(const sf::Vector2f& coords);
 
 	const bool sideWall(const sf::Vector2f& velocities, const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds, const short& side);
-	void obstacleCollision(const std::vector<Tile*>& tiles);
+	void obstacleCollision(TileMap* tileMap);
 	void playerCollision(Player* player);
-	void monsterCollision(Monster* monster, sf::Font* font, Player* player, std::list<FloatingText*>& floatingTexts);
+	void monsterCollision(Monster* monster, sf::Font* font, Player* player, FloatingTextSystem* floatingTextSystem);
 
 	void move(const float& dt);
 

@@ -546,15 +546,15 @@ void PlayerGUI::updateArmor()
 	this->texts["ARMOR"]->center(calcX(388, vm));
 }
 
-const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, std::list<FloatingText*>& floatingTexts)
+const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, FloatingTextSystem* floatingTextSystem)
 {
 	if (this->player->getHP() < this->player->getMaxHP()) {
 		if (this->player->getGold() >= this->item1Price) {
 			this->sprite_buttons["ITEM1"]->update(mousePos);
 			if (this->sprite_buttons["ITEM1"]->isPressed() && !mouseClicked) {
 				this->player->setGold(this->player->getGold() - this->item1Price);
-				floatingTexts.push_back(new FloatingText(&this->font, "-" + std::to_string(this->item1Price), calcChar(16, vm), calcX(20, vm), calcY(96, vm), sf::Color(255, 246, 76), true, this->vm));
-				floatingTexts.push_back(new FloatingText(&this->font, "+5", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true, this->vm));
+				floatingTextSystem->addFloatingText("-" + std::to_string(this->item1Price), calcChar(16, vm), calcX(20, vm), calcY(96, vm), sf::Color(255, 246, 76), true);
+				floatingTextSystem->addFloatingText("+5", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true);
 				this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
 				if (this->player->getHP() + 5 > this->player->getMaxHP()) this->player->setHP(this->player->getMaxHP());
 				else this->player->setHP(this->player->getHP() + 5);
@@ -572,8 +572,8 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 		this->sprite_buttons["ITEM2"]->update(mousePos);
 		if (this->sprite_buttons["ITEM2"]->isPressed() && !mouseClicked) {
 			this->player->setGold(this->player->getGold() - this->item2Price);
-			floatingTexts.push_back(new FloatingText(&this->font, "-" + std::to_string(this->item2Price), calcChar(16, vm), calcX(20, vm), calcY(96, vm), sf::Color(255, 246, 76), true, this->vm));
-			floatingTexts.push_back(new FloatingText(&this->font, "+1", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true, this->vm));
+			floatingTextSystem->addFloatingText("-" + std::to_string(this->item2Price), calcChar(16, vm), calcX(20, vm), calcY(96, vm), sf::Color(255, 246, 76), true);
+			floatingTextSystem->addFloatingText("+1", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true);
 			this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
 			this->player->setAttack(this->player->getAttack() + 1);
 			this->texts["ATTACK"]->setText(std::to_string(this->player->getAttack()));
@@ -590,8 +590,8 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 			this->sprite_buttons["ITEM3"]->update(mousePos);
 			if (this->sprite_buttons["ITEM3"]->isPressed() && !mouseClicked) {
 				this->player->setGold(this->player->getGold() - this->item3Price);
-				floatingTexts.push_back(new FloatingText(&this->font, "-" + std::to_string(this->item3Price), calcChar(16, vm), calcX(20, vm), calcX(96, vm), sf::Color(255, 246, 76), true, vm));
-				floatingTexts.push_back(new FloatingText(&this->font, "+1", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true, this->vm));
+				floatingTextSystem->addFloatingText("-" + std::to_string(this->item3Price), calcChar(16, vm), calcX(20, vm), calcX(96, vm), sf::Color(255, 246, 76), true);
+				floatingTextSystem->addFloatingText("+1", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true);
 				this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
 				this->player->setArmor(this->player->getArmor() + 1);
 				this->texts["ARMOR"]->setText(std::to_string(this->player->getArmor()));

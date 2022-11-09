@@ -3,11 +3,11 @@
 
 #include "Monster.h"
 #include "Entity.h"
-#include "FloatingText.h"
+#include "FloatingTextSystem.h"
 #include "SoundEngine.h"
 
 class Monster;
-class FloatingText;
+class FloatingTextSystem;
 class Projectile;
 class SoundEngine;
 
@@ -47,7 +47,7 @@ public:
 	void setAbilityTime(const float& abilityTime);
 	void setAbilityCooldown(const float& abilityCooldown);
 
-	void attackMonster(sf::Font* font, const std::list<Monster*>& monsters, std::list<FloatingText*>& floatingTexts, SoundEngine* soundEngine);
+	void attackMonster(sf::Font* font, const std::list<Monster*>& monsters, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine);
 	const bool addXP(const unsigned& monsterXP);
 	void spawn(const float& dt);
 	void controls(const std::unordered_map<std::string, int>& keybinds, const float& dt);

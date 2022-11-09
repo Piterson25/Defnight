@@ -2,7 +2,7 @@
 #include "Functions.h"
 #include "Monster.h"
 
-Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Texture& shadow_texture, const std::vector<Tile*>& tiles, 
+Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Texture& shadow_texture, TileMap* tileMap, 
 	const sf::VideoMode& vm, const std::string& monster_name, const float& difficulty_mod, const float& wave_mod)
 {
 	this->vm = vm;
@@ -38,8 +38,8 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 	this->Current = nullptr;
 
 	this->initNodes();
-	for (auto& e : tiles) {
-		Nodes[static_cast<size_t>(e->getPosition().x / this->BlockSize.x)][static_cast<size_t>(e->getPosition().y / this->BlockSize.y)].isWall = true;
+	for (size_t i = 0; i < tileMap->getSize(); ++i) {
+		Nodes[static_cast<size_t>(tileMap->getPosition(i).x / this->BlockSize.x)][static_cast<size_t>(tileMap->getPosition(i).y / this->BlockSize.y)].isWall = true;
 	}
 	
 
@@ -77,7 +77,7 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 	}
 	else if (this->name == "minotaur") {
 		this->attack = static_cast<unsigned>(7 * difficulty_mod * wave_mod);
-		this->attackSpeed = 1;
+		this->attackSpeed = 3;
 		this->HP = static_cast<unsigned>(69 * difficulty_mod * wave_mod);
 		this->speed = 1;
 		this->gold = 25;
@@ -110,12 +110,12 @@ const bool Monster::getDeadCountdown() const
 	return false;
 }
 
-const bool Monster::attackPlayer(Player* player, sf::Font* font, const std::vector<Tile*>& tiles, std::list<Projectile*>& projectiles, std::list<FloatingText*>& floatingTexts, SoundEngine* soundEngine)
+const bool Monster::attackPlayer(Player* player, sf::Font* font, TileMap* tileMap, std::list<Projectile*>& projectiles, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine)
 {
 	const float distance = this->attackDistance(player, this);
 
 	if (this->name == "cyclope" && distance <= this->reach * 8.f * calcX(64, vm)) {
-		if (!sightCollision(tiles, sf::Vector2f(this->getPosition().x + calcX(24, vm), this->getPosition().y + calcY(36, vm)), player->getCenter())) {
+		if (!sightCollision(tileMap, sf::Vector2f(this->getPosition().x + calcX(24, vm), this->getPosition().y + calcY(36, vm)), player->getCenter())) {
 			this->doAttack();
 			if (!player->isDead() && !player->getPunched() && this->getIsAttacking() && this->getFrame() == 80) {
 				if (this->getAttack() > 0) {
@@ -136,7 +136,7 @@ const bool Monster::attackPlayer(Player* player, sf::Font* font, const std::vect
 			int Lattack = static_cast<int>(round(this->attack - (this->attack * player->getArmor() * 0.05f)));
 			
 			if (Lattack > 0) {
-				floatingTexts.push_back(new FloatingText(font, std::to_string(-Lattack), calcChar(16, vm), player->getPosition().x + calcX(48, vm), player->getPosition().y + calcY(32, vm), sf::Color(228, 92, 95), false, this->vm));
+				floatingTextSystem->addFloatingText(std::to_string(-Lattack), calcChar(16, vm), player->getPosition().x + calcX(48, vm), player->getPosition().y + calcY(32, vm), sf::Color(228, 92, 95), false);
 				if (static_cast<int>(player->getHP() - Lattack) < 0) player->setHP(0);
 				else player->setHP(player->getHP() - Lattack);
 
@@ -155,11 +155,11 @@ const bool Monster::attackPlayer(Player* player, sf::Font* font, const std::vect
 	return false;
 }
 
-const bool Monster::sightCollision(const std::vector<Tile*>& tiles, const sf::Vector2f& a_p1, const sf::Vector2f& a_p2)
+const bool Monster::sightCollision(TileMap* tileMap, const sf::Vector2f& a_p1, const sf::Vector2f& a_p2)
 {
-	for (const auto& obs : tiles) {
-		if (vectorDistance(this->sprite.getPosition(), obs->getPosition()) <= 20.f * calcX(32, vm)) {
-			if (sight(obs->getGlobalBounds(), a_p1, a_p2)) {
+	for (size_t i = 0; i < tileMap->getSize(); ++i) {
+		if (vectorDistance(this->sprite.getPosition(), tileMap->getPosition(i)) <= 20.f * calcX(32, vm)) {
+			if (sight(tileMap->getGlobalBounds(i), a_p1, a_p2)) {
 				return true;
 			}
 		}
@@ -231,12 +231,12 @@ void Monster::resetNodes(Player* player)
 	this->greens.clear();
 }
 
-void Monster::AI(const std::vector<Tile*>& tiles, Player* player, const float& dt)
+void Monster::AI(TileMap* tileMap, Player* player, const float& dt)
 {
 	this->velocity = sf::Vector2f(0.f, 0.f);
 	const float vel = ((this->speed * 0.2f + 0.8f) * 2 * this->sprite.getGlobalBounds().width) * dt;
 
-	if (!sightCollision(tiles, this->getCenter(), player->getCenter())) {
+	if (!sightCollision(tileMap, this->getCenter(), player->getCenter())) {
 
 		if (player->getCenter().x > this->getCenter().x)
 			this->velocity.x += vel;

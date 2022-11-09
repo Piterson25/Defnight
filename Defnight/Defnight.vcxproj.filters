@@ -27,6 +27,9 @@
     <Filter Include="Sounds">
       <UniqueIdentifier>{69ca86f2-c4fb-495b-92c5-15b3fd980e54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Tiles">
+      <UniqueIdentifier>{4273c7cc-5fec-473d-bcbb-eb99d6125e08}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Drop.cpp">
@@ -80,9 +83,6 @@
     <ClCompile Include="GameSettings.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
     <ClCompile Include="SoundEffect.cpp">
       <Filter>Sounds</Filter>
     </ClCompile>
@@ -91,6 +91,18 @@
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="FloatingTextSystem.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="DropSystem.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Tiles</Filter>
+    </ClCompile>
+    <ClCompile Include="TileMap.cpp">
+      <Filter>Tiles</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -142,9 +154,6 @@
     <ClInclude Include="GameSettings.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="SoundEffect.h">
       <Filter>Sounds</Filter>
     </ClInclude>
@@ -153,6 +162,18 @@
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="FloatingTextSystem.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="DropSystem.h">
+      <Filter>Pliki nagłówkowe</Filter>
+    </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMap.h">
+      <Filter>Tiles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -21,6 +21,9 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->music.pause();
 
 	this->soundEngine = new SoundEngine(this->gameSettings->soundsVolume);
+	this->floatingTextSystem = new FloatingTextSystem(&this->font, vm);
+	this->dropSystem = new DropSystem(vm);
+	this->tileMap = new TileMap();
 
 	this->background_texture.loadFromFile("external/assets/" + map_name + ".png");
 	this->background.setTexture(this->background_texture);
@@ -48,7 +51,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 		while (std::getline(mapa, temp)) {
 			for (size_t i = 0; i < temp.size(); ++i) {
 				if (temp[i] == '#') {
-					this->tiles.push_back(new Tile(x, y, tile, "wall"));
+					this->tileMap->addTile(x, y, tile, "wall");
 					sf::Vertex* quad = &this->vertexArray[t * 4];
 
 					quad[0].position = sf::Vector2f(x, y);
@@ -62,7 +65,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 					quad[3].texCoords = sf::Vector2f(48, 32);
 				}
 				else if (temp[i] == '@') {
-					this->tiles.push_back(new Tile(x, y, tile, "wall"));
+					this->tileMap->addTile(x, y, tile, "wall");
 					sf::Vertex* quad = &this->vertexArray[t * 4];
 
 					quad[0].position = sf::Vector2f(x, y);
@@ -187,8 +190,8 @@ void GameState::spawnMonsters()
 
 	for (const auto& id : this->monsterIDs) {
 		uint16_t rx = static_cast<uint16_t>(Random::Float() * 32.f), ry = static_cast<uint16_t>(Random::Float() * 32.f);
-		for (size_t i = 0; i < this->tiles.size(); ++i) {
-			while ((this->tiles[i]->getPosition().x == calcX(this->gridSize * rx, vm) && this->tiles[i]->getPosition().y == calcY(this->gridSize * ry, vm)) ||
+		for (size_t i = 0; i < this->tileMap->getSize(); ++i) {
+			while ((this->tileMap->getPosition(i).x == calcX(this->gridSize * rx, vm) && this->tileMap->getPosition(i).y == calcY(this->gridSize * ry, vm)) ||
 				vectorDistance(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->player->getPosition().x, this->player->getPosition().y) <= calcX(3.f * this->gridSize, vm))
 			{
 				rx = static_cast<uint16_t>(Random::Float() * 32.f);
@@ -207,19 +210,19 @@ void GameState::spawnMonsters()
 		switch (id)
 		{
 		case 0:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["GOBLIN"], this->textures["SHADOW"], this->tiles, vm, "goblin", this->difficultyModifier, wave_mod));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["GOBLIN"], this->textures["SHADOW"], this->tileMap, vm, "goblin", this->difficultyModifier, wave_mod));
 			break;
 		case 1:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["SPIDER"], this->textures["SHADOW"], this->tiles, vm, "spider", this->difficultyModifier, wave_mod));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["SPIDER"], this->textures["SHADOW"], this->tileMap, vm, "spider", this->difficultyModifier, wave_mod));
 			break;
 		case 2:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["ORC"], this->textures["SHADOW"], this->tiles, vm, "orc", this->difficultyModifier, wave_mod));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["ORC"], this->textures["SHADOW"], this->tileMap, vm, "orc", this->difficultyModifier, wave_mod));
 			break;
 		case 3:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["CYCLOPE"], this->textures["SHADOW"], this->tiles, vm, "cyclope", this->difficultyModifier, wave_mod));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * rx, vm), calcY(this->gridSize * ry, vm), this->textures["CYCLOPE"], this->textures["SHADOW"], this->tileMap, vm, "cyclope", this->difficultyModifier, wave_mod));
 			break;
 		case 4:
-			this->monsters.push_back(new Monster(calcX(this->gridSize * 16, vm), calcY(this->gridSize * 16, vm), this->textures["MINOTAUR"], this->textures["SHADOW"], this->tiles, vm, "minotaur", this->difficultyModifier, wave_mod));
+			this->monsters.push_back(new Monster(calcX(this->gridSize * 16, vm), calcY(this->gridSize * 16, vm), this->textures["MINOTAUR"], this->textures["SHADOW"], this->tileMap, vm, "minotaur", this->difficultyModifier, wave_mod));
 			break;
 		default:
 			break;
@@ -247,9 +250,7 @@ void GameState::draw(sf::RenderTarget* target)
 		proj->draw(*target);
 	}
 
-	for (const auto& drop : this->drops) {
-		drop->draw(*target);
-	}
+	this->dropSystem->draw(*target);
 
 	this->player->draw(*target);
 
@@ -257,17 +258,13 @@ void GameState::draw(sf::RenderTarget* target)
 		monster->draw(*target);
 	}
 
-	for (const auto& text : floatingTexts) {
-		if(!text->isGui()) text->draw(*target);
-	}
+	this->floatingTextSystem->draw(*target);
 
 	target->setView(this->viewHUD);
 
 	this->playerGUI->draw(*target);
 
-	for (const auto& text : floatingTexts) {
-		if (text->isGui() && this->playerGUI->getIsShopping()) text->draw(*target);
-	}
+	this->floatingTextSystem->drawGui(*target, this->playerGUI->getIsShopping());
 }
 
 void GameState::update(const float& dt)
@@ -344,7 +341,7 @@ void GameState::update(const float& dt)
 			if (this->player->getPunched()) this->player->smashed(dt);
 
 			if (this->player->hasVelocity()) {
-				this->player->obstacleCollision(this->tiles);
+				this->player->obstacleCollision(this->tileMap);
 
 				this->player->move();
 
@@ -408,7 +405,7 @@ void GameState::update(const float& dt)
 				}
 				this->setKeysClick("E", this->getKeysClick1("E"));
 
-				if (this->playerGUI->updateShop(this->mousePosWindow, this->getMouseClick(), this->floatingTexts)) {
+				if (this->playerGUI->updateShop(this->mousePosWindow, this->getMouseClick(), this->floatingTextSystem)) {
 					this->setMouseClick(true);
 				}
 				
@@ -429,7 +426,7 @@ void GameState::update(const float& dt)
 			}
 			else {
 				const sf::VideoMode vm = this->gameSettings->resolution;
-				this->player->attackMonster(&this->font, this->monsters, this->floatingTexts, this->soundEngine);
+				this->player->attackMonster(&this->font, this->monsters, this->floatingTextSystem, this->soundEngine);
 				for (const auto& monster : this->monsters) {
 					if (monster->getSpawned()) {
 						if (monster->isDead()) {
@@ -439,15 +436,15 @@ void GameState::update(const float& dt)
 							monster->smashed(dt);
 						}
 						else {
-							monster->AI(this->tiles, this->player, dt);
+							monster->AI(this->tileMap, this->player, dt);
 							if (monster->hasVelocity()) {
-								monster->obstacleCollision(this->tiles);
+								monster->obstacleCollision(this->tileMap);
 								monster->monsterCollision(this->monsters);
 								monster->move();
 								monster->update(dt);
 							}
 							monster->loadAttack(dt);
-							if (monster->attackPlayer(this->player, &this->font, this->tiles, this->projectiles, this->floatingTexts, this->soundEngine)) {
+							if (monster->attackPlayer(this->player, &this->font, this->tileMap, this->projectiles, this->floatingTextSystem, this->soundEngine)) {
 								this->playerGUI->update_HP();
 							}
 							monster->animation(dt);
@@ -462,9 +459,9 @@ void GameState::update(const float& dt)
 							this->pauseState();
 						}
 						this->playerGUI->update_XP();
-						drops.push_back(new Drop("coin", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y + calcY(16, vm), (*monster)->getGold(), this->gameSettings->resolution));
+						this->dropSystem->addDrop("coin", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y + calcY(16, vm), (*monster)->getGold());
 						if (int(Random::Float() * 4) == 0) {
-							drops.push_back(new Drop("heart", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y, 1, this->gameSettings->resolution));
+							this->dropSystem->addDrop("heart", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y, 1);
 						}
 						monster = this->monsters.erase(monster);
 
@@ -481,10 +478,10 @@ void GameState::update(const float& dt)
 		this->playerGUI->updating_HP(this->soundEngine, dt);
 
 		for (const auto& proj : this->projectiles) {
-			proj->obstacleCollision(this->tiles);
+			proj->obstacleCollision(this->tileMap);
 			proj->playerCollision(this->player);
 			for (const auto& monster : this->monsters) {
-				proj->monsterCollision(monster, &this->font, this->player, this->floatingTexts);
+				proj->monsterCollision(monster, &this->font, this->player, this->floatingTextSystem);
 				if (proj->getCollidedMonster()) break;
 			}
 			proj->update(dt);
@@ -503,7 +500,7 @@ void GameState::update(const float& dt)
 
 					this->player->punch();
 
-					this->floatingTexts.push_back(new FloatingText(&this->font, "-" + std::to_string(attack), calcChar(16, vm), this->player->getPosition().x + calcX(32, vm), this->player->getPosition().y + calcY(32, vm), sf::Color(228, 92, 95), false, this->gameSettings->resolution));
+					floatingTextSystem->addFloatingText("-" + std::to_string(attack), calcChar(16, vm), this->player->getPosition().x + calcX(32, vm), this->player->getPosition().y + calcY(32, vm), sf::Color(228, 92, 95), false);
 					this->playerGUI->update_HP();
 				}
 
@@ -515,16 +512,7 @@ void GameState::update(const float& dt)
 			else ++proj;
 		}
 
-		for (const auto& drop : this->drops) {
-			drop->update(dt);
-		}
-
-		for (auto drop = this->drops.begin(); drop != this->drops.end();) {
-			if ((*drop)->getSpawned() && (*drop)->playerPick(this->player, &this->font, this->playerGUI, this->floatingTexts, this->soundEngine, dt)) {
-				drop = this->drops.erase(drop);
-			}
-			else ++drop;
-		}
+		this->dropSystem->update(this->player, this->playerGUI, this->floatingTextSystem, this->soundEngine, dt);
 
 		if (this->player->isDead()) {
 			this->paused = true;
@@ -532,21 +520,12 @@ void GameState::update(const float& dt)
 			this->playerGUI->update_HP();
 		}
 
-		this->soundEngine->deleteSound();
+		this->soundEngine->update();
 	}
 
 	this->playerGUI->update(this->mousePosView, this->waveCountdown, dt);
 
-	for (const auto& text : this->floatingTexts) {
-		text->update(dt);
-	}
-
-	for (auto text = this->floatingTexts.begin(); text != this->floatingTexts.end();) {
-		if ((*text)->isOver()) {
-			text = this->floatingTexts.erase(text);
-		}
-		else ++text;
-	}
+	this->floatingTextSystem->update(dt);
 
 	this->updateMouseClick();
 }

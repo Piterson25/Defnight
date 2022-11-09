@@ -9,7 +9,7 @@ SoundEngine::SoundEngine(const float& volume)
 
 SoundEngine::~SoundEngine()
 {
-
+	this->sounds.clear();
 }
 
 void SoundEngine::addSound(const std::string& name)
@@ -31,7 +31,7 @@ void SoundEngine::stopSounds()
 	}
 }
 
-void SoundEngine::deleteSound()
+void SoundEngine::update()
 {
 	for (auto s = this->sounds.begin(); s != this->sounds.end();) {
 		if ((*s)->hasStopped()) s = this->sounds.erase(s);

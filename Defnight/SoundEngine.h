@@ -12,7 +12,8 @@ public:
 	void addSound(const std::string& name);
 	void playSounds();
 	void stopSounds();
-	void deleteSound();
+
+	void update();
 private:
 	std::list<std::unique_ptr<SoundEffect>> sounds;
 	float volume;

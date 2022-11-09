@@ -6,9 +6,9 @@
 #include "State.h"
 #include "Gui.h"
 #include "PlayerGUI.h"
-#include "FloatingText.h"
-#include "Drop.h"
-#include "Tile.h"
+#include "FloatingTextSystem.h"
+#include "DropSystem.h"
+#include "TileMap.h"
 #include "SettingsState.h"
 #include "SoundEngine.h"
 
@@ -47,7 +47,7 @@ private:
 
 	sf::Texture tiles_texture;
 	sf::VertexArray vertexArray;
-	std::vector<Tile*> tiles;
+	TileMap* tileMap;
 
 	Player* player;
 	PlayerGUI* playerGUI;
@@ -60,11 +60,9 @@ private:
 	uint16_t sumHP;
 	float waveCountdown;
 
-	std::list<FloatingText*> floatingTexts;
-
 	SoundEngine* soundEngine;
-
-	std::list<Drop*> drops;
+	FloatingTextSystem* floatingTextSystem;
+	DropSystem* dropSystem;
 
 	std::list<Projectile*> projectiles;
 };

@@ -79,7 +79,7 @@ void Drop::move(const float& posX, const float& posY, const float& dt)
 	this->sprite.move(this->velocity);
 }
 
-const bool Drop::playerPick(Player* player, sf::Font* font, PlayerGUI* playerGUI, std::list<FloatingText*>& floatingTexts, SoundEngine* soundEngine, const float& dt)
+const bool Drop::playerPick(Player* player, PlayerGUI* playerGUI, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine, const float& dt)
 {
 	const float distance = vectorDistance(sf::Vector2f(this->sprite.getPosition().x + calcX(8, vm), this->sprite.getPosition().y + calcY(8, vm)), sf::Vector2f(player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm)));
 	if (distance <= player->getReach() * calcX(64, vm)) {
@@ -89,14 +89,14 @@ const bool Drop::playerPick(Player* player, sf::Font* font, PlayerGUI* playerGUI
 		if (this->name == "coin") {
 			player->setGold(player->getGold() + this->worth);
 			playerGUI->update_Gold();
-			floatingTexts.push_back(new FloatingText(font, "+" + std::to_string(this->worth), calcChar(16, vm), this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y, sf::Color(255, 246, 76), false, vm));
+			floatingTextSystem->addFloatingText("+" + std::to_string(this->worth), calcChar(16, vm), this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y, sf::Color(255, 246, 76), false);
 			soundEngine->addSound("coin");
 		}
 		else if (player->getHP() < player->getMaxHP()) {
 			player->setHP(player->getHP() + 1);
 			player->setIsRegenerating(true);
 			playerGUI->update_HP();
-			floatingTexts.push_back(new FloatingText(font, "+" + std::to_string(this->worth), calcChar(16, vm), this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y - calcY(16, vm), sf::Color(182, 60, 53), false, vm));				
+			floatingTextSystem->addFloatingText("+" + std::to_string(this->worth), calcChar(16, vm), this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y - calcY(16, vm), sf::Color(182, 60, 53), false);
 			soundEngine->addSound("heart");
 		}
 

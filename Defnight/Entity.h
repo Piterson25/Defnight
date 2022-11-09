@@ -1,9 +1,9 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "Tile.h"
+#include "TileMap.h"
 
-class Tile;
+class TileMap;
 
 class Entity
 {
@@ -55,7 +55,7 @@ public:
 
 	void loadAttack(const float& dt);
 	void doAttack();
-	void obstacleCollision(const std::vector<Tile*>& tiles);
+	void obstacleCollision(TileMap* tileMap);
 	void animation(const float& dt);
 	void punch();
 	void smashed(const float& dt);

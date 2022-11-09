@@ -3,12 +3,12 @@
 
 #include "Player.h"
 #include "PlayerGUI.h"
-#include "FloatingText.h"
+#include "FloatingTextSystem.h"
 #include "SoundEngine.h"
 
 class Player;
 class PlayerGUI;
-class FloatingText;
+class FloatingTextSystem;
 class SoundEngine;
 
 class Drop
@@ -23,7 +23,7 @@ public:
 	void spawn(const float& dt);
 	void spin(const float& dt);
 	void move(const float& posX, const float& posY, const float& dt);
-	const bool playerPick(Player* player, sf::Font* font, PlayerGUI* playerGUI, std::list<FloatingText*>& floatingTexts, SoundEngine* soundEngine, const float& dt);
+	const bool playerPick(Player* player, PlayerGUI* playerGUI, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine, const float& dt);
 
 	void update(const float& dt);
 	void draw(sf::RenderTarget& target);
