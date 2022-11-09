@@ -179,7 +179,7 @@ void GameState::prepareWave()
 			break;
 		}
 	}
-	this->playerGUI->updateMonsterCountWave(this->gameSettings->language, this->wave, this->monsterIDs.size());
+	this->playerGUI->updateMonsterCountWave(this->gameSettings->language, this->wave, this->monsterIDs.size(), this->soundEngine);
 }
 
 void GameState::spawnMonsters()
@@ -346,7 +346,6 @@ void GameState::update(const float& dt)
 				this->player->move();
 
 				this->player->update(dt);
-				this->player->swipeSound(this->soundEngine);
 				
 				const float _32 = calcX(32, this->gameSettings->resolution);
 				const bool osY = this->player->getPosition().y <= calcY(200, this->gameSettings->resolution) || this->player->getPosition().y >= this->background.getGlobalBounds().height - calcY(392, this->gameSettings->resolution);
@@ -369,6 +368,7 @@ void GameState::update(const float& dt)
 			}
 
 			this->player->loadAttack(dt);
+			this->player->whooshSound(this->soundEngine);
 
 			if (this->mousePosView.y > calcY(128, this->gameSettings->resolution)) {
 				if (this->playerGUI->getIsShopping()) {
@@ -405,7 +405,7 @@ void GameState::update(const float& dt)
 				}
 				this->setKeysClick("E", this->getKeysClick1("E"));
 
-				if (this->playerGUI->updateShop(this->mousePosWindow, this->getMouseClick(), this->floatingTextSystem)) {
+				if (this->playerGUI->updateShop(this->mousePosWindow, this->getMouseClick(), this->soundEngine, this->floatingTextSystem)) {
 					this->setMouseClick(true);
 				}
 				

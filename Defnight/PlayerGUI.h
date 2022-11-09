@@ -30,7 +30,7 @@ public:
 	void setIsEscape(const bool& escape);
 	void updatePaused(bool& paused);
 	void updateArmor();
-	const bool updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, FloatingTextSystem* floatingTextSystem);
+	const bool updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine, FloatingTextSystem* floatingTextSystem);
 
 	const bool getIsEscape() const;
 	const bool getIsLeveling() const;
@@ -39,7 +39,7 @@ public:
 
 	void updateIsShopping(const bool& start);
 	void updateKills();
-	void updateMonsterCountWave(const std::string& language, const unsigned& wave, const size_t& monsterCount);
+	void updateMonsterCountWave(const std::string& language, const unsigned& wave, const size_t& monsterCount, SoundEngine* soundEngine);
 	void updateMonsterCount(const size_t& monsterCount);
 	const uint8_t updateEscapeButton(const sf::Vector2i& mousePos, const bool& mouseClicked);
 	const bool updateButtons(const sf::Vector2i& mousePos, const bool& mouseClicked);

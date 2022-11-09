@@ -55,7 +55,7 @@ public:
 	void abilityCounter(const float& dt);
 	const bool checkIfAbility();
 	void doAbility(const sf::Vector2f& coords, std::list<Projectile*>& projectiles);
-	void swipeSound(SoundEngine* soundEngine);
+	void whooshSound(SoundEngine* soundEngine);
 
 	void update(const float& dt);
 	void draw(sf::RenderTarget& target);

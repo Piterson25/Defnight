@@ -457,7 +457,7 @@ void PlayerGUI::updateKills()
 	this->texts["KILLS"]->setText(this->lang["KILLS"] + std::to_string(this->player->getKills()));
 }
 
-void PlayerGUI::updateMonsterCountWave(const std::string& language, const unsigned& wave, const size_t& monsterCount)
+void PlayerGUI::updateMonsterCountWave(const std::string& language, const unsigned& wave, const size_t& monsterCount, SoundEngine* soundEngine)
 {
 	this->texts["WAVE_NUMBER"]->setText(this->lang["WAVE"] + std::to_string(wave));
 
@@ -516,6 +516,8 @@ void PlayerGUI::updateMonsterCountWave(const std::string& language, const unsign
 			this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " monsters");
 	}
 	this->texts["MOBS_TO_KILL"]->center(calcX(640, this->vm));
+
+	soundEngine->addSound("new_wave");
 }
 
 void PlayerGUI::updateMonsterCount(const size_t& monsterCount)
@@ -546,7 +548,7 @@ void PlayerGUI::updateArmor()
 	this->texts["ARMOR"]->center(calcX(388, vm));
 }
 
-const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, FloatingTextSystem* floatingTextSystem)
+const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine, FloatingTextSystem* floatingTextSystem)
 {
 	if (this->player->getHP() < this->player->getMaxHP()) {
 		if (this->player->getGold() >= this->item1Price) {
@@ -563,6 +565,7 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 				this->sprite_buttons["ITEM1"]->setTransparent();
 				this->item1Price += static_cast<uint16_t>(round(this->item1Price * 0.5f));
 				this->texts["ITEM1_PRICE"]->setText(std::to_string(this->item1Price));
+				soundEngine->addSound("buy");
 				return true;
 			}
 		}
@@ -581,6 +584,7 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 			this->sprite_buttons["ITEM2"]->setTransparent();
 			this->item2Price += static_cast<uint16_t>(round(this->item2Price * 0.5f));
 			this->texts["ITEM2_PRICE"]->setText(std::to_string(this->item2Price));
+			soundEngine->addSound("buy");
 			return true;
 		}
 	}
@@ -599,6 +603,7 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 				this->sprite_buttons["ITEM3"]->setTransparent();
 				this->item3Price += static_cast<uint16_t>(round(this->item3Price * 0.5f));
 				this->texts["ITEM3_PRICE"]->setText(std::to_string(this->item3Price));
+				soundEngine->addSound("buy");
 				return true;
 			}
 		}

@@ -224,7 +224,7 @@ void Player::attackMonster(sf::Font* font, const std::list<Monster*>& monsters, 
 				}
 
 				if (!this->playedSound) {
-					soundEngine->addSound("hit");
+					soundEngine->addSound("whoosh_hit");
 					this->playedSound = true;
 				}
 				
@@ -283,7 +283,7 @@ void Player::controls(const std::unordered_map<std::string, int>& keybinds, cons
 		this->velocity.x += vel;
 
 	if (this->name == "scout" && this->abilityActive)
-		this->velocity *= 1.5f;
+		this->velocity *= 1.25f;
 }
 
 const bool Player::regeneration(const float& dt)
@@ -348,10 +348,10 @@ void Player::doAbility(const sf::Vector2f& coords, std::list<Projectile*>& proje
 	}
 }
 
-void Player::swipeSound(SoundEngine* soundEngine)
+void Player::whooshSound(SoundEngine* soundEngine)
 {
 	if (this->isAttacking && this->frame == 80 && !this->playedSound) {
-		soundEngine->addSound("swipe");
+		soundEngine->addSound("whoosh");
 		this->playedSound = true;
 	}
 	if ( this->playedSound && this->frame != 80) {
