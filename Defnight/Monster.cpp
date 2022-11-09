@@ -7,20 +7,20 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 	this->vm = vm;
 	this->name = monster_name;
 
-	uint8_t monsterTile = 1;
-	if (this->name == "minotaur") monsterTile = 2;
+	this->monsterSize = 1;
+	if (this->name == "minotaur") this->monsterSize = 2;
 
 	this->texture = texture;
 	this->sprite.setTexture(this->texture);
-	this->sprite.setTextureRect(sf::IntRect(0, 32 * monsterTile, 16 * monsterTile, 16 * monsterTile));
+	this->sprite.setTextureRect(sf::IntRect(0, 32 * this->monsterSize, 16 * this->monsterSize, 16 * this->monsterSize));
 	this->sprite.setScale(calcScale(4, vm), calcScale(4, vm));
 	this->sprite.setPosition(x, y);
 	this->sprite.setColor(sf::Color(255, 255, 255, 0));
 
 	this->shadow_texture = shadow_texture;
 	this->shadow.setTexture(this->shadow_texture);
-	this->shadow.setScale(calcScale(4, vm), calcScale(4, vm));
-	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(static_cast<float>(52 * monsterTile), vm));
+	this->shadow.setScale(calcScale(static_cast<float>(4 * this->monsterSize), vm), calcScale(static_cast<float>(4 * this->monsterSize), vm));
+	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(static_cast<float>(52 * this->monsterSize), vm));
 	this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
 	this->reach = 1;
@@ -129,11 +129,11 @@ const bool Monster::attackPlayer(Player* player, sf::Font* font, const std::vect
 			}
 		}
 	}
-	else if ((hasVelocity() && distance <= this->getReach() * calcX(32, vm)) || (!hasVelocity() && distance <= this->getReach() * calcX(48, vm))) {
+	else if ((hasVelocity() && distance <= this->getReach() * calcX(static_cast<float>(32 * this->monsterSize), vm)) || (!hasVelocity() && distance <= this->getReach() * calcX(static_cast<float>(48 * this->monsterSize), vm))) {
 		this->doAttack();
-		if (!player->isDead() && !player->getPunched() && this->getIsAttacking() && this->getFrame() == 80) {
+		if (!player->isDead() && !player->getPunched() && this->getIsAttacking() && this->getFrame() == 80 * this->monsterSize) {
 			int Lattack = static_cast<int>(round(this->attack - (this->attack * player->getArmor() * 0.05f)));
-
+			
 			if (Lattack > 0) {
 				floatingTexts.push_back(new FloatingText(font, std::to_string(-Lattack), calcChar(16, vm), player->getPosition().x + calcX(48, vm), player->getPosition().y + calcY(32, vm), sf::Color(228, 92, 95), false, this->vm));
 				if (static_cast<int>(player->getHP() - Lattack) < 0) player->setHP(0);
@@ -237,13 +237,13 @@ void Monster::AI(const std::vector<Tile*>& tiles, Player* player, const float& d
 
 	if (!sightCollision(tiles, this->getCenter(), player->getCenter())) {
 
-		if (player->getPosition().x > this->sprite.getPosition().x)
+		if (player->getCenter().x > this->getCenter().x)
 			this->velocity.x += vel;
-		else if (player->getPosition().x < this->sprite.getPosition().x)
+		else if (player->getCenter().x < this->getCenter().x)
 			this->velocity.x += -(vel);
-		if (player->getPosition().y > this->sprite.getPosition().y)
+		if (player->getCenter().y > this->getCenter().y)
 			this->velocity.y += vel;
-		else if (player->getPosition().y < this->sprite.getPosition().y)
+		else if (player->getCenter().y < this->getCenter().y)
 			this->velocity.y += -(vel);
 
 		if (this->activateAI) this->activateAI = false;
@@ -363,7 +363,7 @@ void Monster::monsterCollision(const std::list<Monster*>& monsters)
 
 void Monster::update(const float& dt)
 {
-	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52, this->vm));
+	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(static_cast<float>(52 * this->monsterSize), this->vm));
 	if (this->playedSound && this->frame != 80) {
 		this->playedSound = false;
 	}

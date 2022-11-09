@@ -45,6 +45,7 @@ private:
 
 	uint16_t gold;
 	uint16_t attack;
+	uint8_t monsterSize;
 
 	bool spawned;
 	float deadCountdown;

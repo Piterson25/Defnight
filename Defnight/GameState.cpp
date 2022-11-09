@@ -143,7 +143,7 @@ void GameState::prepareWave()
 	uint16_t monstersHP = this->sumHP;
 	short t = 0;
 	while (monstersHP > 0) {
-		if (monstersHP >= 69 && this->wave >= 10) 
+		if (monstersHP >= 69 && this->wave % 10 == 0) 
 			t = 4;
 		else if (monstersHP >= 18 && this->wave >= 7) 
 			t = static_cast<short>(Random::Float() * 4.f);
