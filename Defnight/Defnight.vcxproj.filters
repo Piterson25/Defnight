@@ -89,6 +89,9 @@
     <ClCompile Include="SoundEngine.cpp">
       <Filter>Sounds</Filter>
     </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Pliki źródłowe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Drop.h">
@@ -147,6 +150,9 @@
     </ClInclude>
     <ClInclude Include="SoundEngine.h">
       <Filter>Sounds</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

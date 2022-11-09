@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "SoundEffect.h"
 
 SoundEffect::SoundEffect(const std::string& name, const float& volume)

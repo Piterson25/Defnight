@@ -1,5 +1,6 @@
-#include "Entity.h"
+#include "stdafx.h"
 #include "Functions.h"
+#include "Entity.h"
 
 Entity::Entity()
 {

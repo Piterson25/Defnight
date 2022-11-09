@@ -1,8 +1,6 @@
 #ifndef SOUNDEFFECT_H
 #define SOUNDEFFECT_H
 
-#include "Functions.h"
-
 class SoundEffect
 {
 public:

@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "SoundEngine.h"
 
 SoundEngine::SoundEngine(const float& volume)

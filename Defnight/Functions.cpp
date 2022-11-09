@@ -1,3 +1,4 @@
+#include "stdafx.h"
 #include "Functions.h"
 
 const float calcX(const float& x, const sf::VideoMode& vm)
