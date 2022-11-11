@@ -48,7 +48,7 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 		this->attackSpeed = 2;
 		this->HP = static_cast<unsigned>(3 * difficulty_mod * wave_mod);
 		this->speed = 2;
-		this->gold = 1;
+		this->gold = static_cast<unsigned>(1 * wave_mod);
 		this->XP = static_cast<unsigned>(5 * wave_mod);
 	}
 	else if (this->name == "spider") {
@@ -56,7 +56,7 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 		this->attackSpeed = 3;
 		this->HP = static_cast<unsigned>(7 * difficulty_mod * wave_mod);
 		this->speed = 3;
-		this->gold = 2;
+		this->gold = static_cast<unsigned>(2 * wave_mod);
 		this->XP = static_cast<unsigned>(10 * wave_mod);
 	}
 	else if (this->name == "orc") {
@@ -64,7 +64,7 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 		this->attackSpeed = 2;
 		this->HP = static_cast<unsigned>(12 * difficulty_mod * wave_mod);
 		this->speed = 2;
-		this->gold = 3;
+		this->gold = static_cast<unsigned>(3 * wave_mod);
 		this->XP = static_cast<unsigned>(17 * wave_mod);
 	}
 	else if (this->name == "cyclope") {
@@ -72,7 +72,7 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 		this->attackSpeed = 1;
 		this->HP = static_cast<unsigned>(18 * difficulty_mod * wave_mod);
 		this->speed = 1;
-		this->gold = 4;
+		this->gold = static_cast<unsigned>(4 * wave_mod);
 		this->XP = static_cast<unsigned>(26 * wave_mod);
 	}
 	else if (this->name == "minotaur") {
@@ -80,8 +80,8 @@ Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Textu
 		this->attackSpeed = 3;
 		this->HP = static_cast<unsigned>(69 * difficulty_mod * wave_mod);
 		this->speed = 1;
-		this->gold = 25;
-		this->XP = static_cast<unsigned>(100 * wave_mod);
+		this->gold = static_cast<unsigned>(25 * wave_mod);
+		this->XP = static_cast<unsigned>(200 * wave_mod);
 	}
 }
 
