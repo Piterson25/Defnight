@@ -279,7 +279,7 @@ void GameState::update(const float& dt)
 
 	this->updateMousePositions(&this->viewHUD);
 
-	if (this->playerGUI->updateButtons(this->mousePosWindow, this->getMouseClick())) {
+	if (this->playerGUI->updateButtons(this->mousePosWindow, this->getMouseClick(), this->soundEngine)) {
 		this->setMouseClick(true);
 		this->unpauseState();
 	}

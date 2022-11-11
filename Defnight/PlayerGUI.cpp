@@ -658,28 +658,29 @@ const uint8_t PlayerGUI::updateEscapeButton(const sf::Vector2i& mousePos, const 
 	return 0;
 }
 
-const bool PlayerGUI::updateButtons(const sf::Vector2i& mousePos, const bool& mouseClicked)
+const bool PlayerGUI::updateButtons(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine)
 {
 	if (this->isLeveling && this->isUpgrading) {
-		const bool u = this->updateLevelUpButtons(mousePos, mouseClicked);
-		const bool w = this->updateUpgradeButtons(mousePos, mouseClicked);
+		const bool u = this->updateLevelUpButtons(mousePos, mouseClicked, soundEngine);
+		const bool w = this->updateUpgradeButtons(mousePos, mouseClicked, soundEngine);
 	}
 	else if (this->isLeveling) {
-		return this->updateLevelUpButtons(mousePos, mouseClicked);
+		return this->updateLevelUpButtons(mousePos, mouseClicked, soundEngine);
 	}
 	else if (this->isUpgrading) {
-		return this->updateUpgradeButtons(mousePos, mouseClicked);
+		return this->updateUpgradeButtons(mousePos, mouseClicked, soundEngine);
 	}
 	return false;
 }
 
-const bool PlayerGUI::updateLevelUpButtons(const sf::Vector2i& mousePos, const bool& mouseClicked)
+const bool PlayerGUI::updateLevelUpButtons(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine)
 {
 	this->sprite_buttons["OPTION1"]->update(mousePos);
 	if (this->sprite_buttons["OPTION1"]->isPressed() && !mouseClicked) {
 		this->levelUpPlayer(this->option1_id, this->option1_val);
 		this->isLeveling = false;
 		this->sprite_buttons["OPTION1"]->setTransparent();
+		soundEngine->addSound("option");
 		return true;
 	}
 
@@ -688,18 +689,20 @@ const bool PlayerGUI::updateLevelUpButtons(const sf::Vector2i& mousePos, const b
 		this->levelUpPlayer(this->option2_id, this->option2_val);
 		this->isLeveling = false;
 		this->sprite_buttons["OPTION2"]->setTransparent();
+		soundEngine->addSound("option");
 		return true;
 	}
 	return false;
 }
 
-const bool PlayerGUI::updateUpgradeButtons(const sf::Vector2i& mousePos, const bool& mouseClicked)
+const bool PlayerGUI::updateUpgradeButtons(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine)
 {
 	this->sprite_buttons["UPGRADE1"]->update(mousePos);
 	if (this->sprite_buttons["UPGRADE1"]->isPressed() && !mouseClicked) {
 		this->upgradePlayer("NINJA");
 		this->isUpgrading = false;
 		this->sprite_buttons["UPGRADE1"]->setTransparent();
+		soundEngine->addSound("upgrade");
 		return true;
 	}
 
@@ -708,6 +711,7 @@ const bool PlayerGUI::updateUpgradeButtons(const sf::Vector2i& mousePos, const b
 		this->upgradePlayer("KNIGHT");
 		this->isUpgrading = false;
 		this->sprite_buttons["UPGRADE2"]->setTransparent();
+		soundEngine->addSound("upgrade");
 		return true;
 	}
 
@@ -716,6 +720,7 @@ const bool PlayerGUI::updateUpgradeButtons(const sf::Vector2i& mousePos, const b
 		this->upgradePlayer("SCOUT");
 		this->isUpgrading = false;
 		this->sprite_buttons["UPGRADE3"]->setTransparent();
+		soundEngine->addSound("upgrade");
 		return true;
 	}
 	return false;

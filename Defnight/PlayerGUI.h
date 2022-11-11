@@ -42,9 +42,9 @@ public:
 	void updateMonsterCountWave(const std::string& language, const unsigned& wave, const size_t& monsterCount, SoundEngine* soundEngine);
 	void updateMonsterCount(const size_t& monsterCount);
 	const uint8_t updateEscapeButton(const sf::Vector2i& mousePos, const bool& mouseClicked);
-	const bool updateButtons(const sf::Vector2i& mousePos, const bool& mouseClicked);
-	const bool updateLevelUpButtons(const sf::Vector2i& mousePos, const bool& mouseClicked);
-	const bool updateUpgradeButtons(const sf::Vector2i& mousePos, const bool& mouseClicked);
+	const bool updateButtons(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine);
+	const bool updateLevelUpButtons(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine);
+	const bool updateUpgradeButtons(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine);
 	const uint8_t updateDeathScreenButtons(const sf::Vector2i& mousePos, const bool& mouseClicked);
 	void update(sf::Vector2f& mousePosView, const float& waveCountdown, const float& dt);
 	void draw(sf::RenderTarget& target);
