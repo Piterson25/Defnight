@@ -3,8 +3,8 @@
 #include "MainMenuState.h"
 
 MainMenuState::MainMenuState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
-	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states)
-	: State(gridSize, window, grap, supportedKeys, font, states)
+	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, std::stack<State*>* states)
+	: State(gridSize, window, grap, supportedKeys, font, soundEngine, states)
 {
 	initGUI();
 	if (!this->music.openFromFile("external/music/main_menu.ogg")) {
@@ -281,7 +281,7 @@ void MainMenuState::update(const float& dt)
 				}
 				else if (this->text_buttons["SETTINGS"]->isPressed() && !this->getMouseClick()) {
 					this->setMouseClick(true);
-					this->states->push(new SettingsState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->states));
+					this->states->push(new SettingsState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->states));
 				}
 				else if (this->text_buttons["QUIT"]->isPressed() && !this->getMouseClick()) {
 					this->setMouseClick(true);
@@ -359,7 +359,7 @@ void MainMenuState::update(const float& dt)
 				this->difficulty_name = "easy";
 				this->page = 1;
 				this->music.stop();
-				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->states, this->map_name, this->hero_name, this->difficulty_name));
+				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->states, this->map_name, this->hero_name, this->difficulty_name));
 				this->sprite_buttons["SELECT_DIFFICULTY1"]->setTransparent();
 				this->choosing_hero = false;
 			}
@@ -368,7 +368,7 @@ void MainMenuState::update(const float& dt)
 				this->difficulty_name = "normal";
 				this->page = 1;
 				this->music.stop();
-				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->states, this->map_name, this->hero_name, this->difficulty_name));
+				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->states, this->map_name, this->hero_name, this->difficulty_name));
 				this->sprite_buttons["SELECT_DIFFICULTY2"]->setTransparent();
 				this->choosing_hero = false;
 			}
@@ -377,7 +377,7 @@ void MainMenuState::update(const float& dt)
 				this->difficulty_name = "hard";
 				this->page = 1;
 				this->music.stop();
-				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->states, this->map_name, this->hero_name, this->difficulty_name));
+				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->states, this->map_name, this->hero_name, this->difficulty_name));
 				this->sprite_buttons["SELECT_DIFFICULTY3"]->setTransparent();
 				this->choosing_hero = false;
 			}

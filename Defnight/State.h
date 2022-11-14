@@ -2,12 +2,13 @@
 #define STATE_H
 
 #include "GameSettings.h"
+#include "SoundEngine.h"
 
 class State
 {
 public:
 	State(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
-		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states);
+		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, std::stack<State*>* states);
 	virtual ~State();
 
 	const bool& getReseted() const;
@@ -40,6 +41,7 @@ protected:
 	std::unordered_map<std::string, std::string> lang;
 	std::unordered_map<std::string, std::pair<bool, bool>> keysClick;
 	sf::Font font;
+	SoundEngine* soundEngine;
 	float gridSize;
 	float keytime;
 	float keytimeMax;

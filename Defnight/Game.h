@@ -31,6 +31,7 @@ private:
 	float fpsTimer;
 
 	std::stack<State*> states;
+	SoundEngine* soundEngine;
 
 	float gridSize;
 };

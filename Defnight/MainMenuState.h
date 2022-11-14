@@ -10,7 +10,7 @@ class MainMenuState :
 {
 public:
 	MainMenuState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
-		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states);
+		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, std::stack<State*>* states);
 	virtual ~MainMenuState();
 
 	void initGUI();

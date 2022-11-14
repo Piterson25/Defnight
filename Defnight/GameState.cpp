@@ -3,9 +3,9 @@
 #include "GameState.h"
 
 GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
-	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states,
+	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, std::stack<State*>* states,
 	const std::string& map_name, const std::string& hero_name, const std::string& difficulty_name)
-	: State(gridSize, window, grap, supportedKeys, font, states)
+	: State(gridSize, window, grap, supportedKeys, font, soundEngine, states)
 {
 
 	const sf::VideoMode vm = this->gameSettings->resolution;
@@ -20,7 +20,6 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->music.setVolume(this->gameSettings->musicVolume);
 	this->music.pause();
 
-	this->soundEngine = new SoundEngine(this->gameSettings->soundsVolume);
 	this->floatingTextSystem = new FloatingTextSystem(&this->font, vm);
 	this->dropSystem = new DropSystem(vm);
 	this->tileMap = new TileMap();
@@ -129,6 +128,10 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 GameState::~GameState()
 {
 	delete this->player;
+	delete this->playerGUI;
+	delete this->tileMap;
+	delete this->floatingTextSystem;
+	delete this->dropSystem;
 }
 
 void GameState::initGUI()
@@ -328,7 +331,7 @@ void GameState::update(const float& dt)
 			this->soundEngine->playSounds();
 		}
 		else if (result == 4) {
-			this->states->push(new SettingsState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->states));
+			this->states->push(new SettingsState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->states));
 		}
 	}
 

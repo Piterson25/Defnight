@@ -10,14 +10,13 @@
 #include "DropSystem.h"
 #include "TileMap.h"
 #include "SettingsState.h"
-#include "SoundEngine.h"
 
 class GameState :
 	public State
 {
 public:
 	GameState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
-		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states,
+		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, std::stack<State*>* states,
 		const std::string& map_name, const std::string& hero_name, const std::string& difficulty_name);
 	virtual ~GameState();
 
@@ -60,7 +59,6 @@ private:
 	uint16_t sumHP;
 	float waveCountdown;
 
-	SoundEngine* soundEngine;
 	FloatingTextSystem* floatingTextSystem;
 	DropSystem* dropSystem;
 

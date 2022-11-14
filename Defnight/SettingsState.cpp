@@ -3,8 +3,8 @@
 #include "SettingsState.h"
 
 SettingsState::SettingsState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap, 
-	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, std::stack<State*>* states)
-	: State(gridSize, window, grap, supportedKeys, font, states)
+	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, std::stack<State*>* states)
+	: State(gridSize, window, grap, supportedKeys, font, soundEngine, states)
 {
 	initGUI();
 }

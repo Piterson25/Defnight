@@ -58,7 +58,9 @@ void Game::init()
 	this->fpsTimer = 0.f;
 	this->fpsCounter = new gui::Text(&this->font, "", calcChar(16, vm), calcX(4, vm), calcY(4, vm), sf::Color(255, 255, 255), false);
 
-	this->states.push(new MainMenuState(this->gridSize, this->window, &this->gameSettings, &this->supportedKeys, &this->font, &this->states));
+	this->soundEngine = new SoundEngine(this->gameSettings.soundsVolume);
+
+	this->states.push(new MainMenuState(this->gridSize, this->window, &this->gameSettings, &this->supportedKeys, &this->font, this->soundEngine, &this->states));
 }
 
 void Game::checkEvents()
