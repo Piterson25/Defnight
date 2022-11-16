@@ -8,6 +8,7 @@ MainMenuState::MainMenuState(const float& gridSize, sf::RenderWindow* window, Ga
 {
 	initGUI();
 	this->musicEngine->addMusic("main_menu.ogg");
+	this->musicEngine->addMusic("main_menu2.ogg");
 }
 
 MainMenuState::~MainMenuState()
@@ -387,7 +388,10 @@ void MainMenuState::update(const float& dt)
 		this->setKeysClick("Escape", this->getKeysClick1("Escape"));
 	}
 
-	if (this->musicEngine->isEmpty()) this->musicEngine->addMusic("main_menu.ogg");
+	if (this->musicEngine->isEmpty()) {
+		this->musicEngine->addMusic("main_menu.ogg");
+		this->musicEngine->addMusic("main_menu2.ogg");
+	}
 
 	this->musicEngine->update();
 }

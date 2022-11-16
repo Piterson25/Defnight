@@ -7,7 +7,6 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	const std::string& map_name, const std::string& hero_name, const std::string& difficulty_name)
 	: State(gridSize, window, grap, supportedKeys, font, soundEngine, musicEngine, states)
 {
-
 	const sf::VideoMode vm = this->gameSettings->resolution;
 
 	this->musicEngine->clearMusic();
@@ -16,6 +15,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->musicEngine->addMusic("battle3.ogg");
 	this->musicEngine->addMusic("battle4.ogg");
 	this->musicEngine->addMusic("battle5.ogg");
+	this->musicEngine->addMusic("battle6.ogg");
 
 	this->floatingTextSystem = new FloatingTextSystem(&this->font, vm);
 	this->dropSystem = new DropSystem(vm);
