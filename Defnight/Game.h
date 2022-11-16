@@ -32,6 +32,7 @@ private:
 
 	std::stack<State*> states;
 	SoundEngine* soundEngine;
+	MusicEngine* musicEngine;
 
 	float gridSize;
 };

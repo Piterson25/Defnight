@@ -2,8 +2,8 @@
 #include "Functions.h"
 #include "State.h"
 
-State::State(const float& gridSize, sf::RenderWindow* window, GameSettings* grap, std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, std::stack<State*>* states)
-	:gridSize(gridSize), window(window), gameSettings(grap), supportedKeys(supportedKeys), soundEngine(soundEngine), states(states)
+State::State(const float& gridSize, sf::RenderWindow* window, GameSettings* grap, std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, MusicEngine* musicEngine, std::stack<State*>* states)
+	:gridSize(gridSize), window(window), gameSettings(grap), supportedKeys(supportedKeys), soundEngine(soundEngine), musicEngine(musicEngine), states(states)
 {
 	this->quit = false;
 	this->paused = false;
@@ -33,7 +33,7 @@ State::State(const float& gridSize, sf::RenderWindow* window, GameSettings* grap
 
 State::~State()
 {
-	delete this->soundEngine;
+
 }
 
 const bool& State::getReseted() const

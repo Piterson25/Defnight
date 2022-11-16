@@ -10,7 +10,7 @@ class MainMenuState :
 {
 public:
 	MainMenuState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
-		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, std::stack<State*>* states);
+		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, MusicEngine* musicEngine, std::stack<State*>* states);
 	virtual ~MainMenuState();
 
 	void initGUI();
@@ -20,8 +20,6 @@ public:
 	void draw(sf::RenderTarget* target = NULL);
 private:
 	void fadingEffect(const float& dt);
-
-	sf::Music music;
 
 	std::unordered_map<std::string, gui::ButtonText*> text_buttons;
 	std::unordered_map<std::string, gui::Text*> texts;

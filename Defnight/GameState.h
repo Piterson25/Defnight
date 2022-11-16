@@ -16,7 +16,7 @@ class GameState :
 {
 public:
 	GameState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
-		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, std::stack<State*>* states,
+		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, MusicEngine* musicEngine, std::stack<State*>* states,
 		const std::string& map_name, const std::string& hero_name, const std::string& difficulty_name);
 	virtual ~GameState();
 
@@ -31,10 +31,6 @@ public:
 private:
 	sf::View view;
 	sf::View viewHUD;
-
-	sf::Music music;
-	std::vector<std::string> tracks;
-	size_t currentTrackNumber;
 
 	std::unordered_map<std::string, gui::ButtonText*> text_buttons;
 	std::unordered_map<std::string, gui::Text*> texts;

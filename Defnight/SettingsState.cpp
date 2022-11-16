@@ -3,8 +3,8 @@
 #include "SettingsState.h"
 
 SettingsState::SettingsState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap, 
-	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, std::stack<State*>* states)
-	: State(gridSize, window, grap, supportedKeys, font, soundEngine, states)
+	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, MusicEngine* musicEngine, std::stack<State*>* states)
+	: State(gridSize, window, grap, supportedKeys, font, soundEngine, musicEngine, states)
 {
 	initGUI();
 }
@@ -282,6 +282,8 @@ void SettingsState::update(const float& dt)
 		this->endState();
 	}
 	this->setKeysClick("Escape", this->getKeysClick1("Escape"));
+
+	this->musicEngine->update();
 }
 
 void SettingsState::draw(sf::RenderTarget* target)

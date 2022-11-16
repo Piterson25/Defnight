@@ -8,7 +8,7 @@ class SettingsState :
 {
 public:
 	SettingsState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
-		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, std::stack<State*>* states);
+		std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, MusicEngine* musicEngine, std::stack<State*>* states);
 	virtual ~SettingsState();
 
 	void initGUI();

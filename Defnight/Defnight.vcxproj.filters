@@ -24,11 +24,11 @@
     <Filter Include="Game">
       <UniqueIdentifier>{8141c0d3-b104-4f87-b114-da9fc65fc700}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Sounds">
-      <UniqueIdentifier>{69ca86f2-c4fb-495b-92c5-15b3fd980e54}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Tiles">
       <UniqueIdentifier>{4273c7cc-5fec-473d-bcbb-eb99d6125e08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{69ca86f2-c4fb-495b-92c5-15b3fd980e54}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -84,10 +84,10 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="SoundEffect.cpp">
-      <Filter>Sounds</Filter>
+      <Filter>Audio</Filter>
     </ClCompile>
     <ClCompile Include="SoundEngine.cpp">
-      <Filter>Sounds</Filter>
+      <Filter>Audio</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
       <Filter>Pliki źródłowe</Filter>
@@ -103,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="TileMap.cpp">
       <Filter>Tiles</Filter>
+    </ClCompile>
+    <ClCompile Include="MusicEngine.cpp">
+      <Filter>Audio</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,10 +158,10 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="SoundEffect.h">
-      <Filter>Sounds</Filter>
+      <Filter>Audio</Filter>
     </ClInclude>
     <ClInclude Include="SoundEngine.h">
-      <Filter>Sounds</Filter>
+      <Filter>Audio</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
       <Filter>Pliki nagłówkowe</Filter>
@@ -174,6 +177,9 @@
     </ClInclude>
     <ClInclude Include="TileMap.h">
       <Filter>Tiles</Filter>
+    </ClInclude>
+    <ClInclude Include="MusicEngine.h">
+      <Filter>Audio</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -162,6 +162,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenuState.cpp" />
     <ClCompile Include="Monster.cpp" />
+    <ClCompile Include="MusicEngine.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerGUI.cpp" />
     <ClCompile Include="Projectile.cpp" />
@@ -187,6 +188,7 @@
     <ClInclude Include="GameSettings.h" />
     <ClInclude Include="MainMenuState.h" />
     <ClInclude Include="Monster.h" />
+    <ClInclude Include="MusicEngine.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerGUI.h" />
     <ClInclude Include="Projectile.h" />

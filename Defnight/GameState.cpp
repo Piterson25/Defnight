@@ -3,22 +3,19 @@
 #include "GameState.h"
 
 GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
-	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, std::stack<State*>* states,
+	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, MusicEngine* musicEngine, std::stack<State*>* states,
 	const std::string& map_name, const std::string& hero_name, const std::string& difficulty_name)
-	: State(gridSize, window, grap, supportedKeys, font, soundEngine, states)
+	: State(gridSize, window, grap, supportedKeys, font, soundEngine, musicEngine, states)
 {
 
 	const sf::VideoMode vm = this->gameSettings->resolution;
 
-	this->currentTrackNumber = 0;
-	this->tracks.push_back("battle1.ogg");
-	this->tracks.push_back("battle2.ogg");
-	this->tracks.push_back("battle3.ogg");
-	this->tracks.push_back("battle4.ogg");
-	this->tracks.push_back("battle5.ogg");
-
-	this->music.setVolume(this->gameSettings->musicVolume);
-	this->music.pause();
+	this->musicEngine->clearMusic();
+	this->musicEngine->addMusic("battle1.ogg");
+	this->musicEngine->addMusic("battle2.ogg");
+	this->musicEngine->addMusic("battle3.ogg");
+	this->musicEngine->addMusic("battle4.ogg");
+	this->musicEngine->addMusic("battle5.ogg");
 
 	this->floatingTextSystem = new FloatingTextSystem(&this->font, vm);
 	this->dropSystem = new DropSystem(vm);
@@ -272,14 +269,6 @@ void GameState::draw(sf::RenderTarget* target)
 
 void GameState::update(const float& dt)
 {
-	if (this->music.getStatus() == sf::SoundSource::Status::Stopped)
-	{
-		this->currentTrackNumber = static_cast<size_t>(Random::Float() * this->tracks.size());
-
-		this->music.openFromFile("external/music/" + this->tracks[this->currentTrackNumber]);
-		this->music.play();
-	}
-
 	this->updateMousePositions(&this->viewHUD);
 
 	if (this->playerGUI->updateButtons(this->mousePosWindow, this->getMouseClick(), this->soundEngine)) {
@@ -292,6 +281,7 @@ void GameState::update(const float& dt)
 		if (result == 1) {
 			this->setMouseClick(true);
 			this->endState();
+			this->musicEngine->clearMusic();
 		}
 		else if (result == 2) {
 			this->setMouseClick(true);
@@ -307,10 +297,10 @@ void GameState::update(const float& dt)
 			this->setKeysClick("Escape", true);
 			this->playerGUI->updatePaused(this->paused);
 			if (this->paused) {
-				this->music.pause();
+				this->musicEngine->pauseMusic();
 				this->soundEngine->stopSounds();
 			}
-			else this->music.play();
+			else this->musicEngine->playMusic();
 			
 		}
 		this->setKeysClick("Escape", this->getKeysClick1("Escape"));
@@ -321,17 +311,18 @@ void GameState::update(const float& dt)
 		const uint16_t result = this->playerGUI->updateEscapeButton(this->mousePosWindow, this->getMouseClick());
 		if (result == 1) {
 			this->endState();
+			this->musicEngine->clearMusic();
 		}
 		else if (result == 2) {
 			this->window->close();
 		}
 		else if (result == 3) {
 			this->paused = false;
-			this->music.play();
+			this->musicEngine->playMusic();
 			this->soundEngine->playSounds();
 		}
 		else if (result == 4) {
-			this->states->push(new SettingsState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->states));
+			this->states->push(new SettingsState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->musicEngine, this->states));
 		}
 	}
 
@@ -524,6 +515,7 @@ void GameState::update(const float& dt)
 		}
 
 		this->soundEngine->update();
+		this->musicEngine->update();
 	}
 
 	this->playerGUI->update(this->mousePosView, this->waveCountdown, dt);
