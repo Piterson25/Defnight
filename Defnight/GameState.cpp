@@ -365,11 +365,9 @@ void GameState::update(const float& dt)
 			this->player->whooshSound(this->soundEngine);
 
 			if (this->mousePosView.y > calcY(128, this->gameSettings->resolution)) {
-				if (this->playerGUI->getIsShopping()) {
-					if (this->mousePosView.x > calcX(292, this->gameSettings->resolution) && this->mouseClick)
-						this->player->doAttack();
+				if (!this->playerGUI->getIsShopping() && this->mouseClick) {
+					this->player->doAttack();
 				}
-				else if (this->mouseClick) this->player->doAttack();
 
 				if (this->player->checkIfAbility()) {
 					this->player->doAbility(sf::Vector2f(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window), this->view)), this->projectiles);
@@ -386,28 +384,27 @@ void GameState::update(const float& dt)
 		}
 		else this->player->spawn(dt);
 
+		if (this->player->getSpawned()) {
+			this->updateKeysClick("E", sf::Keyboard::E);
+
+			if (this->getKeysClick1("E") && !this->getKeysClick2("E")) {
+				this->setKeysClick("E", true);
+				this->playerGUI->updateIsShopping();
+			}
+			this->setKeysClick("E", this->getKeysClick1("E"));
+
+			if (this->playerGUI->updateShop(this->mousePosWindow, this->getMouseClick(), this->soundEngine, this->floatingTextSystem)) {
+				this->setMouseClick(true);
+			}
+
+		}
+
 		if (this->waveCountdown < 10.f)
 		{
 			this->waveCountdown += dt;
 
-			if (this->player->getSpawned()) {
-				this->updateKeysClick("E", sf::Keyboard::E);
-
-				if (this->getKeysClick1("E") && !this->getKeysClick2("E")) {
-					this->setKeysClick("E", true);
-					this->playerGUI->updateIsShopping(true);
-				}
-				this->setKeysClick("E", this->getKeysClick1("E"));
-
-				if (this->playerGUI->updateShop(this->mousePosWindow, this->getMouseClick(), this->soundEngine, this->floatingTextSystem)) {
-					this->setMouseClick(true);
-				}
-				
-			}
-
 			if (this->waveCountdown >= 10.f) {
 				this->spawnMonsters();
-				this->playerGUI->updateIsShopping(false);
 			}
 			else if (this->waveCountdown > 8.f && this->monsterIDs.size() == 0) {
 				this->prepareWave();

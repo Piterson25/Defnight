@@ -309,6 +309,7 @@ void PlayerGUI::update_level(SoundEngine* soundEngine)
 {
 	soundEngine->addSound("levelup");
 	this->isLeveling = true;
+	this->isShopping = false;
 	this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 22));
 	this->texts["LEVEL"]->setText("Level " + std::to_string(this->player->getLevel()));
 	this->texts["LEVEL"]->center(calcX(640, this->vm));
@@ -356,6 +357,7 @@ void PlayerGUI::update_HP()
 	if (this->player->isDead()) {
 		this->hp_bar_barrier = 0.f;
 		this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, 0, 22));
+		this->isShopping = false;
 	}
 	else this->hp_bar_barrier = static_cast<float>(this->player->getHP()) / this->player->getMaxHP();
 
@@ -439,17 +441,14 @@ void PlayerGUI::setAbilityIcon()
 	this->ability_icon.setPosition(sf::Vector2f(calcX(288, vm), calcY(16, vm)));
 }
 
-void PlayerGUI::updateIsShopping(const bool& start)
+void PlayerGUI::updateIsShopping()
 {
-	if (start) {
-		if (this->isShopping) {
-			this->isShopping = false;
-		}
-		else {
-			this->isShopping = true;
-		}
+	if (this->isShopping) {
+		this->isShopping = false;
 	}
-	else this->isShopping = false;
+	else {
+		this->isShopping = true;
+	}
 }
 
 void PlayerGUI::updateKills()
@@ -799,6 +798,29 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 	this->sprites["HP_BAR"]->draw(target);
 	this->texts["HP"]->draw(target);
 
+	if (this->isShopping) {
+		this->sprites["SHOP"]->draw(target);
+		this->sprite_buttons["ITEM1"]->draw(target);
+		this->sprites["ITEM1"]->draw(target);
+		this->texts["ITEM1"]->draw(target);
+		this->texts["ITEM1_PRICE"]->draw(target);
+		this->sprites["ITEM1_COIN"]->draw(target);
+
+		this->sprite_buttons["ITEM2"]->draw(target);
+		this->sprites["ITEM2"]->draw(target);
+		this->texts["ITEM2"]->draw(target);
+		this->texts["ITEM2_PRICE"]->draw(target);
+		this->sprites["ITEM2_COIN"]->draw(target);
+
+		if (this->player->getArmor() < 10) {
+			this->sprite_buttons["ITEM3"]->draw(target);
+			this->sprites["ITEM3"]->draw(target);
+			this->texts["ITEM3"]->draw(target);
+			this->texts["ITEM3_PRICE"]->draw(target);
+			this->sprites["ITEM3_COIN"]->draw(target);
+		}
+	}
+
 	if (this->player->getName() != "warrior") {
 		this->sprites["ABILITY_ICON"]->draw(target);
 		if (this->player->getAbilityCooldown() < this->player->getAbilityMaxTime())
@@ -811,29 +833,6 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 			this->texts["BIG_WAVE_NUMBER"]->draw(target);
 			this->texts["WAVE_NEW_MOBS"]->draw(target);
 			this->texts["MOBS_TO_KILL"]->draw(target);
-		}
-
-		if (this->isShopping) {
-			this->sprites["SHOP"]->draw(target);
-			this->sprite_buttons["ITEM1"]->draw(target);
-			this->sprites["ITEM1"]->draw(target);
-			this->texts["ITEM1"]->draw(target);
-			this->texts["ITEM1_PRICE"]->draw(target);
-			this->sprites["ITEM1_COIN"]->draw(target);
-
-			this->sprite_buttons["ITEM2"]->draw(target);
-			this->sprites["ITEM2"]->draw(target);
-			this->texts["ITEM2"]->draw(target);
-			this->texts["ITEM2_PRICE"]->draw(target);
-			this->sprites["ITEM2_COIN"]->draw(target);
-
-			if (this->player->getArmor() < 10) {
-				this->sprite_buttons["ITEM3"]->draw(target);
-				this->sprites["ITEM3"]->draw(target);
-				this->texts["ITEM3"]->draw(target);
-				this->texts["ITEM3_PRICE"]->draw(target);
-				this->sprites["ITEM3_COIN"]->draw(target);
-			}
 		}
 	}
 	else if (this->waveCountdown >= 10.f) {

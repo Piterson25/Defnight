@@ -37,7 +37,7 @@ public:
 	const bool getIsUpgrading() const;
 	const bool getIsShopping() const;
 
-	void updateIsShopping(const bool& start);
+	void updateIsShopping();
 	void updateKills();
 	void updateMonsterCountWave(const std::string& language, const unsigned& wave, const size_t& monsterCount, SoundEngine* soundEngine);
 	void updateMonsterCount(const size_t& monsterCount);
