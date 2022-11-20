@@ -31,26 +31,28 @@ public:
 	virtual const bool getRight() const;
 	virtual const bool getDown() const;
 	virtual const bool getIsAttacking() const;
-	virtual const unsigned getAttackSpeed() const;
-	virtual const unsigned getMaxHP() const;
-	virtual const unsigned getHP() const;
-	virtual const unsigned getXP() const;
-	virtual const unsigned getSpeed() const;
-	virtual const unsigned getReach() const;
-	virtual const unsigned getPunched() const;
-	virtual const unsigned getFrame() const;
+	virtual const uint32_t getAttack() const;
+	virtual const uint32_t getAttackSpeed() const;
+	virtual const uint32_t getMaxHP() const;
+	virtual const uint32_t getHP() const;
+	virtual const uint32_t getXP() const;
+	virtual const uint32_t getSpeed() const;
+	virtual const uint32_t getReach() const;
+	virtual const uint32_t getPunched() const;
+	virtual const uint32_t getFrame() const;
 
 
 	void setVeloctiy(const sf::Vector2f& velocity);
 	void setTexturePath(const std::string& path);
 	void setTexture(const sf::Texture& texture);
 	void setPosition(const float& x, const float& y);
-	void setAttackSpeed(const unsigned& attackSpeed);
-	void setMaxHP(const unsigned& maxHP);
-	void setHP(const unsigned& HP);
-	void setXP(const unsigned& XP);
-	void setSpeed(const unsigned& speed);
-	void setReach(const unsigned& reach);
+	void setAttack(const uint32_t& attack);
+	void setAttackSpeed(const uint32_t& attackSpeed);
+	void setMaxHP(const uint32_t& maxHP);
+	void setHP(const uint32_t& HP);
+	void setXP(const uint32_t& XP);
+	void setSpeed(const uint32_t& speed);
+	void setReach(const uint32_t& reach);
 	void setName(const std::string& name);
 
 	void loadAttack(const float& dt);
@@ -69,12 +71,13 @@ protected:
 
 	sf::Vector2f velocity;
 
-	unsigned attackSpeed;
-	unsigned maxHP;
-	unsigned HP;
-	unsigned XP;
-	unsigned speed;
-	unsigned reach;
+	uint32_t attack;
+	uint32_t attackSpeed;
+	uint32_t maxHP;
+	uint32_t HP;
+	uint32_t XP;
+	uint32_t speed;
+	uint32_t reach;
 
 	bool up;
 	bool left;
@@ -82,7 +85,7 @@ protected:
 	bool right;
 
 	float animationCooldown;
-	unsigned frame;
+	uint32_t frame;
 
 	float attackCooldown;
 	bool isAttacking;

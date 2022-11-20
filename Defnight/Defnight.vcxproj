@@ -166,6 +166,7 @@
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerGUI.cpp" />
     <ClCompile Include="Projectile.cpp" />
+    <ClCompile Include="ProjectileSystem.cpp" />
     <ClCompile Include="Random.cpp" />
     <ClCompile Include="SettingsState.cpp" />
     <ClCompile Include="SoundEffect.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerGUI.h" />
     <ClInclude Include="Projectile.h" />
+    <ClInclude Include="ProjectileSystem.h" />
     <ClInclude Include="Random.h" />
     <ClInclude Include="SettingsState.h" />
     <ClInclude Include="SoundEffect.h" />

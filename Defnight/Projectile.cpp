@@ -2,14 +2,19 @@
 #include "Functions.h"
 #include "Projectile.h"
 
-Projectile::Projectile(const std::string& name, const float& posX, const float& posY,
-	const unsigned& attack, const unsigned& speed, const unsigned& hp, const sf::Vector2f& coords, sf::VideoMode& vm)
-	:name(name), vm(vm), attack(attack), speed(speed), HP(hp)
+Projectile::Projectile(const sf::VideoMode& vm, const std::string& projectile_name, sf::Texture& texture, const float& x, const float& y, 
+	const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords)
 {
-	this->texture.loadFromFile("external/assets/projectiles.png");
+	this->vm = vm;
+	this->name = projectile_name;
+	this->texture = texture;
+	this->attack = attack;
+	this->HP = HP;
+	this->speed = speed;
+
 	this->sprite.setTexture(this->texture);
 	this->sprite.setScale(calcScale(4, vm), calcScale(4, vm));
-	this->sprite.setPosition(posX, posY);
+	this->sprite.setPosition(x, y);
 	this->sprite.setOrigin(2.f, 2.f);
 
 	this->velocity = sf::Vector2f(0.f, 0.f);
@@ -18,8 +23,12 @@ Projectile::Projectile(const std::string& name, const float& posX, const float& 
 	this->collidedPlayer = false;
 	this->collidedMonster = false;
 
-	if (this->name == "stone") this->sprite.setTextureRect(sf::IntRect(0, 0, 4, 4));
-	else this->sprite.setTextureRect(sf::IntRect(4, 0, 4, 4));
+	if (this->name == "stone") {
+		this->sprite.setTextureRect(sf::IntRect(0, 0, 4, 4));
+	}
+	else {
+		this->sprite.setTextureRect(sf::IntRect(4, 0, 4, 4));
+	}
 
 	this->calculateVelocity(coords);
 }
@@ -27,16 +36,6 @@ Projectile::Projectile(const std::string& name, const float& posX, const float& 
 Projectile::~Projectile()
 {
 	
-}
-
-const sf::Vector2f& Projectile::getPosition() const
-{
-	return this->sprite.getPosition();
-}
-
-const unsigned Projectile::getHP() const
-{
-	return this->HP;
 }
 
 const bool Projectile::getCollided() const
@@ -52,11 +51,6 @@ const bool Projectile::getCollidedPlayer() const
 const bool Projectile::getCollidedMonster() const
 {
 	return this->collidedMonster;
-}
-
-const unsigned Projectile::getAttack() const
-{
-	return this->attack;
 }
 
 void Projectile::calculateVelocity(const sf::Vector2f& coords)
@@ -107,95 +101,6 @@ const bool Projectile::sideWall(const sf::Vector2f& velocities, const sf::FloatR
 	}
 		
 	return false;
-}
-
-void Projectile::obstacleCollision(TileMap* tileMap)
-{	
-	this->collided = false;
-
-	const float distance = 2 * tileMap->getGlobalBounds(0).width;
-
-	for (size_t i = 0; i < tileMap->getSize(); ++i) {
-		if (vectorDistance(this->sprite.getPosition(), tileMap->getPosition(i)) < distance && !this->collided && !this->collidedPlayer) {
-
-			sf::FloatRect projectileBounds = this->sprite.getGlobalBounds();
-			sf::FloatRect wallBounds = tileMap->getGlobalBounds(i);
-
-			sf::FloatRect nextPos = projectileBounds;
-			nextPos.left += this->velocity.x;
-			nextPos.top += this->velocity.y;
-			if (wallBounds.intersects(nextPos))
-			{
-				//Dolna kolizja
-				if (projectileBounds.top < wallBounds.top
-					&& projectileBounds.top + projectileBounds.height < wallBounds.top + wallBounds.height
-					&& projectileBounds.left < wallBounds.left + wallBounds.width
-					&& projectileBounds.left + projectileBounds.width > wallBounds.left)
-				{
-					if (this->name == "shuriken" && !this->sideWall(sf::Vector2f(this->velocity.x, this->velocity.y * -1), projectileBounds, wallBounds, 1)) {
-						this->angle *= -1.f;
-					}
-					else {
-						this->velocity.y = 0.f;
-						this->sprite.setPosition(projectileBounds.left, wallBounds.top - projectileBounds.height);
-					}
-					this->collided = true;
-					break;
-				}
-				//Gorna kolizja
-				else if (projectileBounds.top > wallBounds.top
-					&& projectileBounds.top + projectileBounds.height > wallBounds.top + wallBounds.height
-					&& projectileBounds.left < wallBounds.left + wallBounds.width
-					&& projectileBounds.left + projectileBounds.width > wallBounds.left)
-				{
-					if (this->name == "shuriken" && !this->sideWall(sf::Vector2f(this->velocity.x, this->velocity.y * -1), projectileBounds, wallBounds, 0)) {
-						this->angle *= -1.f;
-					}
-					else {
-						this->velocity.y = 0.f;
-						this->sprite.setPosition(projectileBounds.left, wallBounds.top + wallBounds.height);
-					}
-					this->collided = true;
-					break;
-				}
-
-				//Prawa kolizja
-				if (projectileBounds.left < wallBounds.left
-					&& projectileBounds.left + projectileBounds.width < wallBounds.left + wallBounds.width
-					&& projectileBounds.top < wallBounds.top + wallBounds.height
-					&& projectileBounds.top + projectileBounds.height > wallBounds.top)
-				{
-					if (this->name == "shuriken" && !this->sideWall(sf::Vector2f(this->velocity.x * -1, this->velocity.y), projectileBounds, wallBounds, 3)) {
-						this->angle = 180.f - this->angle;
-					}
-					else {
-						this->velocity.x = 0.f;
-						this->sprite.setPosition(wallBounds.left - projectileBounds.width, projectileBounds.top);
-					}
-					this->collided = true;
-					break;
-				}
-				//Lewa kolizja
-				else if (projectileBounds.left > wallBounds.left
-					&& projectileBounds.left + projectileBounds.width > wallBounds.left + wallBounds.width
-					&& projectileBounds.top < wallBounds.top + wallBounds.height
-					&& projectileBounds.top + projectileBounds.height > wallBounds.top)
-				{
-					if (this->name == "shuriken" && !this->sideWall(sf::Vector2f(this->velocity.x * -1, this->velocity.y), projectileBounds, wallBounds, 2)) {
-						this->angle = 180.f - this->angle;
-					}
-					else {
-						this->velocity.x = 0.f;
-						this->sprite.setPosition(wallBounds.left + wallBounds.width, projectileBounds.top);
-					}
-					this->collided = true;
-					break;
-				}
-
-			}
-		}
-	}
-	if (this->collided) this->HP--;
 }
 
 void Projectile::playerCollision(Player* player)
@@ -262,7 +167,7 @@ void Projectile::playerCollision(Player* player)
 	}
 }
 
-void Projectile::monsterCollision(Monster* monster, sf::Font* font, Player* player, FloatingTextSystem* floatingTextSystem)
+void Projectile::monsterCollision(Monster* monster, Player* player, FloatingTextSystem* floatingTextSystem)
 {
 	if (this->name == "shuriken") {
 		const float distance = 2 * monster->getGlobalBounds().width;
@@ -324,13 +229,13 @@ void Projectile::monsterCollision(Monster* monster, sf::Font* font, Player* play
 
 			if (this->collidedMonster) {
 				if ((unsigned(Random::Float() * 100.f) + 1) <= player->getCriticalChance()) {
-					const int attack = 2 * this->getAttack();
+					const int attack = 2 * this->attack;
 					floatingTextSystem->addFloatingText(std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(233, 134, 39), false);
 					if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);
 					else monster->setHP(monster->getHP() - attack);
 				}
 				else {
-					const int attack = this->getAttack();
+					const int attack = this->attack;
 					floatingTextSystem->addFloatingText(std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(255, 255, 255), false);
 					if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);
 					else monster->setHP(monster->getHP() - attack);

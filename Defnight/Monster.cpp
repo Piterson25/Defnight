@@ -89,14 +89,9 @@ Monster::~Monster()
 {
 }
 
-const uint16_t Monster::getGold() const
+const uint32_t Monster::getGold() const
 {
 	return this->gold;
-}
-
-const uint16_t Monster::getAttack() const
-{
-	return this->attack;
 }
 
 const bool Monster::getSpawned() const
@@ -110,7 +105,7 @@ const bool Monster::getDeadCountdown() const
 	return false;
 }
 
-const bool Monster::attackPlayer(Player* player, sf::Font* font, TileMap* tileMap, std::list<Projectile*>& projectiles, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine)
+const bool Monster::attackPlayer(Player* player, TileMap* tileMap, ProjectileSystem* projectileSystem, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine)
 {
 	const float distance = this->attackDistance(player, this);
 
@@ -119,7 +114,7 @@ const bool Monster::attackPlayer(Player* player, sf::Font* font, TileMap* tileMa
 			this->doAttack();
 			if (!player->isDead() && !player->getPunched() && this->getIsAttacking() && this->getFrame() == 80) {
 				if (this->getAttack() > 0) {
-					projectiles.push_back(new Projectile("stone", this->getPosition().x + calcX(24, vm), this->getPosition().y + calcY(36, vm), this->getAttack(), 1, 1, sf::Vector2f(player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm)), this->vm));
+					projectileSystem->addProjectile("stone", this->getPosition().x + calcX(24, vm), this->getPosition().y + calcY(36, vm), this->getAttack(), 1, 1, sf::Vector2f(player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm)));
 					this->isAttacking = false;
 
 					if (!this->playedSound) {
@@ -196,14 +191,9 @@ const bool Monster::dying(const float& dt)
 	return false;
 }
 
-void Monster::setGold(const uint16_t& gold)
+void Monster::setGold(const uint32_t& gold)
 {
 	this->gold = gold;
-}
-
-void Monster::setAttack(const uint16_t& attack)
-{
-	this->attack = attack;
 }
 
 void Monster::resetNodes(Player* player)

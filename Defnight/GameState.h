@@ -9,6 +9,7 @@
 #include "FloatingTextSystem.h"
 #include "DropSystem.h"
 #include "TileMap.h"
+#include "ProjectileSystem.h"
 #include "SettingsState.h"
 
 class GameState :
@@ -57,8 +58,7 @@ private:
 
 	FloatingTextSystem* floatingTextSystem;
 	DropSystem* dropSystem;
-
-	std::list<Projectile*> projectiles;
+	ProjectileSystem* projectileSystem;
 };
 
 #endif

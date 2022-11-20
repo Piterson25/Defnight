@@ -3,6 +3,7 @@
 
 #include "Player.h"
 #include "Monster.h"
+#include "Entity.h"
 #include "FloatingTextSystem.h"
 #include "TileMap.h"
 
@@ -12,46 +13,31 @@ class FloatingTextSystem;
 class TileMap;
 
 class Projectile
+	: public Entity
 {
 public:
-	Projectile(const std::string& name, const float& posX, const float& posY,
-		const unsigned& attack, const unsigned& speed, const unsigned& hp, const sf::Vector2f& coords, sf::VideoMode& vm);
+	Projectile(const sf::VideoMode& vm, const std::string& projectile_name, sf::Texture& texture, const float& x, const float& y, const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords);
 	virtual ~Projectile();
-
-	virtual const sf::Vector2f& getPosition() const;
-	virtual const unsigned getHP() const;
 
 	virtual const bool getCollided() const;
 	virtual const bool getCollidedPlayer() const;
 	virtual const bool getCollidedMonster() const;
-	virtual const unsigned getAttack() const;
 
 	void calculateVelocity(const sf::Vector2f& coords);
 
 	const bool sideWall(const sf::Vector2f& velocities, const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds, const short& side);
-	void obstacleCollision(TileMap* tileMap);
 	void playerCollision(Player* player);
-	void monsterCollision(Monster* monster, sf::Font* font, Player* player, FloatingTextSystem* floatingTextSystem);
+	void monsterCollision(Monster* monster, Player* player, FloatingTextSystem* floatingTextSystem);
 
 	void move(const float& dt);
 
 	void update(const float& dt);
 	void draw(sf::RenderTarget& target);
 private:
-	sf::Sprite sprite;
-	sf::Texture texture;
-	std::string name;
-
-	sf::Vector2f velocity;
-	unsigned HP;
-	unsigned attack;
-	unsigned speed;
 	bool collided;
 	bool collidedPlayer;
 	bool collidedMonster;
 	float angle;
-
-	sf::VideoMode vm;
 };
 
 #endif

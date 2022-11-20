@@ -3,49 +3,48 @@
 
 #include "Monster.h"
 #include "Entity.h"
+#include "ProjectileSystem.h"
 #include "FloatingTextSystem.h"
 #include "SoundEngine.h"
 
 class Monster;
 class FloatingTextSystem;
-class Projectile;
+class ProjectileSystem;
 class SoundEngine;
 
 class Player: 
 	public Entity
 {
 public:
-	Player(const float& x, const float& y, const sf::VideoMode& vm, const std::string& hero_name);
+	Player(const sf::VideoMode& vm, const std::string& hero_name, const float& x, const float& y);
 	virtual ~Player();
 
-	virtual const uint16_t getGold() const;
-	virtual const uint16_t getAttack() const;
-	virtual const uint16_t getKills() const;
-	virtual const bool getSpawned() const;
-	virtual const uint16_t getArmor() const;
-	virtual const unsigned getReg() const;
-	virtual const unsigned getMaxXP() const;
-	virtual const unsigned getLastMaxXP() const;
-	virtual const unsigned getCriticalChance() const;
-	virtual const unsigned getLevel() const;
+	virtual const uint32_t getGold() const;
+	virtual const uint32_t getArmor() const;
+	virtual const uint32_t getReg() const;
+	virtual const uint32_t getLevel() const;
+	virtual const uint32_t getMaxXP() const;
+	virtual const uint32_t getLastMaxXP() const;
+	virtual const uint32_t getCriticalChance() const;
+	virtual const uint32_t getKills() const;
 	virtual const bool getRegenerating() const;
 	virtual const bool getLeveling() const;
-	virtual const float getAbilityCooldown() const;
-	virtual const float getAbilityMaxTime() const;
-	virtual const float getAbilityTime() const;
+	virtual const bool getSpawned() const;
 	virtual const bool getAbilityActive() const;
+	virtual const float getAbilityCooldown() const;
+	virtual const float getAbilityTime() const;
+	virtual const float getAbilityMaxTime() const;
 
-	void setGold(const uint16_t& gold);
-	void setAttack(const uint16_t& attack);
-	void setKills(const uint16_t& kills);
-	void setCriticalChance(const unsigned& CriticalChance);
-	void setReg(const unsigned& reg);
-	void setArmor(const uint16_t& armor);
+	void setGold(const uint32_t& gold);
+	void setArmor(const uint32_t& armor);
+	void setReg(const uint32_t& reg);
+	void setCriticalChance(const uint32_t& criticalChance);
+	void setKills(const uint32_t& kills);
 	void setIsRegenerating(const bool& isRegenerating);
 	void setIsLeveling(const bool& isLeveling);
-	void setAbilityMaxTime(const float& abilityMaxTime);
-	void setAbilityTime(const float& abilityTime);
 	void setAbilityCooldown(const float& abilityCooldown);
+	void setAbilityTime(const float& abilityTime);
+	void setAbilityMaxTime(const float& abilityMaxTime);
 
 	void attackMonster(sf::Font* font, const std::list<Monster*>& monsters, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine);
 	const bool addXP(const unsigned& monsterXP);
@@ -54,7 +53,7 @@ public:
 	const bool regeneration(const float& dt);
 	void abilityCounter(const float& dt);
 	const bool checkIfAbility();
-	void doAbility(const sf::Vector2f& coords, std::list<Projectile*>& projectiles);
+	void doAbility(const sf::Vector2f& coords, ProjectileSystem* projectileSystem);
 	void whooshSound(SoundEngine* soundEngine);
 
 	void update(const float& dt);
@@ -66,21 +65,19 @@ private:
 	sf::Sprite ability;
 	sf::Texture ability_texture;
 
-	uint16_t kills;
-	unsigned level;
-	unsigned criticalChance;
-	unsigned maxXP;
-	unsigned lastMaxXP;
-	unsigned reg;
-	uint16_t armor;
+	uint32_t gold;
+	uint32_t armor;
+	uint32_t reg;
+	uint32_t level;
+	uint32_t maxXP;
+	uint32_t lastMaxXP;
+	uint32_t criticalChance;
+	uint32_t kills;
 	bool isRegenerating;
 	bool isLeveling;
 	bool spawned;
 	float regCooldown;
 	float spawnCountdown;
-
-	uint16_t attack;
-	uint16_t gold;
 
 	bool abilityActive;
 	float abilityCooldown;

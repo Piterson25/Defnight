@@ -65,9 +65,6 @@
     <ClCompile Include="FloatingText.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
-    <ClCompile Include="Projectile.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
     <ClCompile Include="Functions.cpp">
       <Filter>Math</Filter>
     </ClCompile>
@@ -107,6 +104,12 @@
     <ClCompile Include="MusicEngine.cpp">
       <Filter>Audio</Filter>
     </ClCompile>
+    <ClCompile Include="Projectile.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
+    <ClCompile Include="ProjectileSystem.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Drop.h">
@@ -140,9 +143,6 @@
       <Filter>Entities</Filter>
     </ClInclude>
     <ClInclude Include="FloatingText.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
-    <ClInclude Include="Projectile.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
     <ClInclude Include="Functions.h">
@@ -180,6 +180,12 @@
     </ClInclude>
     <ClInclude Include="MusicEngine.h">
       <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Projectile.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="ProjectileSystem.h">
+      <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

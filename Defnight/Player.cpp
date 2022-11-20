@@ -2,7 +2,7 @@
 #include "Functions.h"
 #include "Player.h"
 
-Player::Player(const float& x, const float& y, const sf::VideoMode& vm, const std::string& hero_name)
+Player::Player(const sf::VideoMode& vm, const std::string& hero_name, const float& x, const float& y)
 {
 	this->vm = vm;
 	this->name = hero_name;
@@ -66,54 +66,44 @@ Player::~Player()
 
 }
 
-const uint16_t Player::getGold() const
+const uint32_t Player::getGold() const
 {
 	return this->gold;
 }
 
-const uint16_t Player::getAttack() const
-{
-	return this->attack;
-}
-
-const uint16_t Player::getKills() const
-{
-	return this->kills;
-}
-
-const bool Player::getSpawned() const
-{
-	return this->spawned;
-}
-
-const uint16_t Player::getArmor() const
+const uint32_t Player::getArmor() const
 {
 	return this->armor;
 }
 
-const unsigned Player::getReg() const
+const uint32_t Player::getReg() const
 {
 	return this->reg;
 }
 
-const unsigned Player::getMaxXP() const
-{
-	return this->maxXP;
-}
-
-const unsigned Player::getLastMaxXP() const
-{
-	return this->lastMaxXP;
-}
-
-const unsigned Player::getLevel() const
+const uint32_t Player::getLevel() const
 {
 	return this->level;
 }
 
-const unsigned Player::getCriticalChance() const
+const uint32_t Player::getMaxXP() const
+{
+	return this->maxXP;
+}
+
+const uint32_t Player::getLastMaxXP() const
+{
+	return this->lastMaxXP;
+}
+
+const uint32_t Player::getCriticalChance() const
 {
 	return this->criticalChance;
+}
+
+const uint32_t Player::getKills() const
+{
+	return this->kills;
 }
 
 const bool Player::getRegenerating() const
@@ -126,19 +116,9 @@ const bool Player::getLeveling() const
 	return this->isLeveling;
 }
 
-const float Player::getAbilityCooldown() const
+const bool Player::getSpawned() const
 {
-	return this->abilityCooldown;
-}
-
-const float Player::getAbilityMaxTime() const
-{
-	return this->abilityMaxTime;
-}
-
-const float Player::getAbilityTime() const
-{
-	return this->abilityTime;
+	return this->spawned;
 }
 
 const bool Player::getAbilityActive() const
@@ -146,34 +126,44 @@ const bool Player::getAbilityActive() const
 	return this->abilityActive;
 }
 
-void Player::setGold(const uint16_t& gold)
+const float Player::getAbilityCooldown() const
+{
+	return this->abilityCooldown;
+}
+
+const float Player::getAbilityTime() const
+{
+	return this->abilityTime;
+}
+
+const float Player::getAbilityMaxTime() const
+{
+	return this->abilityMaxTime;
+}
+
+void Player::setGold(const uint32_t& gold)
 {
 	this->gold = gold;
 }
 
-void Player::setAttack(const uint16_t& attack)
+void Player::setArmor(const uint32_t& armor)
 {
-	this->attack = attack;
+	this->armor = armor;
 }
 
-void Player::setKills(const uint16_t& kills)
-{
-	this->kills = kills;
-}
-
-void Player::setCriticalChance(const unsigned& criticalChance)
-{
-	this->criticalChance = criticalChance;
-}
-
-void Player::setReg(const unsigned& reg)
+void Player::setReg(const uint32_t& reg)
 {
 	this->reg = reg;
 }
 
-void Player::setArmor(const uint16_t& armor)
+void Player::setCriticalChance(const uint32_t& criticalChance)
 {
-	this->armor = armor;
+	this->criticalChance = criticalChance;
+}
+
+void Player::setKills(const uint32_t& kills)
+{
+	this->kills = kills;
 }
 
 void Player::setIsRegenerating(const bool& isRegenerating)
@@ -186,9 +176,9 @@ void Player::setIsLeveling(const bool& isLeveling)
 	this->isLeveling = isLeveling;
 }
 
-void Player::setAbilityMaxTime(const float& abilityMaxTime)
+void Player::setAbilityCooldown(const float& abilityCooldown)
 {
-	this->abilityMaxTime = abilityMaxTime;
+	this->abilityCooldown = abilityCooldown;
 }
 
 void Player::setAbilityTime(const float& abilityTime)
@@ -196,9 +186,9 @@ void Player::setAbilityTime(const float& abilityTime)
 	this->abilityTime = abilityTime;
 }
 
-void Player::setAbilityCooldown(const float& abilityCooldown)
+void Player::setAbilityMaxTime(const float& abilityMaxTime)
 {
-	this->abilityCooldown = abilityCooldown;
+	this->abilityMaxTime = abilityMaxTime;
 }
 
 void Player::attackMonster(sf::Font* font, const std::list<Monster*>& monsters, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine)
@@ -338,10 +328,10 @@ const bool Player::checkIfAbility()
 	return false;
 }
 
-void Player::doAbility(const sf::Vector2f& coords, std::list<Projectile*>& projectiles)
+void Player::doAbility(const sf::Vector2f& coords, ProjectileSystem* projectileSystem)
 {
 	if (this->name == "ninja") {
-		projectiles.push_back(new Projectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 3, 4, 3, coords, this->vm));
+		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 3, 3, 4, coords);
 	}
 	else if (this->name == "knight") {
 		this->armor += 5;

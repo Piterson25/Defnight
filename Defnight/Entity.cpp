@@ -90,42 +90,47 @@ const bool Entity::getIsAttacking() const
 	return this->isAttacking;
 }
 
-const unsigned Entity::getAttackSpeed() const
+const uint32_t Entity::getAttack() const
+{
+	return this->attack;
+}
+
+const uint32_t Entity::getAttackSpeed() const
 {
 	return this->attackSpeed;
 }
 
-const unsigned Entity::getMaxHP() const
+const uint32_t Entity::getMaxHP() const
 {
 	return this->maxHP;
 }
 
-const unsigned Entity::getHP() const
+const uint32_t Entity::getHP() const
 {
 	return this->HP;
 }
 
-const unsigned Entity::getXP() const
+const uint32_t Entity::getXP() const
 {
 	return this->XP;
 }
 
-const unsigned Entity::getSpeed() const
+const uint32_t Entity::getSpeed() const
 {
 	return this->speed;
 }
 
-const unsigned Entity::getReach() const
+const uint32_t Entity::getReach() const
 {
 	return this->reach;
 }
 
-const unsigned Entity::getPunched() const
+const uint32_t Entity::getPunched() const
 {
 	return this->punched;
 }
 
-const unsigned Entity::getFrame() const
+const uint32_t Entity::getFrame() const
 {
 	return this->frame;
 }
@@ -194,33 +199,38 @@ void Entity::setPosition(const float& x, const float& y)
 	this->sprite.setPosition(x, y);
 }
 
+void Entity::setAttack(const uint32_t& attack)
+{
+	this->attack = attack;
+}
 
-void Entity::setAttackSpeed(const unsigned& attackSpeed)
+
+void Entity::setAttackSpeed(const uint32_t& attackSpeed)
 {
 	this->attackSpeed = attackSpeed;
 }
 
-void Entity::setMaxHP(const unsigned& maxHP)
+void Entity::setMaxHP(const uint32_t& maxHP)
 {
 	this->maxHP = maxHP;
 }
 
-void Entity::setHP(const unsigned& HP)
+void Entity::setHP(const uint32_t& HP)
 {
 	this->HP = HP;
 }
 
-void Entity::setXP(const unsigned& XP)
+void Entity::setXP(const uint32_t& XP)
 {
 	this->XP = XP;
 }
 
-void Entity::setSpeed(const unsigned& speed)
+void Entity::setSpeed(const uint32_t& speed)
 {
 	this->speed = speed;
 }
 
-void Entity::setReach(const unsigned& reach)
+void Entity::setReach(const uint32_t& reach)
 {
 	this->reach = reach;
 }

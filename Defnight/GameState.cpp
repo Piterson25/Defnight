@@ -20,6 +20,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->floatingTextSystem = new FloatingTextSystem(&this->font, vm);
 	this->dropSystem = new DropSystem(vm);
 	this->tileMap = new TileMap();
+	
 
 	this->background_texture.loadFromFile("external/assets/" + map_name + ".png");
 	this->background.setTexture(this->background_texture);
@@ -75,7 +76,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 					quad[3].texCoords = sf::Vector2f(64, 32);
 				}
 				else if (temp[i] == 'S') {
-					this->player = new Player(x, y, vm, hero_name);
+					this->player = new Player(vm, hero_name, x, y);
 				}
 				x += pos;
 				t++;
@@ -116,6 +117,10 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->textures["MINOTAUR"] = texture;
 	texture.loadFromFile("external/assets/entity_shadow.png");
 	this->textures["SHADOW"] = texture;
+	texture.loadFromFile("external/assets/projectiles.png");
+	this->textures["PROJECTILES"] = texture;
+
+	this->projectileSystem = new ProjectileSystem(vm, this->textures["PROJECTILES"]);
 
 	this->wave = 0;
 	this->sumHP = 10;
@@ -246,9 +251,7 @@ void GameState::draw(sf::RenderTarget* target)
 
 	target->draw(this->vertexArray, &this->tiles_texture);
 
-	for (const auto& proj : this->projectiles) {
-		proj->draw(*target);
-	}
+	this->projectileSystem->draw(*target);
 
 	this->dropSystem->draw(*target);
 
@@ -370,7 +373,7 @@ void GameState::update(const float& dt)
 				}
 
 				if (this->player->checkIfAbility()) {
-					this->player->doAbility(sf::Vector2f(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window), this->view)), this->projectiles);
+					this->player->doAbility(sf::Vector2f(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window), this->view)), this->projectileSystem);
 					this->playerGUI->setAbilityIcon();
 					this->playerGUI->updateArmor();
 				}
@@ -435,7 +438,7 @@ void GameState::update(const float& dt)
 								monster->update(dt);
 							}
 							monster->loadAttack(dt);
-							if (monster->attackPlayer(this->player, &this->font, this->tileMap, this->projectiles, this->floatingTextSystem, this->soundEngine)) {
+							if (monster->attackPlayer(this->player, this->tileMap, this->projectileSystem, this->floatingTextSystem, this->soundEngine)) {
 								this->playerGUI->update_HP();
 							}
 							monster->animation(dt);
@@ -468,40 +471,7 @@ void GameState::update(const float& dt)
 		this->playerGUI->updating_XP(dt);
 		this->playerGUI->updating_HP(this->soundEngine, dt);
 
-		for (const auto& proj : this->projectiles) {
-			proj->obstacleCollision(this->tileMap);
-			proj->playerCollision(this->player);
-			for (const auto& monster : this->monsters) {
-				proj->monsterCollision(monster, &this->font, this->player, this->floatingTextSystem);
-				if (proj->getCollidedMonster()) break;
-			}
-			proj->update(dt);
-		}
-		const sf::VideoMode vm = this->gameSettings->resolution;
-		for (auto proj = this->projectiles.begin(); proj != this->projectiles.end();) {
-			if ((*proj)->getHP() == 0) {
-				proj = this->projectiles.erase(proj);
-			}
-			else if ((*proj)->getCollidedPlayer()) {
-				int attack = static_cast<int>(round((*proj)->getAttack() - ((*proj)->getAttack() * player->getArmor() * 0.05f)));
-
-				if (attack > 0) {
-					if (static_cast<int>(this->player->getHP() - attack) < 0) this->player->setHP(0);
-					else this->player->setHP(this->player->getHP() - attack);
-
-					this->player->punch();
-
-					floatingTextSystem->addFloatingText("-" + std::to_string(attack), calcChar(16, vm), this->player->getPosition().x + calcX(32, vm), this->player->getPosition().y + calcY(32, vm), sf::Color(228, 92, 95), false);
-					this->playerGUI->update_HP();
-				}
-
-				proj = this->projectiles.erase(proj);
-			}
-			else if (!this->background.getGlobalBounds().contains((*proj)->getPosition())) {
-				proj = this->projectiles.erase(proj);
-			}
-			else ++proj;
-		}
+		this->projectileSystem->update(this->player, this->playerGUI, this->monsters, this->background, this->tileMap, this->floatingTextSystem, dt);
 
 		this->dropSystem->update(this->player, this->playerGUI, this->floatingTextSystem, this->soundEngine, dt);
 

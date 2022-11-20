@@ -6,6 +6,7 @@
 #include "FloatingTextSystem.h"
 #include "SoundEngine.h"
 
+class Player;
 class FloatingTextSystem;
 class SoundEngine;
 
