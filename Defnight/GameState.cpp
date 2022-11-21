@@ -41,6 +41,9 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->vertexArray.resize(static_cast<size_t>(calcX(64, vm) * calcY(64, vm) * 4.f));
 	std::ifstream mapa("external/maps/" + map_name + ".txt");
 	float x = 0.f, y = 0.f, pos = calcX(this->gridSize, vm);
+
+	float offsetY = 0.f;
+	if (map_name == "desert") offsetY = 48.f;
 	size_t t = 0;
 	const sf::Vector2f tile = sf::Vector2f(calcX(64, vm), calcY(64, vm));
 	if (mapa.is_open()) {
@@ -56,10 +59,10 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 					quad[2].position = sf::Vector2f(x + calcX(64, vm), y + calcY(64, vm));
 					quad[3].position = sf::Vector2f(x, y + calcY(64, vm));
 
-					quad[0].texCoords = sf::Vector2f(48, 16);
-					quad[1].texCoords = sf::Vector2f(64, 16);
-					quad[2].texCoords = sf::Vector2f(64, 32);
-					quad[3].texCoords = sf::Vector2f(48, 32);
+					quad[0].texCoords = sf::Vector2f(48, 16 + offsetY);
+					quad[1].texCoords = sf::Vector2f(64, 16 + offsetY);
+					quad[2].texCoords = sf::Vector2f(64, 32 + offsetY);
+					quad[3].texCoords = sf::Vector2f(48, 32 + offsetY);
 				}
 				else if (temp[i] == '@') {
 					this->tileMap->addTile(x, y, tile, "wall");
@@ -70,10 +73,10 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 					quad[2].position = sf::Vector2f(x + calcX(64, vm), y + calcY(64, vm));
 					quad[3].position = sf::Vector2f(x, y + calcY(64, vm));
 
-					quad[0].texCoords = sf::Vector2f(64, 16);
-					quad[1].texCoords = sf::Vector2f(80, 16);
-					quad[2].texCoords = sf::Vector2f(80, 32);
-					quad[3].texCoords = sf::Vector2f(64, 32);
+					quad[0].texCoords = sf::Vector2f(64, 16 + offsetY);
+					quad[1].texCoords = sf::Vector2f(80, 16 + offsetY);
+					quad[2].texCoords = sf::Vector2f(80, 32 + offsetY);
+					quad[3].texCoords = sf::Vector2f(64, 32 + offsetY);
 				}
 				else if (temp[i] == 'S') {
 					this->player = new Player(vm, hero_name, x, y);

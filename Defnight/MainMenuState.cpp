@@ -46,7 +46,13 @@ void MainMenuState::initGUI()
 	this->mapView.setSize(sf::Vector2f(static_cast<float>(vm.width), static_cast<float>(vm.height)));
 	this->mapView.setCenter(static_cast<float>(vm.width / 2), static_cast<float>(vm.height / 2));
 
-	this->map_texture.loadFromFile("external/assets/ruins.png");
+	if (const uint8_t m = static_cast<uint8_t>(Random::Float() * 2.f); m == 0) {
+		this->map_texture.loadFromFile("external/assets/ruins.png");
+	}
+	else {
+		this->map_texture.loadFromFile("external/assets/desert.png");
+	}
+	
 	this->map.setTexture(this->map_texture);
 	this->map.setScale(calcScale(4, vm), calcScale(4, vm));
 	this->map.setPosition(256.f, 256.f);
@@ -83,6 +89,9 @@ void MainMenuState::initGUI()
 	this->sprite_buttons["SELECT_MAP1"] = new gui::ButtonSprite("external/assets/select_map.png", calcX(24, vm), calcY(248, vm), calcScale(1, vm), false);
 	this->sprites["MAP1"] = new gui::Sprite("external/assets/ruins.png", calcX(48, vm), calcY(272, vm), calcScale(0.5f, vm), false);
 	this->texts["RUINS"] = new gui::Text(&this->font, this->lang["RUINS"], calcChar(32, vm), calcX(176, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
+	this->sprite_buttons["SELECT_MAP2"] = new gui::ButtonSprite("external/assets/select_map.png", calcX(472, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprites["MAP2"] = new gui::Sprite("external/assets/desert.png", calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
+	this->texts["DESERT"] = new gui::Text(&this->font, this->lang["DESERT"], calcChar(32, vm), calcX(624, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
 
 
 	// PAGE 3
@@ -308,6 +317,14 @@ void MainMenuState::update(const float& dt)
 				this->page = 3;
 				this->sprite_buttons["SELECT_MAP1"]->setTransparent();
 			}
+
+			this->sprite_buttons["SELECT_MAP2"]->update(this->mousePosWindow);
+			if (this->sprite_buttons["SELECT_MAP2"]->isPressed() && !this->getMouseClick()) {
+				this->setMouseClick(true);
+				this->map_name = "desert";
+				this->page = 3;
+				this->sprite_buttons["SELECT_MAP2"]->setTransparent();
+			}
 			break;
 		case 3:
 			this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
@@ -431,8 +448,11 @@ void MainMenuState::draw(sf::RenderTarget* target)
 		this->texts["CHOOSE_MAP"]->draw(*target);
 		this->sprites["MAP1"]->draw(*target);
 		this->sprite_buttons["SELECT_MAP1"]->draw(*target);
+		this->sprites["MAP2"]->draw(*target);
+		this->sprite_buttons["SELECT_MAP2"]->draw(*target);
 		
 		this->texts["RUINS"]->draw(*target);
+		this->texts["DESERT"]->draw(*target);
 		break;
 	case 3:
 		this->sprites["GO_BACK"]->draw(*target);
