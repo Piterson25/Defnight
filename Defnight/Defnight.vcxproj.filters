@@ -110,6 +110,9 @@
     <ClCompile Include="ProjectileSystem.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
+    <ClCompile Include="MonsterSystem.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Drop.h">
@@ -185,6 +188,9 @@
       <Filter>Entities</Filter>
     </ClInclude>
     <ClInclude Include="ProjectileSystem.h">
+      <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="MonsterSystem.h">
       <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>

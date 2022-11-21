@@ -18,7 +18,7 @@ class Monster
 	: public Entity
 {
 public:
-	Monster(const float& x, const float& y, sf::Texture& texture, sf::Texture& shadow_texture, TileMap* tileMap, const sf::VideoMode& vm, const std::string& monster_name, const float& difficulty_mod, const float& wave_mod);
+	Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::Texture& texture, sf::Texture& shadow_texture, TileMap* tileMap, const float& x, const float& y, const float& difficulty_mod, const float& wave_mod);
 	virtual ~Monster();
 
 	virtual const uint32_t getGold() const;
@@ -33,8 +33,6 @@ public:
 	void setGold(const uint32_t& gold);
 
 	void AI(TileMap* tileMap, Player* player, const float& dt);
-
-	void monsterCollision(const std::list<Monster*>& monsters);
 
 	void update(const float& dt);
 	void draw(sf::RenderTarget& target);

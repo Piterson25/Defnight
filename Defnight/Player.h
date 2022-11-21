@@ -1,13 +1,13 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "Monster.h"
+#include "MonsterSystem.h"
 #include "Entity.h"
 #include "ProjectileSystem.h"
 #include "FloatingTextSystem.h"
 #include "SoundEngine.h"
 
-class Monster;
+class MonsterSystem;
 class FloatingTextSystem;
 class ProjectileSystem;
 class SoundEngine;
@@ -46,7 +46,7 @@ public:
 	void setAbilityTime(const float& abilityTime);
 	void setAbilityMaxTime(const float& abilityMaxTime);
 
-	void attackMonster(sf::Font* font, const std::list<Monster*>& monsters, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine);
+	void attackMonster(MonsterSystem* monsterSystem, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine);
 	const bool addXP(const unsigned& monsterXP);
 	void spawn(const float& dt);
 	void controls(const std::unordered_map<std::string, int>& keybinds, const float& dt);

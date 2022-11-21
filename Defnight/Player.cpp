@@ -191,39 +191,9 @@ void Player::setAbilityMaxTime(const float& abilityMaxTime)
 	this->abilityMaxTime = abilityMaxTime;
 }
 
-void Player::attackMonster(sf::Font* font, const std::list<Monster*>& monsters, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine)
+void Player::attackMonster(MonsterSystem* monsterSystem, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine)
 {
-	const sf::VideoMode vm = this->vm;
-	for (const auto& monster : monsters) {
-		const float distance = this->attackDistance(monster, this);
-
-		if ((hasVelocity() && distance <= this->getReach() * calcX(32, vm)) || (!hasVelocity() && distance <= this->getReach() * calcX(48, vm))) {
-
-			if (!monster->isDead() && !monster->getPunched() && monster->getSpawned() && this->getIsAttacking() && this->getFrame() == 80) {
-				if ((unsigned(Random::Float() * 100.f) + 1) <= this->getCriticalChance()) {
-					const int attack = 2 * this->getAttack();
-					floatingTextSystem->addFloatingText(std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(233, 134, 39), false);
-					if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);
-					else monster->setHP(monster->getHP() - attack);
-				}
-				else {
-					const int attack = this->getAttack();
-					floatingTextSystem->addFloatingText(std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(255, 255, 255), false);
-					if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);
-					else monster->setHP(monster->getHP() - attack);
-				}
-
-				if (!this->playedSound) {
-					soundEngine->addSound("whoosh_hit");
-					this->playedSound = true;
-				}
-				
-				monster->punch();
-				break;
-			}
-
-		}
-	}
+	monsterSystem->playerAttack(this, floatingTextSystem, soundEngine, this->playedSound);
 }
 
 const bool Player::addXP(const unsigned& monsterXP)

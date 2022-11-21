@@ -1,16 +1,16 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
-#include "Player.h"
-#include "Monster.h"
 #include "State.h"
+#include "SettingsState.h"
 #include "Gui.h"
 #include "PlayerGUI.h"
+#include "Player.h"
+#include "MonsterSystem.h"
+#include "ProjectileSystem.h"
 #include "FloatingTextSystem.h"
 #include "DropSystem.h"
 #include "TileMap.h"
-#include "ProjectileSystem.h"
-#include "SettingsState.h"
 
 class GameState :
 	public State
@@ -23,9 +23,6 @@ public:
 
 	void initGUI();
 	void resetGUI();
-
-	void prepareWave();
-	void spawnMonsters();
 
 	void update(const float& dt);
 	void draw(sf::RenderTarget* target = NULL);
@@ -41,24 +38,19 @@ private:
 	sf::Sprite background;
 	sf::Texture background_texture;
 
+	PlayerGUI* playerGUI;
+	Player* player;
+	MonsterSystem* monsterSystem;
+	ProjectileSystem* projectileSystem;
+	FloatingTextSystem* floatingTextSystem;
+	DropSystem* dropSystem;
 	sf::Texture tiles_texture;
 	sf::VertexArray vertexArray;
 	TileMap* tileMap;
-
-	Player* player;
-	PlayerGUI* playerGUI;
-
-	float difficultyModifier;
-	std::list<Monster*> monsters;
-	std::vector<short> monsterIDs;
-
-	uint16_t wave;
-	uint16_t sumHP;
+	
+	uint32_t wave;
+	uint32_t sumHP;
 	float waveCountdown;
-
-	FloatingTextSystem* floatingTextSystem;
-	DropSystem* dropSystem;
-	ProjectileSystem* projectileSystem;
 };
 
 #endif

@@ -2,15 +2,15 @@
 #include "ProjectileSystem.h"
 #include "Functions.h"
 
-ProjectileSystem::ProjectileSystem(const sf::VideoMode& vm, sf::Texture& textures)
-	:vm(vm), textures(textures)
+ProjectileSystem::ProjectileSystem(const sf::VideoMode& vm)
+	:vm(vm)
 {
-
+	this->textures.loadFromFile("external/assets/projectiles.png");
 }
 
 ProjectileSystem::~ProjectileSystem()
 {
-
+	this->projectiles.clear();
 }
 
 void ProjectileSystem::addProjectile(const std::string& projectile_name, const float& x, const float& y,
@@ -19,15 +19,12 @@ void ProjectileSystem::addProjectile(const std::string& projectile_name, const f
 	this->projectiles.emplace_back(new Projectile(this->vm, projectile_name, this->textures, x, y, attack, HP, speed, coords));
 }
 
-void ProjectileSystem::update(Player* player, PlayerGUI* playerGui, const std::list<Monster*>& monsters, sf::Sprite& background, TileMap* tileMap, FloatingTextSystem* floatingTextSystem, const float& dt)
+void ProjectileSystem::update(Player* player, PlayerGUI* playerGui, MonsterSystem* monsterSystem, sf::Sprite& background, TileMap* tileMap, FloatingTextSystem* floatingTextSystem, const float& dt)
 {
 	for (const auto& proj : this->projectiles) {
 		proj->obstacleCollision(tileMap);
 		proj->playerCollision(player);
-		for (const auto& monster : monsters) {
-			proj->monsterCollision(monster, player, floatingTextSystem);
-			if (proj->getCollidedMonster()) break;
-		}
+		monsterSystem->projectileCollision(&(*proj), player, floatingTextSystem);
 		proj->update(dt);
 	}
 	for (auto proj = this->projectiles.begin(); proj != this->projectiles.end();) {

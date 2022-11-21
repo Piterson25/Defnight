@@ -7,6 +7,12 @@
 #include "FloatingTextSystem.h"
 #include "SoundEngine.h"
 
+class Drop;
+class Player;
+class PlayerGUI;
+class FloatingTextSystem;
+class SoundEngine;
+
 class DropSystem
 {
 public:

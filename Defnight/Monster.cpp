@@ -2,23 +2,23 @@
 #include "Functions.h"
 #include "Monster.h"
 
-Monster::Monster(const float& x, const float& y, sf::Texture& texture, sf::Texture& shadow_texture, TileMap* tileMap, 
-	const sf::VideoMode& vm, const std::string& monster_name, const float& difficulty_mod, const float& wave_mod)
+Monster::Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::Texture& texture, sf::Texture& shadow_texture, TileMap* tileMap, 
+	const float& x, const float& y, const float& difficulty_mod, const float& wave_mod)
 {
 	this->vm = vm;
 	this->name = monster_name;
+	this->texture = texture;
+	this->shadow_texture = shadow_texture;
 
 	this->monsterSize = 1;
 	if (this->name == "minotaur") this->monsterSize = 2;
 
-	this->texture = texture;
 	this->sprite.setTexture(this->texture);
 	this->sprite.setTextureRect(sf::IntRect(0, 32 * this->monsterSize, 16 * this->monsterSize, 16 * this->monsterSize));
 	this->sprite.setScale(calcScale(4, vm), calcScale(4, vm));
 	this->sprite.setPosition(x, y);
 	this->sprite.setColor(sf::Color(255, 255, 255, 0));
 
-	this->shadow_texture = shadow_texture;
 	this->shadow.setTexture(this->shadow_texture);
 	this->shadow.setScale(calcScale(static_cast<float>(4 * this->monsterSize), vm), calcScale(static_cast<float>(4 * this->monsterSize), vm));
 	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(static_cast<float>(52 * this->monsterSize), vm));
@@ -294,61 +294,6 @@ void Monster::AI(TileMap* tileMap, Player* player, const float& dt)
 	if (this->velocity.x != 0.f && this->velocity.y != 0.f) {
 		this->velocity.x /= 1.44f;
 		this->velocity.y /= 1.44f;
-	}
-}
-
-void Monster::monsterCollision(const std::list<Monster*>& monsters)
-{
-	for (const auto& monster : monsters) {
-		if (vectorDistance(this->sprite.getPosition(), monster->getPosition()) < 2 * monster->getGlobalBounds().width) {
-			sf::FloatRect monsterBounds = this->sprite.getGlobalBounds();
-			sf::FloatRect goblinBounds = monster->getGlobalBounds();
-		
-			sf::FloatRect nextPos = monsterBounds;
-			nextPos.left += this->velocity.x;
-			nextPos.top += this->velocity.y;
-		
-			if (goblinBounds.intersects(nextPos))
-			{
-				//Dolna kolizja
-				if (monsterBounds.top < goblinBounds.top
-					&& monsterBounds.top + monsterBounds.height < goblinBounds.top + goblinBounds.height
-					&& monsterBounds.left < goblinBounds.left + goblinBounds.width
-					&& monsterBounds.left + monsterBounds.width > goblinBounds.left)
-				{
-					this->velocity.y = 0.f;
-					this->sprite.setPosition(monsterBounds.left, goblinBounds.top - monsterBounds.height);
-				}
-				//Gorna kolizja
-				else if (monsterBounds.top > goblinBounds.top
-					&& monsterBounds.top + monsterBounds.height > goblinBounds.top + goblinBounds.height
-					&& monsterBounds.left < goblinBounds.left + goblinBounds.width
-					&& monsterBounds.left + monsterBounds.width > goblinBounds.left)
-				{
-					this->velocity.y = 0.f;
-					this->sprite.setPosition(monsterBounds.left, goblinBounds.top + goblinBounds.height);
-				}
-		
-				//Prawa kolizja
-				else if (monsterBounds.left < goblinBounds.left
-					&& monsterBounds.left + monsterBounds.width < goblinBounds.left + goblinBounds.width
-					&& monsterBounds.top < goblinBounds.top + goblinBounds.height
-					&& monsterBounds.top + monsterBounds.height > goblinBounds.top)
-				{
-					this->velocity.x = 0.f;
-					this->sprite.setPosition(goblinBounds.left - monsterBounds.width, monsterBounds.top);
-				}
-				//Lewa kolizja
-				else if (monsterBounds.left > goblinBounds.left
-					&& monsterBounds.left + monsterBounds.width > goblinBounds.left + goblinBounds.width
-					&& monsterBounds.top < goblinBounds.top + goblinBounds.height
-					&& monsterBounds.top + monsterBounds.height > goblinBounds.top)
-				{
-					this->velocity.x = 0.f;
-					this->sprite.setPosition(goblinBounds.left + goblinBounds.width, monsterBounds.top);
-				}
-			}
-		}
 	}
 }
 
