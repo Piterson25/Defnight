@@ -77,7 +77,7 @@ Monster::Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::T
 	}
 	else if (this->name == "minotaur") {
 		this->attack = static_cast<unsigned>(7 * difficulty_mod * wave_mod);
-		this->attackSpeed = 3;
+		this->attackSpeed = 1;
 		this->HP = static_cast<unsigned>(69 * difficulty_mod * wave_mod);
 		this->speed = 1;
 		this->gold = static_cast<unsigned>(25 * wave_mod);
