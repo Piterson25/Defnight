@@ -22,7 +22,7 @@ void ProjectileSystem::addProjectile(const std::string& projectile_name, const f
 void ProjectileSystem::update(Player* player, PlayerGUI* playerGui, MonsterSystem* monsterSystem, sf::Sprite& background, TileMap* tileMap, FloatingTextSystem* floatingTextSystem, const float& dt)
 {
 	for (const auto& proj : this->projectiles) {
-		proj->obstacleCollision(tileMap);
+		proj->wallCollision(tileMap);
 		proj->playerCollision(player);
 		monsterSystem->projectileCollision(&(*proj), player, floatingTextSystem);
 		proj->update(dt);

@@ -103,6 +103,96 @@ const bool Projectile::sideWall(const sf::Vector2f& velocities, const sf::FloatR
 	return false;
 }
 
+void Projectile::wallCollision(TileMap* tileMap)
+{
+	this->collided = false;
+
+	const float distance = 2 * tileMap->getGlobalBounds(0).width;
+
+	for (size_t i = 0; i < tileMap->getSize(); ++i) {
+		if (vectorDistance(this->sprite.getPosition(), tileMap->getPosition(i)) < distance && !this->collided && !this->collidedPlayer) {
+
+			sf::FloatRect projectileBounds = this->sprite.getGlobalBounds();
+			sf::FloatRect wallBounds = tileMap->getGlobalBounds(i);
+
+			sf::FloatRect nextPos = projectileBounds;
+			nextPos.left += this->velocity.x;
+			nextPos.top += this->velocity.y;
+			if (wallBounds.intersects(nextPos))
+			{
+				//Dolna kolizja
+				if (projectileBounds.top < wallBounds.top
+					&& projectileBounds.top + projectileBounds.height < wallBounds.top + wallBounds.height
+					&& projectileBounds.left < wallBounds.left + wallBounds.width
+					&& projectileBounds.left + projectileBounds.width > wallBounds.left)
+				{
+					if (this->name == "shuriken" && !this->sideWall(sf::Vector2f(this->velocity.x, this->velocity.y * -1), projectileBounds, wallBounds, 1)) {
+						this->angle *= -1.f;
+					}
+					else {
+						this->velocity.y = 0.f;
+						this->sprite.setPosition(projectileBounds.left, wallBounds.top - projectileBounds.height);
+					}
+					this->collided = true;
+					break;
+				}
+				//Gorna kolizja
+				else if (projectileBounds.top > wallBounds.top
+					&& projectileBounds.top + projectileBounds.height > wallBounds.top + wallBounds.height
+					&& projectileBounds.left < wallBounds.left + wallBounds.width
+					&& projectileBounds.left + projectileBounds.width > wallBounds.left)
+				{
+					if (this->name == "shuriken" && !this->sideWall(sf::Vector2f(this->velocity.x, this->velocity.y * -1), projectileBounds, wallBounds, 0)) {
+						this->angle *= -1.f;
+					}
+					else {
+						this->velocity.y = 0.f;
+						this->sprite.setPosition(projectileBounds.left, wallBounds.top + wallBounds.height);
+					}
+					this->collided = true;
+					break;
+				}
+
+				//Prawa kolizja
+				if (projectileBounds.left < wallBounds.left
+					&& projectileBounds.left + projectileBounds.width < wallBounds.left + wallBounds.width
+					&& projectileBounds.top < wallBounds.top + wallBounds.height
+					&& projectileBounds.top + projectileBounds.height > wallBounds.top)
+				{
+					if (this->name == "shuriken" && !this->sideWall(sf::Vector2f(this->velocity.x * -1, this->velocity.y), projectileBounds, wallBounds, 3)) {
+						this->angle = 180.f - this->angle;
+					}
+					else {
+						this->velocity.x = 0.f;
+						this->sprite.setPosition(wallBounds.left - projectileBounds.width, projectileBounds.top);
+					}
+					this->collided = true;
+					break;
+				}
+				//Lewa kolizja
+				else if (projectileBounds.left > wallBounds.left
+					&& projectileBounds.left + projectileBounds.width > wallBounds.left + wallBounds.width
+					&& projectileBounds.top < wallBounds.top + wallBounds.height
+					&& projectileBounds.top + projectileBounds.height > wallBounds.top)
+				{
+					if (this->name == "shuriken" && !this->sideWall(sf::Vector2f(this->velocity.x * -1, this->velocity.y), projectileBounds, wallBounds, 2)) {
+						this->angle = 180.f - this->angle;
+					}
+					else {
+						this->velocity.x = 0.f;
+						this->sprite.setPosition(wallBounds.left + wallBounds.width, projectileBounds.top);
+					}
+					this->collided = true;
+					break;
+				}
+
+			}
+		}
+	}
+	if (this->collided) this->HP--;
+	
+}
+
 void Projectile::playerCollision(Player* player)
 {
 	if (this->name == "stone") {

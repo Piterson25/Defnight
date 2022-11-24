@@ -26,6 +26,7 @@ public:
 	void calculateVelocity(const sf::Vector2f& coords);
 
 	const bool sideWall(const sf::Vector2f& velocities, const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds, const short& side);
+	void wallCollision(TileMap* tileMap);
 	void playerCollision(Player* player);
 	void monsterCollision(Monster* monster, Player* player, FloatingTextSystem* floatingTextSystem);
 
