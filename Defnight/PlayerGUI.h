@@ -61,6 +61,9 @@ private:
 	sf::Texture upgrades_texture;
 	std::vector<sf::Sprite> upgrades_vec;
 
+	sf::Texture abilities_texture;
+	std::vector<sf::Sprite> abilities_vec;
+
 	bool isLevelshown;
 	bool isLeveling;
 	bool isUpgrading;

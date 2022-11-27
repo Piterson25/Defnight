@@ -27,6 +27,15 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 		this->upgrades_vec.push_back(upgrade);
 	}
 
+	this->abilities_texture.loadFromFile("external/assets/abilities_icons.png");
+	for (short i = 0; i < 3; ++i) {
+		sf::Sprite upgrade;
+		upgrade.setTexture(this->abilities_texture);
+		sf::IntRect intRect(i * 16, 0, 16, 16);
+		upgrade.setTextureRect(intRect);
+		this->abilities_vec.push_back(upgrade);
+	}
+
 	this->sprites["BAR"] = new gui::Sprite("external/assets/bar.png", 0, 0, calcScale(1, vm), false);
 
 	this->sprites["PROGRESS_BAR"] = new gui::Sprite("external/assets/progress_bar.png", calcX(640, vm), calcY(58, vm), calcScale(1, vm), true);
@@ -112,6 +121,10 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->texts["UPGRADE1_NAME"] = new gui::Text(&this->font, this->lang["NINJA"], calcChar(16, vm), calcX(1104, vm), calcY(228, vm), sf::Color(255, 255, 255), false);
 	this->texts["UPGRADE2_NAME"] = new gui::Text(&this->font, this->lang["KNIGHT"], calcChar(16, vm), calcX(1104, vm), calcY(388, vm), sf::Color(255, 255, 255), false);
 	this->texts["UPGRADE3_NAME"] = new gui::Text(&this->font, this->lang["SCOUT"], calcChar(16, vm), calcX(1096, vm), calcY(548, vm), sf::Color(255, 255, 255), false);
+
+	this->sprites["UPGRADE1_ABILITY"] = new gui::Sprite(this->abilities_vec[0], calcX(1168, vm), calcY(262, vm), calcScale(2, vm), false);
+	this->sprites["UPGRADE2_ABILITY"] = new gui::Sprite(this->abilities_vec[1], calcX(1168, vm), calcY(426, vm), calcScale(2, vm), false);
+	this->sprites["UPGRADE3_ABILITY"] = new gui::Sprite(this->abilities_vec[2], calcX(1168, vm), calcY(590, vm), calcScale(2, vm), false);
 
 	this->sprites["UPGRADE1_ADD"] = new gui::Sprite(this->attribute_vec[3], calcX(1216, vm), calcY(228, vm), calcScale(2, vm), false);
 	this->sprites["UPGRADE2_ADD"] = new gui::Sprite(this->attribute_vec[1], calcX(1216, vm), calcY(392, vm), calcScale(2, vm), false);
@@ -853,18 +866,21 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 			this->sprites["UPGRADE1"]->draw(target);
 			this->sprite_buttons["UPGRADE1"]->draw(target);
 			this->texts["UPGRADE1_NAME"]->draw(target);
+			this->sprites["UPGRADE1_ABILITY"]->draw(target);
 			this->sprites["UPGRADE1_ADD"]->draw(target);
 			this->texts["UPGRADE1_ADD_VALUE"]->draw(target);
 
 			this->sprites["UPGRADE2"]->draw(target);
 			this->sprite_buttons["UPGRADE2"]->draw(target);
 			this->texts["UPGRADE2_NAME"]->draw(target);
+			this->sprites["UPGRADE2_ABILITY"]->draw(target);
 			this->sprites["UPGRADE2_ADD"]->draw(target);
 			this->texts["UPGRADE2_ADD_VALUE"]->draw(target);
 
 			this->sprites["UPGRADE3"]->draw(target);
 			this->sprite_buttons["UPGRADE3"]->draw(target);
 			this->texts["UPGRADE3_NAME"]->draw(target);
+			this->sprites["UPGRADE3_ABILITY"]->draw(target);
 			this->sprites["UPGRADE3_ADD"]->draw(target);
 			this->texts["UPGRADE3_ADD_VALUE"]->draw(target);
 		}

@@ -298,13 +298,18 @@ const bool Player::checkIfAbility()
 	return false;
 }
 
-void Player::doAbility(const sf::Vector2f& coords, ProjectileSystem* projectileSystem)
+void Player::doAbility(const sf::Vector2f& coords, ProjectileSystem* projectileSystem, SoundEngine* soundEngine)
 {
 	if (this->name == "ninja") {
 		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 3, 3, 4, coords);
+		soundEngine->addSound("shuriken");
 	}
 	else if (this->name == "knight") {
 		this->armor += 5;
+		soundEngine->addSound("ability");
+	}
+	else if (this->name == "scout") {
+		soundEngine->addSound("ability");
 	}
 }
 

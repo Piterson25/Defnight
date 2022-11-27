@@ -16,7 +16,7 @@ class SoundEngine;
 class DropSystem
 {
 public:
-	DropSystem(const sf::VideoMode& vm);
+	DropSystem(const float& difficulty_mod, const sf::VideoMode& vm);
 	virtual ~DropSystem();
 
 	void addDrop(const std::string& name, const float& posX, const float& posY, const unsigned& worth);
@@ -25,6 +25,7 @@ public:
 	void draw(sf::RenderTarget& target);
 private:
 	std::list<std::unique_ptr<Drop>> drops;
+	float difficulty_mod;
 	sf::VideoMode vm;
 };
 

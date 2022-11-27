@@ -18,9 +18,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->musicEngine->addMusic("battle6.ogg");
 
 	this->floatingTextSystem = new FloatingTextSystem(&this->font, vm);
-	this->dropSystem = new DropSystem(vm);
 	this->tileMap = new TileMap();
-	
 
 	this->background_texture.loadFromFile("external/assets/" + map_name + ".png");
 	this->background.setTexture(this->background_texture);
@@ -104,9 +102,18 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->keysClick["Escape"].first = false;
 	this->keysClick["Escape"].second = false;
 
-	if (difficulty_name == "easy") this->monsterSystem = new MonsterSystem(vm, this->tileMap, this->gridSize, 0.75f);
-	else if (difficulty_name == "hard") this->monsterSystem = new MonsterSystem(vm, this->tileMap, this->gridSize, 1.25f);
-	else this->monsterSystem = new MonsterSystem(vm, this->tileMap, this->gridSize, 1.f);
+	if (difficulty_name == "easy") {
+		this->monsterSystem = new MonsterSystem(vm, this->tileMap, this->gridSize, 0.75f);
+		this->dropSystem = new DropSystem(0.75f, vm);
+	}
+	else if (difficulty_name == "hard") {
+		this->monsterSystem = new MonsterSystem(vm, this->tileMap, this->gridSize, 1.25f);
+		this->dropSystem = new DropSystem(1.25f, vm);
+	}
+	else {
+		this->monsterSystem = new MonsterSystem(vm, this->tileMap, this->gridSize, 1.f);
+		this->dropSystem = new DropSystem(1.f, vm);
+	}
 
 	this->projectileSystem = new ProjectileSystem(vm);
 
@@ -267,7 +274,7 @@ void GameState::update(const float& dt)
 				}
 
 				if (this->player->checkIfAbility()) {
-					this->player->doAbility(sf::Vector2f(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window), this->view)), this->projectileSystem);
+					this->player->doAbility(sf::Vector2f(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window), this->view)), this->projectileSystem, this->soundEngine);
 					this->playerGUI->setAbilityIcon();
 					this->playerGUI->updateArmor();
 				}

@@ -53,7 +53,7 @@ public:
 	const bool regeneration(const float& dt);
 	void abilityCounter(const float& dt);
 	const bool checkIfAbility();
-	void doAbility(const sf::Vector2f& coords, ProjectileSystem* projectileSystem);
+	void doAbility(const sf::Vector2f& coords, ProjectileSystem* projectileSystem, SoundEngine* soundEngine);
 	void whooshSound(SoundEngine* soundEngine);
 
 	void update(const float& dt);

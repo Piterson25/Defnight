@@ -14,11 +14,12 @@ class SoundEngine;
 class Drop
 {
 public:
-	Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, sf::VideoMode& vm);
+	Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, const bool& vanishing, sf::VideoMode& vm);
 	virtual ~Drop();
 
 	virtual const std::string getName() const;
 	virtual const bool getSpawned() const;
+	virtual const bool hasVanished() const;
 
 	void spawn(const float& dt);
 	void spin(const float& dt);
@@ -39,6 +40,8 @@ private:
 	float angle;
 	sf::VideoMode vm;
 
+	float vanishingCountdown;
+	bool vanishing;
 	bool spawned;
 	float spawnCountdown;
 };

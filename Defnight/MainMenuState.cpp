@@ -171,9 +171,9 @@ void MainMenuState::initGUI()
 	this->texts["EASY"] = new gui::Text(&this->font, this->lang["EASY"], calcChar(32, vm), calcX(224, vm), calcY(400, vm), sf::Color(255, 255, 255), true);
 	this->texts["NORMAL"] = new gui::Text(&this->font, this->lang["NORMAL"], calcChar(32, vm), calcX(640, vm), calcY(400, vm), sf::Color(255, 255, 255), true);
 	this->texts["HARD"] = new gui::Text(&this->font, this->lang["HARD"], calcChar(32, vm), calcX(1056, vm), calcY(400, vm), sf::Color(255, 255, 255), true);
-	this->texts["EASY_DESC"] = new gui::Text(&this->font, this->lang["MONSTERS_HAVE"] + "\n\n-25% HP\n\n-25% " + this->lang["ATTACK"], calcChar(16, vm), calcX(224, vm), calcY(460, vm), sf::Color(182, 60, 53), true);
+	this->texts["EASY_DESC"] = new gui::Text(&this->font, this->lang["MONSTERS_HAVE"] + "\n\n-25% HP\n\n-25% " + this->lang["ATTACK"] + "\n\n50% " + this->lang["HEART_DROP"], calcChar(16, vm), calcX(224, vm), calcY(460, vm), sf::Color(182, 60, 53), true);
 	this->texts["NORMAL_DESC"] = new gui::Text(&this->font, this->lang["NORMAL_DESC"], calcChar(16, vm), calcX(640, vm), calcY(460, vm), sf::Color(182, 60, 53), true);
-	this->texts["HARD_DESC"] = new gui::Text(&this->font, this->lang["MONSTERS_HAVE"] + "\n\n+25% HP\n\n+25% " + this->lang["ATTACK"], calcChar(16, vm), calcX(1056, vm), calcY(460, vm), sf::Color(182, 60, 53), true);
+	this->texts["HARD_DESC"] = new gui::Text(&this->font, this->lang["MONSTERS_HAVE"] + "\n\n+25% HP\n\n+25% " + this->lang["ATTACK"] + "\n\n" + this->lang["TIME_DROP"], calcChar(16, vm), calcX(1056, vm), calcY(460, vm), sf::Color(182, 60, 53), true);
 
 }
 

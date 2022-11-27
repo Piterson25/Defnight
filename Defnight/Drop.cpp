@@ -2,8 +2,8 @@
 #include "Functions.h"
 #include "Drop.h"
 
-Drop::Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, sf::VideoMode& vm)
-	:name(name), worth(worth), vm(vm)
+Drop::Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, const bool& vanishing, sf::VideoMode& vm)
+	:name(name), worth(worth), vanishing(vanishing), vm(vm)
 {
 	this->texture.loadFromFile("external/assets/drop.png");
 	this->sprite.setTexture(this->texture);
@@ -21,6 +21,7 @@ Drop::Drop(const std::string& name, const float& posX, const float& posY, const 
 	this->spinCooldown = 0.f;
 	this->velocity = sf::Vector2f(0.f, 0.f);
 	this->angle = 0.f;
+	this->vanishingCountdown = 0.f;
 
 	this->spawned = false;
 	this->spawnCountdown = 0.f;
@@ -39,6 +40,11 @@ const std::string Drop::getName() const
 const bool Drop::getSpawned() const
 {
 	return this->spawned;
+}
+
+const bool Drop::hasVanished() const
+{
+	return this->vanishingCountdown >= 10.f;
 }
 
 void Drop::spawn(const float& dt)
@@ -109,6 +115,7 @@ void Drop::update(const float& dt)
 {
 	if (this->spawned) this->spin(dt);
 	else this->spawn(dt);
+	if (this->vanishing) this->vanishingCountdown += dt;
 }
 
 void Drop::draw(sf::RenderTarget& target)

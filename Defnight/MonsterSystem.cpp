@@ -201,6 +201,30 @@ void MonsterSystem::prepareWave(uint32_t& wave, uint32_t& sumHP)
 	else sumHP += static_cast<uint16_t>(Random::Float() * sumHP) + 1;
 	uint16_t monstersHP = sumHP;
 	short t = 0;
+
+	if (wave == 10) {
+		t = 4;
+		if (monstersHP >= 69) monstersHP -= 69;
+	}
+	else if (wave == 7) {
+		t = 3;
+		if (monstersHP >= 18) monstersHP -= 18;
+	}
+	else if (wave == 5) {
+		t = 2;
+		if (monstersHP >= 12) monstersHP -= 12;
+	}
+	else if (wave == 3) {
+		t = 1;
+		if (monstersHP >= 7) monstersHP -= 7;
+	}
+	else if (wave == 1) {
+		t = 0;
+		if (monstersHP >= 3) monstersHP -= 3;
+	}
+
+	this->monsterIDs.push_back(t);
+
 	while (monstersHP > 0) {
 		if (monstersHP >= 69 && wave % 10 == 0)
 			t = 4;
@@ -271,7 +295,7 @@ void MonsterSystem::update(Player* player, PlayerGUI* playerGUI, ProjectileSyste
 			}
 			playerGUI->update_XP();
 			dropSystem->addDrop("coin", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y + calcY(16, vm), (*monster)->getGold());
-			if (int(Random::Float() * 4) == 0) {
+			if (const uint8_t t = uint8_t(Random::Float() * 4); (this->difficulty_mod == 0.75f && t < 2) || t == 0) {
 				dropSystem->addDrop("heart", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y, 1);
 			}
 			monster = this->monsters.erase(monster);
