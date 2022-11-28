@@ -323,6 +323,7 @@ void GameState::update(const float& dt)
 			else {
 				this->player->attackMonster(this->monsterSystem, this->floatingTextSystem, this->soundEngine);
 				this->monsterSystem->update(this->player, this->playerGUI, this->projectileSystem, this->dropSystem, this->floatingTextSystem, this->soundEngine, this->paused, dt);
+				this->playerGUI->updateBossHP(dt);
 			}
 		}
 		this->playerGUI->updating_XP(dt);

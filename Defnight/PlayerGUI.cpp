@@ -202,6 +202,8 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 44, 528, 22));
 	this->sprites["BOSS_BAR_EMPTY"] = new gui::Sprite("external/assets/bars.png", calcX(376, vm), calcY(158, vm), calcScale(1, vm), false);
 	this->sprites["BOSS_BAR_EMPTY"]->setTextureRect(sf::IntRect(0, 66, 528, 22));
+
+	this->boss_bar_barrier = 1.f;
 }
 
 PlayerGUI::~PlayerGUI()
@@ -569,6 +571,27 @@ void PlayerGUI::updateArmor()
 	this->texts["ARMOR"]->center(calcX(388, vm));
 }
 
+void PlayerGUI::updateBossHP(const float& dt)
+{
+	if (this->bossWave) {
+		const int width = this->sprites["BOSS_BAR"]->getTextureRect().width;
+		const int barrier = static_cast<int>(this->boss_bar_barrier * 528.f);
+
+		if (width > barrier) {
+			const int distance = int(width - 1000.f * dt);
+			if (distance < barrier) {
+				this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 44, barrier, 22));
+			}
+			else if (distance < 0) {
+				this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 44, 0, 22));
+			}
+			else {
+				this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 44, distance, 22));
+			}
+		}
+	}
+}
+
 const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine, FloatingTextSystem* floatingTextSystem)
 {
 	if (this->player->getGold() >= this->item1Price) {
@@ -764,7 +787,7 @@ void PlayerGUI::update(sf::Vector2f& mousePosView, const float& waveCountdown, M
 {
 	this->waveCountdown = waveCountdown;
 
-	if (this->bossWave) this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 44, static_cast<int>(monsterSystem->bossHP() * 528), 22));
+	if (this->bossWave) this->boss_bar_barrier = monsterSystem->bossHP();
 
 	this->isLevelshown = true;
 	if ((mousePosView.y >= calcY(12, vm) && mousePosView.y <= calcY(34, vm))

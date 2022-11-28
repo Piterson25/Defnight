@@ -33,6 +33,7 @@ public:
 	void setIsEscape(const bool& escape);
 	void updatePaused(bool& paused);
 	void updateArmor();
+	void updateBossHP(const float& dt);
 	const bool updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine, FloatingTextSystem* floatingTextSystem);
 
 	const bool getIsEscape() const;
@@ -75,6 +76,7 @@ private:
 	bool isEscape;
 	float hp_bar_barrier;
 	float xp_bar_barrier;
+	float boss_bar_barrier;
 	unsigned option1_id;
 	unsigned option2_id;
 	unsigned option1_val;
