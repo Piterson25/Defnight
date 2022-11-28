@@ -243,7 +243,7 @@ void Player::controls(const std::unordered_map<std::string, int>& keybinds, cons
 		this->velocity.x += vel;
 
 	if (this->name == "scout" && this->abilityActive)
-		this->velocity *= 1.25f;
+		this->velocity *= 1.3f;
 }
 
 const bool Player::regeneration(const float& dt)

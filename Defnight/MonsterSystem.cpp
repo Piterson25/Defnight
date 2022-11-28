@@ -6,6 +6,7 @@ MonsterSystem::MonsterSystem(const sf::VideoMode& vm, TileMap* tileMap, const fl
 	:vm(vm), gridSize(gridSize), difficulty_mod(difficulty_mod)
 {
 	this->tileMap = tileMap;
+	this->bossWave = false;
 	this->shadow_texture.loadFromFile("external/assets/entity_shadow.png");
 
 	sf::Texture texture;
@@ -41,6 +42,21 @@ const bool MonsterSystem::monstersEmpty() const
 	return this->monsters.empty();
 }
 
+const bool MonsterSystem::isBossWave() const
+{
+	return this->bossWave;
+}
+
+const float MonsterSystem::bossHP() const
+{
+	for (const auto& monster : monsters) {
+		if (monster->getName() == "minotaur") {
+			return static_cast<float>(static_cast<float>(monster->getHP()) / static_cast<float>(monster->getMaxHP()));
+		}
+	}
+	return 0.f;
+}
+
 void MonsterSystem::monsterIDsClear()
 {
 	this->monsterIDs.clear();
@@ -59,7 +75,7 @@ void MonsterSystem::playerAttack(Player* player, FloatingTextSystem* floatingTex
 		if ((player->hasVelocity() && distance <= player->getReach() * calcX(32, vm)) || (!player->hasVelocity() && distance <= player->getReach() * calcX(48, vm))) {
 
 			if (!monster->isDead() && !monster->getPunched() && monster->getSpawned() && player->getIsAttacking() && player->getFrame() == 80) {
-				if ((unsigned(Random::Float() * 100.f) + 1) <= player->getCriticalChance()) {
+				if ((uint32_t(Random::Float() * 100.f) + 1) <= player->getCriticalChance()) {
 					const int attack = 2 * player->getAttack();
 					floatingTextSystem->addFloatingText(std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(233, 134, 39), false);
 					if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);
@@ -197,14 +213,15 @@ void MonsterSystem::spawnMonsters(Player* player, const uint32_t& wave)
 void MonsterSystem::prepareWave(uint32_t& wave, uint32_t& sumHP)
 {
 	wave++;
-	if (wave % 10 == 0) sumHP = 69;
-	else sumHP += static_cast<uint16_t>(Random::Float() * sumHP) + 1;
-	uint16_t monstersHP = sumHP;
+	if (wave % 10 != 0) sumHP += static_cast<uint32_t>((2 - ((1 + sqrtf(5)) / 2.f)) * sumHP);
+	uint32_t monstersHP = sumHP;
 	short t = 0;
+	this->bossWave = false;
 
 	if (wave == 10) {
 		t = 4;
-		if (monstersHP >= 69) monstersHP -= 69;
+		monstersHP = 0;
+		this->bossWave = true;
 	}
 	else if (wave == 7) {
 		t = 3;
@@ -226,8 +243,10 @@ void MonsterSystem::prepareWave(uint32_t& wave, uint32_t& sumHP)
 	this->monsterIDs.push_back(t);
 
 	while (monstersHP > 0) {
-		if (monstersHP >= 69 && wave % 10 == 0)
+		if (monstersHP >= 69 && wave % 10 == 0) {
 			t = 4;
+			this->bossWave = true;
+		}
 		else if (monstersHP >= 18 && wave >= 7)
 			t = static_cast<short>(Random::Float() * 4.f);
 		else if (monstersHP >= 12 && wave >= 5)

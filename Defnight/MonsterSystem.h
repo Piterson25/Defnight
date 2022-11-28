@@ -30,6 +30,9 @@ public:
 	virtual const bool monsterIDsEmpty() const;
 	virtual const size_t monsterIDsSize() const;
 	virtual const bool monstersEmpty() const;
+	virtual const bool isBossWave() const;
+	const float bossHP() const;
+
 	void monsterIDsClear();
 
 	void addMonster(const std::string& monster_name, sf::Texture& texture, 
@@ -54,6 +57,7 @@ private:
 	std::vector<short> monsterIDs;
 	float difficulty_mod;
 	float gridSize;
+	bool bossWave;
 	sf::VideoMode vm;
 };
 

@@ -4,10 +4,12 @@
 #include "Player.h"
 #include "Gui.h"
 #include "FloatingTextSystem.h"
+#include "MonsterSystem.h"
 #include "SoundEngine.h"
 
 class Player;
 class FloatingTextSystem;
+class MonsterSystem;
 class SoundEngine;
 
 class PlayerGUI
@@ -40,14 +42,14 @@ public:
 
 	void updateIsShopping();
 	void updateKills();
-	void updateMonsterCountWave(const std::string& language, const unsigned& wave, const size_t& monsterCount, SoundEngine* soundEngine);
+	void updateMonsterCountWave(const std::string& language, const unsigned& wave, const bool& bossWave, const size_t& monsterCount, SoundEngine* soundEngine);
 	void updateMonsterCount(const size_t& monsterCount);
 	const uint8_t updateEscapeButton(const sf::Vector2i& mousePos, const bool& mouseClicked);
 	const bool updateButtons(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine);
 	const bool updateLevelUpButtons(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine);
 	const bool updateUpgradeButtons(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine);
 	const uint8_t updateDeathScreenButtons(const sf::Vector2i& mousePos, const bool& mouseClicked);
-	void update(sf::Vector2f& mousePosView, const float& waveCountdown, const float& dt);
+	void update(sf::Vector2f& mousePosView, const float& waveCountdown, MonsterSystem* monsterSystem, const float& dt);
 	void draw(sf::RenderTarget& target);
 private:
 	sf::Font font;
@@ -63,6 +65,8 @@ private:
 
 	sf::Texture abilities_texture;
 	std::vector<sf::Sprite> abilities_vec;
+
+	bool bossWave;
 
 	bool isLevelshown;
 	bool isLeveling;

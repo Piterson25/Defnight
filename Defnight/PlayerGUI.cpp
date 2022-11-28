@@ -195,6 +195,13 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->texts["ITEM2_PRICE"] = new gui::Text(&this->font, std::to_string(this->item2Price), calcChar(16, vm), calcX(208, vm), calcY(368, vm), sf::Color(255, 246, 76), false);
 	this->texts["ITEM3_PRICE"] = new gui::Text(&this->font, std::to_string(this->item3Price), calcChar(16, vm), calcX(208, vm), calcY(496, vm), sf::Color(255, 246, 76), false);
 
+	this->bossWave = false;
+
+	this->texts["BOSS"] = new gui::Text(&this->font, "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm), sf::Color(228, 92, 95), true);
+	this->sprites["BOSS_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(376, vm), calcY(158, vm), calcScale(1, vm), false);
+	this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 44, 528, 22));
+	this->sprites["BOSS_BAR_EMPTY"] = new gui::Sprite("external/assets/bars.png", calcX(376, vm), calcY(158, vm), calcScale(1, vm), false);
+	this->sprites["BOSS_BAR_EMPTY"]->setTextureRect(sf::IntRect(0, 66, 528, 22));
 }
 
 PlayerGUI::~PlayerGUI()
@@ -469,8 +476,10 @@ void PlayerGUI::updateKills()
 	this->texts["KILLS"]->setText(this->lang["KILLS"] + std::to_string(this->player->getKills()));
 }
 
-void PlayerGUI::updateMonsterCountWave(const std::string& language, const unsigned& wave, const size_t& monsterCount, SoundEngine* soundEngine)
+void PlayerGUI::updateMonsterCountWave(const std::string& language, const unsigned& wave, const bool& bossWave, const size_t& monsterCount, SoundEngine* soundEngine)
 {
+	this->bossWave = bossWave;
+
 	this->texts["WAVE_NUMBER"]->setText(this->lang["WAVE"] + std::to_string(wave));
 
 	this->texts["BIG_WAVE_NUMBER"]->setText(this->lang["WAVE"] + std::to_string(wave));
@@ -599,7 +608,8 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 		}
 	}
 
-	if (this->player->getArmor() < 10) {
+	if (this->player->getArmor() < 10 || (this->player->getName() == "knight" && ((this->player->getAbilityActive() && this->player->getArmor() < 15))
+		|| (!this->player->getAbilityActive() && this->player->getArmor() < 10))) {
 		if (this->player->getGold() >= this->item3Price) {
 			this->sprite_buttons["ITEM3"]->update(mousePos);
 			if (this->sprite_buttons["ITEM3"]->isPressed() && !mouseClicked) {
@@ -750,9 +760,11 @@ const uint8_t PlayerGUI::updateDeathScreenButtons(const sf::Vector2i& mousePos, 
 	return 0;
 }
 
-void PlayerGUI::update(sf::Vector2f& mousePosView, const float& waveCountdown, const float& dt)
+void PlayerGUI::update(sf::Vector2f& mousePosView, const float& waveCountdown, MonsterSystem* monsterSystem, const float& dt)
 {
 	this->waveCountdown = waveCountdown;
+
+	if (this->bossWave) this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 44, static_cast<int>(monsterSystem->bossHP() * 528), 22));
 
 	this->isLevelshown = true;
 	if ((mousePosView.y >= calcY(12, vm) && mousePosView.y <= calcY(34, vm))
@@ -823,7 +835,8 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 		this->texts["ITEM2_PRICE"]->draw(target);
 		this->sprites["ITEM2_COIN"]->draw(target);
 
-		if (this->player->getArmor() < 10) {
+		if (this->player->getArmor() < 10 || (this->player->getName() == "knight" && ((this->player->getAbilityActive() && this->player->getArmor() < 15))
+			|| (!this->player->getAbilityActive() && this->player->getArmor() < 10))) {
 			this->sprite_buttons["ITEM3"]->draw(target);
 			this->sprites["ITEM3"]->draw(target);
 			this->texts["ITEM3"]->draw(target);
@@ -883,6 +896,11 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 			this->sprites["UPGRADE3_ABILITY"]->draw(target);
 			this->sprites["UPGRADE3_ADD"]->draw(target);
 			this->texts["UPGRADE3_ADD_VALUE"]->draw(target);
+		}
+		if (this->bossWave) {
+			this->texts["BOSS"]->draw(target);
+			this->sprites["BOSS_BAR_EMPTY"]->draw(target);
+			this->sprites["BOSS_BAR"]->draw(target);
 		}
 	}
 

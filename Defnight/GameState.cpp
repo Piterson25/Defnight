@@ -312,7 +312,7 @@ void GameState::update(const float& dt)
 			}
 			else if (this->waveCountdown > 8.f && this->monsterSystem->monsterIDsEmpty()) {
 				this->monsterSystem->prepareWave(this->wave, this->sumHP);
-				this->playerGUI->updateMonsterCountWave(this->gameSettings->language, this->wave, this->monsterSystem->monsterIDsSize(), this->soundEngine);
+				this->playerGUI->updateMonsterCountWave(this->gameSettings->language, this->wave, this->monsterSystem->isBossWave(), this->monsterSystem->monsterIDsSize(), this->soundEngine);
 			}
 		}
 		else {
@@ -342,7 +342,7 @@ void GameState::update(const float& dt)
 		this->musicEngine->update();
 	}
 
-	this->playerGUI->update(this->mousePosView, this->waveCountdown, dt);
+	this->playerGUI->update(this->mousePosView, this->waveCountdown, this->monsterSystem, dt);
 
 	this->floatingTextSystem->update(dt);
 
