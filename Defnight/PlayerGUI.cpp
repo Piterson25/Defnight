@@ -197,7 +197,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 
 	this->bossWave = false;
 
-	this->texts["BOSS"] = new gui::Text(&this->font, "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm), sf::Color(228, 92, 95), true);
+	this->texts["BOSS"] = new gui::Text(&this->font, "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm), sf::Color(113, 43, 59), true);
 	this->sprites["BOSS_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(376, vm), calcY(158, vm), calcScale(1, vm), false);
 	this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 44, 528, 22));
 	this->sprites["BOSS_BAR_EMPTY"] = new gui::Sprite("external/assets/bars.png", calcX(376, vm), calcY(158, vm), calcScale(1, vm), false);
