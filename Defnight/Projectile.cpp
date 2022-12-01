@@ -26,8 +26,11 @@ Projectile::Projectile(const sf::VideoMode& vm, const std::string& projectile_na
 	if (this->name == "stone") {
 		this->sprite.setTextureRect(sf::IntRect(0, 0, 4, 4));
 	}
-	else {
+	else if (this->name == "shuriken") {
 		this->sprite.setTextureRect(sf::IntRect(4, 0, 4, 4));
+	}
+	else if (this->name == "bomb") {
+		this->sprite.setTextureRect(sf::IntRect(8, 0, 4, 4));
 	}
 
 	this->calculateVelocity(coords);

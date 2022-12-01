@@ -18,7 +18,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	}
 
 	this->upgrades_texture.loadFromFile("external/assets/upgrade_icons.png");
-	for (short i = 0; i < 4; ++i) {
+	for (short i = 0; i < 6; ++i) {
 		sf::Sprite upgrade;
 		upgrade.setTexture(this->upgrades_texture);
 		sf::IntRect intRect(i * 16, 0, 16, 16);
@@ -28,7 +28,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	}
 
 	this->abilities_texture.loadFromFile("external/assets/abilities_icons.png");
-	for (short i = 0; i < 3; ++i) {
+	for (short i = 0; i < 5; ++i) {
 		sf::Sprite upgrade;
 		upgrade.setTexture(this->abilities_texture);
 		sf::IntRect intRect(i * 16, 0, 16, 16);
@@ -325,6 +325,30 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 		this->player->setAbilityCooldown(10.f);
 		this->player->setAbilityTime(5.f);
 	}
+	else if (name == "MASTER") {
+		this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(64, 0, 16, 16));
+		this->player->setTexturePath("external/assets/heroes/master.png");
+		this->player->setAttackSpeed(this->player->getAttackSpeed() + 1);
+		this->texts["ATTACK_SPEED"]->setText(std::to_string(this->player->getAttackSpeed()));
+		this->texts["ATTACK_SPEED"]->center(calcX(892, vm));
+		this->player->setName("master");
+		this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(48, 0, 16, 16));
+		this->player->setAbilityMaxTime(2.f);
+		this->player->setAbilityCooldown(2.f);
+		this->player->setAbilityTime(2.f);
+	}
+	else if (name == "BOMBER") {
+		this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(80, 0, 16, 16));
+		this->player->setTexturePath("external/assets/heroes/bomber.png");
+		this->player->setCriticalChance(this->player->getCriticalChance() + 10);
+		this->texts["CRITICAL"]->setText(std::to_string(this->player->getCriticalChance()));
+		this->texts["CRITICAL"]->center(calcX(1020, vm));
+		this->player->setName("bomber");
+		this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(64, 0, 16, 16));
+		this->player->setAbilityMaxTime(2.f);
+		this->player->setAbilityCooldown(2.f);
+		this->player->setAbilityTime(2.f);
+	}
 }
 
 void PlayerGUI::update_level(SoundEngine* soundEngine)
@@ -345,6 +369,20 @@ void PlayerGUI::update_level(SoundEngine* soundEngine)
 	id.push_back(6);
 	update_options(this->option1_id, this->option1_val, id, this->texts["OPTION1"], this->sprites["OPTION1"], calcX(548, vm));
 	update_options(this->option2_id, this->option2_val, id, this->texts["OPTION2"], this->sprites["OPTION2"], calcX(732, vm));
+
+	if (this->player->getLevel() == 10) {
+		this->sprites["UPGRADE1"] = new gui::Sprite(this->upgrades_vec[4], calcX(1020, vm), calcY(228, vm), calcScale(4, vm), false);
+		this->sprites["UPGRADE2"] = new gui::Sprite(this->upgrades_vec[5], calcX(1020, vm), calcY(392, vm), calcScale(4, vm), false);
+
+		this->texts["UPGRADE1_NAME"] = new gui::Text(&this->font, this->lang["MASTER"], calcChar(16, vm), calcX(1104, vm), calcY(228, vm), sf::Color(255, 255, 255), false);
+		this->texts["UPGRADE2_NAME"] = new gui::Text(&this->font, this->lang["BOMBER"], calcChar(16, vm), calcX(1104, vm), calcY(388, vm), sf::Color(255, 255, 255), false);
+
+		this->sprites["UPGRADE1_ABILITY"] = new gui::Sprite(this->abilities_vec[3], calcX(1168, vm), calcY(262, vm), calcScale(2, vm), false);
+		this->sprites["UPGRADE2_ABILITY"] = new gui::Sprite(this->abilities_vec[4], calcX(1168, vm), calcY(426, vm), calcScale(2, vm), false);
+
+		this->sprites["UPGRADE1_ADD"] = new gui::Sprite(this->attribute_vec[2], calcX(1216, vm), calcY(228, vm), calcScale(2, vm), false);
+		this->sprites["UPGRADE2_ADD"] = new gui::Sprite(this->attribute_vec[4], calcX(1216, vm), calcY(392, vm), calcScale(2, vm), false);
+	}
 }
 
 void PlayerGUI::update_XP()
@@ -742,7 +780,12 @@ const bool PlayerGUI::updateUpgradeButtons(const sf::Vector2i& mousePos, const b
 {
 	this->sprite_buttons["UPGRADE1"]->update(mousePos);
 	if (this->sprite_buttons["UPGRADE1"]->isPressed() && !mouseClicked) {
-		this->upgradePlayer("NINJA");
+		if (this->player->getLevel() == 5) {
+			this->upgradePlayer("NINJA");
+		}
+		else if (this->player->getLevel() == 10) {
+			this->upgradePlayer("MASTER");
+		}
 		this->isUpgrading = false;
 		this->sprite_buttons["UPGRADE1"]->setTransparent();
 		soundEngine->addSound("upgrade");
@@ -751,20 +794,27 @@ const bool PlayerGUI::updateUpgradeButtons(const sf::Vector2i& mousePos, const b
 
 	this->sprite_buttons["UPGRADE2"]->update(mousePos);
 	if (this->sprite_buttons["UPGRADE2"]->isPressed() && !mouseClicked) {
-		this->upgradePlayer("KNIGHT");
+		if (this->player->getLevel() == 5) {
+			this->upgradePlayer("KNIGHT");
+		}
+		else if (this->player->getLevel() == 10) {
+			this->upgradePlayer("BOMBER");
+		}
 		this->isUpgrading = false;
 		this->sprite_buttons["UPGRADE2"]->setTransparent();
 		soundEngine->addSound("upgrade");
 		return true;
 	}
 
-	this->sprite_buttons["UPGRADE3"]->update(mousePos);
-	if (this->sprite_buttons["UPGRADE3"]->isPressed() && !mouseClicked) {
-		this->upgradePlayer("SCOUT");
-		this->isUpgrading = false;
-		this->sprite_buttons["UPGRADE3"]->setTransparent();
-		soundEngine->addSound("upgrade");
-		return true;
+	if (this->player->getLevel() == 5) {
+		this->sprite_buttons["UPGRADE3"]->update(mousePos);
+		if (this->sprite_buttons["UPGRADE3"]->isPressed() && !mouseClicked) {
+			this->upgradePlayer("SCOUT");
+			this->isUpgrading = false;
+			this->sprite_buttons["UPGRADE3"]->setTransparent();
+			soundEngine->addSound("upgrade");
+			return true;
+		}
 	}
 	return false;
 }
