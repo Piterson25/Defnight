@@ -101,6 +101,22 @@ void MonsterSystem::playerAttack(Player* player, FloatingTextSystem* floatingTex
 	}
 }
 
+void MonsterSystem::explosionAttack(Particle* particle, FloatingTextSystem* floatingTextSystem)
+{
+	for (const auto& monster : monsters) {
+		if (monster->getGlobalBounds().intersects(particle->getGlobalBounds())) {
+			if (!monster->isDead() && !monster->getPunched() && monster->getSpawned()) {
+				const int attack = particle->getAttack();
+				floatingTextSystem->addFloatingText(std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(255, 255, 255), false);
+				if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);
+				else monster->setHP(monster->getHP() - attack);
+
+				monster->punch();
+			}
+		}
+	}
+}
+
 void MonsterSystem::projectileCollision(Projectile* proj, Player* player, FloatingTextSystem* floatingTextSystem)
 {
 	for (const auto& monster : monsters) {

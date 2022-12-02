@@ -19,7 +19,7 @@ void ProjectileSystem::addProjectile(const std::string& projectile_name, const f
 	this->projectiles.emplace_back(new Projectile(this->vm, projectile_name, this->textures, x, y, attack, HP, speed, coords));
 }
 
-void ProjectileSystem::update(Player* player, PlayerGUI* playerGui, MonsterSystem* monsterSystem, sf::Sprite& background, TileMap* tileMap, FloatingTextSystem* floatingTextSystem, const float& dt)
+void ProjectileSystem::update(Player* player, PlayerGUI* playerGui, ParticleSystem* particleSystem, MonsterSystem* monsterSystem, sf::Sprite& background, TileMap* tileMap, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine, const float& dt)
 {
 	for (const auto& proj : this->projectiles) {
 		proj->wallCollision(tileMap);
@@ -28,7 +28,17 @@ void ProjectileSystem::update(Player* player, PlayerGUI* playerGui, MonsterSyste
 		proj->update(dt);
 	}
 	for (auto proj = this->projectiles.begin(); proj != this->projectiles.end();) {
-		if ((*proj)->getHP() == 0) {
+		if ((*proj)->isBomb() && ((*proj)->getCollided() || (*proj)->getCollidedMonster())) {
+			particleSystem->addParticle((*proj)->getName(), (*proj)->getPosition().x, (*proj)->getPosition().y, (*proj)->getAttack());
+			soundEngine->addSound("explosion");
+			proj = this->projectiles.erase(proj);
+		}
+		else if ((*proj)->getExploded()) {
+			particleSystem->addParticle((*proj)->getName(), (*proj)->getPosition().x, (*proj)->getPosition().y, (*proj)->getAttack());
+			soundEngine->addSound("explosion");
+			proj = this->projectiles.erase(proj);
+		}
+		else if ((*proj)->getHP() == 0) {
 			proj = this->projectiles.erase(proj);
 		}
 		else if ((*proj)->getCollidedPlayer()) {

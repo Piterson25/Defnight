@@ -56,6 +56,22 @@ const bool Projectile::getCollidedMonster() const
 	return this->collidedMonster;
 }
 
+const float Projectile::getTimeExisting() const
+{
+	return this->timeExisting;
+}
+
+const bool Projectile::getExploded() const
+{
+	if (this->name == "bomb") return this->timeExisting >= 3.f;
+	return false;
+}
+
+const bool Projectile::isBomb() const
+{
+	return this->name == "bomb";
+}
+
 void Projectile::calculateVelocity(const sf::Vector2f& coords)
 {
 	this->angle = getAngle(this->sprite.getPosition().x, this->sprite.getPosition().y, coords.x, coords.y) + 90.f;
@@ -320,7 +336,7 @@ void Projectile::monsterCollision(Monster* monster, Player* player, FloatingText
 
 			}
 
-			if (this->collidedMonster) {
+			if (this->collidedMonster && this->name != "bomb") {
 				if ((static_cast<uint32_t>(Random::Float() * 100.f) + 1) <= player->getCriticalChance()) {
 					const int attack = 2 * this->attack;
 					floatingTextSystem->addFloatingText(std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(233, 134, 39), false);
@@ -353,6 +369,7 @@ void Projectile::move(const float& dt)
 
 void Projectile::update(const float& dt)
 {
+	this->timeExisting += dt;
 	if (this->name == "shuriken") this->sprite.rotate(90.f / dt);
 	this->move(dt);
 }

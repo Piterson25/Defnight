@@ -116,6 +116,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	}
 
 	this->projectileSystem = new ProjectileSystem(vm);
+	this->particleSystem = new ParticleSystem(vm);
 
 	this->wave = 0;
 	this->sumHP = 15;
@@ -132,6 +133,7 @@ GameState::~GameState()
 	delete this->floatingTextSystem;
 	delete this->dropSystem;
 	delete this->tileMap;
+	delete this->particleSystem;
 }
 
 void GameState::initGUI()
@@ -163,6 +165,8 @@ void GameState::draw(sf::RenderTarget* target)
 	this->player->draw(*target);
 
 	this->monsterSystem->draw(*target);
+
+	this->particleSystem->draw(*target);
 
 	this->floatingTextSystem->draw(*target);
 
@@ -329,7 +333,7 @@ void GameState::update(const float& dt)
 		this->playerGUI->updating_XP(dt);
 		this->playerGUI->updating_HP(this->soundEngine, dt);
 
-		this->projectileSystem->update(this->player, this->playerGUI, this->monsterSystem, this->background, this->tileMap, this->floatingTextSystem, dt);
+		this->projectileSystem->update(this->player, this->playerGUI, this->particleSystem, this->monsterSystem, this->background, this->tileMap, this->floatingTextSystem, this->soundEngine, dt);
 
 		this->dropSystem->update(this->player, this->playerGUI, this->floatingTextSystem, this->soundEngine, dt);
 
@@ -344,6 +348,8 @@ void GameState::update(const float& dt)
 	}
 
 	this->playerGUI->update(this->mousePosView, this->waveCountdown, this->monsterSystem, dt);
+
+	this->particleSystem->update(this->monsterSystem, this->floatingTextSystem, dt);
 
 	this->floatingTextSystem->update(dt);
 

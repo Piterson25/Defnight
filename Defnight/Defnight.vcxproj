@@ -164,6 +164,8 @@
     <ClCompile Include="Monster.cpp" />
     <ClCompile Include="MonsterSystem.cpp" />
     <ClCompile Include="MusicEngine.cpp" />
+    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="ParticleSystem.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="PlayerGUI.cpp" />
     <ClCompile Include="Projectile.cpp" />
@@ -192,6 +194,8 @@
     <ClInclude Include="Monster.h" />
     <ClInclude Include="MonsterSystem.h" />
     <ClInclude Include="MusicEngine.h" />
+    <ClInclude Include="Particle.h" />
+    <ClInclude Include="ParticleSystem.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="PlayerGUI.h" />
     <ClInclude Include="Projectile.h" />

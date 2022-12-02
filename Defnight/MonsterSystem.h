@@ -7,6 +7,7 @@
 #include "TileMap.h"
 #include "SoundEngine.h"
 #include "DropSystem.h"
+#include "Particle.h"
 #include "ProjectileSystem.h"
 #include "Projectile.h"
 #include "FloatingTextSystem.h"
@@ -17,6 +18,7 @@ class PlayerGUI;
 class TileMap;
 class SoundEngine;
 class DropSystem;
+class Particle;
 class ProjectileSystem;
 class Projectile;
 class FloatingTextSystem;
@@ -39,6 +41,7 @@ public:
 		const float& x, const float& y, const float& wave_mod);
 
 	void playerAttack(Player* player, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine, bool& playedSound);
+	void explosionAttack(Particle* particle, FloatingTextSystem* floatingTextSystem);
 
 	void projectileCollision(Projectile* proj, Player* player, FloatingTextSystem* floatingTextSystem);
 

@@ -30,6 +30,9 @@
     <Filter Include="Audio">
       <UniqueIdentifier>{69ca86f2-c4fb-495b-92c5-15b3fd980e54}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Particles">
+      <UniqueIdentifier>{4bf78e1f-4197-4ee0-a264-863b90234515}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Drop.cpp">
@@ -113,6 +116,12 @@
     <ClCompile Include="MonsterSystem.cpp">
       <Filter>Entities</Filter>
     </ClCompile>
+    <ClCompile Include="Particle.cpp">
+      <Filter>Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="ParticleSystem.cpp">
+      <Filter>Particles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Drop.h">
@@ -192,6 +201,12 @@
     </ClInclude>
     <ClInclude Include="MonsterSystem.h">
       <Filter>Entities</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle.h">
+      <Filter>Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="ParticleSystem.h">
+      <Filter>Particles</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

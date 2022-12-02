@@ -22,6 +22,9 @@ public:
 	virtual const bool getCollided() const;
 	virtual const bool getCollidedPlayer() const;
 	virtual const bool getCollidedMonster() const;
+	virtual const float getTimeExisting() const;
+	virtual const bool getExploded() const;
+	virtual const bool isBomb() const;
 
 	void calculateVelocity(const sf::Vector2f& coords);
 
@@ -35,6 +38,7 @@ public:
 	void update(const float& dt);
 	void draw(sf::RenderTarget& target);
 private:
+	float timeExisting;
 	bool collided;
 	bool collidedPlayer;
 	bool collidedMonster;

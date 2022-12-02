@@ -11,6 +11,7 @@
 #include "FloatingTextSystem.h"
 #include "DropSystem.h"
 #include "TileMap.h"
+#include "ParticleSystem.h"
 
 class GameState :
 	public State
@@ -47,6 +48,7 @@ private:
 	sf::Texture tiles_texture;
 	sf::VertexArray vertexArray;
 	TileMap* tileMap;
+	ParticleSystem* particleSystem;
 	
 	uint32_t wave;
 	uint32_t sumHP;
