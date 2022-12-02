@@ -2,7 +2,7 @@
 #include "Functions.h"
 #include "Drop.h"
 
-Drop::Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, const bool& vanishing, sf::VideoMode& vm)
+Drop::Drop(const std::string& name, const float& posX, const float& posY, const uint32_t& worth, const bool& vanishing, sf::VideoMode& vm)
 	:name(name), worth(worth), vanishing(vanishing), vm(vm)
 {
 	this->texture.loadFromFile("external/assets/drop.png");

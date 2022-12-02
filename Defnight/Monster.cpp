@@ -244,7 +244,7 @@ void Monster::AI(TileMap* tileMap, Player* player, const float& dt)
 
 		if (this->activateAI) this->activateAI = false;
 	}
-	else {
+	else if (this->name != "minotaur") {
 		if (!this->activateAI) {
 			resetNodes(player);
 		}

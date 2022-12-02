@@ -19,7 +19,7 @@ public:
 	DropSystem(const float& difficulty_mod, const sf::VideoMode& vm);
 	virtual ~DropSystem();
 
-	void addDrop(const std::string& name, const float& posX, const float& posY, const unsigned& worth);
+	void addDrop(const std::string& name, const float& posX, const float& posY, const uint32_t& worth);
 
 	void update(Player* player, PlayerGUI* playerGui, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine, const float& dt);
 	void draw(sf::RenderTarget& target);

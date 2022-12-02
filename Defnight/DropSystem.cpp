@@ -12,7 +12,7 @@ DropSystem::~DropSystem()
 	this->drops.clear();
 }
 
-void DropSystem::addDrop(const std::string& name, const float& posX, const float& posY, const unsigned& worth)
+void DropSystem::addDrop(const std::string& name, const float& posX, const float& posY, const uint32_t& worth)
 {
 	this->drops.emplace_back(new Drop(name, posX, posY, worth, this->difficulty_mod == 1.25f, this->vm));
 }

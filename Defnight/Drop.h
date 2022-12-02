@@ -14,7 +14,7 @@ class SoundEngine;
 class Drop
 {
 public:
-	Drop(const std::string& name, const float& posX, const float& posY, const unsigned& worth, const bool& vanishing, sf::VideoMode& vm);
+	Drop(const std::string& name, const float& posX, const float& posY, const uint32_t& worth, const bool& vanishing, sf::VideoMode& vm);
 	virtual ~Drop();
 
 	virtual const std::string getName() const;
@@ -36,7 +36,7 @@ private:
 	std::string name;
 
 	float spinCooldown;
-	unsigned worth;
+	uint32_t worth;
 	float angle;
 	sf::VideoMode vm;
 

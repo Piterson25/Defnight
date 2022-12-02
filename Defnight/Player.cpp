@@ -196,7 +196,7 @@ void Player::attackMonster(MonsterSystem* monsterSystem, FloatingTextSystem* flo
 	monsterSystem->playerAttack(this, floatingTextSystem, soundEngine, this->playedSound);
 }
 
-const bool Player::addXP(const unsigned& monsterXP)
+const bool Player::addXP(const uint32_t& monsterXP)
 {
 	this->setIsLeveling(true);
 	this->setXP(this->getXP() + monsterXP);

@@ -262,53 +262,52 @@ void Entity::obstacleCollision(TileMap* tileMap)
 	for (size_t i = 0; i < tileMap->getSize(); ++i) {
 		if (vectorDistance(this->sprite.getPosition(), tileMap->getPosition(i)) < distance) {
 
-			sf::FloatRect playerBounds = this->sprite.getGlobalBounds();
-			sf::FloatRect wallBounds = tileMap->getGlobalBounds(i);
+			sf::FloatRect spriteBounds = this->sprite.getGlobalBounds();
+			sf::FloatRect obstacleBounds = tileMap->getGlobalBounds(i);
 
-			sf::FloatRect nextPos = playerBounds;
+			sf::FloatRect nextPos = spriteBounds;
 			nextPos.left += this->velocity.x;
 			nextPos.top += this->velocity.y;
 
-			if (wallBounds.intersects(nextPos))
+			if (obstacleBounds.intersects(nextPos))
 			{
 				//Dolna kolizja
-				if (playerBounds.top < wallBounds.top
-					&& playerBounds.top + playerBounds.height < wallBounds.top + wallBounds.height
-					&& playerBounds.left < wallBounds.left + wallBounds.width
-					&& playerBounds.left + playerBounds.width > wallBounds.left)
+				if (spriteBounds.top < obstacleBounds.top
+					&& spriteBounds.top + spriteBounds.height < obstacleBounds.top + obstacleBounds.height
+					&& spriteBounds.left < obstacleBounds.left + obstacleBounds.width
+					&& spriteBounds.left + spriteBounds.width > obstacleBounds.left)
 				{
 					this->velocity.y = 0.f;
-					this->sprite.setPosition(playerBounds.left, wallBounds.top - playerBounds.height);
+					this->sprite.setPosition(spriteBounds.left, obstacleBounds.top - spriteBounds.height);
 				}
 				//Gorna kolizja
-				else if (playerBounds.top > wallBounds.top
-					&& playerBounds.top + playerBounds.height > wallBounds.top + wallBounds.height
-					&& playerBounds.left < wallBounds.left + wallBounds.width
-					&& playerBounds.left + playerBounds.width > wallBounds.left)
+				else if (spriteBounds.top > obstacleBounds.top
+					&& spriteBounds.top + spriteBounds.height > obstacleBounds.top + obstacleBounds.height
+					&& spriteBounds.left < obstacleBounds.left + obstacleBounds.width
+					&& spriteBounds.left + spriteBounds.width > obstacleBounds.left)
 				{
 					this->velocity.y = 0.f;
-					this->sprite.setPosition(playerBounds.left, wallBounds.top + wallBounds.height);
+					this->sprite.setPosition(spriteBounds.left, obstacleBounds.top + obstacleBounds.height);
 				}
 
 				//Prawa kolizja
-				if (playerBounds.left < wallBounds.left
-					&& playerBounds.left + playerBounds.width < wallBounds.left + wallBounds.width
-					&& playerBounds.top < wallBounds.top + wallBounds.height
-					&& playerBounds.top + playerBounds.height > wallBounds.top)
+				if (spriteBounds.left < obstacleBounds.left
+					&& spriteBounds.left + spriteBounds.width < obstacleBounds.left + obstacleBounds.width
+					&& spriteBounds.top < obstacleBounds.top + obstacleBounds.height
+					&& spriteBounds.top + spriteBounds.height > obstacleBounds.top)
 				{
 					this->velocity.x = 0.f;
-					this->sprite.setPosition(wallBounds.left - playerBounds.width, playerBounds.top);
+					this->sprite.setPosition(obstacleBounds.left - spriteBounds.width, spriteBounds.top);
 				}
 				//Lewa kolizja
-				else if (playerBounds.left > wallBounds.left
-					&& playerBounds.left + playerBounds.width > wallBounds.left + wallBounds.width
-					&& playerBounds.top < wallBounds.top + wallBounds.height
-					&& playerBounds.top + playerBounds.height > wallBounds.top)
+				else if (spriteBounds.left > obstacleBounds.left
+					&& spriteBounds.left + spriteBounds.width > obstacleBounds.left + obstacleBounds.width
+					&& spriteBounds.top < obstacleBounds.top + obstacleBounds.height
+					&& spriteBounds.top + spriteBounds.height > obstacleBounds.top)
 				{
 					this->velocity.x = 0.f;
-					this->sprite.setPosition(wallBounds.left + wallBounds.width, playerBounds.top);
+					this->sprite.setPosition(obstacleBounds.left + obstacleBounds.width, spriteBounds.top);
 				}
-
 			}
 		}
 

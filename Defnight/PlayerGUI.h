@@ -19,8 +19,8 @@ public:
 		const std::string& difficulty_name, std::unordered_map<std::string, std::string>& lang);
 	virtual ~PlayerGUI();
 
-	void update_options(unsigned& option_id, unsigned& option_val, std::vector<short>& id_vector, gui::Text* text, gui::Sprite* sprite, const float& pos);
-	void levelUpPlayer(unsigned& option_id, unsigned& option_val);
+	void update_options(uint32_t& option_id, uint32_t& option_val, std::vector<short>& id_vector, gui::Text* text, gui::Sprite* sprite, const float& pos);
+	void levelUpPlayer(uint32_t& option_id, uint32_t& option_val);
 	void upgradePlayer(const std::string& name);
 	void update_level(SoundEngine* soundEngine);
 	void update_XP();
@@ -43,7 +43,7 @@ public:
 
 	void updateIsShopping();
 	void updateKills();
-	void updateMonsterCountWave(const std::string& language, const unsigned& wave, const bool& bossWave, const size_t& monsterCount, SoundEngine* soundEngine);
+	void updateMonsterCountWave(const std::string& language, const uint32_t& wave, const bool& bossWave, const size_t& monsterCount, SoundEngine* soundEngine);
 	void updateMonsterCount(const size_t& monsterCount);
 	const uint8_t updateEscapeButton(const sf::Vector2i& mousePos, const bool& mouseClicked);
 	const bool updateButtons(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine);
@@ -77,10 +77,10 @@ private:
 	float hp_bar_barrier;
 	float xp_bar_barrier;
 	float boss_bar_barrier;
-	unsigned option1_id;
-	unsigned option2_id;
-	unsigned option1_val;
-	unsigned option2_val;
+	uint32_t option1_id;
+	uint32_t option2_id;
+	uint32_t option1_val;
+	uint32_t option2_val;
 
 	uint16_t item1Price;
 	uint16_t item2Price;

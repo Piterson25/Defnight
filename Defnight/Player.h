@@ -47,7 +47,7 @@ public:
 	void setAbilityMaxTime(const float& abilityMaxTime);
 
 	void attackMonster(MonsterSystem* monsterSystem, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine);
-	const bool addXP(const unsigned& monsterXP);
+	const bool addXP(const uint32_t& monsterXP);
 	void spawn(const float& dt);
 	void controls(const std::unordered_map<std::string, int>& keybinds, const float& dt);
 	const bool regeneration(const float& dt);

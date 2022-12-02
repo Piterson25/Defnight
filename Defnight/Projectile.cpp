@@ -262,7 +262,7 @@ void Projectile::playerCollision(Player* player)
 
 void Projectile::monsterCollision(Monster* monster, Player* player, FloatingTextSystem* floatingTextSystem)
 {
-	if (this->name == "shuriken") {
+	if (this->name == "shuriken" || this->name == "bomb") {
 		const float distance = 2 * monster->getGlobalBounds().width;
 
 		if (vectorDistance(this->sprite.getPosition(), monster->getPosition()) < distance && !this->collided && !this->collidedPlayer && !this->collidedMonster) {
@@ -321,7 +321,7 @@ void Projectile::monsterCollision(Monster* monster, Player* player, FloatingText
 			}
 
 			if (this->collidedMonster) {
-				if ((unsigned(Random::Float() * 100.f) + 1) <= player->getCriticalChance()) {
+				if ((static_cast<uint32_t>(Random::Float() * 100.f) + 1) <= player->getCriticalChance()) {
 					const int attack = 2 * this->attack;
 					floatingTextSystem->addFloatingText(std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(233, 134, 39), false);
 					if (static_cast<int>(monster->getHP() - attack) < 0) monster->setHP(0);

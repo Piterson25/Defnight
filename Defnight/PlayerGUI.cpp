@@ -210,9 +210,9 @@ PlayerGUI::~PlayerGUI()
 {
 }
 
-void PlayerGUI::update_options(unsigned& option_id, unsigned& option_val, std::vector<short>& id_vector, gui::Text* text, gui::Sprite* sprite, const float& pos)
+void PlayerGUI::update_options(uint32_t& option_id, uint32_t& option_val, std::vector<short>& id_vector, gui::Text* text, gui::Sprite* sprite, const float& pos)
 {
-	const unsigned id = static_cast<unsigned>(Random::Float() * id_vector.size());
+	const uint32_t id = static_cast<uint32_t>(Random::Float() * id_vector.size());
 	
 	option_id = id_vector[id];
 	switch (option_id)
@@ -238,7 +238,7 @@ void PlayerGUI::update_options(unsigned& option_id, unsigned& option_val, std::v
 		text->setText(this->lang["REG"] + "\n+" + std::to_string(option_val));
 		break;
 	case 6:
-		option_val = unsigned(Random::Float() * 2.f) + 2;
+		option_val = static_cast<uint32_t>(Random::Float() * 2.f) + 2;
 		text->setText(this->lang["MAX_HP"] + "\n+" + std::to_string(option_val));
 		break;
 	}
@@ -247,7 +247,7 @@ void PlayerGUI::update_options(unsigned& option_id, unsigned& option_val, std::v
 	text->center(pos);
 }
 
-void PlayerGUI::levelUpPlayer(unsigned& option_id, unsigned& option_val)
+void PlayerGUI::levelUpPlayer(uint32_t& option_id, uint32_t& option_val)
 {
 	const sf::VideoMode vm = this->vm;
 
@@ -516,7 +516,7 @@ void PlayerGUI::updateKills()
 	this->texts["KILLS"]->setText(this->lang["KILLS"] + std::to_string(this->player->getKills()));
 }
 
-void PlayerGUI::updateMonsterCountWave(const std::string& language, const unsigned& wave, const bool& bossWave, const size_t& monsterCount, SoundEngine* soundEngine)
+void PlayerGUI::updateMonsterCountWave(const std::string& language, const uint32_t& wave, const bool& bossWave, const size_t& monsterCount, SoundEngine* soundEngine)
 {
 	this->bossWave = bossWave;
 

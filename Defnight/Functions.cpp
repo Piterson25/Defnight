@@ -84,7 +84,7 @@ const bool sight(const sf::FloatRect& rect, const sf::Vector2f& a_p1, const sf::
     float maxY = a_p2.y;
 
     float dx = a_p2.x - a_p1.x;
-    if (std::abs(dx) > 0.000001f) {
+    if (std::abs(dx) > 0.f) {
         auto k = (a_p2.y - a_p1.y) / dx;
         auto b = a_p1.y - k * a_p1.x;
         minY = k * minX + b;
