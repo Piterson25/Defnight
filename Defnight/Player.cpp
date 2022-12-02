@@ -50,7 +50,7 @@ Player::Player(const sf::VideoMode& vm, const std::string& hero_name, const floa
 	this->kills = 0;
 
 	if (this->name == "warrior") {
-		this->attack = 3;
+		this->attack = 5;
 		this->attackSpeed = 3;
 		this->maxHP = 10;
 		this->HP = 10;

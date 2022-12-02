@@ -118,7 +118,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->projectileSystem = new ProjectileSystem(vm);
 
 	this->wave = 0;
-	this->sumHP = 10;
+	this->sumHP = 15;
 	this->waveCountdown = 0.f;
 }
 

@@ -187,9 +187,9 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->sprites["ITEM2_COIN"] = new gui::Sprite(attribute_vec[0], calcX(176, vm), calcY(360, vm), calcScale(2, vm), false);
 	this->sprites["ITEM3_COIN"] = new gui::Sprite(attribute_vec[0], calcX(176, vm), calcY(488, vm), calcScale(2, vm), false);
 
-	this->item1Price = 40;
+	this->item1Price = 20;
 	this->item2Price = 15;
-	this->item3Price = 12;
+	this->item3Price = 10;
 
 	this->texts["ITEM1_PRICE"] = new gui::Text(&this->font, std::to_string(this->item1Price), calcChar(16, vm), calcX(208, vm), calcY(240, vm), sf::Color(255, 246, 76), false);
 	this->texts["ITEM2_PRICE"] = new gui::Text(&this->font, std::to_string(this->item2Price), calcChar(16, vm), calcX(208, vm), calcY(368, vm), sf::Color(255, 246, 76), false);
@@ -643,7 +643,7 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 			this->update_HP();
 			this->player->setIsRegenerating(true);
 			this->sprite_buttons["ITEM1"]->setTransparent();
-			this->item1Price += static_cast<uint16_t>(round(this->item1Price * 0.5f));
+			this->item1Price += static_cast<uint32_t>((((1 + sqrtf(5)) / 2.f) - 1) * this->item1Price);
 			this->texts["ITEM1_PRICE"]->setText(std::to_string(this->item1Price));
 			soundEngine->addSound("buy");
 			return true;
@@ -662,7 +662,7 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 			this->texts["ATTACK"]->setText(std::to_string(this->player->getAttack()));
 			this->texts["ATTACK"]->center(calcX(828, vm));
 			this->sprite_buttons["ITEM2"]->setTransparent();
-			this->item2Price += static_cast<uint16_t>(round(this->item2Price * 0.5f));
+			this->item2Price += static_cast<uint32_t>((((1 + sqrtf(5)) / 2.f) - 1) * this->item2Price);
 			this->texts["ITEM2_PRICE"]->setText(std::to_string(this->item2Price));
 			soundEngine->addSound("buy");
 			return true;
@@ -682,7 +682,7 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 				this->texts["ARMOR"]->setText(std::to_string(this->player->getArmor()));
 				this->texts["ARMOR"]->center(calcX(388, vm));
 				this->sprite_buttons["ITEM3"]->setTransparent();
-				this->item3Price += static_cast<uint16_t>(round(this->item3Price * 0.5f));
+				this->item3Price += static_cast<uint32_t>((((1 + sqrtf(5)) / 2.f) - 1) * this->item3Price);
 				this->texts["ITEM3_PRICE"]->setText(std::to_string(this->item3Price));
 				soundEngine->addSound("buy");
 				return true;

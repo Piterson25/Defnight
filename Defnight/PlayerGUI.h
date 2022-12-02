@@ -82,9 +82,9 @@ private:
 	uint32_t option1_val;
 	uint32_t option2_val;
 
-	uint16_t item1Price;
-	uint16_t item2Price;
-	uint16_t item3Price;
+	uint32_t item1Price;
+	uint32_t item2Price;
+	uint32_t item3Price;
 
 	float titleCooldown;
 	float waveCountdown;

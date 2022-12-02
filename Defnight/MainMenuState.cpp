@@ -139,7 +139,7 @@ void MainMenuState::initGUI()
 	this->sprites["REG"] = new gui::Sprite(attribute_vec[5], calcX(792, vm), calcY(564, vm), calcScale(2, vm), false);
 	this->texts["REG"] = new gui::Text(&this->font, "1", calcChar(16, vm), calcX(808, vm), calcY(618, vm), sf::Color(182, 60, 53), true);
 	this->sprites["ATTACK"] = new gui::Sprite(attribute_vec[1], calcX(856, vm), calcY(564, vm), calcScale(2, vm), false);
-	this->texts["ATTACK"] = new gui::Text(&this->font, "3", calcChar(16, vm), calcX(872, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
+	this->texts["ATTACK"] = new gui::Text(&this->font, "5", calcChar(16, vm), calcX(872, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
 	this->sprites["ATTACK_SPEED"] = new gui::Sprite(attribute_vec[2], calcX(920, vm), calcY(564, vm), calcScale(2, vm), false);
 	this->texts["ATTACK_SPEED"] = new gui::Text(&this->font, "3", calcChar(16, vm), calcX(936, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
 	this->sprites["SPEED"] = new gui::Sprite(attribute_vec[3], calcX(984, vm), calcY(564, vm), calcScale(2, vm), false);
