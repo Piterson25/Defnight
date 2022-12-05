@@ -116,6 +116,7 @@ void Game::update()
 					delete this->states.top();
 					this->states.pop();
 				}
+				this->musicEngine->stopMusic();
 				this->close();
 				this->init();
 			}
