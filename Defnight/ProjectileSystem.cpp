@@ -14,9 +14,9 @@ ProjectileSystem::~ProjectileSystem()
 }
 
 void ProjectileSystem::addProjectile(const std::string& projectile_name, const float& x, const float& y,
-	const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords)
+	const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords, const float& coordsOffset)
 {
-	this->projectiles.emplace_back(new Projectile(this->vm, projectile_name, this->textures, x, y, attack, HP, speed, coords));
+	this->projectiles.emplace_back(new Projectile(this->vm, projectile_name, this->textures, x, y, attack, HP, speed, coords, coordsOffset));
 }
 
 void ProjectileSystem::update(Player* player, PlayerGUI* playerGui, ParticleSystem* particleSystem, MonsterSystem* monsterSystem, sf::Sprite& background, TileMap* tileMap, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine, const float& dt)

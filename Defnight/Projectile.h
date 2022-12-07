@@ -16,7 +16,8 @@ class Projectile
 	: public Entity
 {
 public:
-	Projectile(const sf::VideoMode& vm, const std::string& projectile_name, sf::Texture& texture, const float& x, const float& y, const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords);
+	Projectile(const sf::VideoMode& vm, const std::string& projectile_name, sf::Texture& texture, const float& x, const float& y, 
+		const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords, const float& coordsOffset);
 	virtual ~Projectile();
 
 	virtual const bool getCollided() const;

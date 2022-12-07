@@ -3,7 +3,7 @@
 #include "Projectile.h"
 
 Projectile::Projectile(const sf::VideoMode& vm, const std::string& projectile_name, sf::Texture& texture, const float& x, const float& y, 
-	const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords)
+	const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords, const float& coordsOffset)
 {
 	this->vm = vm;
 	this->name = projectile_name;
@@ -18,7 +18,7 @@ Projectile::Projectile(const sf::VideoMode& vm, const std::string& projectile_na
 	this->sprite.setOrigin(2.f, 2.f);
 
 	this->velocity = sf::Vector2f(0.f, 0.f);
-	this->angle = 0.f;
+	this->angle = coordsOffset;
 	this->collided = false;
 	this->collidedPlayer = false;
 	this->collidedMonster = false;
@@ -74,7 +74,16 @@ const bool Projectile::isBomb() const
 
 void Projectile::calculateVelocity(const sf::Vector2f& coords)
 {
-	this->angle = getAngle(this->sprite.getPosition().x, this->sprite.getPosition().y, coords.x, coords.y) + 90.f;
+	const float addAngle = getAngle(this->sprite.getPosition().x, this->sprite.getPosition().y, coords.x, coords.y) + 90.f;
+	if (addAngle + this->angle >= 270.f) {
+		this->angle = -90.f + this->angle - (270.f - addAngle);
+	}
+	else if (addAngle + this->angle <= -90.f) {
+		this->angle = 270.f + this->angle + (90.f + addAngle);
+	}
+	else {
+		this->angle += addAngle;
+	}
 	this->sprite.setRotation(this->angle);
 }
 

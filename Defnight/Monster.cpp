@@ -119,7 +119,7 @@ const bool Monster::attackPlayer(Player* player, TileMap* tileMap, ProjectileSys
 			this->doAttack();
 			if (!player->isDead() && !player->getPunched() && this->getIsAttacking() && this->getFrame() == 80) {
 				if (this->getAttack() > 0) {
-					projectileSystem->addProjectile("stone", this->getPosition().x + calcX(24, vm), this->getPosition().y + calcY(36, vm), this->getAttack(), 1, 1, sf::Vector2f(player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm)));
+					projectileSystem->addProjectile("stone", this->getPosition().x + calcX(24, vm), this->getPosition().y + calcY(36, vm), this->getAttack(), 1, 1, sf::Vector2f(player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm)), 0);
 					this->isAttacking = false;
 
 					if (!this->playedSound) {

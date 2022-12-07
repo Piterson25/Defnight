@@ -179,9 +179,9 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->sprite_buttons["ITEM2"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(96, vm), calcY(308, vm), calcScale(1, vm), true);
 	this->sprite_buttons["ITEM3"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(96, vm), calcY(436, vm), calcScale(1, vm), true);
 
-	this->texts["ITEM1"] = new gui::Text(&this->font, "+2", calcChar(16, vm), calcX(192, vm), calcY(208, vm), sf::Color(255, 255, 255), false);
-	this->texts["ITEM2"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(192, vm), calcY(336, vm), sf::Color(255, 255, 255), false);
-	this->texts["ITEM3"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(192, vm), calcY(464, vm), sf::Color(255, 255, 255), false);
+	this->texts["ITEM1"] = new gui::Text(&this->font, this->lang["MAX_HP"] + "\n+2", calcChar(16, vm), calcX(160, vm), calcY(192, vm), sf::Color(255, 255, 255), false);
+	this->texts["ITEM2"] = new gui::Text(&this->font, this->lang["ATTACK"] + "\n+1", calcChar(16, vm), calcX(160, vm), calcY(320, vm), sf::Color(255, 255, 255), false);
+	this->texts["ITEM3"] = new gui::Text(&this->font, this->lang["ARMOR"] + "\n+1", calcChar(16, vm), calcX(160, vm), calcY(448, vm), sf::Color(255, 255, 255), false);
 
 	this->sprites["ITEM1_COIN"] = new gui::Sprite(attribute_vec[0], calcX(176, vm), calcY(232, vm), calcScale(2, vm), false);
 	this->sprites["ITEM2_COIN"] = new gui::Sprite(attribute_vec[0], calcX(176, vm), calcY(360, vm), calcScale(2, vm), false);

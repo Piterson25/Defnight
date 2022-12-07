@@ -301,7 +301,7 @@ const bool Player::checkIfAbility()
 void Player::doAbility(const sf::Vector2f& coords, ProjectileSystem* projectileSystem, SoundEngine* soundEngine)
 {
 	if (this->name == "ninja") {
-		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 3, 3, 4, coords);
+		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 3, 3, 4, coords, 0);
 		soundEngine->addSound("shuriken");
 	}
 	else if (this->name == "knight") {
@@ -312,14 +312,16 @@ void Player::doAbility(const sf::Vector2f& coords, ProjectileSystem* projectileS
 		soundEngine->addSound("ability");
 	}
 	else if (this->name == "master") {
+		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 5, 4, 4, coords, 0);
 		soundEngine->addSound("shuriken");
-		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 5, 4, 4, coords);
-		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 5, 4, 4, sf::Vector2f(this->getPosition().x + calcX(32, vm), coords.y));
-		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 5, 4, 4, sf::Vector2f(coords.x, this->getPosition().y + calcY(32, vm)));
+		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 5, 4, 4, coords, -45.f);
+		soundEngine->addSound("shuriken");
+		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 5, 4, 4, coords, 45.f);
+		soundEngine->addSound("shuriken");
 	}
 	else if (this->name == "bomber") {
+		projectileSystem->addProjectile("bomb", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 7, 1, 3, coords, 0);
 		soundEngine->addSound("shuriken");
-		projectileSystem->addProjectile("bomb", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 7, 1, 3, coords);
 	}
 }
 

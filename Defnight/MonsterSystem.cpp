@@ -229,6 +229,7 @@ void MonsterSystem::spawnMonsters(Player* player, const uint32_t& wave)
 void MonsterSystem::prepareWave(uint32_t& wave, uint32_t& sumHP)
 {
 	wave++;
+	const uint32_t wave_mod = 1 + static_cast<uint32_t>(wave / 10.f);
 	if (wave % 10 != 0) sumHP += static_cast<uint32_t>((2 - ((1 + sqrtf(5)) / 2.f)) * sumHP);
 	uint32_t monstersHP = sumHP;
 	short t = 0;
@@ -241,35 +242,35 @@ void MonsterSystem::prepareWave(uint32_t& wave, uint32_t& sumHP)
 	}
 	else if (wave == 7) {
 		t = 3;
-		if (monstersHP >= 18) monstersHP -= 18;
+		if (monstersHP >= 18 * wave_mod) monstersHP -= 18 * wave_mod;
 	}
 	else if (wave == 5) {
 		t = 2;
-		if (monstersHP >= 12) monstersHP -= 12;
+		if (monstersHP >= 12 * wave_mod) monstersHP -= 12 * wave_mod;
 	}
 	else if (wave == 3) {
 		t = 1;
-		if (monstersHP >= 7) monstersHP -= 7;
+		if (monstersHP >= 7 * wave_mod) monstersHP -= 7 * wave_mod;
 	}
 	else if (wave == 1) {
 		t = 0;
-		if (monstersHP >= 3) monstersHP -= 3;
+		if (monstersHP >= 3 * wave_mod) monstersHP -= 3 * wave_mod;
 	}
 
 	this->monsterIDs.push_back(t);
 
 	while (monstersHP > 0) {
-		if (monstersHP >= 69 && wave % 10 == 0) {
+		if (monstersHP >= 69 * wave_mod && wave % 10 == 0) {
 			t = 4;
 			this->bossWave = true;
 		}
-		else if (monstersHP >= 18 && wave >= 7)
+		else if (monstersHP >= 18 * wave_mod && wave >= 7)
 			t = static_cast<short>(Random::Float() * 4.f);
-		else if (monstersHP >= 12 && wave >= 5)
+		else if (monstersHP >= 12 * wave_mod && wave >= 5)
 			t = static_cast<short>(Random::Float() * 3.f);
-		else if (monstersHP >= 7 && wave >= 3)
+		else if (monstersHP >= 7 * wave_mod && wave >= 3)
 			t = static_cast<short>(Random::Float() * 2.f);
-		else if (monstersHP >= 3)
+		else if (monstersHP >= 3 * wave_mod)
 			t = 0;
 		else break;
 
@@ -277,19 +278,19 @@ void MonsterSystem::prepareWave(uint32_t& wave, uint32_t& sumHP)
 
 		switch (t) {
 		case 0:
-			monstersHP -= 3;
+			monstersHP -= 3 * wave_mod;
 			break;
 		case 1:
-			monstersHP -= 7;
+			monstersHP -= 7 * wave_mod;
 			break;
 		case 2:
-			monstersHP -= 12;
+			monstersHP -= 12 * wave_mod;
 			break;
 		case 3:
-			monstersHP -= 18;
+			monstersHP -= 18 * wave_mod;
 			break;
 		case 4:
-			monstersHP -= 69;
+			monstersHP -= 69 * wave_mod;
 			break;
 		}
 	}
