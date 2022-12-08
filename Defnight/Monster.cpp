@@ -85,7 +85,7 @@ Monster::Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::T
 		this->HP = static_cast<uint32_t>(69 * difficulty_mod * wave_mod);
 		this->maxHP = static_cast<uint32_t>(69 * difficulty_mod * wave_mod);
 		this->speed = 1;
-		this->gold = static_cast<uint32_t>(25 * wave_mod);
+		this->gold = static_cast<uint32_t>(50 * wave_mod);
 		this->XP = static_cast<uint32_t>(200 * wave_mod);
 	}
 }

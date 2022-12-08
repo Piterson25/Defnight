@@ -33,6 +33,7 @@ public:
 	void setIsEscape(const bool& escape);
 	void updatePaused(bool& paused);
 	void updateArmor();
+	void updateAttack();
 	void updateBossHP(const float& dt);
 	const bool updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine, FloatingTextSystem* floatingTextSystem);
 

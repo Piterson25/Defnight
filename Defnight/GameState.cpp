@@ -281,6 +281,7 @@ void GameState::update(const float& dt)
 					this->player->doAbility(sf::Vector2f(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window), this->view)), this->projectileSystem, this->soundEngine);
 					this->playerGUI->setAbilityIcon();
 					this->playerGUI->updateArmor();
+					this->playerGUI->updateAttack();
 				}
 			}
 			this->player->spawn(dt);

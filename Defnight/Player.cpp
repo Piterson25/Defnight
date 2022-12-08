@@ -273,6 +273,10 @@ void Player::abilityCounter(const float& dt)
 			if (this->name == "knight") {
 				this->armor -= 5;
 			}
+			else if (this->name == "crusader") {
+				this->armor -= 5;
+				this->attack -= 5;
+			}
 		}
 		else if (this->abilityCooldown > this->abilityMaxTime) {
 			this->abilityCooldown = this->abilityMaxTime;
@@ -291,6 +295,9 @@ const bool Player::checkIfAbility()
 				this->ability.setTextureRect(sf::IntRect(0, 0, 16, 16));
 			}
 			else if (this->name == "scout") this->ability.setTextureRect(sf::IntRect(16, 0, 16, 16));
+			else if (this->name == "crusader") {
+				this->ability.setTextureRect(sf::IntRect(32, 0, 16, 16));
+			}
 			this->ability.setColor(sf::Color(255, 255, 255, 128));
 			return true;
 		}
@@ -323,6 +330,11 @@ void Player::doAbility(const sf::Vector2f& coords, ProjectileSystem* projectileS
 		projectileSystem->addProjectile("bomb", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 7, 1, 3, coords, 0);
 		soundEngine->addSound("shuriken");
 	}
+	else if (this->name == "crusader") {
+		this->armor += 5;
+		this->attack += 5;
+		soundEngine->addSound("ability");
+	}
 }
 
 void Player::whooshSound(SoundEngine* soundEngine)
@@ -345,7 +357,7 @@ void Player::update(const float& dt)
 void Player::draw(sf::RenderTarget& target)
 {
 	target.draw(this->sprite);
-	if (this->abilityActive && (this->name == "knight" || this->name == "scout")) target.draw(this->ability);
+	if (this->abilityActive && (this->name == "knight" || this->name == "scout" || this->name == "crusader")) target.draw(this->ability);
 }
 
 void Player::drawShadow(sf::RenderTarget& target)
