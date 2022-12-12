@@ -243,7 +243,7 @@ void Entity::setName(const std::string& name)
 void Entity::loadAttack(const float& dt)
 {
 	if (this->attackCooldown < 1.f)
-		this->attackCooldown += this->attackSpeed * dt;
+		this->attackCooldown += (this->attackSpeed * 0.2f + 0.8f) * dt;
 }
 
 void Entity::doAttack()

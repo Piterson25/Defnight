@@ -121,6 +121,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->wave = 0;
 	this->sumHP = 15;
 	this->waveCountdown = 0.f;
+	this->gems = 0;
 }
 
 GameState::~GameState()
@@ -324,6 +325,7 @@ void GameState::update(const float& dt)
 			if (this->monsterSystem->monstersEmpty()) {
 				this->waveCountdown = 0.f;
 				this->monsterSystem->monsterIDsClear();
+				this->gems += 5;
 			}
 			else {
 				this->player->attackMonster(this->monsterSystem, this->floatingTextSystem, this->soundEngine);

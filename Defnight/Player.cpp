@@ -51,13 +51,13 @@ Player::Player(const sf::VideoMode& vm, const std::string& hero_name, const floa
 
 	if (this->name == "warrior") {
 		this->attack = 5;
-		this->attackSpeed = 3;
+		this->attackSpeed = 4;
 		this->maxHP = 10;
 		this->HP = 10;
 		this->reg = 1;
 		this->speed = 4;
 		this->armor = 3;
-		this->criticalChance = 10;
+		this->criticalChance = 20;
 	}
 }
 
@@ -249,7 +249,7 @@ void Player::controls(const std::unordered_map<std::string, int>& keybinds, cons
 const bool Player::regeneration(const float& dt)
 {
 	if (this->regCooldown < 1.f && this->HP < this->maxHP)
-		this->regCooldown += (this->reg * 0.4f + 0.8f) / 4.f * dt;
+		this->regCooldown += ((this->reg * 0.2f + 0.8f) / 4.f) * dt;
 
 	if (this->regCooldown >= 1.f) {
 		this->regCooldown = 0.f;

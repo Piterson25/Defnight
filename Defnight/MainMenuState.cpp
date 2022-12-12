@@ -141,11 +141,11 @@ void MainMenuState::initGUI()
 	this->sprites["ATTACK"] = new gui::Sprite(attribute_vec[1], calcX(856, vm), calcY(564, vm), calcScale(2, vm), false);
 	this->texts["ATTACK"] = new gui::Text(&this->font, "5", calcChar(16, vm), calcX(872, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
 	this->sprites["ATTACK_SPEED"] = new gui::Sprite(attribute_vec[2], calcX(920, vm), calcY(564, vm), calcScale(2, vm), false);
-	this->texts["ATTACK_SPEED"] = new gui::Text(&this->font, "3", calcChar(16, vm), calcX(936, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
+	this->texts["ATTACK_SPEED"] = new gui::Text(&this->font, "4", calcChar(16, vm), calcX(936, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
 	this->sprites["SPEED"] = new gui::Sprite(attribute_vec[3], calcX(984, vm), calcY(564, vm), calcScale(2, vm), false);
 	this->texts["SPEED"] = new gui::Text(&this->font, "4", calcChar(16, vm), calcX(1000, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
 	this->sprites["CRITICAL"] = new gui::Sprite(attribute_vec[4], calcX(1048, vm), calcY(564, vm), calcScale(2, vm), false);
-	this->texts["CRITICAL"] = new gui::Text(&this->font, "10%", calcChar(16, vm), calcX(1064, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
+	this->texts["CRITICAL"] = new gui::Text(&this->font, "20%", calcChar(16, vm), calcX(1064, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
 	
 	this->sprites["ABILITY1"] = new gui::Sprite(abilities_vec[0], calcX(528, vm), calcY(526, vm), calcScale(2, vm), true);
 	this->sprites["ABILITY2"] = new gui::Sprite(abilities_vec[1], calcX(528, vm), calcY(574, vm), calcScale(2, vm), true);
