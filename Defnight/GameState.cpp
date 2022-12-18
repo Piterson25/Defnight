@@ -42,6 +42,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 
 	float offsetY = 0.f;
 	if (map_name == "desert") offsetY = 48.f;
+	else if (map_name == "permafrost") offsetY = 96.f;
 	size_t t = 0;
 	const sf::Vector2f tile = sf::Vector2f(calcX(64, vm), calcY(64, vm));
 	if (mapa.is_open()) {
@@ -289,6 +290,7 @@ void GameState::update(const float& dt)
 			this->player->animation(dt);
 			this->player->abilityCounter(dt);
 			this->playerGUI->updateArmor();
+			this->playerGUI->updateAttack();
 			this->playerGUI->update_ability(dt);
 
 		}

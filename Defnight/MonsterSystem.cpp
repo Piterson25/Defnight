@@ -129,51 +129,51 @@ void MonsterSystem::monsterCollision(Monster* mob)
 {
 	for (const auto& monster : monsters) {
 		if (vectorDistance(mob->getPosition(), monster->getPosition()) < 2 * monster->getGlobalBounds().width) {
-			sf::FloatRect monsterBounds = mob->getGlobalBounds();
-			sf::FloatRect goblinBounds = monster->getGlobalBounds();
+			sf::FloatRect mobBounds = mob->getGlobalBounds();
+			sf::FloatRect monsterBounds = monster->getGlobalBounds();
 		
-			sf::FloatRect nextPos = monsterBounds;
+			sf::FloatRect nextPos = mobBounds;
 			nextPos.left += mob->getVelocity().x;
 			nextPos.top += mob->getVelocity().y;
 		
-			if (goblinBounds.intersects(nextPos))
+			if (monsterBounds.intersects(nextPos))
 			{
 				//Dolna kolizja
-				if (monsterBounds.top < goblinBounds.top
-					&& monsterBounds.top + monsterBounds.height < goblinBounds.top + goblinBounds.height
-					&& monsterBounds.left < goblinBounds.left + goblinBounds.width
-					&& monsterBounds.left + monsterBounds.width > goblinBounds.left)
+				if (mobBounds.top < monsterBounds.top
+					&& mobBounds.top + mobBounds.height < monsterBounds.top + monsterBounds.height
+					&& mobBounds.left < monsterBounds.left + monsterBounds.width
+					&& mobBounds.left + mobBounds.width > monsterBounds.left)
 				{
 					mob->setVeloctiy(sf::Vector2f(mob->getVelocity().x, 0.f));
-					mob->setPosition(monsterBounds.left, goblinBounds.top - monsterBounds.height);
+					mob->setPosition(mobBounds.left, monsterBounds.top - mobBounds.height);
 				}
 				//Gorna kolizja
-				else if (monsterBounds.top > goblinBounds.top
-					&& monsterBounds.top + monsterBounds.height > goblinBounds.top + goblinBounds.height
-					&& monsterBounds.left < goblinBounds.left + goblinBounds.width
-					&& monsterBounds.left + monsterBounds.width > goblinBounds.left)
+				else if (mobBounds.top > monsterBounds.top
+					&& mobBounds.top + mobBounds.height > monsterBounds.top + monsterBounds.height
+					&& mobBounds.left < monsterBounds.left + monsterBounds.width
+					&& mobBounds.left + mobBounds.width > monsterBounds.left)
 				{
 					mob->setVeloctiy(sf::Vector2f(mob->getVelocity().x, 0.f));
-					mob->setPosition(monsterBounds.left, goblinBounds.top + goblinBounds.height);
+					mob->setPosition(mobBounds.left, monsterBounds.top + monsterBounds.height);
 				}
 		
 				//Prawa kolizja
-				else if (monsterBounds.left < goblinBounds.left
-					&& monsterBounds.left + monsterBounds.width < goblinBounds.left + goblinBounds.width
-					&& monsterBounds.top < goblinBounds.top + goblinBounds.height
-					&& monsterBounds.top + monsterBounds.height > goblinBounds.top)
+				else if (mobBounds.left < monsterBounds.left
+					&& mobBounds.left + mobBounds.width < monsterBounds.left + monsterBounds.width
+					&& mobBounds.top < monsterBounds.top + monsterBounds.height
+					&& mobBounds.top + mobBounds.height > monsterBounds.top)
 				{
 					mob->setVeloctiy(sf::Vector2f(0.f, mob->getVelocity().y));
-					mob->setPosition(goblinBounds.left - monsterBounds.width, monsterBounds.top);
+					mob->setPosition(monsterBounds.left - mobBounds.width, mobBounds.top);
 				}
 				//Lewa kolizja
-				else if (monsterBounds.left > goblinBounds.left
-					&& monsterBounds.left + monsterBounds.width > goblinBounds.left + goblinBounds.width
-					&& monsterBounds.top < goblinBounds.top + goblinBounds.height
-					&& monsterBounds.top + monsterBounds.height > goblinBounds.top)
+				else if (mobBounds.left > monsterBounds.left
+					&& mobBounds.left + mobBounds.width > monsterBounds.left + monsterBounds.width
+					&& mobBounds.top < monsterBounds.top + monsterBounds.height
+					&& mobBounds.top + mobBounds.height > monsterBounds.top)
 				{
 					mob->setVeloctiy(sf::Vector2f(0.f, mob->getVelocity().y));
-					mob->setPosition(goblinBounds.left + goblinBounds.width, monsterBounds.top);
+					mob->setPosition(monsterBounds.left + monsterBounds.width, mobBounds.top);
 				}
 			}
 		}
@@ -309,8 +309,8 @@ void MonsterSystem::update(Player* player, PlayerGUI* playerGUI, ProjectileSyste
 			else {
 				monster->AI(this->tileMap, player, dt);
 				if (monster->hasVelocity()) {
-					monster->obstacleCollision(this->tileMap);
 					monsterCollision(&(*monster));
+					monster->obstacleCollision(this->tileMap);
 					monster->move();
 					monster->update(dt);
 				}
