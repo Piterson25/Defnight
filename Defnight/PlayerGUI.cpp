@@ -8,7 +8,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 {
 	
 	this->attributes_texture.loadFromFile("external/assets/icons.png");
-	for (short i = 0; i < 8; ++i) {
+	for (short i = 0; i < 9; ++i) {
 		sf::Sprite att;
 		att.setTexture(this->attributes_texture);
 		sf::IntRect intRect(i * 16, 0, 16, 16);
@@ -171,29 +171,35 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 
 	this->sprites["SHOP"] = new gui::Sprite("external/assets/shop_bar.png", 0, calcY(128, vm), calcScale(1, vm), false);
 
-	this->sprites["ITEM1"] = new gui::Sprite(attribute_vec[6], calcX(64, vm), calcY(192, vm), calcScale(4, vm), false);
-	this->sprites["ITEM2"] = new gui::Sprite(attribute_vec[1], calcX(64, vm), calcY(320, vm), calcScale(4, vm), false);
-	this->sprites["ITEM3"] = new gui::Sprite(attribute_vec[7], calcX(64, vm), calcY(448, vm), calcScale(4, vm), false);
+	this->sprites["ITEM1"] = new gui::Sprite(attribute_vec[8], calcX(64, vm), calcY(192, vm), calcScale(4, vm), false);
+	this->sprites["ITEM2"] = new gui::Sprite(attribute_vec[6], calcX(64, vm), calcY(320, vm), calcScale(4, vm), false);
+	this->sprites["ITEM3"] = new gui::Sprite(attribute_vec[1], calcX(64, vm), calcY(448, vm), calcScale(4, vm), false);
+	this->sprites["ITEM4"] = new gui::Sprite(attribute_vec[7], calcX(64, vm), calcY(576, vm), calcScale(4, vm), false);
 
 	this->sprite_buttons["ITEM1"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(96, vm), calcY(180, vm), calcScale(1, vm), true);
 	this->sprite_buttons["ITEM2"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(96, vm), calcY(308, vm), calcScale(1, vm), true);
 	this->sprite_buttons["ITEM3"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(96, vm), calcY(436, vm), calcScale(1, vm), true);
+	this->sprite_buttons["ITEM4"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(96, vm), calcY(564, vm), calcScale(1, vm), true);
 
-	this->texts["ITEM1"] = new gui::Text(&this->font, this->lang["MAX_HP"] + "\n+2", calcChar(16, vm), calcX(160, vm), calcY(192, vm), sf::Color(255, 255, 255), false);
-	this->texts["ITEM2"] = new gui::Text(&this->font, this->lang["ATTACK"] + "\n+1", calcChar(16, vm), calcX(160, vm), calcY(320, vm), sf::Color(255, 255, 255), false);
-	this->texts["ITEM3"] = new gui::Text(&this->font, this->lang["ARMOR"] + "\n+1", calcChar(16, vm), calcX(160, vm), calcY(448, vm), sf::Color(255, 255, 255), false);
+	this->texts["ITEM1"] = new gui::Text(&this->font, "Full HP", calcChar(16, vm), calcX(160, vm), calcY(208, vm), sf::Color(255, 255, 255), false);
+	this->texts["ITEM2"] = new gui::Text(&this->font, this->lang["MAX_HP"] + "\n+2", calcChar(16, vm), calcX(160, vm), calcY(320, vm), sf::Color(255, 255, 255), false);
+	this->texts["ITEM3"] = new gui::Text(&this->font, this->lang["ATTACK"] + "\n+1", calcChar(16, vm), calcX(160, vm), calcY(448, vm), sf::Color(255, 255, 255), false);
+	this->texts["ITEM4"] = new gui::Text(&this->font, this->lang["ARMOR"] + "\n+1", calcChar(16, vm), calcX(160, vm), calcY(576, vm), sf::Color(255, 255, 255), false);
 
 	this->sprites["ITEM1_COIN"] = new gui::Sprite(attribute_vec[0], calcX(176, vm), calcY(232, vm), calcScale(2, vm), false);
 	this->sprites["ITEM2_COIN"] = new gui::Sprite(attribute_vec[0], calcX(176, vm), calcY(360, vm), calcScale(2, vm), false);
 	this->sprites["ITEM3_COIN"] = new gui::Sprite(attribute_vec[0], calcX(176, vm), calcY(488, vm), calcScale(2, vm), false);
+	this->sprites["ITEM4_COIN"] = new gui::Sprite(attribute_vec[0], calcX(176, vm), calcY(616, vm), calcScale(2, vm), false);
 
-	this->item1Price = 20;
-	this->item2Price = 15;
-	this->item3Price = 10;
+	this->item1Price = 30;
+	this->item2Price = 20;
+	this->item3Price = 15;
+	this->item4Price = 10;
 
 	this->texts["ITEM1_PRICE"] = new gui::Text(&this->font, std::to_string(this->item1Price), calcChar(16, vm), calcX(208, vm), calcY(240, vm), sf::Color(255, 246, 76), false);
 	this->texts["ITEM2_PRICE"] = new gui::Text(&this->font, std::to_string(this->item2Price), calcChar(16, vm), calcX(208, vm), calcY(368, vm), sf::Color(255, 246, 76), false);
 	this->texts["ITEM3_PRICE"] = new gui::Text(&this->font, std::to_string(this->item3Price), calcChar(16, vm), calcX(208, vm), calcY(496, vm), sf::Color(255, 246, 76), false);
+	this->texts["ITEM4_PRICE"] = new gui::Text(&this->font, std::to_string(this->item4Price), calcChar(16, vm), calcX(208, vm), calcY(624, vm), sf::Color(255, 246, 76), false);
 
 	this->bossWave = false;
 
@@ -664,14 +670,14 @@ void PlayerGUI::updateBossHP(const float& dt)
 const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine, FloatingTextSystem* floatingTextSystem)
 {
 	if (this->isShopping) {
-		if (this->player->getGold() >= this->item1Price) {
+		if (this->player->getGold() >= this->item1Price && this->player->getHP() < this->player->getMaxHP()) {
 			this->sprite_buttons["ITEM1"]->update(mousePos);
 			if (this->sprite_buttons["ITEM1"]->isPressed() && !mouseClicked) {
 				this->player->setGold(this->player->getGold() - this->item1Price);
 				floatingTextSystem->addFloatingText("-" + std::to_string(this->item1Price), calcChar(16, vm), calcX(20, vm), calcY(96, vm), sf::Color(255, 246, 76), true);
-				floatingTextSystem->addFloatingText("+2", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true);
+				floatingTextSystem->addFloatingText("Full HP", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true);
 				this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
-				this->player->setMaxHP(this->player->getMaxHP() + 2);
+				this->player->setHP(this->player->getMaxHP());
 				this->update_HP();
 				this->player->setIsRegenerating(true);
 				this->sprite_buttons["ITEM1"]->setTransparent();
@@ -682,17 +688,16 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 			}
 		}
 
-
 		if (this->player->getGold() >= this->item2Price) {
 			this->sprite_buttons["ITEM2"]->update(mousePos);
 			if (this->sprite_buttons["ITEM2"]->isPressed() && !mouseClicked) {
 				this->player->setGold(this->player->getGold() - this->item2Price);
 				floatingTextSystem->addFloatingText("-" + std::to_string(this->item2Price), calcChar(16, vm), calcX(20, vm), calcY(96, vm), sf::Color(255, 246, 76), true);
-				floatingTextSystem->addFloatingText("+1", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true);
+				floatingTextSystem->addFloatingText("+2", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true);
 				this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
-				this->player->setAttack(this->player->getAttack() + 1);
-				this->texts["ATTACK"]->setText(std::to_string(this->player->getAttack()));
-				this->texts["ATTACK"]->center(calcX(828, vm));
+				this->player->setMaxHP(this->player->getMaxHP() + 2);
+				this->update_HP();
+				this->player->setIsRegenerating(true);
 				this->sprite_buttons["ITEM2"]->setTransparent();
 				this->item2Price += static_cast<uint32_t>((((1 + sqrtf(5)) / 2.f) - 1) * this->item2Price);
 				this->texts["ITEM2_PRICE"]->setText(std::to_string(this->item2Price));
@@ -701,21 +706,40 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 			}
 		}
 
+
+		if (this->player->getGold() >= this->item3Price) {
+			this->sprite_buttons["ITEM3"]->update(mousePos);
+			if (this->sprite_buttons["ITEM3"]->isPressed() && !mouseClicked) {
+				this->player->setGold(this->player->getGold() - this->item3Price);
+				floatingTextSystem->addFloatingText("-" + std::to_string(this->item3Price), calcChar(16, vm), calcX(20, vm), calcY(96, vm), sf::Color(255, 246, 76), true);
+				floatingTextSystem->addFloatingText("+1", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true);
+				this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
+				this->player->setAttack(this->player->getAttack() + 1);
+				this->texts["ATTACK"]->setText(std::to_string(this->player->getAttack()));
+				this->texts["ATTACK"]->center(calcX(828, vm));
+				this->sprite_buttons["ITEM3"]->setTransparent();
+				this->item3Price += static_cast<uint32_t>((((1 + sqrtf(5)) / 2.f) - 1) * this->item3Price);
+				this->texts["ITEM3_PRICE"]->setText(std::to_string(this->item3Price));
+				soundEngine->addSound("buy");
+				return true;
+			}
+		}
+
 		if (this->player->getArmor() < 10 || (this->player->getName() == "knight" && ((this->player->getAbilityActive() && this->player->getArmor() < 15))
 			|| (!this->player->getAbilityActive() && this->player->getArmor() < 10))) {
-			if (this->player->getGold() >= this->item3Price) {
-				this->sprite_buttons["ITEM3"]->update(mousePos);
-				if (this->sprite_buttons["ITEM3"]->isPressed() && !mouseClicked) {
-					this->player->setGold(this->player->getGold() - this->item3Price);
-					floatingTextSystem->addFloatingText("-" + std::to_string(this->item3Price), calcChar(16, vm), calcX(20, vm), calcX(96, vm), sf::Color(255, 246, 76), true);
+			if (this->player->getGold() >= this->item4Price) {
+				this->sprite_buttons["ITEM4"]->update(mousePos);
+				if (this->sprite_buttons["ITEM4"]->isPressed() && !mouseClicked) {
+					this->player->setGold(this->player->getGold() - this->item4Price);
+					floatingTextSystem->addFloatingText("-" + std::to_string(this->item4Price), calcChar(16, vm), calcX(20, vm), calcX(96, vm), sf::Color(255, 246, 76), true);
 					floatingTextSystem->addFloatingText("+1", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true);
 					this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
 					this->player->setArmor(this->player->getArmor() + 1);
 					this->texts["ARMOR"]->setText(std::to_string(this->player->getArmor()));
 					this->texts["ARMOR"]->center(calcX(388, vm));
-					this->sprite_buttons["ITEM3"]->setTransparent();
-					this->item3Price += static_cast<uint32_t>((((1 + sqrtf(5)) / 2.f) - 1) * this->item3Price);
-					this->texts["ITEM3_PRICE"]->setText(std::to_string(this->item3Price));
+					this->sprite_buttons["ITEM4"]->setTransparent();
+					this->item4Price += static_cast<uint32_t>((((1 + sqrtf(5)) / 2.f) - 1) * this->item4Price);
+					this->texts["ITEM4_PRICE"]->setText(std::to_string(this->item4Price));
 					soundEngine->addSound("buy");
 					return true;
 				}
@@ -952,13 +976,19 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 		this->texts["ITEM2_PRICE"]->draw(target);
 		this->sprites["ITEM2_COIN"]->draw(target);
 
+		this->sprite_buttons["ITEM3"]->draw(target);
+		this->sprites["ITEM3"]->draw(target);
+		this->texts["ITEM3"]->draw(target);
+		this->texts["ITEM3_PRICE"]->draw(target);
+		this->sprites["ITEM3_COIN"]->draw(target);
+
 		if (this->player->getArmor() < 10 || (this->player->getName() == "knight" && ((this->player->getAbilityActive() && this->player->getArmor() < 15))
 			|| (!this->player->getAbilityActive() && this->player->getArmor() < 10))) {
-			this->sprite_buttons["ITEM3"]->draw(target);
-			this->sprites["ITEM3"]->draw(target);
-			this->texts["ITEM3"]->draw(target);
-			this->texts["ITEM3_PRICE"]->draw(target);
-			this->sprites["ITEM3_COIN"]->draw(target);
+			this->sprite_buttons["ITEM4"]->draw(target);
+			this->sprites["ITEM4"]->draw(target);
+			this->texts["ITEM4"]->draw(target);
+			this->texts["ITEM4_PRICE"]->draw(target);
+			this->sprites["ITEM4_COIN"]->draw(target);
 		}
 	}
 

@@ -335,8 +335,6 @@ void GameState::update(const float& dt)
 				this->playerGUI->updateBossHP(dt);
 			}
 		}
-		this->playerGUI->updating_XP(dt);
-		this->playerGUI->updating_HP(this->soundEngine, dt);
 
 		this->projectileSystem->update(this->player, this->playerGUI, this->particleSystem, this->monsterSystem, this->background, this->tileMap, this->floatingTextSystem, this->soundEngine, dt);
 
@@ -347,6 +345,9 @@ void GameState::update(const float& dt)
 			this->player->setIsRegenerating(false);
 			this->playerGUI->update_HP();
 		}
+
+		this->playerGUI->updating_XP(dt);
+		this->playerGUI->updating_HP(this->soundEngine, dt);
 
 		this->soundEngine->update();
 		this->musicEngine->update();
