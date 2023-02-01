@@ -44,46 +44,46 @@ Monster::Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::T
 	
 
 	if (this->name == "goblin") {
-		this->attack = static_cast<uint32_t>(1 * difficulty_mod * wave_mod);
+		this->attack = static_cast<uint32_t>(1 * difficulty_mod);
 		this->attackSpeed = 2;
-		this->HP = static_cast<uint32_t>(3 * difficulty_mod * wave_mod);
-		this->maxHP = static_cast<uint32_t>(3 * difficulty_mod * wave_mod);
+		this->HP = static_cast<uint32_t>(3 * difficulty_mod);
+		this->maxHP = static_cast<uint32_t>(3 * difficulty_mod);
 		this->speed = 2;
 		this->gold = static_cast<uint32_t>(1 * wave_mod);
 		this->XP = static_cast<uint32_t>(5 * wave_mod);
 	}
 	else if (this->name == "spider") {
-		this->attack = static_cast<uint32_t>(2 * difficulty_mod * wave_mod);
+		this->attack = static_cast<uint32_t>(2 * difficulty_mod);
 		this->attackSpeed = 3;
-		this->HP = static_cast<uint32_t>(7 * difficulty_mod * wave_mod);
-		this->maxHP = static_cast<uint32_t>(7 * difficulty_mod * wave_mod);
+		this->HP = static_cast<uint32_t>(7 * difficulty_mod);
+		this->maxHP = static_cast<uint32_t>(7 * difficulty_mod);
 		this->speed = 3;
 		this->gold = static_cast<uint32_t>(2 * wave_mod);
 		this->XP = static_cast<uint32_t>(10 * wave_mod);
 	}
 	else if (this->name == "orc") {
-		this->attack = static_cast<uint32_t>(3 * difficulty_mod * wave_mod);
+		this->attack = static_cast<uint32_t>(3 * difficulty_mod);
 		this->attackSpeed = 2;
-		this->HP = static_cast<uint32_t>(12 * difficulty_mod * wave_mod);
-		this->maxHP = static_cast<uint32_t>(12 * difficulty_mod * wave_mod);
+		this->HP = static_cast<uint32_t>(12 * difficulty_mod);
+		this->maxHP = static_cast<uint32_t>(12 * difficulty_mod);
 		this->speed = 2;
 		this->gold = static_cast<uint32_t>(3 * wave_mod);
 		this->XP = static_cast<uint32_t>(17 * wave_mod);
 	}
 	else if (this->name == "cyclope") {
-		this->attack = static_cast<uint32_t>(4 * difficulty_mod * wave_mod);
+		this->attack = static_cast<uint32_t>(4 * difficulty_mod);
 		this->attackSpeed = 1;
-		this->HP = static_cast<uint32_t>(18 * difficulty_mod * wave_mod);
-		this->maxHP = static_cast<uint32_t>(18 * difficulty_mod * wave_mod);
+		this->HP = static_cast<uint32_t>(18 * difficulty_mod);
+		this->maxHP = static_cast<uint32_t>(18 * difficulty_mod);
 		this->speed = 1;
 		this->gold = static_cast<uint32_t>(4 * wave_mod);
 		this->XP = static_cast<uint32_t>(26 * wave_mod);
 	}
 	else if (this->name == "minotaur") {
-		this->attack = static_cast<uint32_t>(7 * difficulty_mod * wave_mod);
+		this->attack = static_cast<uint32_t>(7 * difficulty_mod);
 		this->attackSpeed = 2;
-		this->HP = static_cast<uint32_t>(69 * difficulty_mod * wave_mod);
-		this->maxHP = static_cast<uint32_t>(69 * difficulty_mod * wave_mod);
+		this->HP = static_cast<uint32_t>(69 * difficulty_mod);
+		this->maxHP = static_cast<uint32_t>(69 * difficulty_mod);
 		this->speed = 1;
 		this->gold = static_cast<uint32_t>(50 * wave_mod);
 		this->XP = static_cast<uint32_t>(200 * wave_mod);
