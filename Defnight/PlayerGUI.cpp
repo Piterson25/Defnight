@@ -110,29 +110,29 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 
 	this->isUpgrading = false;
 
-	this->sprite_buttons["UPGRADE1"] = new gui::ButtonSprite("external/assets/select_upgrade.png", calcX(1008, vm), calcY(216, vm), calcScale(1, vm), false);
+	this->sprite_buttons["UPGRADE1"] = new gui::ButtonSprite("external/assets/select_upgrade.png", calcX(1008, vm), calcY(210, vm), calcScale(1, vm), false);
 	this->sprite_buttons["UPGRADE2"] = new gui::ButtonSprite("external/assets/select_upgrade.png", calcX(1008, vm), calcY(380, vm), calcScale(1, vm), false);
-	this->sprite_buttons["UPGRADE3"] = new gui::ButtonSprite("external/assets/select_upgrade.png", calcX(1007, vm), calcY(544, vm), calcScale(1, vm), false);
+	this->sprite_buttons["UPGRADE3"] = new gui::ButtonSprite("external/assets/select_upgrade.png", calcX(1008, vm), calcY(550, vm), calcScale(1, vm), false);
 
-	this->sprites["UPGRADE1"] = new gui::Sprite(this->upgrades_vec[1], calcX(1020, vm), calcY(228, vm), calcScale(4, vm), false);
+	this->sprites["UPGRADE1"] = new gui::Sprite(this->upgrades_vec[1], calcX(1020, vm), calcY(222, vm), calcScale(4, vm), false);
 	this->sprites["UPGRADE2"] = new gui::Sprite(this->upgrades_vec[2], calcX(1020, vm), calcY(392, vm), calcScale(4, vm), false);
-	this->sprites["UPGRADE3"] = new gui::Sprite(this->upgrades_vec[3], calcX(1020, vm), calcY(556, vm), calcScale(4, vm), false);
+	this->sprites["UPGRADE3"] = new gui::Sprite(this->upgrades_vec[3], calcX(1020, vm), calcY(562, vm), calcScale(4, vm), false);
 
-	this->texts["UPGRADE1_NAME"] = new gui::Text(&this->font, this->lang["NINJA"], calcChar(16, vm), calcX(1104, vm), calcY(228, vm), sf::Color(255, 255, 255), false);
-	this->texts["UPGRADE2_NAME"] = new gui::Text(&this->font, this->lang["KNIGHT"], calcChar(16, vm), calcX(1104, vm), calcY(388, vm), sf::Color(255, 255, 255), false);
-	this->texts["UPGRADE3_NAME"] = new gui::Text(&this->font, this->lang["SCOUT"], calcChar(16, vm), calcX(1096, vm), calcY(548, vm), sf::Color(255, 255, 255), false);
+	this->texts["UPGRADE1_NAME"] = new gui::Text(&this->font, this->lang["NINJA"], calcChar(16, vm), calcX(1112, vm), calcY(226, vm), sf::Color(255, 255, 255), false);
+	this->texts["UPGRADE2_NAME"] = new gui::Text(&this->font, this->lang["KNIGHT"], calcChar(16, vm), calcX(1112, vm), calcY(396, vm), sf::Color(255, 255, 255), false);
+	this->texts["UPGRADE3_NAME"] = new gui::Text(&this->font, this->lang["SCOUT"], calcChar(16, vm), calcX(1112, vm), calcY(566, vm), sf::Color(255, 255, 255), false);
 
-	this->sprites["UPGRADE1_ABILITY"] = new gui::Sprite(this->abilities_vec[0], calcX(1168, vm), calcY(262, vm), calcScale(2, vm), false);
-	this->sprites["UPGRADE2_ABILITY"] = new gui::Sprite(this->abilities_vec[1], calcX(1168, vm), calcY(426, vm), calcScale(2, vm), false);
-	this->sprites["UPGRADE3_ABILITY"] = new gui::Sprite(this->abilities_vec[2], calcX(1168, vm), calcY(590, vm), calcScale(2, vm), false);
+	this->sprites["UPGRADE1_ABILITY"] = new gui::Sprite(this->abilities_vec[0], calcX(1112, vm), calcY(256, vm), calcScale(2, vm), false);
+	this->sprites["UPGRADE2_ABILITY"] = new gui::Sprite(this->abilities_vec[1], calcX(1112, vm), calcY(426, vm), calcScale(2, vm), false);
+	this->sprites["UPGRADE3_ABILITY"] = new gui::Sprite(this->abilities_vec[2], calcX(1112, vm), calcY(596, vm), calcScale(2, vm), false);
 
-	this->sprites["UPGRADE1_ADD"] = new gui::Sprite(this->attribute_vec[3], calcX(1216, vm), calcY(228, vm), calcScale(2, vm), false);
-	this->sprites["UPGRADE2_ADD"] = new gui::Sprite(this->attribute_vec[1], calcX(1216, vm), calcY(392, vm), calcScale(2, vm), false);
-	this->sprites["UPGRADE3_ADD"] = new gui::Sprite(this->attribute_vec[5], calcX(1216, vm), calcY(556, vm), calcScale(2, vm), false);
+	this->sprites["UPGRADE1_ADD"] = new gui::Sprite(this->attribute_vec[3], calcX(1176, vm), calcY(256, vm), calcScale(2, vm), false);
+	this->sprites["UPGRADE2_ADD"] = new gui::Sprite(this->attribute_vec[1], calcX(1176, vm), calcY(426, vm), calcScale(2, vm), false);
+	this->sprites["UPGRADE3_ADD"] = new gui::Sprite(this->attribute_vec[5], calcX(1176, vm), calcY(596, vm), calcScale(2, vm), false);
 	
-	this->texts["UPGRADE1_ADD_VALUE"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(1216, vm), calcY(278, vm), sf::Color(255, 255, 255), false);
-	this->texts["UPGRADE2_ADD_VALUE"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(1216, vm), calcY(442, vm), sf::Color(255, 255, 255), false);
-	this->texts["UPGRADE3_ADD_VALUE"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(1216, vm), calcY(606, vm), sf::Color(255, 255, 255), false);
+	this->texts["UPGRADE1_ADD_VALUE"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(1224, vm), calcY(266, vm), sf::Color(255, 255, 255), false);
+	this->texts["UPGRADE2_ADD_VALUE"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(1224, vm), calcY(436, vm), sf::Color(255, 255, 255), false);
+	this->texts["UPGRADE3_ADD_VALUE"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(1224, vm), calcY(606, vm), sf::Color(255, 255, 255), false);
 
 	this->sprites["ABILITY_ICON"] = new gui::Sprite("external/assets/abilities_icons.png", calcX(288, vm), calcY(16, vm), calcScale(4, vm), false);
 	this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(0, 0, 16, 16));

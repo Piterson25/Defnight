@@ -32,6 +32,7 @@ private:
 	sf::Sprite map;
 	sf::Texture map_texture;
 	sf::RectangleShape dimMap;
+	sf::RectangleShape quitBackground;
 	sf::Vector2f mapVelocity;
 	float mapRotate;
 

@@ -65,13 +65,16 @@ void MainMenuState::initGUI()
 	this->dimMap.setSize(sf::Vector2f(static_cast<float>(vm.width), static_cast<float>(vm.height)));
 	this->dimMap.setFillColor(sf::Color(0, 0, 0, 192));
 
+	this->quitBackground.setSize(sf::Vector2f(static_cast<float>(vm.width), static_cast<float>(vm.height)));
+	this->quitBackground.setFillColor(sf::Color(0, 0, 0, 192));
+
 	this->sprites["TITLE"] = new gui::Sprite("external/assets/title.png", calcX(640, vm), calcY(144, vm), calcScale(1, vm), true);
 
 	this->text_buttons["PLAY"] = new gui::ButtonText(&this->font, this->lang["PLAY"], calcChar(32, vm), calcX(640, vm), calcY(370, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
 	this->text_buttons["SETTINGS"] = new gui::ButtonText(&this->font, this->lang["SETTINGS"], calcChar(32, vm), calcX(640, vm), calcY(466, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
 	this->text_buttons["QUIT"] = new gui::ButtonText(&this->font, this->lang["QUIT"], calcChar(32, vm), calcX(640, vm), calcY(558, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
 
-	this->texts["VERSION"] = new gui::Text(&this->font, "v0.2.2", calcChar(16, vm), calcX(1272, vm), calcY(700, vm), sf::Color(255, 255, 255), false);
+	this->texts["VERSION"] = new gui::Text(&this->font, "v0.2.3", calcChar(16, vm), calcX(1272, vm), calcY(700, vm), sf::Color(255, 255, 255), false);
 	this->texts["VERSION"]->setPosition(sf::Vector2f(calcX(1272, vm) - this->texts["VERSION"]->getWidth(), calcY(700, vm)));
 
 	this->quitwindow = false;
@@ -457,6 +460,7 @@ void MainMenuState::draw(sf::RenderTarget* target)
 
 		this->texts["VERSION"]->draw(*target);
 		if (this->quitwindow) {
+			target->draw(this->quitBackground);
 			this->texts["ARE_YOU_SURE"]->draw(*target);
 
 			this->text_buttons["YES"]->draw(*target);
