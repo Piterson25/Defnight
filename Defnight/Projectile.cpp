@@ -148,7 +148,6 @@ void Projectile::wallCollision(TileMap* tileMap)
 			nextPos.top += this->velocity.y;
 			if (wallBounds.intersects(nextPos))
 			{
-				//Dolna kolizja
 				if (projectileBounds.top < wallBounds.top
 					&& projectileBounds.top + projectileBounds.height < wallBounds.top + wallBounds.height
 					&& projectileBounds.left < wallBounds.left + wallBounds.width
@@ -162,9 +161,7 @@ void Projectile::wallCollision(TileMap* tileMap)
 						this->sprite.setPosition(projectileBounds.left, wallBounds.top - projectileBounds.height);
 					}
 					this->collided = true;
-					break;
 				}
-				//Gorna kolizja
 				else if (projectileBounds.top > wallBounds.top
 					&& projectileBounds.top + projectileBounds.height > wallBounds.top + wallBounds.height
 					&& projectileBounds.left < wallBounds.left + wallBounds.width
@@ -178,10 +175,8 @@ void Projectile::wallCollision(TileMap* tileMap)
 						this->sprite.setPosition(projectileBounds.left, wallBounds.top + wallBounds.height);
 					}
 					this->collided = true;
-					break;
 				}
 
-				//Prawa kolizja
 				if (projectileBounds.left < wallBounds.left
 					&& projectileBounds.left + projectileBounds.width < wallBounds.left + wallBounds.width
 					&& projectileBounds.top < wallBounds.top + wallBounds.height
@@ -195,9 +190,7 @@ void Projectile::wallCollision(TileMap* tileMap)
 						this->sprite.setPosition(wallBounds.left - projectileBounds.width, projectileBounds.top);
 					}
 					this->collided = true;
-					break;
 				}
-				//Lewa kolizja
 				else if (projectileBounds.left > wallBounds.left
 					&& projectileBounds.left + projectileBounds.width > wallBounds.left + wallBounds.width
 					&& projectileBounds.top < wallBounds.top + wallBounds.height
@@ -211,7 +204,6 @@ void Projectile::wallCollision(TileMap* tileMap)
 						this->sprite.setPosition(wallBounds.left + wallBounds.width, projectileBounds.top);
 					}
 					this->collided = true;
-					break;
 				}
 
 			}
@@ -238,7 +230,6 @@ void Projectile::playerCollision(Player* player)
 
 			if (playerBounds.intersects(nextPos))
 			{
-				//Dolna kolizja
 				if (projectileBounds.top < playerBounds.top
 					&& projectileBounds.top + projectileBounds.height < playerBounds.top + playerBounds.height
 					&& projectileBounds.left < playerBounds.left + playerBounds.width
@@ -248,7 +239,6 @@ void Projectile::playerCollision(Player* player)
 					this->sprite.setPosition(projectileBounds.left, playerBounds.top - projectileBounds.height);
 					this->collidedPlayer = true;
 				}
-				//Gorna kolizja
 				else if (projectileBounds.top > playerBounds.top
 					&& projectileBounds.top + projectileBounds.height > playerBounds.top + playerBounds.height
 					&& projectileBounds.left < playerBounds.left + playerBounds.width
@@ -259,7 +249,6 @@ void Projectile::playerCollision(Player* player)
 					this->collidedPlayer = true;
 				}
 
-				//Prawa kolizja
 				if (projectileBounds.left < playerBounds.left
 					&& projectileBounds.left + projectileBounds.width < playerBounds.left + playerBounds.width
 					&& projectileBounds.top < playerBounds.top + playerBounds.height
@@ -269,7 +258,6 @@ void Projectile::playerCollision(Player* player)
 					this->sprite.setPosition(playerBounds.left - projectileBounds.width, projectileBounds.top);
 					this->collidedPlayer = true;
 				}
-				//Lewa kolizja
 				else if (projectileBounds.left > playerBounds.left
 					&& projectileBounds.left + projectileBounds.width > playerBounds.left + playerBounds.width
 					&& projectileBounds.top < playerBounds.top + playerBounds.height
@@ -301,7 +289,6 @@ void Projectile::monsterCollision(Monster* monster, Player* player, FloatingText
 
 			if (mobBounds.intersects(nextPos))
 			{
-				//Dolna kolizja
 				if (projectileBounds.top < mobBounds.top
 					&& projectileBounds.top + projectileBounds.height < mobBounds.top + mobBounds.height
 					&& projectileBounds.left < mobBounds.left + mobBounds.width
@@ -311,7 +298,6 @@ void Projectile::monsterCollision(Monster* monster, Player* player, FloatingText
 					this->sprite.setPosition(projectileBounds.left, mobBounds.top - projectileBounds.height);
 					this->collidedMonster = true;
 				}
-				//Gorna kolizja
 				else if (projectileBounds.top > mobBounds.top
 					&& projectileBounds.top + projectileBounds.height > mobBounds.top + mobBounds.height
 					&& projectileBounds.left < mobBounds.left + mobBounds.width
@@ -322,7 +308,6 @@ void Projectile::monsterCollision(Monster* monster, Player* player, FloatingText
 					this->collidedMonster = true;
 				}
 
-				//Prawa kolizja
 				if (projectileBounds.left < mobBounds.left
 					&& projectileBounds.left + projectileBounds.width < mobBounds.left + mobBounds.width
 					&& projectileBounds.top < mobBounds.top + mobBounds.height
@@ -332,7 +317,6 @@ void Projectile::monsterCollision(Monster* monster, Player* player, FloatingText
 					this->sprite.setPosition(mobBounds.left - projectileBounds.width, projectileBounds.top);
 					this->collidedMonster = true;
 				}
-				//Lewa kolizja
 				else if (projectileBounds.left > mobBounds.left
 					&& projectileBounds.left + projectileBounds.width > mobBounds.left + mobBounds.width
 					&& projectileBounds.top < mobBounds.top + mobBounds.height

@@ -19,7 +19,8 @@ public:
 		const std::string& difficulty_name, std::unordered_map<std::string, std::string>& lang);
 	virtual ~PlayerGUI();
 
-	void update_options(uint32_t& option_id, uint32_t& option_val, std::vector<short>& id_vector, gui::Text* text, gui::Sprite* sprite, const float& pos);
+	void update_options(uint32_t& option_id, uint32_t& option_val, std::vector<short>& id_vector, gui::Text* text, gui::Text* value,
+		gui::Sprite* sprite, const float& pos);
 	void levelUpPlayer(uint32_t& option_id, uint32_t& option_val);
 	void upgradePlayer(const std::string& name);
 	void update_level(SoundEngine* soundEngine);

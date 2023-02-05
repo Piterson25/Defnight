@@ -107,6 +107,8 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->sprites["OPTION2"] = new gui::Sprite(this->attributes_texture, calcX(700, vm), calcY(512, vm), calcScale(4, vm), false);
 	this->texts["OPTION1"] = new gui::Text(&this->font, "", calcChar(16, vm), calcX(548, vm), calcY(608, vm), sf::Color(255, 255, 255), false);
 	this->texts["OPTION2"] = new gui::Text(&this->font, "", calcChar(16, vm), calcX(732, vm), calcY(608, vm), sf::Color(255, 255, 255), false);
+	this->texts["OPTION1_VALUE"] = new gui::Text(&this->font, "", calcChar(16, vm), calcX(548, vm), calcY(632, vm), sf::Color(255, 255, 255), false);
+	this->texts["OPTION2_VALUE"] = new gui::Text(&this->font, "", calcChar(16, vm), calcX(732, vm), calcY(632, vm), sf::Color(255, 255, 255), false);
 
 	this->option1_id = 0;
 	this->option1_val = 0;
@@ -186,10 +188,15 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->sprite_buttons["ITEM3"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(96, vm), calcY(436, vm), calcScale(1, vm), true);
 	this->sprite_buttons["ITEM4"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(96, vm), calcY(564, vm), calcScale(1, vm), true);
 
-	this->texts["ITEM1"] = new gui::Text(&this->font, "Full HP", calcChar(16, vm), calcX(160, vm), calcY(208, vm), sf::Color(255, 255, 255), false);
-	this->texts["ITEM2"] = new gui::Text(&this->font, this->lang["MAX_HP"] + "\n+2", calcChar(16, vm), calcX(160, vm), calcY(320, vm), sf::Color(255, 255, 255), false);
-	this->texts["ITEM3"] = new gui::Text(&this->font, this->lang["ATTACK"] + "\n+1", calcChar(16, vm), calcX(160, vm), calcY(448, vm), sf::Color(255, 255, 255), false);
-	this->texts["ITEM4"] = new gui::Text(&this->font, this->lang["ARMOR"] + "\n+1", calcChar(16, vm), calcX(160, vm), calcY(576, vm), sf::Color(255, 255, 255), false);
+	this->texts["ITEM1"] = new gui::Text(&this->font, "Full HP", calcChar(16, vm), calcX(200, vm), calcY(192, vm), sf::Color(255, 255, 255), true);
+	this->texts["ITEM2"] = new gui::Text(&this->font, this->lang["MAX_HP"], calcChar(16, vm), calcX(200, vm), calcY(320, vm), sf::Color(255, 255, 255), true);
+	this->texts["ITEM3"] = new gui::Text(&this->font, this->lang["ATTACK"], calcChar(16, vm), calcX(200, vm), calcY(448, vm), sf::Color(255, 255, 255), true);
+	this->texts["ITEM4"] = new gui::Text(&this->font, this->lang["ARMOR"], calcChar(16, vm), calcX(200, vm), calcY(576, vm), sf::Color(255, 255, 255), true);
+
+	this->texts["ITEM1_VALUE"] = new gui::Text(&this->font, "+Full", calcChar(16, vm), calcX(200, vm), calcY(214, vm), sf::Color(255, 255, 255), true);
+	this->texts["ITEM2_VALUE"] = new gui::Text(&this->font, "+2", calcChar(16, vm), calcX(200, vm), calcY(342, vm), sf::Color(255, 255, 255), true);
+	this->texts["ITEM3_VALUE"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(200, vm), calcY(470, vm), sf::Color(255, 255, 255), true);
+	this->texts["ITEM4_VALUE"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(200, vm), calcY(598, vm), sf::Color(255, 255, 255), true);
 
 	this->sprites["ITEM1_COIN"] = new gui::Sprite(attribute_vec[0], calcX(176, vm), calcY(232, vm), calcScale(2, vm), false);
 	this->sprites["ITEM2_COIN"] = new gui::Sprite(attribute_vec[0], calcX(176, vm), calcY(360, vm), calcScale(2, vm), false);
@@ -221,7 +228,7 @@ PlayerGUI::~PlayerGUI()
 {
 }
 
-void PlayerGUI::update_options(uint32_t& option_id, uint32_t& option_val, std::vector<short>& id_vector, gui::Text* text, gui::Sprite* sprite, const float& pos)
+void PlayerGUI::update_options(uint32_t& option_id, uint32_t& option_val, std::vector<short>& id_vector, gui::Text* text, gui::Text* value, gui::Sprite* sprite, const float& pos)
 {
 	const uint32_t id = static_cast<uint32_t>(Random::Float() * id_vector.size());
 	
@@ -230,33 +237,36 @@ void PlayerGUI::update_options(uint32_t& option_id, uint32_t& option_val, std::v
 	{
 	case 1:
 		option_val = 1;
-		text->setText(this->lang["ATTACK"] + "\n+" + std::to_string(option_val));
+		text->setText(this->lang["ATTACK"]);
 		break;
 	case 2:
 		option_val = 1;
-		text->setText(this->lang["ATTACK_SPEED"] + "\n+" + std::to_string(option_val));
+		text->setText(this->lang["ATTACK_SPEED"]);
 		break;
 	case 3:
 		option_val = 1;
-		text->setText(this->lang["SPEED"] + "\n+" + std::to_string(option_val));
+		text->setText(this->lang["SPEED"]);
 		break;
 	case 4:
 		option_val = 10;
-		text->setText(this->lang["CRITICAL"] + "\n+" + std::to_string(option_val) + "%");
+		text->setText(this->lang["CRITICAL"]);
 		break;
 	case 5:
 		option_val = 1;
-		text->setText(this->lang["REG"] + "\n+" + std::to_string(option_val));
+		text->setText(this->lang["REG"]);
 		break;
 	case 6:
 		option_val = static_cast<uint32_t>(Random::Float() * 2.f) + 2;
-		text->setText(this->lang["MAX_HP"] + "\n+" + std::to_string(option_val));
+		text->setText(this->lang["MAX_HP"]);
 		break;
 	case 7:
 		option_val = 50;
-		text->setText(this->lang["SPRINT"] + "\n+" + std::to_string(option_val));
+		text->setText(this->lang["SPRINT"]);
 		break;
 	}
+	value->setText("+" + std::to_string(option_val));
+	if (option_id == 4) value->setText(value->getText() + "%");
+	value->center(pos);
 	id_vector.erase(id_vector.begin() + id);
 	if (option_id == 7) sprite->setTextureRect(sf::IntRect(9 * 16, 0, 16, 16));
 	else sprite->setTextureRect(sf::IntRect(option_id * 16, 0, 16, 16));
@@ -297,6 +307,7 @@ void PlayerGUI::levelUpPlayer(uint32_t& option_id, uint32_t& option_val)
 		this->player->setMaxHP(this->player->getMaxHP() + option_val);
 		this->update_HP();
 		this->player->setIsRegenerating(true);
+		break;
 	case 7:
 		this->player->setMaxSprint(this->player->getMaxSprint() + option_val);
 		this->texts["SPRINT"]->setText(std::to_string(this->player->getSprint()) + "/" + std::to_string(this->player->getMaxSprint()));
@@ -400,8 +411,8 @@ void PlayerGUI::update_level(SoundEngine* soundEngine)
 	if (this->player->getReg() < 10) id.push_back(5);
 	id.push_back(6);
 	id.push_back(7);
-	update_options(this->option1_id, this->option1_val, id, this->texts["OPTION1"], this->sprites["OPTION1"], calcX(548, vm));
-	update_options(this->option2_id, this->option2_val, id, this->texts["OPTION2"], this->sprites["OPTION2"], calcX(732, vm));
+	update_options(this->option1_id, this->option1_val, id, this->texts["OPTION1"], this->texts["OPTION1_VALUE"], this->sprites["OPTION1"], calcX(548, vm));
+	update_options(this->option2_id, this->option2_val, id, this->texts["OPTION2"], this->texts["OPTION2_VALUE"], this->sprites["OPTION2"], calcX(732, vm));
 
 	if (this->player->getLevel() == 10) {
 		if (this->player->getName() == "ninja") {
@@ -697,7 +708,7 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 			if (this->sprite_buttons["ITEM1"]->isPressed() && !mouseClicked) {
 				this->player->setGold(this->player->getGold() - this->item1Price);
 				floatingTextSystem->addFloatingText("-" + std::to_string(this->item1Price), calcChar(16, vm), calcX(20, vm), calcY(96, vm), sf::Color(255, 246, 76), true);
-				floatingTextSystem->addFloatingText("Full HP", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true);
+				floatingTextSystem->addFloatingText("+Full", calcChar(16, vm), static_cast<float>(mousePos.x), static_cast<float>(mousePos.y), sf::Color(255, 255, 255), true);
 				this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
 				this->player->setHP(this->player->getMaxHP());
 				this->update_HP();
@@ -991,18 +1002,21 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 		this->sprite_buttons["ITEM1"]->draw(target);
 		this->sprites["ITEM1"]->draw(target);
 		this->texts["ITEM1"]->draw(target);
+		this->texts["ITEM1_VALUE"]->draw(target);
 		this->texts["ITEM1_PRICE"]->draw(target);
 		this->sprites["ITEM1_COIN"]->draw(target);
 
 		this->sprite_buttons["ITEM2"]->draw(target);
 		this->sprites["ITEM2"]->draw(target);
 		this->texts["ITEM2"]->draw(target);
+		this->texts["ITEM2_VALUE"]->draw(target);
 		this->texts["ITEM2_PRICE"]->draw(target);
 		this->sprites["ITEM2_COIN"]->draw(target);
 
 		this->sprite_buttons["ITEM3"]->draw(target);
 		this->sprites["ITEM3"]->draw(target);
 		this->texts["ITEM3"]->draw(target);
+		this->texts["ITEM3_VALUE"]->draw(target);
 		this->texts["ITEM3_PRICE"]->draw(target);
 		this->sprites["ITEM3_COIN"]->draw(target);
 
@@ -1011,6 +1025,7 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 			this->sprite_buttons["ITEM4"]->draw(target);
 			this->sprites["ITEM4"]->draw(target);
 			this->texts["ITEM4"]->draw(target);
+			this->texts["ITEM4_VALUE"]->draw(target);
 			this->texts["ITEM4_PRICE"]->draw(target);
 			this->sprites["ITEM4_COIN"]->draw(target);
 		}
@@ -1040,9 +1055,11 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 			this->sprites["OPTION1"]->draw(target);
 			this->sprite_buttons["OPTION1"]->draw(target);
 			this->texts["OPTION1"]->draw(target);
+			this->texts["OPTION1_VALUE"]->draw(target);
 			this->sprites["OPTION2"]->draw(target);
 			this->sprite_buttons["OPTION2"]->draw(target);
 			this->texts["OPTION2"]->draw(target);
+			this->texts["OPTION2_VALUE"]->draw(target);
 		}
 		if (this->isUpgrading) {
 			this->sprites["SIDE_BAR"]->draw(target);

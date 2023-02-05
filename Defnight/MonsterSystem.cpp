@@ -138,7 +138,6 @@ void MonsterSystem::monsterCollision(Monster* mob)
 		
 			if (monsterBounds.intersects(nextPos))
 			{
-				//Dolna kolizja
 				if (mobBounds.top < monsterBounds.top
 					&& mobBounds.top + mobBounds.height < monsterBounds.top + monsterBounds.height
 					&& mobBounds.left < monsterBounds.left + monsterBounds.width
@@ -147,7 +146,6 @@ void MonsterSystem::monsterCollision(Monster* mob)
 					mob->setVeloctiy(sf::Vector2f(mob->getVelocity().x, 0.f));
 					mob->setPosition(mobBounds.left, monsterBounds.top - mobBounds.height);
 				}
-				//Gorna kolizja
 				else if (mobBounds.top > monsterBounds.top
 					&& mobBounds.top + mobBounds.height > monsterBounds.top + monsterBounds.height
 					&& mobBounds.left < monsterBounds.left + monsterBounds.width
@@ -157,8 +155,7 @@ void MonsterSystem::monsterCollision(Monster* mob)
 					mob->setPosition(mobBounds.left, monsterBounds.top + monsterBounds.height);
 				}
 		
-				//Prawa kolizja
-				else if (mobBounds.left < monsterBounds.left
+				if (mobBounds.left < monsterBounds.left
 					&& mobBounds.left + mobBounds.width < monsterBounds.left + monsterBounds.width
 					&& mobBounds.top < monsterBounds.top + monsterBounds.height
 					&& mobBounds.top + mobBounds.height > monsterBounds.top)
@@ -166,7 +163,6 @@ void MonsterSystem::monsterCollision(Monster* mob)
 					mob->setVeloctiy(sf::Vector2f(0.f, mob->getVelocity().y));
 					mob->setPosition(monsterBounds.left - mobBounds.width, mobBounds.top);
 				}
-				//Lewa kolizja
 				else if (mobBounds.left > monsterBounds.left
 					&& mobBounds.left + mobBounds.width > monsterBounds.left + monsterBounds.width
 					&& mobBounds.top < monsterBounds.top + monsterBounds.height

@@ -271,7 +271,6 @@ void Entity::obstacleCollision(TileMap* tileMap)
 
 			if (obstacleBounds.intersects(nextPos))
 			{
-				//Dolna kolizja
 				if (spriteBounds.top < obstacleBounds.top
 					&& spriteBounds.top + spriteBounds.height < obstacleBounds.top + obstacleBounds.height
 					&& spriteBounds.left < obstacleBounds.left + obstacleBounds.width
@@ -280,7 +279,6 @@ void Entity::obstacleCollision(TileMap* tileMap)
 					this->velocity.y = 0.f;
 					this->sprite.setPosition(spriteBounds.left, obstacleBounds.top - spriteBounds.height);
 				}
-				//Gorna kolizja
 				else if (spriteBounds.top > obstacleBounds.top
 					&& spriteBounds.top + spriteBounds.height > obstacleBounds.top + obstacleBounds.height
 					&& spriteBounds.left < obstacleBounds.left + obstacleBounds.width
@@ -290,7 +288,6 @@ void Entity::obstacleCollision(TileMap* tileMap)
 					this->sprite.setPosition(spriteBounds.left, obstacleBounds.top + obstacleBounds.height);
 				}
 
-				//Prawa kolizja
 				if (spriteBounds.left < obstacleBounds.left
 					&& spriteBounds.left + spriteBounds.width < obstacleBounds.left + obstacleBounds.width
 					&& spriteBounds.top < obstacleBounds.top + obstacleBounds.height
@@ -299,7 +296,6 @@ void Entity::obstacleCollision(TileMap* tileMap)
 					this->velocity.x = 0.f;
 					this->sprite.setPosition(obstacleBounds.left - spriteBounds.width, spriteBounds.top);
 				}
-				//Lewa kolizja
 				else if (spriteBounds.left > obstacleBounds.left
 					&& spriteBounds.left + spriteBounds.width > obstacleBounds.left + obstacleBounds.width
 					&& spriteBounds.top < obstacleBounds.top + obstacleBounds.height

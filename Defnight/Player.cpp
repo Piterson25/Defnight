@@ -303,8 +303,8 @@ void Player::controls(const std::unordered_map<std::string, int>& keybinds, cons
 	else {
 		this->isSprinting = false;
 		const float plusSprint = dt * this->maxSprint / 40.f;
-		if (this->sprint + plusSprint < 100.f) this->sprint += plusSprint;
-		else this->sprint = 100.f;
+		if (this->sprint + plusSprint < this->maxSprint) this->sprint += plusSprint;
+		else this->sprint = static_cast<float>(this->maxSprint);
 	}
 }
 
