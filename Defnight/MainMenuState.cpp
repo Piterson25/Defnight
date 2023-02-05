@@ -119,9 +119,13 @@ void MainMenuState::initGUI()
 	this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 	this->sprites["HERO_PREVIEW"]->center(calcX(640, vm));
 	this->sprites["HP_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(860, vm), calcY(526, vm), calcScale(1, vm), true);
-	this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, 264, 22));
+	this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 264, 20));
 	this->sprites["HP_BAR"]->center(calcX(860, vm));
-	this->texts["HP"] = new gui::Text(&this->font, "HP:10/10", calcChar(16, vm), calcX(860, vm), calcY(530, vm), sf::Color(255, 255, 255), true);
+	this->texts["HP"] = new gui::Text(&this->font, "HP:10/10", calcChar(16, vm), calcX(860, vm), calcY(529, vm), sf::Color(255, 255, 255), true);
+	this->sprites["SPRINT_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(860, vm), calcY(554, vm), calcScale(1, vm), true);
+	this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect(0, 40, 264, 20));
+	this->sprites["SPRINT_BAR"]->center(calcX(860, vm));
+	this->texts["SPRINT"] = new gui::Text(&this->font, "100/100", calcChar(16, vm), calcX(860, vm), calcY(557, vm), sf::Color(255, 255, 255), true);
 
 	this->attributes_texture.loadFromFile("external/assets/icons.png");
 	for (short i = 0; i < 8; ++i) {
@@ -143,18 +147,18 @@ void MainMenuState::initGUI()
 		this->abilities_vec.push_back(upgrade);
 	}
 
-	this->sprites["ARMOR"] = new gui::Sprite(attribute_vec[7], calcX(728, vm), calcY(564, vm), calcScale(2, vm), false);
-	this->texts["ARMOR"] = new gui::Text(&this->font, "3", calcChar(16, vm), calcX(744, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
-	this->sprites["REG"] = new gui::Sprite(attribute_vec[5], calcX(792, vm), calcY(564, vm), calcScale(2, vm), false);
-	this->texts["REG"] = new gui::Text(&this->font, "1", calcChar(16, vm), calcX(808, vm), calcY(618, vm), sf::Color(182, 60, 53), true);
-	this->sprites["ATTACK"] = new gui::Sprite(attribute_vec[1], calcX(856, vm), calcY(564, vm), calcScale(2, vm), false);
-	this->texts["ATTACK"] = new gui::Text(&this->font, "5", calcChar(16, vm), calcX(872, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
-	this->sprites["ATTACK_SPEED"] = new gui::Sprite(attribute_vec[2], calcX(920, vm), calcY(564, vm), calcScale(2, vm), false);
-	this->texts["ATTACK_SPEED"] = new gui::Text(&this->font, "4", calcChar(16, vm), calcX(936, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
-	this->sprites["SPEED"] = new gui::Sprite(attribute_vec[3], calcX(984, vm), calcY(564, vm), calcScale(2, vm), false);
-	this->texts["SPEED"] = new gui::Text(&this->font, "4", calcChar(16, vm), calcX(1000, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
-	this->sprites["CRITICAL"] = new gui::Sprite(attribute_vec[4], calcX(1048, vm), calcY(564, vm), calcScale(2, vm), false);
-	this->texts["CRITICAL"] = new gui::Text(&this->font, "20%", calcChar(16, vm), calcX(1064, vm), calcY(618, vm), sf::Color(192, 192, 192), true);
+	this->sprites["ARMOR"] = new gui::Sprite(attribute_vec[7], calcX(728, vm), calcY(586, vm), calcScale(2, vm), false);
+	this->texts["ARMOR"] = new gui::Text(&this->font, "3", calcChar(16, vm), calcX(744, vm), calcY(640, vm), sf::Color(192, 192, 192), true);
+	this->sprites["REG"] = new gui::Sprite(attribute_vec[5], calcX(792, vm), calcY(586, vm), calcScale(2, vm), false);
+	this->texts["REG"] = new gui::Text(&this->font, "1", calcChar(16, vm), calcX(808, vm), calcY(640, vm), sf::Color(182, 60, 53), true);
+	this->sprites["ATTACK"] = new gui::Sprite(attribute_vec[1], calcX(856, vm), calcY(586, vm), calcScale(2, vm), false);
+	this->texts["ATTACK"] = new gui::Text(&this->font, "5", calcChar(16, vm), calcX(872, vm), calcY(640, vm), sf::Color(192, 192, 192), true);
+	this->sprites["ATTACK_SPEED"] = new gui::Sprite(attribute_vec[2], calcX(920, vm), calcY(586, vm), calcScale(2, vm), false);
+	this->texts["ATTACK_SPEED"] = new gui::Text(&this->font, "4", calcChar(16, vm), calcX(936, vm), calcY(640, vm), sf::Color(192, 192, 192), true);
+	this->sprites["SPEED"] = new gui::Sprite(attribute_vec[3], calcX(984, vm), calcY(586, vm), calcScale(2, vm), false);
+	this->texts["SPEED"] = new gui::Text(&this->font, "4", calcChar(16, vm), calcX(1000, vm), calcY(640, vm), sf::Color(192, 192, 192), true);
+	this->sprites["CRITICAL"] = new gui::Sprite(attribute_vec[4], calcX(1048, vm), calcY(586, vm), calcScale(2, vm), false);
+	this->texts["CRITICAL"] = new gui::Text(&this->font, "20%", calcChar(16, vm), calcX(1064, vm), calcY(640, vm), sf::Color(192, 192, 192), true);
 	
 	this->sprites["ABILITY1"] = new gui::Sprite(abilities_vec[0], calcX(528, vm), calcY(526, vm), calcScale(2, vm), true);
 	this->sprites["ABILITY2"] = new gui::Sprite(abilities_vec[1], calcX(528, vm), calcY(574, vm), calcScale(2, vm), true);
@@ -503,6 +507,8 @@ void MainMenuState::draw(sf::RenderTarget* target)
 			this->sprites["HERO_PREVIEW"]->draw(*target);
 			this->sprites["HP_BAR"]->draw(*target);
 			this->texts["HP"]->draw(*target);
+			this->sprites["SPRINT_BAR"]->draw(*target);
+			this->texts["SPRINT"]->draw(*target);
 
 			this->sprites["ARMOR"]->draw(*target);
 			this->texts["ARMOR"]->draw(*target);

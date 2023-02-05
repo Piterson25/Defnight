@@ -8,7 +8,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 {
 	
 	this->attributes_texture.loadFromFile("external/assets/icons.png");
-	for (short i = 0; i < 9; ++i) {
+	for (short i = 0; i < 10; ++i) {
 		sf::Sprite att;
 		att.setTexture(this->attributes_texture);
 		sf::IntRect intRect(i * 16, 0, 16, 16);
@@ -252,9 +252,14 @@ void PlayerGUI::update_options(uint32_t& option_id, uint32_t& option_val, std::v
 		option_val = static_cast<uint32_t>(Random::Float() * 2.f) + 2;
 		text->setText(this->lang["MAX_HP"] + "\n+" + std::to_string(option_val));
 		break;
+	case 7:
+		option_val = 50;
+		text->setText(this->lang["SPRINT"] + "\n+" + std::to_string(option_val));
+		break;
 	}
 	id_vector.erase(id_vector.begin() + id);
-	sprite->setTextureRect(sf::IntRect(option_id * 16, 0, 16, 16));
+	if (option_id == 7) sprite->setTextureRect(sf::IntRect(9 * 16, 0, 16, 16));
+	else sprite->setTextureRect(sf::IntRect(option_id * 16, 0, 16, 16));
 	text->center(pos);
 }
 
@@ -292,6 +297,10 @@ void PlayerGUI::levelUpPlayer(uint32_t& option_id, uint32_t& option_val)
 		this->player->setMaxHP(this->player->getMaxHP() + option_val);
 		this->update_HP();
 		this->player->setIsRegenerating(true);
+	case 7:
+		this->player->setMaxSprint(this->player->getMaxSprint() + option_val);
+		this->texts["SPRINT"]->setText(std::to_string(this->player->getSprint()) + "/" + std::to_string(this->player->getMaxSprint()));
+		this->texts["SPRINT"]->center(calcX(640, vm));
 		break;
 	}
 }
@@ -390,6 +399,7 @@ void PlayerGUI::update_level(SoundEngine* soundEngine)
 	if (this->player->getCriticalChance() < 100) id.push_back(4);
 	if (this->player->getReg() < 10) id.push_back(5);
 	id.push_back(6);
+	id.push_back(7);
 	update_options(this->option1_id, this->option1_val, id, this->texts["OPTION1"], this->sprites["OPTION1"], calcX(548, vm));
 	update_options(this->option2_id, this->option2_val, id, this->texts["OPTION2"], this->sprites["OPTION2"], calcX(732, vm));
 

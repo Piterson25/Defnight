@@ -72,6 +72,8 @@ private:
 	sf::Sprite ability;
 	sf::Texture ability_texture;
 
+	std::list<sf::RectangleShape> particles;
+
 	uint32_t gold;
 	uint32_t armor;
 	uint32_t reg;

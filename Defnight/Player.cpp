@@ -278,15 +278,34 @@ void Player::controls(const std::unordered_map<std::string, int>& keybinds, cons
 	if (this->name == "scout" && this->abilityActive)
 		this->velocity *= 1.3f;
 
-	if (this->sprint > 0 && this->velocity != sf::Vector2f(0.f, 0.f) && sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("SPRINT")))) {
-		this->velocity *= 1.5f;
-		this->isSprinting = true;
-		const float minusSprint = dt * 10.f;
-		if (this->sprint - minusSprint > 0) this->sprint -= minusSprint;
-		else this->sprint = 0;
-	}
-	else if (this->isSprinting) this->isSprinting = false;
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("SPRINT"))) && this->velocity != sf::Vector2f(0.f, 0.f)) {
+		if (this->sprint > 0) {
+			this->velocity *= 1.5f;
+
+			this->isSprinting = true;
+			const float minusSprint = dt * 10.f;
+
+			if (static_cast<uint32_t>(this->sprint - minusSprint) < static_cast<uint32_t>(this->sprint)) {
+				sf::RectangleShape particle;
+				particle.setPosition(this->getDownCenter());
+				particle.setFillColor(sf::Color::White);
+				particle.setSize(sf::Vector2f(8.0f, 8.0f));
+				particle.rotate(Random::Float() * 360.f - 90.f);
+				this->particles.push_back(particle);
+			}
+
+			if (this->sprint - minusSprint > 0.f) this->sprint -= minusSprint;
+			else this->sprint = 0.f;
+		}
+		else this->isSprinting = false;
 		
+	}
+	else {
+		this->isSprinting = false;
+		const float plusSprint = dt * this->maxSprint / 40.f;
+		if (this->sprint + plusSprint < 100.f) this->sprint += plusSprint;
+		else this->sprint = 100.f;
+	}
 }
 
 const bool Player::regeneration(const float& dt)
@@ -393,10 +412,14 @@ void Player::whooshSound(SoundEngine* soundEngine)
 
 void Player::updateSprint(const float& dt)
 {
-	if (!this->isSprinting) {
-		const float plusSprint = dt * 2.5f;
-		if (this->sprint + plusSprint < 100.f) this->sprint += plusSprint;
-		else this->sprint = 100.f;
+	for (auto particle = this->particles.begin(); particle != this->particles.end();) {
+		if (particle->getFillColor().a <= 0) {
+			particle = this->particles.erase(particle);
+		}
+		else {
+			particle->setFillColor(sf::Color(255, 255, 255, particle->getFillColor().a - 1));
+			particle++;
+		}
 	}
 }
 
@@ -414,5 +437,8 @@ void Player::draw(sf::RenderTarget& target)
 
 void Player::drawShadow(sf::RenderTarget& target)
 {
+	for (auto& particle : this->particles) {
+		target.draw(particle);
+	}
 	target.draw(this->shadow);
 }
