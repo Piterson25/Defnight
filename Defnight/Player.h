@@ -24,9 +24,12 @@ public:
 	virtual const uint32_t getReg() const;
 	virtual const uint32_t getLevel() const;
 	virtual const uint32_t getMaxXP() const;
+	virtual const float getSprint() const;
+	virtual const uint32_t getMaxSprint() const;
 	virtual const uint32_t getLastMaxXP() const;
 	virtual const uint32_t getCriticalChance() const;
 	virtual const uint32_t getKills() const;
+	virtual const bool getSprinting() const;
 	virtual const bool getRegenerating() const;
 	virtual const bool getLeveling() const;
 	virtual const bool getSpawned() const;
@@ -38,8 +41,11 @@ public:
 	void setGold(const uint32_t& gold);
 	void setArmor(const uint32_t& armor);
 	void setReg(const uint32_t& reg);
+	void setSprint(const float& sprint);
+	void setMaxSprint(const uint32_t& maxSprint);
 	void setCriticalChance(const uint32_t& criticalChance);
 	void setKills(const uint32_t& kills);
+	void setIsSprinting(const bool& isSprinting);
 	void setIsRegenerating(const bool& isRegenerating);
 	void setIsLeveling(const bool& isLeveling);
 	void setAbilityCooldown(const float& abilityCooldown);
@@ -56,6 +62,7 @@ public:
 	void doAbility(const sf::Vector2f& coords, ProjectileSystem* projectileSystem, SoundEngine* soundEngine);
 	void whooshSound(SoundEngine* soundEngine);
 
+	void updateSprint(const float& dt);
 	void update(const float& dt);
 	void draw(sf::RenderTarget& target);
 	void drawShadow(sf::RenderTarget& target);
@@ -71,10 +78,13 @@ private:
 	uint32_t level;
 	uint32_t maxXP;
 	uint32_t lastMaxXP;
+	float sprint;
+	uint32_t maxSprint;
 	uint32_t criticalChance;
 	uint32_t kills;
 	bool isRegenerating;
 	bool isLeveling;
+	bool isSprinting;
 	bool spawned;
 	float regCooldown;
 	float spawnCountdown;

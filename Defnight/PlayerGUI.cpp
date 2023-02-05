@@ -38,7 +38,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 
 	this->sprites["BAR"] = new gui::Sprite("external/assets/bar.png", 0, 0, calcScale(1, vm), false);
 
-	this->sprites["PROGRESS_BAR"] = new gui::Sprite("external/assets/progress_bar.png", calcX(640, vm), calcY(58, vm), calcScale(1, vm), true);
+	this->sprites["PROGRESS_BAR"] = new gui::Sprite("external/assets/progress_bar.png", calcX(640, vm), calcY(44, vm), calcScale(1, vm), true);
 	this->sprites["PROGRESS_BAR"]->setColor(sf::Color::Transparent);
 
 	this->sprites["MINIATURE"] = new gui::Sprite(this->upgrades_texture, calcX(164, vm), calcX(16, vm), calcScale(4, vm), false);
@@ -68,15 +68,20 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 
 	this->sprites["XP_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(508, vm), calcY(12, vm), calcScale(1, vm), false);
 	this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 0));
-	this->texts["XP"] = new gui::Text(&this->font, "XP:" + std::to_string(this->player->getXP()) + "/" + std::to_string(this->player->getMaxXP()), calcChar(16, vm), calcX(640, vm), calcY(16, vm), sf::Color(255, 255, 255), true);
-	this->texts["LEVEL"] = new gui::Text(&this->font, "Level " + std::to_string(this->player->getLevel()), calcChar(16, vm), calcX(640, vm), calcY(16, vm), sf::Color(255, 255, 255), true);
+	this->texts["XP"] = new gui::Text(&this->font, "XP:" + std::to_string(this->player->getXP()) + "/" + std::to_string(this->player->getMaxXP()), calcChar(16, vm), calcX(640, vm), calcY(15, vm), sf::Color(255, 255, 255), true);
+	this->texts["LEVEL"] = new gui::Text(&this->font, "Level " + std::to_string(this->player->getLevel()), calcChar(16, vm), calcX(640, vm), calcY(15, vm), sf::Color(255, 255, 255), true);
 	this->isLevelshown = true;
 	this->xp_bar_barrier = 0.f;
 
-	this->sprites["HP_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(508, vm), calcY(66, vm), calcScale(1, vm), false);
-	this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, 264, 22));
-	this->texts["HP"] = new gui::Text(&this->font, "HP:" + std::to_string(this->player->getHP()) + "/" + std::to_string(this->player->getMaxHP()), calcChar(16, vm), calcX(640, vm), calcY(70, vm), sf::Color(255, 255, 255), true);
+	this->sprites["HP_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(508, vm), calcY(52, vm), calcScale(1, vm), false);
+	this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 264, 20));
+	this->texts["HP"] = new gui::Text(&this->font, "HP:" + std::to_string(this->player->getHP()) + "/" + std::to_string(this->player->getMaxHP()), calcChar(16, vm), calcX(640, vm), calcY(55, vm), sf::Color(255, 255, 255), true);
 	this->hp_bar_barrier = 1.f;
+
+	this->sprites["SPRINT_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(508, vm), calcY(92, vm), calcScale(1, vm), false);
+	this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect(0, 40, 264, 20));
+	this->texts["SPRINT"] = new gui::Text(&this->font, std::to_string(this->player->getSprint()) + "/" + std::to_string(this->player->getMaxSprint()), calcChar(16, vm), calcX(640, vm), calcY(95, vm), sf::Color(255, 255, 255), true);
+	this->sprint_bar_barrier = 1.f;
 
 	this->texts["MONSTER_COUNT"] = new gui::Text(&this->font, this->lang["MONSTER_COUNT"], calcChar(16, vm), calcX(906, vm), calcY(96, vm), sf::Color(130, 139, 152), false);
 	this->texts["MONSTER_COUNT"]->setPosition(sf::Vector2f(calcX(1218, vm) - this->texts["MONSTER_COUNT"]->getWidth(), calcY(96, vm)));
@@ -205,9 +210,9 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 
 	this->texts["BOSS"] = new gui::Text(&this->font, "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm), sf::Color(113, 43, 59), true);
 	this->sprites["BOSS_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(376, vm), calcY(158, vm), calcScale(1, vm), false);
-	this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 44, 528, 22));
+	this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 60, 528, 20));
 	this->sprites["BOSS_BAR_EMPTY"] = new gui::Sprite("external/assets/bars.png", calcX(376, vm), calcY(158, vm), calcScale(1, vm), false);
-	this->sprites["BOSS_BAR_EMPTY"]->setTextureRect(sf::IntRect(0, 66, 528, 22));
+	this->sprites["BOSS_BAR_EMPTY"]->setTextureRect(sf::IntRect(0, 80, 528, 20));
 
 	this->boss_bar_barrier = 1.f;
 }
@@ -374,7 +379,7 @@ void PlayerGUI::update_level(SoundEngine* soundEngine)
 	soundEngine->addSound("levelup");
 	this->isLeveling = true;
 	this->isShopping = false;
-	this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 22));
+	this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 20));
 	this->texts["LEVEL"]->setText("Level " + std::to_string(this->player->getLevel()));
 	this->texts["LEVEL"]->center(calcX(640, this->vm));
 	if (this->player->getLevel() % 5 == 0) this->isUpgrading = true;
@@ -434,13 +439,13 @@ void PlayerGUI::updating_XP(const float& dt)
 	if (width < barrier && this->player->getLeveling()) {
 		const int distance = int(width + 1000.f * dt);
 		if (distance > barrier) {
-			this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, barrier, 22));
+			this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, barrier, 20));
 		}
 		else if (distance > 264) {
-			this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 264, 22));
+			this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 264, 20));
 		}
 		else {
-			this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, distance, 22));
+			this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, distance, 20));
 		}
 	}
 	else this->player->setIsLeveling(false);
@@ -450,7 +455,7 @@ void PlayerGUI::update_HP()
 {
 	if (this->player->isDead()) {
 		this->hp_bar_barrier = 0.f;
-		this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, 0, 22));
+		this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 0, 20));
 		this->isShopping = false;
 	}
 	else this->hp_bar_barrier = static_cast<float>(this->player->getHP()) / this->player->getMaxHP();
@@ -469,7 +474,7 @@ void PlayerGUI::updating_HP(SoundEngine* soundEngine, const float& dt)
 	}
 	else if (this->player->isDead()) {
 		this->hp_bar_barrier = 0.f;
-		this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, 0, 22));
+		this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 0, 20));
 		this->text_buttons["QUIT"]->setPosition(sf::Vector2f(calcX(640, vm), calcY(488, vm)));
 		this->text_buttons["QUIT"]->center(calcX(640, vm));
 		soundEngine->addSound("gameover");
@@ -481,30 +486,30 @@ void PlayerGUI::updating_HP(SoundEngine* soundEngine, const float& dt)
 	if (width > barrier) {
 		const int distance = int(width - 1000.f * dt);
 		if (distance < barrier) {
-			this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, barrier, 22));
+			this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, barrier, 20));
 			this->sprites["PROGRESS_BAR"]->setColor(sf::Color::White);
 		}
 		else if (distance < 0) {
-			this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, 0, 22));
+			this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 0, 20));
 			this->sprites["PROGRESS_BAR"]->setColor(sf::Color::Transparent);
 		}
 		else {
-			this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, distance, 22));
+			this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, distance, 20));
 			this->sprites["PROGRESS_BAR"]->setColor(sf::Color::White);
 		}
 	}
 	else if (width < barrier && this->player->getRegenerating()) {
 		const int distance = int(width + 1000.f * dt);
 		if (distance > barrier) {
-			this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, barrier, 22));
+			this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, barrier, 20));
 			this->sprites["PROGRESS_BAR"]->setColor(sf::Color::White);
 		}
 		else if (distance > 264) {
-			this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, 264, 22));
+			this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 264, 20));
 			this->sprites["PROGRESS_BAR"]->setColor(sf::Color::Transparent);
 		}
 		else {
-			this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 22, distance, 22));
+			this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, distance, 20));
 			this->sprites["PROGRESS_BAR"]->setColor(sf::Color::White);
 		}
 	}
@@ -533,6 +538,13 @@ void PlayerGUI::setAbilityIcon()
 {
 	this->ability_icon.setSize(sf::Vector2f(calcX(64, vm), calcY(64, vm)));
 	this->ability_icon.setPosition(sf::Vector2f(calcX(288, vm), calcY(16, vm)));
+}
+
+void PlayerGUI::updateSprint()
+{
+	this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect(0, 40, static_cast<int>(static_cast<float>(static_cast<uint32_t>(this->player->getSprint())) / this->player->getMaxSprint() * 264.f), 20));
+	this->texts["SPRINT"]->setText(std::to_string(static_cast<uint32_t>(this->player->getSprint())) + "/" + std::to_string(this->player->getMaxSprint()));
+	this->texts["SPRINT"]->center(calcX(640, this->vm));
 }
 
 void PlayerGUI::updateIsShopping()
@@ -655,13 +667,13 @@ void PlayerGUI::updateBossHP(const float& dt)
 		if (width > barrier) {
 			const int distance = int(width - 1000.f * dt);
 			if (distance < barrier) {
-				this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 44, barrier, 22));
+				this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 60, barrier, 20));
 			}
 			else if (distance < 0) {
-				this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 44, 0, 22));
+				this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 60, 0, 20));
 			}
 			else {
-				this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 44, distance, 22));
+				this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 60, distance, 20));
 			}
 		}
 	}
@@ -961,6 +973,8 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 		this->texts["XP"]->draw(target);
 	this->sprites["HP_BAR"]->draw(target);
 	this->texts["HP"]->draw(target);
+	this->sprites["SPRINT_BAR"]->draw(target);
+	this->texts["SPRINT"]->draw(target);
 
 	if (this->isShopping) {
 		this->sprites["SHOP"]->draw(target);

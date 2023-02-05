@@ -241,6 +241,7 @@ void GameState::update(const float& dt)
 	if (!this->paused) {
 		if (this->player->getSpawned()) {
 			this->player->controls(this->keybinds, dt);
+			this->player->updateSprint(dt);
 
 			if (this->player->getPunched()) this->player->smashed(dt);
 
@@ -248,7 +249,7 @@ void GameState::update(const float& dt)
 				this->player->obstacleCollision(this->tileMap);
 
 				this->player->move();
-
+				
 				this->player->update(dt);
 				
 				const float _32 = calcX(32, this->gameSettings->resolution);
@@ -348,6 +349,7 @@ void GameState::update(const float& dt)
 
 		this->playerGUI->updating_XP(dt);
 		this->playerGUI->updating_HP(this->soundEngine, dt);
+		this->playerGUI->updateSprint();
 
 		this->soundEngine->update();
 		this->musicEngine->update();

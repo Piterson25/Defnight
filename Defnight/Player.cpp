@@ -38,6 +38,9 @@ Player::Player(const sf::VideoMode& vm, const std::string& hero_name, const floa
 	this->criticalChance = 0;
 	this->spawned = false;
 	this->spawnCountdown = 0.f;
+	this->sprint = 100;
+	this->maxSprint = 100;
+	this->isSprinting = false;
 	this->isRegenerating = false;
 	this->isLeveling = false;
 	this->abilityActive = false;
@@ -91,6 +94,16 @@ const uint32_t Player::getMaxXP() const
 	return this->maxXP;
 }
 
+const float Player::getSprint() const
+{
+	return this->sprint;
+}
+
+const uint32_t Player::getMaxSprint() const
+{
+	return this->maxSprint;
+}
+
 const uint32_t Player::getLastMaxXP() const
 {
 	return this->lastMaxXP;
@@ -104,6 +117,11 @@ const uint32_t Player::getCriticalChance() const
 const uint32_t Player::getKills() const
 {
 	return this->kills;
+}
+
+const bool Player::getSprinting() const
+{
+	return this->isSprinting;
 }
 
 const bool Player::getRegenerating() const
@@ -156,6 +174,16 @@ void Player::setReg(const uint32_t& reg)
 	this->reg = reg;
 }
 
+void Player::setSprint(const float& sprint)
+{
+	this->sprint = sprint;
+}
+
+void Player::setMaxSprint(const uint32_t& maxSprint)
+{
+	this->maxSprint = maxSprint;
+}
+
 void Player::setCriticalChance(const uint32_t& criticalChance)
 {
 	this->criticalChance = criticalChance;
@@ -164,6 +192,11 @@ void Player::setCriticalChance(const uint32_t& criticalChance)
 void Player::setKills(const uint32_t& kills)
 {
 	this->kills = kills;
+}
+
+void Player::setIsSprinting(const bool& isSprinting)
+{
+	this->isSprinting = isSprinting;
 }
 
 void Player::setIsRegenerating(const bool& isRegenerating)
@@ -244,6 +277,16 @@ void Player::controls(const std::unordered_map<std::string, int>& keybinds, cons
 
 	if (this->name == "scout" && this->abilityActive)
 		this->velocity *= 1.3f;
+
+	if (this->sprint > 0 && this->velocity != sf::Vector2f(0.f, 0.f) && sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("SPRINT")))) {
+		this->velocity *= 1.5f;
+		this->isSprinting = true;
+		const float minusSprint = dt * 10.f;
+		if (this->sprint - minusSprint > 0) this->sprint -= minusSprint;
+		else this->sprint = 0;
+	}
+	else if (this->isSprinting) this->isSprinting = false;
+		
 }
 
 const bool Player::regeneration(const float& dt)
@@ -345,6 +388,15 @@ void Player::whooshSound(SoundEngine* soundEngine)
 	}
 	if ( this->playedSound && this->frame != 80) {
 		this->playedSound = false;
+	}
+}
+
+void Player::updateSprint(const float& dt)
+{
+	if (!this->isSprinting) {
+		const float plusSprint = dt * 2.5f;
+		if (this->sprint + plusSprint < 100.f) this->sprint += plusSprint;
+		else this->sprint = 100.f;
 	}
 }
 

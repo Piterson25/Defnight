@@ -10,6 +10,8 @@ Game::Game()
 Game::~Game()
 {
 	delete this->window;
+	delete this->musicEngine;
+	delete this->soundEngine;
 
 	while (!this->states.empty()) {
 		delete this->states.top();
