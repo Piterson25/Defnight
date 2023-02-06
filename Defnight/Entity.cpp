@@ -416,7 +416,6 @@ void Entity::punch()
 {
 	this->punched = true;
 	this->punchedCooldown = 0.f;
-	this->frame = 0;
 	this->isAttacking = false;
 	if (this->HP == 0) {
 		this->sprite.setColor(sf::Color(182, 60, 53));

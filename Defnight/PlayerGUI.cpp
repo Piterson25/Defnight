@@ -28,7 +28,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	}
 
 	this->abilities_texture.loadFromFile("external/assets/abilities_icons.png");
-	for (short i = 0; i < 6; ++i) {
+	for (short i = 0; i < 7; ++i) {
 		sf::Sprite upgrade;
 		upgrade.setTexture(this->abilities_texture);
 		sf::IntRect intRect(i * 16, 0, 16, 16);
@@ -48,23 +48,23 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->sprites["GOLD"] = new gui::Sprite(attribute_vec[0], 0, calcY(86, vm), calcScale(2, vm), false);
 	this->texts["GOLD"] = new gui::Text(&this->font, std::to_string(player->getGold()), calcChar(16, vm), calcX(36, vm), calcY(96, vm), sf::Color(255, 246, 76), false);
 
-	this->sprites["ARMOR"] = new gui::Sprite(attribute_vec[7], calcX(372, vm), calcY(16, vm), calcScale(2, vm), false);
+	this->sprites["ARMOR"] = new gui::Sprite(attribute_vec[1], calcX(372, vm), calcY(16, vm), calcScale(2, vm), false);
 	this->texts["ARMOR"] = new gui::Text(&this->font, std::to_string(player->getArmor()), calcChar(16, vm), calcX(388, vm), calcY(70, vm), sf::Color(192, 192, 192), true);
 
-	this->sprites["ATTACK"] = new gui::Sprite(attribute_vec[1], calcX(812, vm), calcY(16, vm), calcScale(2, vm), false);
+	this->sprites["REG"] = new gui::Sprite(attribute_vec[2], calcX(436, vm), calcY(16, vm), calcScale(2, vm), false);
+	this->texts["REG"] = new gui::Text(&this->font, std::to_string(player->getReg()), calcChar(16, vm), calcX(452, vm), calcY(70, vm), sf::Color(182, 60, 53), true);
+
+	this->sprites["ATTACK"] = new gui::Sprite(attribute_vec[5], calcX(812, vm), calcY(16, vm), calcScale(2, vm), false);
 	this->texts["ATTACK"] = new gui::Text(&this->font, std::to_string(player->getAttack()), calcChar(16, vm), calcX(828, vm), calcY(70, vm), sf::Color(192, 192, 192), true);
 
-	this->sprites["ATTACK_SPEED"] = new gui::Sprite(attribute_vec[2], calcX(876, vm), calcY(16, vm), calcScale(2, vm), false);
+	this->sprites["ATTACK_SPEED"] = new gui::Sprite(attribute_vec[6], calcX(876, vm), calcY(16, vm), calcScale(2, vm), false);
 	this->texts["ATTACK_SPEED"] = new gui::Text(&this->font, std::to_string(player->getAttackSpeed()), calcChar(16, vm), calcX(892, vm), calcY(70, vm), sf::Color(192, 192, 192), true);
 
-	this->sprites["SPEED"] = new gui::Sprite(attribute_vec[3], calcX(940, vm), calcY(16, vm), calcScale(2, vm), false);
+	this->sprites["SPEED"] = new gui::Sprite(attribute_vec[7], calcX(940, vm), calcY(16, vm), calcScale(2, vm), false);
 	this->texts["SPEED"] = new gui::Text(&this->font, std::to_string(player->getSpeed()), calcChar(16, vm), calcX(956, vm), calcY(70, vm), sf::Color(192, 192, 192), true);
 
-	this->sprites["CRITICAL"] = new gui::Sprite(attribute_vec[4], calcX(1004, vm), calcY(16, vm), calcScale(2, vm), false);
+	this->sprites["CRITICAL"] = new gui::Sprite(attribute_vec[8], calcX(1004, vm), calcY(16, vm), calcScale(2, vm), false);
 	this->texts["CRITICAL"] = new gui::Text(&this->font, std::to_string(player->getCriticalChance()) + "%", calcChar(16, vm), calcX(1020, vm), calcY(70, vm), sf::Color(192, 192, 192), true);
-
-	this->sprites["REG"] = new gui::Sprite(attribute_vec[5], calcX(436, vm), calcY(16, vm), calcScale(2, vm), false);
-	this->texts["REG"] = new gui::Text(&this->font, std::to_string(player->getReg()), calcChar(16, vm), calcX(452, vm), calcY(70, vm), sf::Color(182, 60, 53), true);
 
 	this->sprites["XP_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(508, vm), calcY(12, vm), calcScale(1, vm), false);
 	this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 0));
@@ -133,9 +133,9 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->sprites["UPGRADE2_ABILITY"] = new gui::Sprite(this->abilities_vec[1], calcX(1112, vm), calcY(426, vm), calcScale(2, vm), false);
 	this->sprites["UPGRADE3_ABILITY"] = new gui::Sprite(this->abilities_vec[2], calcX(1112, vm), calcY(596, vm), calcScale(2, vm), false);
 
-	this->sprites["UPGRADE1_ADD"] = new gui::Sprite(this->attribute_vec[3], calcX(1176, vm), calcY(256, vm), calcScale(2, vm), false);
-	this->sprites["UPGRADE2_ADD"] = new gui::Sprite(this->attribute_vec[1], calcX(1176, vm), calcY(426, vm), calcScale(2, vm), false);
-	this->sprites["UPGRADE3_ADD"] = new gui::Sprite(this->attribute_vec[5], calcX(1176, vm), calcY(596, vm), calcScale(2, vm), false);
+	this->sprites["UPGRADE1_ADD"] = new gui::Sprite(this->attribute_vec[7], calcX(1176, vm), calcY(256, vm), calcScale(2, vm), false);
+	this->sprites["UPGRADE2_ADD"] = new gui::Sprite(this->attribute_vec[5], calcX(1176, vm), calcY(426, vm), calcScale(2, vm), false);
+	this->sprites["UPGRADE3_ADD"] = new gui::Sprite(this->attribute_vec[2], calcX(1176, vm), calcY(596, vm), calcScale(2, vm), false);
 	
 	this->texts["UPGRADE1_ADD_VALUE"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(1224, vm), calcY(266, vm), sf::Color(255, 255, 255), false);
 	this->texts["UPGRADE2_ADD_VALUE"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(1224, vm), calcY(436, vm), sf::Color(255, 255, 255), false);
@@ -178,10 +178,10 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 
 	this->sprites["SHOP"] = new gui::Sprite("external/assets/shop_bar.png", 0, calcY(128, vm), calcScale(1, vm), false);
 
-	this->sprites["ITEM1"] = new gui::Sprite(attribute_vec[8], calcX(64, vm), calcY(192, vm), calcScale(4, vm), false);
-	this->sprites["ITEM2"] = new gui::Sprite(attribute_vec[6], calcX(64, vm), calcY(320, vm), calcScale(4, vm), false);
-	this->sprites["ITEM3"] = new gui::Sprite(attribute_vec[1], calcX(64, vm), calcY(448, vm), calcScale(4, vm), false);
-	this->sprites["ITEM4"] = new gui::Sprite(attribute_vec[7], calcX(64, vm), calcY(576, vm), calcScale(4, vm), false);
+	this->sprites["ITEM1"] = new gui::Sprite(attribute_vec[9], calcX(64, vm), calcY(192, vm), calcScale(4, vm), false);
+	this->sprites["ITEM2"] = new gui::Sprite(attribute_vec[3], calcX(64, vm), calcY(320, vm), calcScale(4, vm), false);
+	this->sprites["ITEM3"] = new gui::Sprite(attribute_vec[5], calcX(64, vm), calcY(448, vm), calcScale(4, vm), false);
+	this->sprites["ITEM4"] = new gui::Sprite(attribute_vec[1], calcX(64, vm), calcY(576, vm), calcScale(4, vm), false);
 
 	this->sprite_buttons["ITEM1"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(96, vm), calcY(180, vm), calcScale(1, vm), true);
 	this->sprite_buttons["ITEM2"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(96, vm), calcY(308, vm), calcScale(1, vm), true);
@@ -237,39 +237,42 @@ void PlayerGUI::update_options(uint32_t& option_id, uint32_t& option_val, std::v
 	{
 	case 1:
 		option_val = 1;
-		text->setText(this->lang["ATTACK"]);
+		text->setText(this->lang["ARMOR"]);
 		break;
 	case 2:
 		option_val = 1;
-		text->setText(this->lang["ATTACK_SPEED"]);
-		break;
-	case 3:
-		option_val = 1;
-		text->setText(this->lang["SPEED"]);
-		break;
-	case 4:
-		option_val = 10;
-		text->setText(this->lang["CRITICAL"]);
-		break;
-	case 5:
-		option_val = 1;
 		text->setText(this->lang["REG"]);
 		break;
-	case 6:
+	case 3:
 		option_val = static_cast<uint32_t>(Random::Float() * 2.f) + 2;
 		text->setText(this->lang["MAX_HP"]);
 		break;
-	case 7:
+	case 4:
 		option_val = 50;
 		text->setText(this->lang["SPRINT"]);
 		break;
+	case 5:
+		option_val = 1;
+		text->setText(this->lang["ATTACK"]);
+		break;
+	case 6:
+		option_val = 1;
+		text->setText(this->lang["ATTACK_SPEED"]);
+		break;
+	case 7:
+		option_val = 1;
+		text->setText(this->lang["SPEED"]);
+		break;
+	case 8:
+		option_val = 10;
+		text->setText(this->lang["CRITICAL"]);
+		break;
 	}
 	value->setText("+" + std::to_string(option_val));
-	if (option_id == 4) value->setText(value->getText() + "%");
+	if (option_id == 8) value->setText(value->getText() + "%");
 	value->center(pos);
 	id_vector.erase(id_vector.begin() + id);
-	if (option_id == 7) sprite->setTextureRect(sf::IntRect(9 * 16, 0, 16, 16));
-	else sprite->setTextureRect(sf::IntRect(option_id * 16, 0, 16, 16));
+	sprite->setTextureRect(sf::IntRect(option_id * 16, 0, 16, 16));
 	text->center(pos);
 }
 
@@ -279,39 +282,44 @@ void PlayerGUI::levelUpPlayer(uint32_t& option_id, uint32_t& option_val)
 
 	switch (option_id) {
 	case 1:
-		this->player->setAttack(this->player->getAttack() + option_val);
-		this->texts["ATTACK"]->setText(std::to_string(player->getAttack()));
-		this->texts["ATTACK"]->center(calcX(828, vm));
+		this->player->setArmor(this->player->getArmor() + option_val);
+		this->texts["ARMOR"]->setText(std::to_string(player->getArmor()));
+		this->texts["ARMOR"]->center(calcX(388, vm));
 		break;
 	case 2:
-		this->player->setAttackSpeed(this->player->getAttackSpeed() + option_val);
-		this->texts["ATTACK_SPEED"]->setText(std::to_string(player->getAttackSpeed()));
-		this->texts["ATTACK_SPEED"]->center(calcX(892, vm));
-		break;
-	case 3:
-		this->player->setSpeed(this->player->getSpeed() + option_val);
-		this->texts["SPEED"]->setText(std::to_string(player->getSpeed()));
-		this->texts["SPEED"]->center(calcX(956, vm));
-		break;
-	case 4:
-		this->player->setCriticalChance(this->player->getCriticalChance() + option_val);
-		this->texts["CRITICAL"]->setText(std::to_string(player->getCriticalChance()) + "%");
-		this->texts["CRITICAL"]->center(calcX(1020, vm));
-		break;
-	case 5:
 		this->player->setReg(this->player->getReg() + option_val);
 		this->texts["REG"]->setText(std::to_string(player->getReg()));
 		this->texts["REG"]->center(calcX(452, vm));
 		break;
-	case 6:
+	case 3:
 		this->player->setMaxHP(this->player->getMaxHP() + option_val);
 		this->update_HP();
 		this->player->setIsRegenerating(true);
 		break;
-	case 7:
+	case 4:
 		this->player->setMaxSprint(this->player->getMaxSprint() + option_val);
 		this->texts["SPRINT"]->setText(std::to_string(this->player->getSprint()) + "/" + std::to_string(this->player->getMaxSprint()));
 		this->texts["SPRINT"]->center(calcX(640, vm));
+		break;
+	case 5:
+		this->player->setAttack(this->player->getAttack() + option_val);
+		this->texts["ATTACK"]->setText(std::to_string(player->getAttack()));
+		this->texts["ATTACK"]->center(calcX(828, vm));
+		break;
+	case 6:
+		this->player->setAttackSpeed(this->player->getAttackSpeed() + option_val);
+		this->texts["ATTACK_SPEED"]->setText(std::to_string(player->getAttackSpeed()));
+		this->texts["ATTACK_SPEED"]->center(calcX(892, vm));
+		break;
+	case 7:
+		this->player->setSpeed(this->player->getSpeed() + option_val);
+		this->texts["SPEED"]->setText(std::to_string(player->getSpeed()));
+		this->texts["SPEED"]->center(calcX(956, vm));
+		break;
+	case 8:
+		this->player->setCriticalChance(this->player->getCriticalChance() + option_val);
+		this->texts["CRITICAL"]->setText(std::to_string(player->getCriticalChance()) + "%");
+		this->texts["CRITICAL"]->center(calcX(1020, vm));
 		break;
 	}
 }
@@ -404,13 +412,16 @@ void PlayerGUI::update_level(SoundEngine* soundEngine)
 	this->texts["LEVEL"]->center(calcX(640, this->vm));
 	if (this->player->getLevel() % 5 == 0) this->isUpgrading = true;
 
-	std::vector<short> id = { 1 };
-	if (this->player->getAttackSpeed() < 10) id.push_back(2);
-	if (this->player->getSpeed() < 10) id.push_back(3);
-	if (this->player->getCriticalChance() < 100) id.push_back(4);
-	if (this->player->getReg() < 10) id.push_back(5);
-	id.push_back(6);
-	id.push_back(7);
+	std::vector<short> id = { 3, 4, 5 };
+	if (this->player->getArmor() < 10 || (this->player->getName() == "knight" && ((this->player->getAbilityActive() && this->player->getArmor() < 15))
+		|| (!this->player->getAbilityActive() && this->player->getArmor() < 10))) {
+		id.push_back(1);
+	}
+	if (this->player->getReg() < 10) id.push_back(2);
+	if (this->player->getAttackSpeed() < 10) id.push_back(6);
+	if (this->player->getSpeed() < 10) id.push_back(7);
+	if (this->player->getCriticalChance() < 100) id.push_back(8);
+	
 	update_options(this->option1_id, this->option1_val, id, this->texts["OPTION1"], this->texts["OPTION1_VALUE"], this->sprites["OPTION1"], calcX(548, vm));
 	update_options(this->option2_id, this->option2_val, id, this->texts["OPTION2"], this->texts["OPTION2_VALUE"], this->sprites["OPTION2"], calcX(732, vm));
 
@@ -425,8 +436,8 @@ void PlayerGUI::update_level(SoundEngine* soundEngine)
 			this->sprites["UPGRADE1_ABILITY"] = new gui::Sprite(this->abilities_vec[3], calcX(1168, vm), calcY(262, vm), calcScale(2, vm), false);
 			this->sprites["UPGRADE2_ABILITY"] = new gui::Sprite(this->abilities_vec[4], calcX(1168, vm), calcY(426, vm), calcScale(2, vm), false);
 
-			this->sprites["UPGRADE1_ADD"] = new gui::Sprite(this->attribute_vec[2], calcX(1216, vm), calcY(228, vm), calcScale(2, vm), false);
-			this->sprites["UPGRADE2_ADD"] = new gui::Sprite(this->attribute_vec[4], calcX(1216, vm), calcY(392, vm), calcScale(2, vm), false);
+			this->sprites["UPGRADE1_ADD"] = new gui::Sprite(this->attribute_vec[6], calcX(1216, vm), calcY(228, vm), calcScale(2, vm), false);
+			this->sprites["UPGRADE2_ADD"] = new gui::Sprite(this->attribute_vec[8], calcX(1216, vm), calcY(392, vm), calcScale(2, vm), false);
 		}
 		else if (this->player->getName() == "knight") {
 			this->sprites["UPGRADE1"] = new gui::Sprite(this->upgrades_vec[6], calcX(1020, vm), calcY(228, vm), calcScale(4, vm), false);
@@ -438,7 +449,7 @@ void PlayerGUI::update_level(SoundEngine* soundEngine)
 			this->sprites["UPGRADE1_ABILITY"] = new gui::Sprite(this->abilities_vec[5], calcX(1168, vm), calcY(262, vm), calcScale(2, vm), false);
 			//this->sprites["UPGRADE2_ABILITY"] = new gui::Sprite(this->abilities_vec[4], calcX(1168, vm), calcY(426, vm), calcScale(2, vm), false);
 
-			this->sprites["UPGRADE1_ADD"] = new gui::Sprite(this->attribute_vec[6], calcX(1216, vm), calcY(228, vm), calcScale(2, vm), false);
+			this->sprites["UPGRADE1_ADD"] = new gui::Sprite(this->attribute_vec[3], calcX(1216, vm), calcY(228, vm), calcScale(2, vm), false);
 			//this->sprites["UPGRADE2_ADD"] = new gui::Sprite(this->attribute_vec[4], calcX(1216, vm), calcY(392, vm), calcScale(2, vm), false);
 			this->texts["UPGRADE1_ADD_VALUE"]->setText("+2");
 		}
