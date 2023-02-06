@@ -42,16 +42,18 @@ void ProjectileSystem::update(Player* player, PlayerGUI* playerGui, ParticleSyst
 			proj = this->projectiles.erase(proj);
 		}
 		else if ((*proj)->getCollidedPlayer()) {
-			int attack = static_cast<int>(round((*proj)->getAttack() - ((*proj)->getAttack() * player->getArmor() * 0.05f)));
+			if (!(player->getAbilityActive() && (player->getName() == "knight" || player->getName() == "crusader"))) {
+				int attack = static_cast<int>(round((*proj)->getAttack() - ((*proj)->getAttack() * player->getArmor() * 0.05f)));
 
-			if (attack > 0) {
-				if (static_cast<int>(player->getHP() - attack) < 0) player->setHP(0);
-				else player->setHP(player->getHP() - attack);
+				if (attack > 0) {
+					if (static_cast<int>(player->getHP() - attack) < 0) player->setHP(0);
+					else player->setHP(player->getHP() - attack);
 
-				player->punch();
+					player->punch();
 
-				floatingTextSystem->addFloatingText("-" + std::to_string(attack), calcChar(16, vm), player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm), sf::Color(228, 92, 95), false);
-				playerGui->update_HP();
+					floatingTextSystem->addFloatingText("-" + std::to_string(attack), calcChar(16, vm), player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm), sf::Color(228, 92, 95), false);
+					playerGui->update_HP();
+				}
 			}
 
 			proj = this->projectiles.erase(proj);

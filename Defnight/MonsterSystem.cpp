@@ -270,7 +270,7 @@ void MonsterSystem::prepareWave(uint32_t& wave, uint32_t& sumHP)
 			t = 0;
 		else break;
 
-		if (this->monsters.size() < 100)
+		if (this->monsterIDs.size() < 100)
 			this->monsterIDs.push_back(t);
 		else break;
 

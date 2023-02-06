@@ -348,8 +348,8 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 		this->texts["ATTACK"]->center(calcX(828, vm));
 		this->player->setName("knight");
 		this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
-		this->player->setAbilityMaxTime(10.f);
-		this->player->setAbilityCooldown(10.f);
+		this->player->setAbilityMaxTime(20.f);
+		this->player->setAbilityCooldown(20.f);
 		this->player->setAbilityTime(5.f);
 	}
 	else if (name == "SCOUT") {
@@ -396,8 +396,8 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 		this->player->setIsRegenerating(true);
 		this->player->setName("crusader");
 		this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(80, 0, 16, 16));
-		this->player->setAbilityMaxTime(10.f);
-		this->player->setAbilityCooldown(10.f);
+		this->player->setAbilityMaxTime(20.f);
+		this->player->setAbilityCooldown(20.f);
 		this->player->setAbilityTime(5.f);
 	}
 }
