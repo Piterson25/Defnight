@@ -160,7 +160,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	
 	
 	
-	this->texts["KILLS"] = new gui::Text(&this->font, this->lang["KILLS"] + std::to_string(this->player->getKills()), calcChar(16, vm), calcX(640, vm), calcY(144, vm), sf::Color(192, 192, 192), true);
+	this->texts["KILLS"] = new gui::Text(&this->font, this->lang["KILLS"] + std::to_string(this->player->getKills()), calcChar(16, vm), calcX(640, vm), calcY(160, vm), sf::Color(192, 192, 192), true);
 
 	if (difficulty_name == "easy") 
 		this->texts["DIFFICULTY"] = new gui::Text(&this->font, this->lang["DIFFICULTY_LEVEL"] + " " + this->lang["EASY"], calcChar(16, vm), calcX(640, vm), calcY(144, vm), sf::Color(182, 60, 53), true);

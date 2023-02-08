@@ -22,12 +22,14 @@ Projectile::Projectile(const sf::VideoMode& vm, const std::string& projectile_na
 	this->collided = false;
 	this->collidedPlayer = false;
 	this->collidedMonster = false;
+	this->bouncing = false;
 
 	if (this->name == "stone") {
 		this->sprite.setTextureRect(sf::IntRect(0, 0, 4, 4));
 	}
 	else if (this->name == "shuriken") {
 		this->sprite.setTextureRect(sf::IntRect(4, 0, 4, 4));
+		this->bouncing = true;
 	}
 	else if (this->name == "bomb") {
 		this->sprite.setTextureRect(sf::IntRect(8, 0, 4, 4));
@@ -153,7 +155,7 @@ void Projectile::wallCollision(TileMap* tileMap)
 					&& projectileBounds.left < wallBounds.left + wallBounds.width
 					&& projectileBounds.left + projectileBounds.width > wallBounds.left)
 				{
-					if (this->name == "shuriken" && !this->sideWall(sf::Vector2f(this->velocity.x, this->velocity.y * -1), projectileBounds, wallBounds, 1)) {
+					if (this->bouncing && !this->collided) {
 						this->angle *= -1.f;
 					}
 					else {
@@ -167,7 +169,7 @@ void Projectile::wallCollision(TileMap* tileMap)
 					&& projectileBounds.left < wallBounds.left + wallBounds.width
 					&& projectileBounds.left + projectileBounds.width > wallBounds.left)
 				{
-					if (this->name == "shuriken" && !this->sideWall(sf::Vector2f(this->velocity.x, this->velocity.y * -1), projectileBounds, wallBounds, 0)) {
+					if (this->bouncing && !this->collided) {
 						this->angle *= -1.f;
 					}
 					else {
@@ -182,7 +184,7 @@ void Projectile::wallCollision(TileMap* tileMap)
 					&& projectileBounds.top < wallBounds.top + wallBounds.height
 					&& projectileBounds.top + projectileBounds.height > wallBounds.top)
 				{
-					if (this->name == "shuriken" && !this->sideWall(sf::Vector2f(this->velocity.x * -1, this->velocity.y), projectileBounds, wallBounds, 3)) {
+					if (this->bouncing && !this->collided) {
 						this->angle = 180.f - this->angle;
 					}
 					else {
@@ -196,7 +198,7 @@ void Projectile::wallCollision(TileMap* tileMap)
 					&& projectileBounds.top < wallBounds.top + wallBounds.height
 					&& projectileBounds.top + projectileBounds.height > wallBounds.top)
 				{
-					if (this->name == "shuriken" && !this->sideWall(sf::Vector2f(this->velocity.x * -1, this->velocity.y), projectileBounds, wallBounds, 2)) {
+					if (this->bouncing && !this->collided) {
 						this->angle = 180.f - this->angle;
 					}
 					else {

@@ -44,6 +44,8 @@ private:
 	bool collidedPlayer;
 	bool collidedMonster;
 	float angle;
+
+	bool bouncing;
 };
 
 #endif
