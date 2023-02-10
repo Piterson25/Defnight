@@ -89,47 +89,47 @@ void Projectile::calculateVelocity(const sf::Vector2f& coords)
 	this->sprite.setRotation(this->angle);
 }
 
-const bool Projectile::sideWall(const sf::Vector2f& velocities, const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds, const short& side)
+const bool Projectile::upCollision(const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds)
 {
-	sf::FloatRect nextPos = projectileBounds;
-	nextPos.left += velocities.x;
-	nextPos.top += velocities.y;
-	if (wallBounds.intersects(nextPos))
-	{
-		if (side == 0) {
-			if (projectileBounds.top < wallBounds.top
-				&& projectileBounds.top + projectileBounds.height < wallBounds.top + wallBounds.height
-				&& projectileBounds.left < wallBounds.left + wallBounds.width
-				&& projectileBounds.left + projectileBounds.width > wallBounds.left) {
-				return true;	
-			}		
-		}
-		else if (side == 1) {
-			if (projectileBounds.top > wallBounds.top
-				&& projectileBounds.top + projectileBounds.height > wallBounds.top + wallBounds.height
-				&& projectileBounds.left < wallBounds.left + wallBounds.width
-				&& projectileBounds.left + projectileBounds.width > wallBounds.left) {
-				return true;	
-			}
-		}
-		else if (side == 2) {
-			if (projectileBounds.left < wallBounds.left
-				&& projectileBounds.left + projectileBounds.width < wallBounds.left + wallBounds.width
-				&& projectileBounds.top < wallBounds.top + wallBounds.height
-				&& projectileBounds.top + projectileBounds.height > wallBounds.top) {
-				return true;	
-			}
-		}
-		else if (side == 3) {
-			if (projectileBounds.left > wallBounds.left
-				&& projectileBounds.left + projectileBounds.width > wallBounds.left + wallBounds.width
-				&& projectileBounds.top < wallBounds.top + wallBounds.height
-				&& projectileBounds.top + projectileBounds.height > wallBounds.top) {
-				return true;	
-			}
-		}
+	if (projectileBounds.top < wallBounds.top
+		&& projectileBounds.top + projectileBounds.height < wallBounds.top + wallBounds.height
+		&& projectileBounds.left < wallBounds.left + wallBounds.width
+		&& projectileBounds.left + projectileBounds.width > wallBounds.left) {
+		return true;
 	}
-		
+	return false;
+}
+
+const bool Projectile::downCollision(const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds)
+{
+	if (projectileBounds.top > wallBounds.top
+		&& projectileBounds.top + projectileBounds.height > wallBounds.top + wallBounds.height
+		&& projectileBounds.left < wallBounds.left + wallBounds.width
+		&& projectileBounds.left + projectileBounds.width > wallBounds.left) {
+		return true;
+	}
+	return false;
+}
+
+const bool Projectile::rightCollision(const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds)
+{
+	if (projectileBounds.left > wallBounds.left
+		&& projectileBounds.left + projectileBounds.width > wallBounds.left + wallBounds.width
+		&& projectileBounds.top < wallBounds.top + wallBounds.height
+		&& projectileBounds.top + projectileBounds.height > wallBounds.top) {
+		return true;
+	}
+	return false;
+}
+
+const bool Projectile::leftCollision(const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds)
+{
+	if (projectileBounds.left < wallBounds.left
+		&& projectileBounds.left + projectileBounds.width < wallBounds.left + wallBounds.width
+		&& projectileBounds.top < wallBounds.top + wallBounds.height
+		&& projectileBounds.top + projectileBounds.height > wallBounds.top) {
+		return true;
+	}
 	return false;
 }
 
@@ -150,69 +150,65 @@ void Projectile::wallCollision(TileMap* tileMap)
 			nextPos.top += this->velocity.y;
 			if (wallBounds.intersects(nextPos))
 			{
-				if (projectileBounds.top < wallBounds.top
-					&& projectileBounds.top + projectileBounds.height < wallBounds.top + wallBounds.height
-					&& projectileBounds.left < wallBounds.left + wallBounds.width
-					&& projectileBounds.left + projectileBounds.width > wallBounds.left)
+				const bool upProjCollision = upCollision(projectileBounds, wallBounds);
+				const bool downProjCollision = downCollision(projectileBounds, wallBounds);
+				const bool rightProjCollision = rightCollision(projectileBounds, wallBounds);
+				const bool leftProjCollision = leftCollision(projectileBounds, wallBounds);
+
+				if (upProjCollision && !downProjCollision)
 				{
-					if (this->bouncing && !this->collided) {
+					if (this->bouncing) {
 						this->angle *= -1.f;
 					}
 					else {
-						this->velocity.y = 0.f;
 						this->sprite.setPosition(projectileBounds.left, wallBounds.top - projectileBounds.height);
 					}
+					this->velocity.y = 0.f;
 					this->collided = true;
 				}
-				else if (projectileBounds.top > wallBounds.top
-					&& projectileBounds.top + projectileBounds.height > wallBounds.top + wallBounds.height
-					&& projectileBounds.left < wallBounds.left + wallBounds.width
-					&& projectileBounds.left + projectileBounds.width > wallBounds.left)
+				else if (!upProjCollision && downProjCollision)
 				{
-					if (this->bouncing && !this->collided) {
+					if (this->bouncing) {
 						this->angle *= -1.f;
 					}
 					else {
-						this->velocity.y = 0.f;
 						this->sprite.setPosition(projectileBounds.left, wallBounds.top + wallBounds.height);
 					}
+					this->velocity.y = 0.f;
 					this->collided = true;
 				}
 
-				if (projectileBounds.left < wallBounds.left
-					&& projectileBounds.left + projectileBounds.width < wallBounds.left + wallBounds.width
-					&& projectileBounds.top < wallBounds.top + wallBounds.height
-					&& projectileBounds.top + projectileBounds.height > wallBounds.top)
+				if (leftProjCollision && !rightProjCollision)
 				{
-					if (this->bouncing && !this->collided) {
+					if (this->bouncing) {
 						this->angle = 180.f - this->angle;
 					}
 					else {
-						this->velocity.x = 0.f;
 						this->sprite.setPosition(wallBounds.left - projectileBounds.width, projectileBounds.top);
 					}
+					this->velocity.x = 0.f;
 					this->collided = true;
 				}
-				else if (projectileBounds.left > wallBounds.left
-					&& projectileBounds.left + projectileBounds.width > wallBounds.left + wallBounds.width
-					&& projectileBounds.top < wallBounds.top + wallBounds.height
-					&& projectileBounds.top + projectileBounds.height > wallBounds.top)
+				else if (!leftProjCollision && rightProjCollision)
 				{
-					if (this->bouncing && !this->collided) {
+					if (this->bouncing) {
 						this->angle = 180.f - this->angle;
 					}
 					else {
-						this->velocity.x = 0.f;
 						this->sprite.setPosition(wallBounds.left + wallBounds.width, projectileBounds.top);
 					}
+					this->velocity.x = 0.f;
 					this->collided = true;
 				}
 
+				if (this->collided) {
+					this->HP--;
+					break;
+				}
 			}
 		}
 	}
-	if (this->collided) this->HP--;
-	
+
 }
 
 void Projectile::playerCollision(Player* player)
@@ -359,6 +355,7 @@ void Projectile::move(const float& dt)
 
 	this->velocity.x = vel * cos((3.1415f / 180.f) * this->angle);
 	this->velocity.y = vel * sin((3.1415f / 180.f) * this->angle);
+
 	this->sprite.move(this->velocity);
 }
 
