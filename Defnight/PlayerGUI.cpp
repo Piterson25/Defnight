@@ -298,7 +298,7 @@ void PlayerGUI::levelUpPlayer(uint32_t& option_id, uint32_t& option_val)
 		break;
 	case 4:
 		this->player->setMaxSprint(this->player->getMaxSprint() + option_val);
-		this->texts["SPRINT"]->setText(std::to_string(this->player->getSprint()) + "/" + std::to_string(this->player->getMaxSprint()));
+		this->texts["SPRINT"]->setText(std::to_string(static_cast<uint32_t>(this->player->getSprint())) + "/" + std::to_string(this->player->getMaxSprint()));
 		this->texts["SPRINT"]->center(calcX(640, vm));
 		break;
 	case 5:

@@ -28,17 +28,12 @@ public:
 	virtual const bool isBomb() const;
 
 	void calculateVelocity(const sf::Vector2f& coords);
-
-	const bool upCollision(const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds);
-	const bool downCollision(const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds);
-	const bool rightCollision(const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds);
-	const bool leftCollision(const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds);
 	
 	void wallCollision(TileMap* tileMap);
 	void playerCollision(Player* player);
 	void monsterCollision(Monster* monster, Player* player, FloatingTextSystem* floatingTextSystem);
 
-	void move(const float& dt);
+	void updateVelocity(const float& dt);
 
 	void update(const float& dt);
 	void draw(sf::RenderTarget& target);

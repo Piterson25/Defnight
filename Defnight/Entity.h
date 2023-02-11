@@ -21,6 +21,10 @@ public:
 	virtual const sf::Vector2f getUpCenter() const;
 	virtual const sf::Vector2f getDownCenter() const;
 	virtual const sf::Vector2f getRightCenter() const;
+	virtual const bool bottomCollision(const sf::FloatRect& e1Bounds, const sf::FloatRect& e2Bounds) const;
+	virtual const bool topCollision(const sf::FloatRect& e1Bounds, const sf::FloatRect& e2Bounds) const;
+	virtual const bool rightCollision(const sf::FloatRect& e1Bounds, const sf::FloatRect& e2Bounds) const;
+	virtual const bool leftCollision(const sf::FloatRect& e1Bounds, const sf::FloatRect& e2Bounds) const;
 
 	const float attackDistance(Entity* e1, Entity* e2) const;
 	

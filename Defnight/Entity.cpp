@@ -160,6 +160,50 @@ const sf::Vector2f Entity::getRightCenter() const
 	return sf::Vector2f(this->sprite.getPosition().x + (this->sprite.getGlobalBounds().width * 0.875f), this->sprite.getPosition().y + (this->sprite.getGlobalBounds().height * 0.5f));
 }
 
+const bool Entity::bottomCollision(const sf::FloatRect& e1Bounds, const sf::FloatRect& e2Bounds) const
+{
+	if (e1Bounds.top < e2Bounds.top
+		&& e1Bounds.top + e1Bounds.height < e2Bounds.top + e2Bounds.height
+		&& e1Bounds.left < e2Bounds.left + e2Bounds.width
+		&& e1Bounds.left + e1Bounds.width > e2Bounds.left) {
+		return true;
+	}
+	return false;
+}
+
+const bool Entity::topCollision(const sf::FloatRect& e1Bounds, const sf::FloatRect& e2Bounds) const
+{
+	if (e1Bounds.top > e2Bounds.top
+		&& e1Bounds.top + e1Bounds.height > e2Bounds.top + e2Bounds.height
+		&& e1Bounds.left < e2Bounds.left + e2Bounds.width
+		&& e1Bounds.left + e1Bounds.width > e2Bounds.left) {
+		return true;
+	}
+	return false;
+}
+
+const bool Entity::rightCollision(const sf::FloatRect& e1Bounds, const sf::FloatRect& e2Bounds) const
+{
+	if (e1Bounds.left < e2Bounds.left
+		&& e1Bounds.left + e1Bounds.width < e2Bounds.left + e2Bounds.width
+		&& e1Bounds.top < e2Bounds.top + e2Bounds.height
+		&& e1Bounds.top + e1Bounds.height > e2Bounds.top) {
+		return true;
+	}
+	return false;
+}
+
+const bool Entity::leftCollision(const sf::FloatRect& e1Bounds, const sf::FloatRect& e2Bounds) const
+{
+	if (e1Bounds.left > e2Bounds.left
+		&& e1Bounds.left + e1Bounds.width > e2Bounds.left + e2Bounds.width
+		&& e1Bounds.top < e2Bounds.top + e2Bounds.height
+		&& e1Bounds.top + e1Bounds.height > e2Bounds.top) {
+		return true;
+	}
+	return false;
+}
+
 const float Entity::attackDistance(Entity* e1, Entity* e2) const
 {
 	if (this->left)
@@ -271,35 +315,23 @@ void Entity::obstacleCollision(TileMap* tileMap)
 
 			if (obstacleBounds.intersects(nextPos))
 			{
-				if (spriteBounds.top < obstacleBounds.top
-					&& spriteBounds.top + spriteBounds.height < obstacleBounds.top + obstacleBounds.height
-					&& spriteBounds.left < obstacleBounds.left + obstacleBounds.width
-					&& spriteBounds.left + spriteBounds.width > obstacleBounds.left)
+				if (bottomCollision(spriteBounds, obstacleBounds))
 				{
 					this->velocity.y = 0.f;
 					this->sprite.setPosition(spriteBounds.left, obstacleBounds.top - spriteBounds.height);
 				}
-				else if (spriteBounds.top > obstacleBounds.top
-					&& spriteBounds.top + spriteBounds.height > obstacleBounds.top + obstacleBounds.height
-					&& spriteBounds.left < obstacleBounds.left + obstacleBounds.width
-					&& spriteBounds.left + spriteBounds.width > obstacleBounds.left)
+				else if (topCollision(spriteBounds, obstacleBounds))
 				{
 					this->velocity.y = 0.f;
 					this->sprite.setPosition(spriteBounds.left, obstacleBounds.top + obstacleBounds.height);
 				}
 
-				if (spriteBounds.left < obstacleBounds.left
-					&& spriteBounds.left + spriteBounds.width < obstacleBounds.left + obstacleBounds.width
-					&& spriteBounds.top < obstacleBounds.top + obstacleBounds.height
-					&& spriteBounds.top + spriteBounds.height > obstacleBounds.top)
+				if (rightCollision(spriteBounds, obstacleBounds))
 				{
 					this->velocity.x = 0.f;
 					this->sprite.setPosition(obstacleBounds.left - spriteBounds.width, spriteBounds.top);
 				}
-				else if (spriteBounds.left > obstacleBounds.left
-					&& spriteBounds.left + spriteBounds.width > obstacleBounds.left + obstacleBounds.width
-					&& spriteBounds.top < obstacleBounds.top + obstacleBounds.height
-					&& spriteBounds.top + spriteBounds.height > obstacleBounds.top)
+				else if (leftCollision(spriteBounds, obstacleBounds))
 				{
 					this->velocity.x = 0.f;
 					this->sprite.setPosition(obstacleBounds.left + obstacleBounds.width, spriteBounds.top);
@@ -416,7 +448,6 @@ void Entity::punch()
 {
 	this->punched = true;
 	this->punchedCooldown = 0.f;
-	//this->isAttacking = false;
 	if (this->HP == 0) {
 		this->sprite.setColor(sf::Color(182, 60, 53));
 	}

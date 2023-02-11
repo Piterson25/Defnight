@@ -89,50 +89,6 @@ void Projectile::calculateVelocity(const sf::Vector2f& coords)
 	this->sprite.setRotation(this->angle);
 }
 
-const bool Projectile::upCollision(const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds)
-{
-	if (projectileBounds.top < wallBounds.top
-		&& projectileBounds.top + projectileBounds.height < wallBounds.top + wallBounds.height
-		&& projectileBounds.left < wallBounds.left + wallBounds.width
-		&& projectileBounds.left + projectileBounds.width > wallBounds.left) {
-		return true;
-	}
-	return false;
-}
-
-const bool Projectile::downCollision(const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds)
-{
-	if (projectileBounds.top > wallBounds.top
-		&& projectileBounds.top + projectileBounds.height > wallBounds.top + wallBounds.height
-		&& projectileBounds.left < wallBounds.left + wallBounds.width
-		&& projectileBounds.left + projectileBounds.width > wallBounds.left) {
-		return true;
-	}
-	return false;
-}
-
-const bool Projectile::rightCollision(const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds)
-{
-	if (projectileBounds.left > wallBounds.left
-		&& projectileBounds.left + projectileBounds.width > wallBounds.left + wallBounds.width
-		&& projectileBounds.top < wallBounds.top + wallBounds.height
-		&& projectileBounds.top + projectileBounds.height > wallBounds.top) {
-		return true;
-	}
-	return false;
-}
-
-const bool Projectile::leftCollision(const sf::FloatRect& projectileBounds, const sf::FloatRect& wallBounds)
-{
-	if (projectileBounds.left < wallBounds.left
-		&& projectileBounds.left + projectileBounds.width < wallBounds.left + wallBounds.width
-		&& projectileBounds.top < wallBounds.top + wallBounds.height
-		&& projectileBounds.top + projectileBounds.height > wallBounds.top) {
-		return true;
-	}
-	return false;
-}
-
 void Projectile::wallCollision(TileMap* tileMap)
 {
 	this->collided = false;
@@ -148,14 +104,10 @@ void Projectile::wallCollision(TileMap* tileMap)
 			sf::FloatRect nextPos = projectileBounds;
 			nextPos.left += this->velocity.x;
 			nextPos.top += this->velocity.y;
+
 			if (wallBounds.intersects(nextPos))
 			{
-				const bool upProjCollision = upCollision(projectileBounds, wallBounds);
-				const bool downProjCollision = downCollision(projectileBounds, wallBounds);
-				const bool rightProjCollision = rightCollision(projectileBounds, wallBounds);
-				const bool leftProjCollision = leftCollision(projectileBounds, wallBounds);
-
-				if (upProjCollision && !downProjCollision)
+				if (bottomCollision(projectileBounds, wallBounds))
 				{
 					if (this->bouncing) {
 						this->angle *= -1.f;
@@ -166,7 +118,7 @@ void Projectile::wallCollision(TileMap* tileMap)
 					this->velocity.y = 0.f;
 					this->collided = true;
 				}
-				else if (!upProjCollision && downProjCollision)
+				else if (topCollision(projectileBounds, wallBounds))
 				{
 					if (this->bouncing) {
 						this->angle *= -1.f;
@@ -178,7 +130,7 @@ void Projectile::wallCollision(TileMap* tileMap)
 					this->collided = true;
 				}
 
-				if (leftProjCollision && !rightProjCollision)
+				if (rightCollision(projectileBounds, wallBounds))
 				{
 					if (this->bouncing) {
 						this->angle = 180.f - this->angle;
@@ -189,7 +141,7 @@ void Projectile::wallCollision(TileMap* tileMap)
 					this->velocity.x = 0.f;
 					this->collided = true;
 				}
-				else if (!leftProjCollision && rightProjCollision)
+				else if (leftCollision(projectileBounds, wallBounds))
 				{
 					if (this->bouncing) {
 						this->angle = 180.f - this->angle;
@@ -228,38 +180,26 @@ void Projectile::playerCollision(Player* player)
 
 			if (playerBounds.intersects(nextPos))
 			{
-				if (projectileBounds.top < playerBounds.top
-					&& projectileBounds.top + projectileBounds.height < playerBounds.top + playerBounds.height
-					&& projectileBounds.left < playerBounds.left + playerBounds.width
-					&& projectileBounds.left + projectileBounds.width > playerBounds.left)
+				if (bottomCollision(projectileBounds, playerBounds))
 				{
 					this->velocity.y = 0.f;
 					this->sprite.setPosition(projectileBounds.left, playerBounds.top - projectileBounds.height);
 					this->collidedPlayer = true;
 				}
-				else if (projectileBounds.top > playerBounds.top
-					&& projectileBounds.top + projectileBounds.height > playerBounds.top + playerBounds.height
-					&& projectileBounds.left < playerBounds.left + playerBounds.width
-					&& projectileBounds.left + projectileBounds.width > playerBounds.left)
+				else if (topCollision(projectileBounds, playerBounds))
 				{
 					this->velocity.y = 0.f;
 					this->sprite.setPosition(projectileBounds.left, playerBounds.top + playerBounds.height);
 					this->collidedPlayer = true;
 				}
 
-				if (projectileBounds.left < playerBounds.left
-					&& projectileBounds.left + projectileBounds.width < playerBounds.left + playerBounds.width
-					&& projectileBounds.top < playerBounds.top + playerBounds.height
-					&& projectileBounds.top + projectileBounds.height > playerBounds.top)
+				if (rightCollision(projectileBounds, playerBounds))
 				{
 					this->velocity.x = 0.f;
 					this->sprite.setPosition(playerBounds.left - projectileBounds.width, projectileBounds.top);
 					this->collidedPlayer = true;
 				}
-				else if (projectileBounds.left > playerBounds.left
-					&& projectileBounds.left + projectileBounds.width > playerBounds.left + playerBounds.width
-					&& projectileBounds.top < playerBounds.top + playerBounds.height
-					&& projectileBounds.top + projectileBounds.height > playerBounds.top)
+				else if (leftCollision(projectileBounds, playerBounds))
 				{
 					this->velocity.x = 0.f;
 					this->sprite.setPosition(playerBounds.left + playerBounds.width, projectileBounds.top);
@@ -287,38 +227,26 @@ void Projectile::monsterCollision(Monster* monster, Player* player, FloatingText
 
 			if (mobBounds.intersects(nextPos))
 			{
-				if (projectileBounds.top < mobBounds.top
-					&& projectileBounds.top + projectileBounds.height < mobBounds.top + mobBounds.height
-					&& projectileBounds.left < mobBounds.left + mobBounds.width
-					&& projectileBounds.left + projectileBounds.width > mobBounds.left)
+				if (bottomCollision(projectileBounds, mobBounds))
 				{
 					this->velocity.y = 0.f;
 					this->sprite.setPosition(projectileBounds.left, mobBounds.top - projectileBounds.height);
 					this->collidedMonster = true;
 				}
-				else if (projectileBounds.top > mobBounds.top
-					&& projectileBounds.top + projectileBounds.height > mobBounds.top + mobBounds.height
-					&& projectileBounds.left < mobBounds.left + mobBounds.width
-					&& projectileBounds.left + projectileBounds.width > mobBounds.left)
+				else if (topCollision(projectileBounds, mobBounds))
 				{
 					this->velocity.y = 0.f;
 					this->sprite.setPosition(projectileBounds.left, mobBounds.top + mobBounds.height);
 					this->collidedMonster = true;
 				}
 
-				if (projectileBounds.left < mobBounds.left
-					&& projectileBounds.left + projectileBounds.width < mobBounds.left + mobBounds.width
-					&& projectileBounds.top < mobBounds.top + mobBounds.height
-					&& projectileBounds.top + projectileBounds.height > mobBounds.top)
+				if (rightCollision(projectileBounds, mobBounds))
 				{
 					this->velocity.x = 0.f;
 					this->sprite.setPosition(mobBounds.left - projectileBounds.width, projectileBounds.top);
 					this->collidedMonster = true;
 				}
-				else if (projectileBounds.left > mobBounds.left
-					&& projectileBounds.left + projectileBounds.width > mobBounds.left + mobBounds.width
-					&& projectileBounds.top < mobBounds.top + mobBounds.height
-					&& projectileBounds.top + projectileBounds.height > mobBounds.top)
+				else if (leftCollision(projectileBounds, mobBounds))
 				{
 					this->velocity.x = 0.f;
 					this->sprite.setPosition(mobBounds.left + mobBounds.width, projectileBounds.top);
@@ -349,21 +277,20 @@ void Projectile::monsterCollision(Monster* monster, Player* player, FloatingText
 	}
 }
 
-void Projectile::move(const float& dt)
+void Projectile::updateVelocity(const float& dt)
 {
 	const float vel = (this->speed * 0.2f + 0.8f) * 16.f * this->sprite.getGlobalBounds().width * dt;
 
 	this->velocity.x = vel * cos((3.1415f / 180.f) * this->angle);
 	this->velocity.y = vel * sin((3.1415f / 180.f) * this->angle);
-
-	this->sprite.move(this->velocity);
 }
 
 void Projectile::update(const float& dt)
 {
+	this->updateVelocity(dt);
 	this->timeExisting += dt;
 	if (this->name == "shuriken") this->sprite.rotate(90.f / dt);
-	this->move(dt);
+	this->move();
 }
 
 void Projectile::draw(sf::RenderTarget& target)
