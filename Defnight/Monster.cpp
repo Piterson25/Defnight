@@ -92,6 +92,7 @@ Monster::Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::T
 
 Monster::~Monster()
 {
+	this->Nodes.clear();
 }
 
 const uint32_t Monster::getGold() const
@@ -342,9 +343,9 @@ void Monster::initNodes()
 	for (short x = 0; x < CollumsX; ++x)
 		for (short y = 0; y < CollumsY; ++y)
 		{
-			if (Nodes[x][y].x > 0) Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(Nodes[x][y].x - 1)][Nodes[x][y].y]);
+			if (Nodes[x][y].x > 0) Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(Nodes[x][y].x) - 1][Nodes[x][y].y]);
 			if (Nodes[x][y].y > 0) Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][Nodes[x][y].y - 1]);
-			if (Nodes[x][y].x < CollumsX - 1) Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(Nodes[x][y].x + 1)][Nodes[x][y].y]);
+			if (Nodes[x][y].x < CollumsX - 1) Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(Nodes[x][y].x) + 1][Nodes[x][y].y]);
 			if (Nodes[x][y].y < CollumsY - 1) Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][Nodes[x][y].y + 1]);
 		}
 
@@ -365,7 +366,6 @@ void Monster::AStarAlg()
 
 	auto GetDist = [](Node* P1, Node* P2) { return vectorDistance(float(P2->x), float(P1->x), float(P2->y), float(P2->y)); };
 
-	Node* CurrentNode = Start;
 	Start->HCost = 0.0f;
 	Start->FCost = float(GetDist(Start, End));
 
@@ -383,7 +383,7 @@ void Monster::AStarAlg()
 		if (NodesToTest.empty())
 			break;
 
-		CurrentNode = NodesToTest.front();
+		auto CurrentNode = NodesToTest.front();
 		CurrentNode->isVisited = true;
 
 
@@ -402,5 +402,6 @@ void Monster::AStarAlg()
 				nodeNeighbour->FCost = nodeNeighbour->HCost + float(GetDist(nodeNeighbour, End));
 			}
 		}
+
 	}
 }

@@ -36,7 +36,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 
 	this->tiles_texture.loadFromFile("external/assets/tiles.png");
 	this->vertexArray.setPrimitiveType(sf::Quads);
-	this->vertexArray.resize(static_cast<size_t>(calcX(64, vm) * calcY(64, vm) * 4.f));
+	this->vertexArray.resize(static_cast<size_t>(calcX(64 * 64 * 4, vm)));
 	std::ifstream mapa("external/maps/" + map_name + ".txt");
 	float x = 0.f, y = 0.f, pos = calcX(this->gridSize, vm);
 

@@ -4,7 +4,7 @@
 
 PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const float& soundVolume, 
 	const std::string& heroName, const std::string& difficulty_name, std::unordered_map<std::string, std::string>& lang)
-	:player(player), vm(vm), lang(lang), font(*font)
+	:font(*font), player(player), vm(vm), lang(lang)
 {
 	
 	this->attributes_texture.loadFromFile("external/assets/icons.png");
@@ -413,8 +413,8 @@ void PlayerGUI::update_level(SoundEngine* soundEngine)
 	if (this->player->getLevel() % 5 == 0) this->isUpgrading = true;
 
 	std::vector<short> id = { 3, 4, 5 };
-	if (this->player->getArmor() < 10 || (this->player->getName() == "knight" && ((this->player->getAbilityActive() && this->player->getArmor() < 15))
-		|| (!this->player->getAbilityActive() && this->player->getArmor() < 10))) {
+	if (this->player->getArmor() < 10 || (this->player->getName() == "knight" && ((this->player->getAbilityActive() && this->player->getArmor() < 15)
+		|| (!this->player->getAbilityActive() && this->player->getArmor() < 10)))) {
 		id.push_back(1);
 	}
 	if (this->player->getReg() < 10) id.push_back(2);
@@ -769,8 +769,8 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 			}
 		}
 
-		if (this->player->getArmor() < 10 || (this->player->getName() == "knight" && ((this->player->getAbilityActive() && this->player->getArmor() < 15))
-			|| (!this->player->getAbilityActive() && this->player->getArmor() < 10))) {
+		if (this->player->getArmor() < 10 || (this->player->getName() == "knight" && ((this->player->getAbilityActive() && this->player->getArmor() < 15)
+			|| (!this->player->getAbilityActive() && this->player->getArmor() < 10)))) {
 			if (this->player->getGold() >= this->item4Price) {
 				this->sprite_buttons["ITEM4"]->update(mousePos);
 				if (this->sprite_buttons["ITEM4"]->isPressed() && !mouseClicked) {
@@ -842,11 +842,7 @@ const uint8_t PlayerGUI::updateEscapeButton(const sf::Vector2i& mousePos, const 
 
 const bool PlayerGUI::updateButtons(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine)
 {
-	if (this->isLeveling && this->isUpgrading) {
-		const bool u = this->updateLevelUpButtons(mousePos, mouseClicked, soundEngine);
-		const bool w = this->updateUpgradeButtons(mousePos, mouseClicked, soundEngine);
-	}
-	else if (this->isLeveling) {
+	if (this->isLeveling) {
 		return this->updateLevelUpButtons(mousePos, mouseClicked, soundEngine);
 	}
 	else if (this->isUpgrading) {
@@ -1031,8 +1027,8 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 		this->texts["ITEM3_PRICE"]->draw(target);
 		this->sprites["ITEM3_COIN"]->draw(target);
 
-		if (this->player->getArmor() < 10 || (this->player->getName() == "knight" && ((this->player->getAbilityActive() && this->player->getArmor() < 15))
-			|| (!this->player->getAbilityActive() && this->player->getArmor() < 10))) {
+		if (this->player->getArmor() < 10 || (this->player->getName() == "knight" && ((this->player->getAbilityActive() && this->player->getArmor() < 15)
+			|| (!this->player->getAbilityActive() && this->player->getArmor() < 10)))) {
 			this->sprite_buttons["ITEM4"]->draw(target);
 			this->sprites["ITEM4"]->draw(target);
 			this->texts["ITEM4"]->draw(target);

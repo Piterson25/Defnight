@@ -23,7 +23,7 @@ namespace gui {
 		void update(const sf::Vector2i& mousePosWindow);
 		void draw(sf::RenderTarget& target);
 	private:
-		uint16_t buttonState;
+		uint32_t buttonState;
 		sf::Font* font;
 		sf::Text text;
 

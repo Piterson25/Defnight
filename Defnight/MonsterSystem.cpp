@@ -3,9 +3,8 @@
 #include "MonsterSystem.h"
 
 MonsterSystem::MonsterSystem(const sf::VideoMode& vm, TileMap* tileMap, const float& gridSize, const float& difficulty_mod)
-	:vm(vm), gridSize(gridSize), difficulty_mod(difficulty_mod)
+	:vm(vm), tileMap(tileMap), gridSize(gridSize), difficulty_mod(difficulty_mod)
 {
-	this->tileMap = tileMap;
 	this->bossWave = false;
 	this->shadow_texture.loadFromFile("external/assets/entity_shadow.png");
 

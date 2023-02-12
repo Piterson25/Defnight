@@ -3,7 +3,7 @@
 #include "State.h"
 
 State::State(const float& gridSize, sf::RenderWindow* window, GameSettings* grap, std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, MusicEngine* musicEngine, std::stack<State*>* states)
-	:gridSize(gridSize), window(window), gameSettings(grap), supportedKeys(supportedKeys), soundEngine(soundEngine), musicEngine(musicEngine), states(states)
+	:gridSize(gridSize), window(window), gameSettings(grap), supportedKeys(supportedKeys), font(*font), soundEngine(soundEngine), musicEngine(musicEngine), states(states)
 {
 	this->quit = false;
 	this->paused = false;

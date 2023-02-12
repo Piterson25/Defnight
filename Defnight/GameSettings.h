@@ -9,7 +9,7 @@ public:
 	std::string path;
 	sf::VideoMode resolution;
 	bool fullscreen;
-	uint16_t fpsLimit;
+	uint32_t fpsLimit;
 	bool fpsCounterOn;
 	float musicVolume;
 	float soundsVolume;
