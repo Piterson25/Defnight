@@ -11,8 +11,8 @@ public:
 	virtual const sf::FloatRect getGlobalBounds() const;
 
 private:
-	std::string name;
 	sf::FloatRect globalBounds;
+	std::string name;
 };
 
 #endif

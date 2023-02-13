@@ -634,7 +634,7 @@ void PlayerGUI::updateMonsterCountWave(const std::string& language, const uint32
 			if (monsterCount % 10 >= 2 && monsterCount % 10 <= 4)
 				this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " potwory");
 			else
-				this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " potworów");
+				this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " potworow");
 		}
 		else {
 			if (monsterCount == 1)
@@ -642,7 +642,7 @@ void PlayerGUI::updateMonsterCountWave(const std::string& language, const uint32
 			else if (monsterCount < 5)
 				this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " potwory");
 			else
-				this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " potworów");
+				this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " potworow");
 		}
 	}
 	else {
@@ -842,7 +842,11 @@ const uint8_t PlayerGUI::updateEscapeButton(const sf::Vector2i& mousePos, const 
 
 const bool PlayerGUI::updateButtons(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine)
 {
-	if (this->isLeveling) {
+	if (this->isLeveling && this->isUpgrading) {
+		this->updateLevelUpButtons(mousePos, mouseClicked, soundEngine);
+		this->updateUpgradeButtons(mousePos, mouseClicked, soundEngine);
+	}
+	else if (this->isLeveling) {
 		return this->updateLevelUpButtons(mousePos, mouseClicked, soundEngine);
 	}
 	else if (this->isUpgrading) {

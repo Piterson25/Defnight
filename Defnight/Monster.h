@@ -62,14 +62,14 @@ private:
 		float HCost = 0.f;
 		int x = 0;
 		int y = 0;
-		std::vector<Node*> Neighbours = {};
-		Node* parent = nullptr;
+		std::vector<std::unique_ptr<Node>> Neighbours;
+		std::unique_ptr<Node> parent;
 	};
 
-	std::vector<Node*> Nodes;
-	Node* Start;
-	Node* End;
-	Node* Current;
+	std::vector<std::vector<std::unique_ptr<Node>>> Nodes;
+	std::unique_ptr<Node> Start;
+	std::unique_ptr<Node> End;
+	std::unique_ptr<Node> Current;
 
 	std::vector<sf::RectangleShape> greens;
 

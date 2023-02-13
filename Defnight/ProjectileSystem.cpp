@@ -22,11 +22,11 @@ void ProjectileSystem::addProjectile(const std::string& projectile_name, const f
 void ProjectileSystem::update(Player* player, PlayerGUI* playerGui, ParticleSystem* particleSystem, MonsterSystem* monsterSystem, sf::Sprite& background, TileMap* tileMap, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine, const float& dt)
 {
 	for (auto proj = this->projectiles.begin(); proj != this->projectiles.end();) {
-		(*proj)->updateVelocity(dt);
+		(*proj)->update(dt);
 		(*proj)->wallCollision(tileMap);
 		(*proj)->playerCollision(player);
 		monsterSystem->projectileCollision(&(**proj), player, floatingTextSystem);
-		(*proj)->update(dt);
+		(*proj)->move();
 
 		if ((*proj)->isBomb() && ((*proj)->getCollided() || (*proj)->getCollidedMonster())) {
 			particleSystem->addParticle((*proj)->getName(), (*proj)->getPosition().x, (*proj)->getPosition().y, (*proj)->getAttack());

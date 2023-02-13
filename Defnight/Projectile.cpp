@@ -277,20 +277,14 @@ void Projectile::monsterCollision(Monster* monster, Player* player, FloatingText
 	}
 }
 
-void Projectile::updateVelocity(const float& dt)
+void Projectile::update(const float& dt)
 {
 	const float vel = (this->speed * 0.2f + 0.8f) * 16.f * this->sprite.getGlobalBounds().width * dt;
 
 	this->velocity.x = vel * cos((3.1415f / 180.f) * this->angle);
 	this->velocity.y = vel * sin((3.1415f / 180.f) * this->angle);
-}
-
-void Projectile::update(const float& dt)
-{
-	this->updateVelocity(dt);
 	this->timeExisting += dt;
 	if (this->name == "shuriken") this->sprite.rotate(90.f / dt);
-	this->move();
 }
 
 void Projectile::draw(sf::RenderTarget& target)

@@ -39,7 +39,7 @@ Monster::Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::T
 
 	this->initNodes();
 	for (size_t i = 0; i < tileMap->getSize(); ++i) {
-		Nodes[static_cast<size_t>(tileMap->getPosition(i).x / this->BlockSize.x)][static_cast<size_t>(tileMap->getPosition(i).y / this->BlockSize.y)].isWall = true;
+		Nodes[static_cast<size_t>(tileMap->getPosition(i).x / this->BlockSize.x)][static_cast<size_t>(tileMap->getPosition(i).y / this->BlockSize.y)]->isWall = true;
 	}
 	
 
@@ -204,25 +204,25 @@ void Monster::setGold(const uint32_t& gold)
 
 void Monster::resetNodes(Player* player)
 {
-	Start = &Nodes[int(player->getPosition().x / this->BlockSize.x)][int(player->getPosition().y / this->BlockSize.y)];
+	Start = std::make_unique<Node>(&Nodes[int(player->getPosition().x / this->BlockSize.x)][int(player->getPosition().y / this->BlockSize.y)]);
 
-	End = &Nodes[int(this->sprite.getPosition().x / this->BlockSize.x)][int(this->sprite.getPosition().y / this->BlockSize.y)];
+	End = std::make_unique<Node>(&Nodes[int(this->sprite.getPosition().x / this->BlockSize.x)][int(this->sprite.getPosition().y / this->BlockSize.y)]);
 
 	for (short x = 0; x < CollumsX; ++x)
 	{
 		for (short y = 0; y < CollumsY; ++y)
 		{
-			Nodes[x][y].isVisited = false;
-			Nodes[x][y].parent = nullptr;
-			Nodes[x][y].FCost = 0.f;
-			Nodes[x][y].HCost = 0.f;
+			Nodes[x][y]->isVisited = false;
+			Nodes[x][y]->parent = nullptr;
+			Nodes[x][y]->FCost = 0.f;
+			Nodes[x][y]->HCost = 0.f;
 		}
 	}
 
 	AStarAlg();
 
 	this->activateAI = true;
-	this->Current = End;
+	this->Current = std::make_unique<Node>(End.get());
 
 	this->greens.clear();
 }
@@ -285,7 +285,7 @@ void Monster::AI(TileMap* tileMap, Player* player, const float& dt)
 				if (int(this->sprite.getPosition().x / this->BlockSize.x) == int(Current->x) &&
 					int(this->sprite.getPosition().y / this->BlockSize.y) == int(Current->y)) {
 					if (Current->parent != nullptr) {
-						Current = Current->parent;
+						Current.reset(&*Current->parent);
 					}
 					else resetNodes(player);
 				}
@@ -327,26 +327,27 @@ void Monster::initNodes()
 {
 	for (short x = 0; x < CollumsX; ++x)
 	{
-		Nodes.push_back(new Node[CollumsY]);
+		Nodes.push_back(std::vector<std::unique_ptr<Node>>());
 		for (short y = 0; y < CollumsY; ++y)
 		{
-			Nodes[x][y].x = x;
-			Nodes[x][y].y = y;
-			Nodes[x][y].isWall = false;
-			Nodes[x][y].isVisited = false;
-			Nodes[x][y].parent = nullptr;
-			Nodes[x][y].FCost = 0.f;
-			Nodes[x][y].HCost = 0.f;
+			Nodes[x].push_back(std::make_unique<Node>());
+			Nodes[x][y]->x = x;
+			Nodes[x][y]->y = y;
+			Nodes[x][y]->isWall = false;
+			Nodes[x][y]->isVisited = false;
+			Nodes[x][y]->parent = nullptr;
+			Nodes[x][y]->FCost = 0.f;
+			Nodes[x][y]->HCost = 0.f;
 		}
 	}
 
 	for (short x = 0; x < CollumsX; ++x)
 		for (short y = 0; y < CollumsY; ++y)
 		{
-			if (Nodes[x][y].x > 0) Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(Nodes[x][y].x) - 1][Nodes[x][y].y]);
-			if (Nodes[x][y].y > 0) Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][Nodes[x][y].y - 1]);
-			if (Nodes[x][y].x < CollumsX - 1) Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(Nodes[x][y].x) + 1][Nodes[x][y].y]);
-			if (Nodes[x][y].y < CollumsY - 1) Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][Nodes[x][y].y + 1]);
+			if (Nodes[x][y]->x > 0) Nodes[x][y]->Neighbours.push_back(std::make_unique<Node>(Nodes[Nodes[x][y]->x - 1][Nodes[x][y]->y].get()));
+			if (Nodes[x][y]->y > 0) Nodes[x][y]->Neighbours.push_back(std::make_unique<Node>(Nodes[Nodes[x][y]->x][Nodes[x][y]->y - 1].get()));
+			if (Nodes[x][y]->x < CollumsX - 1) Nodes[x][y]->Neighbours.push_back(std::make_unique<Node>(Nodes[Nodes[x][y]->x + 1][Nodes[x][y]->y].get()));
+			if (Nodes[x][y]->y < CollumsY - 1) Nodes[x][y]->Neighbours.push_back(std::make_unique<Node>(Nodes[Nodes[x][y]->x][Nodes[x][y]->y + 1].get()));
 		}
 
 	Start = nullptr;
@@ -358,24 +359,24 @@ void Monster::AStarAlg()
 	for (int x = 0; x < CollumsX; x++)
 		for (int y = 0; y < CollumsY; y++)
 		{
-			Nodes[x][y].isVisited = false;
-			Nodes[x][y].FCost = 100000.f;
-			Nodes[x][y].HCost = 100000.f;
-			Nodes[x][y].parent = nullptr;
+			Nodes[x][y]->isVisited = false;
+			Nodes[x][y]->FCost = 100000.f;
+			Nodes[x][y]->HCost = 100000.f;
+			Nodes[x][y]->parent = nullptr;
 		}
 
-	auto GetDist = [](Node* P1, Node* P2) { return vectorDistance(float(P2->x), float(P1->x), float(P2->y), float(P2->y)); };
+	auto GetDist = [](std::unique_ptr<Node>& P1, std::unique_ptr<Node>& P2) { return vectorDistance(float(P2->x), float(P1->x), float(P2->y), float(P2->y)); };
 
 	Start->HCost = 0.0f;
 	Start->FCost = float(GetDist(Start, End));
 
-	std::vector<Node*> NodesToTest;
-	NodesToTest.push_back(Start);
+	std::vector<std::unique_ptr<Node>> NodesToTest;
+	NodesToTest.push_back(std::make_unique<Node>(Start.get()));
 
 
 	while (!NodesToTest.empty())
 	{
-		std::sort(NodesToTest.begin(), NodesToTest.end(), [](const Node* a, const Node* b) { return a->FCost < b->FCost; });
+		std::sort(NodesToTest.begin(), NodesToTest.end(), [](const std::unique_ptr<Node>& a, const std::unique_ptr<Node>& b) { return a->FCost < b->FCost; });
 
 		while (!NodesToTest.empty() && NodesToTest.front()->isVisited)
 			NodesToTest.erase(NodesToTest.begin());
@@ -383,20 +384,20 @@ void Monster::AStarAlg()
 		if (NodesToTest.empty())
 			break;
 
-		auto CurrentNode = NodesToTest.front();
+		auto& CurrentNode = NodesToTest.front();
 		CurrentNode->isVisited = true;
 
 
-		for (auto nodeNeighbour : CurrentNode->Neighbours)
+		for (auto& nodeNeighbour : CurrentNode->Neighbours)
 		{
 			if (!nodeNeighbour->isVisited && !nodeNeighbour->isWall)
-				NodesToTest.push_back(nodeNeighbour);
+				NodesToTest.push_back(std::make_unique<Node>(nodeNeighbour.get()));
 
 			auto BestNode = CurrentNode->HCost + GetDist(CurrentNode, nodeNeighbour);
 
 			if (BestNode < nodeNeighbour->HCost)
 			{
-				nodeNeighbour->parent = CurrentNode;
+				nodeNeighbour->parent = std::make_unique<Node>(CurrentNode.get());
 				nodeNeighbour->HCost = float(BestNode);
 
 				nodeNeighbour->FCost = nodeNeighbour->HCost + float(GetDist(nodeNeighbour, End));

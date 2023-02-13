@@ -53,15 +53,15 @@ public:
 	void draw(sf::RenderTarget& target);
 	void drawShadow(sf::RenderTarget& target);
 private:
+	sf::VideoMode vm;
 	std::list<std::unique_ptr<Monster>> monsters;
 	std::unordered_map<std::string, sf::Texture> textures;
 	sf::Texture shadow_texture;
 	TileMap* tileMap;
 	std::vector<short> monsterIDs;
-	float difficulty_mod;
 	float gridSize;
+	float difficulty_mod;
 	bool bossWave;
-	sf::VideoMode vm;
 };
 
 #endif
