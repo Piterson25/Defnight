@@ -33,6 +33,7 @@ public:
 	virtual const size_t monsterIDsSize() const;
 	virtual const bool monstersEmpty() const;
 	virtual const bool isBossWave() const;
+	virtual const std::vector<sf::Vector2f> monstersPositions() const;
 	const float bossHP() const;
 
 	void monsterIDsClear();

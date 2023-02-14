@@ -46,6 +46,15 @@ const bool MonsterSystem::isBossWave() const
 	return this->bossWave;
 }
 
+const std::vector<sf::Vector2f> MonsterSystem::monstersPositions() const
+{
+	std::vector<sf::Vector2f> positions;
+	for (const auto& monster : monsters) {
+		positions.push_back(monster->getPosition());
+	}
+	return positions;
+}
+
 const float MonsterSystem::bossHP() const
 {
 	for (const auto& monster : monsters) {
@@ -292,7 +301,7 @@ void MonsterSystem::update(Player* player, PlayerGUI* playerGUI, ProjectileSyste
 				monster->smashed(dt);
 			}
 			else {
-				monster->AI(this->tileMap, player, dt);
+				monster->AI(this->tileMap, player, this->monstersPositions(), dt);
 				if (monster->hasVelocity()) {
 					monsterCollision(&(*monster));
 					monster->obstacleCollision(this->tileMap);

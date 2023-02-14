@@ -19,7 +19,7 @@ void MusicEngine::addMusic(const std::string& name)
 
 void MusicEngine::clearMusic()
 {
-	if (this->hasStopped()) this->music.stop();
+	if (!this->hasStopped()) this->music.stop();
 	this->tracks.clear();
 }
 

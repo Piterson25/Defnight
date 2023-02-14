@@ -32,7 +32,7 @@ public:
 
 	void setGold(const uint32_t& gold);
 
-	void AI(TileMap* tileMap, Player* player, const float& dt);
+	void AI(TileMap* tileMap, Player* player, const std::vector<sf::Vector2f>& positions, const float& dt);
 
 	void update(const float& dt);
 	void draw(sf::RenderTarget& target);
@@ -57,23 +57,23 @@ private:
 	struct Node
 	{
 		bool isWall = false;
+		bool isMonster = false;
 		bool isVisited = false;
 		float FCost = 0.f;
 		float HCost = 0.f;
 		int x = 0;
 		int y = 0;
-		std::vector<std::unique_ptr<Node>> Neighbours;
-		std::unique_ptr<Node> parent;
+		std::vector<Node*> Neighbours = {};
+		Node* parent = nullptr;
 	};
-
-	std::vector<std::vector<std::unique_ptr<Node>>> Nodes;
-	std::unique_ptr<Node> Start;
-	std::unique_ptr<Node> End;
-	std::unique_ptr<Node> Current;
+	std::vector<Node*> Nodes;
+	Node* Start;
+	Node* End;
+	Node* Current;
 
 	std::vector<sf::RectangleShape> greens;
 
-	void resetNodes(Player* player);
+	void resetNodes(Player* player, const std::vector<sf::Vector2f>& positions);
 	void initNodes();
 	void AStarAlg();
 

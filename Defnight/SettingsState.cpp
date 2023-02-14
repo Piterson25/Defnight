@@ -118,6 +118,14 @@ void SettingsState::initGUI()
 		this->text_buttons["FPS_COUNTER"] = new gui::ButtonText(&this->font, this->lang["FPS_COUNTER"] + this->lang["OFF"], calcChar(16, vm), calcX(96, vm), calcY(492, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
 	}
 
+	this->texts["MOVEMENT"] = new gui::Text(&this->font, this->lang["MOVEMENT"], calcChar(16, vm), calcX(800, vm), calcY(192, vm), sf::Color(255, 255, 255), false);
+
+	this->texts["ESCAPE"] = new gui::Text(&this->font, this->lang["ESCAPE"], calcChar(16, vm), calcX(800, vm), calcY(242, vm), sf::Color(255, 255, 255), false);
+
+	this->texts["SHOP"] = new gui::Text(&this->font, this->lang["SHOP"], calcChar(16, vm), calcX(800, vm), calcY(292, vm), sf::Color(255, 255, 255), false);
+
+	this->texts["RUN"] = new gui::Text(&this->font, this->lang["RUN"], calcChar(16, vm), calcX(800, vm), calcY(342, vm), sf::Color(255, 255, 255), false);
+
 	this->text_buttons["APPLY"] = new gui::ButtonText(&this->font, this->lang["APPLY"], calcChar(32, vm), calcX(1000, vm), calcY(592, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
 	this->text_buttons["APPLY"]->setPosition(sf::Vector2f(calcX(1184, vm) - this->text_buttons["APPLY"]->getWidth(), calcY(592, vm)));
 }
@@ -300,5 +308,9 @@ void SettingsState::draw(sf::RenderTarget* target)
 	this->text_buttons["SOUNDS"]->draw(*target);
 	this->text_buttons["LANGUAGE"]->draw(*target);
 	this->text_buttons["FPS_COUNTER"]->draw(*target);
+	this->texts["MOVEMENT"]->draw(*target);
+	this->texts["ESCAPE"]->draw(*target);
+	this->texts["SHOP"]->draw(*target);
+	this->texts["RUN"]->draw(*target);
 	this->text_buttons["APPLY"]->draw(*target);
 }

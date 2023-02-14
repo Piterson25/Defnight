@@ -9,14 +9,14 @@ Game::Game()
 
 Game::~Game()
 {
-	delete this->window;
-	delete this->musicEngine;
-	delete this->soundEngine;
-
 	while (!this->states.empty()) {
 		delete this->states.top();
 		this->states.pop();
 	}
+
+	delete this->window;
+	delete this->musicEngine;
+	delete this->soundEngine;
 }
 
 void Game::init()
