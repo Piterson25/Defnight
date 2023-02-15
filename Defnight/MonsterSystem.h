@@ -40,6 +40,8 @@ public:
 
 	void addMonster(const std::string& monster_name, sf::Texture& texture, 
 		const float& x, const float& y, const float& wave_mod);
+	void addBoss(const std::string& monster_name, sf::Texture& texture, 
+		const float& x, const float& y, const float& wave_mod);
 
 	void playerAttack(Player* player, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine, bool& playedSound);
 	void explosionAttack(Particle* particle, FloatingTextSystem* floatingTextSystem);

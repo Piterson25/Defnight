@@ -122,6 +122,9 @@
     <ClCompile Include="ParticleSystem.cpp">
       <Filter>Particles</Filter>
     </ClCompile>
+    <ClCompile Include="Boss.cpp">
+      <Filter>Entities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Drop.h">
@@ -207,6 +210,9 @@
     </ClInclude>
     <ClInclude Include="ParticleSystem.h">
       <Filter>Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="Boss.h">
+      <Filter>Entities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

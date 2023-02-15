@@ -8,8 +8,8 @@
 #include "SoundEngine.h"
 #include "TileMap.h"
 
-class ProjectileSystem;
 class Player;
+class ProjectileSystem;
 class FloatingTextSystem;
 class SoundEngine;
 class TileMap;
@@ -18,6 +18,7 @@ class Monster
 	: public Entity
 {
 public:
+	Monster();
 	Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::Texture& texture, sf::Texture& shadow_texture, TileMap* tileMap, const float& x, const float& y, const float& difficulty_mod, const float& wave_mod);
 	virtual ~Monster();
 
@@ -34,10 +35,10 @@ public:
 
 	void AI(TileMap* tileMap, Player* player, const std::vector<sf::Vector2f>& positions, const float& dt);
 
-	void update(const float& dt);
-	void draw(sf::RenderTarget& target);
-	void drawShadow(sf::RenderTarget& target);
-private:
+	virtual void update(const float& dt);
+	virtual void draw(sf::RenderTarget& target);
+	virtual void drawShadow(sf::RenderTarget& target);
+protected:
 	sf::Sprite shadow;
 	sf::Texture shadow_texture;
 

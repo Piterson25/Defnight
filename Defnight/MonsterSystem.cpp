@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "Functions.h"
 #include "MonsterSystem.h"
+#include "Boss.h"
 
 MonsterSystem::MonsterSystem(const sf::VideoMode& vm, TileMap* tileMap, const float& gridSize, const float& difficulty_mod)
 	:vm(vm), tileMap(tileMap), gridSize(gridSize), difficulty_mod(difficulty_mod)
@@ -73,6 +74,11 @@ void MonsterSystem::monsterIDsClear()
 void MonsterSystem::addMonster(const std::string& monster_name, sf::Texture& texture, const float& x, const float& y, const float& wave_mod)
 {
 	this->monsters.emplace_back(new Monster(this->vm, monster_name, texture, this->shadow_texture, this->tileMap, x, y, this->difficulty_mod, wave_mod));
+}
+
+void MonsterSystem::addBoss(const std::string& monster_name, sf::Texture& texture, const float& x, const float& y, const float& wave_mod)
+{
+	this->monsters.emplace_back(new Boss(this->vm, monster_name, texture, this->shadow_texture, this->tileMap, x, y, this->difficulty_mod, wave_mod, 2));
 }
 
 void MonsterSystem::playerAttack(Player* player, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine, bool& playedSound)
@@ -210,7 +216,7 @@ void MonsterSystem::spawnMonsters(Player* player, const uint32_t& wave)
 			this->addMonster("cyclope", this->textures["CYCLOPE"], calcX(this->gridSize * rx, this->vm), calcY(this->gridSize * ry, this->vm), wave_mod);
 			break;
 		case 4:
-			this->addMonster("minotaur", this->textures["MINOTAUR"], calcX(this->gridSize * 16, this->vm), calcY(this->gridSize * 16, this->vm), wave_mod);
+			this->addBoss("minotaur", this->textures["MINOTAUR"], calcX(this->gridSize * 16, this->vm), calcY(this->gridSize * 16, this->vm), wave_mod);
 			break;
 		default:
 			break;
