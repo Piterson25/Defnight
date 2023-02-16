@@ -4,6 +4,16 @@
 
 Monster::Monster()
 {
+	this->Current = nullptr;
+	this->End = nullptr;
+	this->Start = nullptr;
+	this->spawned = false;
+	this->activateAI = false;
+	this->playedSound = false;
+	this->deadCountdown = 0.f;
+	this->gold = 0;
+	this->spawnCountdown = 0.f;
+	this->monsterSize = 1;
 }
 
 Monster::Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::Texture& texture, sf::Texture& shadow_texture, TileMap* tileMap,
@@ -325,8 +335,8 @@ void Monster::update(const float& dt)
 void Monster::draw(sf::RenderTarget& target)
 {
 	target.draw(this->sprite);
-	for(auto& e : greens)
-	target.draw(e);
+	//for(auto& e : greens)
+	//target.draw(e);
 }
 
 void Monster::drawShadow(sf::RenderTarget& target)
