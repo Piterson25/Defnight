@@ -35,7 +35,7 @@ public:
 
 	void AI(TileMap* tileMap, Player* player, const std::vector<sf::Vector2f>& positions, const float& dt);
 
-	virtual void update(const float& dt);
+	virtual void update(const float& dt, ProjectileSystem* projectileSystem, SoundEngine* soundEngine);
 	virtual void draw(sf::RenderTarget& target);
 	virtual void drawShadow(sf::RenderTarget& target);
 protected:

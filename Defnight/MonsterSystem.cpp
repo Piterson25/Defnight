@@ -312,8 +312,8 @@ void MonsterSystem::update(Player* player, PlayerGUI* playerGUI, ProjectileSyste
 					monsterCollision(&(*monster));
 					monster->obstacleCollision(this->tileMap);
 					monster->move();
-					monster->update(dt);
 				}
+				monster->update(dt, projectileSystem, soundEngine);
 				monster->loadAttack(dt);
 				if (monster->attackPlayer(player, this->tileMap, projectileSystem, floatingTextSystem, soundEngine)) {
 					playerGUI->update_HP();

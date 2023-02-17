@@ -3,8 +3,12 @@
 
 #include "Monster.h"
 #include "TileMap.h"
+#include "ProjectileSystem.h"
+#include "SoundEngine.h"
 
 class TileMap;
+class ProjectileSystem;
+class SoundEngine;
 
 class Boss
 	: public Monster
@@ -14,11 +18,13 @@ public:
 		const float& x, const float& y, const float& difficulty_mod, const float& wave_mod, const uint32_t& monsterSize);
 	virtual ~Boss();
 
-	void update(const float& dt);
+	void specialAttack(const float& dt, ProjectileSystem* projectileSystem, SoundEngine* soundEngine);
+	void update(const float& dt, ProjectileSystem* projectileSystem, SoundEngine* soundEngine);
 	void draw(sf::RenderTarget& target);
 	void drawShadow(sf::RenderTarget& target);
 private:
 	uint32_t monsterSize;
+	float specialAttackCountdown;
 };
 
 #endif

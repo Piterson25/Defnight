@@ -25,7 +25,6 @@ Monster::Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::T
 	this->shadow_texture = shadow_texture;
 
 	this->monsterSize = 1;
-	if (this->name == "minotaur") this->monsterSize = 2;
 
 	this->sprite.setTexture(this->texture);
 	this->sprite.setTextureRect(sf::IntRect(0, 32 * this->monsterSize, 16 * this->monsterSize, 16 * this->monsterSize));
@@ -92,15 +91,6 @@ Monster::Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::T
 		this->speed = 1;
 		this->gold = static_cast<uint32_t>(4 * wave_mod);
 		this->XP = static_cast<uint32_t>(26 * wave_mod);
-	}
-	else if (this->name == "minotaur") {
-		this->attack = static_cast<uint32_t>(7 * difficulty_mod);
-		this->attackSpeed = 2;
-		this->HP = static_cast<uint32_t>(69 * difficulty_mod);
-		this->maxHP = static_cast<uint32_t>(69 * difficulty_mod);
-		this->speed = 1;
-		this->gold = static_cast<uint32_t>(50 * wave_mod);
-		this->XP = static_cast<uint32_t>(200 * wave_mod);
 	}
 }
 
@@ -324,7 +314,7 @@ void Monster::AI(TileMap* tileMap, Player* player, const std::vector<sf::Vector2
 	}
 }
 
-void Monster::update(const float& dt)
+void Monster::update(const float& dt, ProjectileSystem* projectileSystem, SoundEngine* soundEngine)
 {
 	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(static_cast<float>(52 * this->monsterSize), this->vm));
 	if (this->playedSound && this->frame != 80) {
@@ -346,13 +336,13 @@ void Monster::drawShadow(sf::RenderTarget& target)
 
 void Monster::initNodes()
 {
-	for (short x = 0; x < CollumsX; ++x)
+	for (size_t x = 0; x < CollumsX; ++x)
 	{
 		Nodes.push_back(new Node[CollumsY]);
-		for (short y = 0; y < CollumsY; ++y)
+		for (size_t y = 0; y < CollumsY; ++y)
 		{
-			Nodes[x][y].x = x;
-			Nodes[x][y].y = y;
+			Nodes[x][y].x = static_cast<int>(x);
+			Nodes[x][y].y = static_cast<int>(y);
 			Nodes[x][y].isWall = false;
 			Nodes[x][y].isVisited = false;
 			Nodes[x][y].parent = nullptr;
@@ -361,14 +351,16 @@ void Monster::initNodes()
 		}
 	}
 
-	for (short x = 0; x < CollumsX; ++x)
-		for (short y = 0; y < CollumsY; ++y)
+	for (size_t x = 0; x < CollumsX; ++x)
+	{
+		for (size_t y = 0; y < CollumsY; ++y)
 		{
 			if (Nodes[x][y].x > 0) Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x - 1][Nodes[x][y].y]);
 			if (Nodes[x][y].y > 0) Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][Nodes[x][y].y - 1]);
 			if (Nodes[x][y].x < CollumsX - 1) Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x + 1][Nodes[x][y].y]);
 			if (Nodes[x][y].y < CollumsY - 1) Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][Nodes[x][y].y + 1]);
 		}
+	}
 
 	Start = nullptr;
 	End = nullptr;

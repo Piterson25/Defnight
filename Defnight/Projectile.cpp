@@ -34,6 +34,9 @@ Projectile::Projectile(const sf::VideoMode& vm, const std::string& projectile_na
 	else if (this->name == "bomb") {
 		this->sprite.setTextureRect(sf::IntRect(8, 0, 4, 4));
 	}
+	else if (this->name == "groundWave") {
+		this->sprite.setTextureRect(sf::IntRect(12, 0, 8, 8));
+	}
 
 	this->calculateVelocity(coords);
 }
@@ -165,7 +168,7 @@ void Projectile::wallCollision(TileMap* tileMap)
 
 void Projectile::playerCollision(Player* player)
 {
-	if (this->name == "stone") {
+	if (this->name == "stone" || this->name == "groundWave") {
 
 		const float distance = 2 * player->getGlobalBounds().width;
 

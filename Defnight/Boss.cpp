@@ -28,6 +28,7 @@ Boss::Boss(const sf::VideoMode& vm, const std::string& monster_name, sf::Texture
 	this->deadCountdown = 0.f;
 	this->spawned = false;
 	this->activateAI = false;
+	this->specialAttackCountdown = 0.f;
 
 	this->playedSound = false;
 
@@ -57,12 +58,35 @@ Boss::~Boss()
 	this->Nodes.clear();
 }
 
-void Boss::update(const float& dt)
+void Boss::specialAttack(const float& dt, ProjectileSystem* projectileSystem, SoundEngine* soundEngine)
+{
+	this->specialAttackCountdown += dt;
+	if (this->specialAttackCountdown >= 5.f) {
+		this->specialAttackCountdown = 0.f;
+		projectileSystem->addProjectile("groundWave", this->getCenter().x, this->getCenter().y, this->getAttack(), 1, 2, sf::Vector2f(this->getUpCenter()), 0);
+		projectileSystem->addProjectile("groundWave", this->getCenter().x, this->getCenter().y, this->getAttack(), 1, 2, sf::Vector2f(this->getRightCenter().x, this->getUpCenter().y), 0);
+		projectileSystem->addProjectile("groundWave", this->getCenter().x, this->getCenter().y, this->getAttack(), 1, 2, sf::Vector2f(this->getRightCenter()), 0);
+		projectileSystem->addProjectile("groundWave", this->getCenter().x, this->getCenter().y, this->getAttack(), 1, 2, sf::Vector2f(this->getRightCenter().x, this->getDownCenter().y), 0);
+		projectileSystem->addProjectile("groundWave", this->getCenter().x, this->getCenter().y, this->getAttack(), 1, 2, sf::Vector2f(this->getDownCenter()), 0);
+		projectileSystem->addProjectile("groundWave", this->getCenter().x, this->getCenter().y, this->getAttack(), 1, 2, sf::Vector2f(this->getLeftCenter().x, this->getDownCenter().y), 0);
+		projectileSystem->addProjectile("groundWave", this->getCenter().x, this->getCenter().y, this->getAttack(), 1, 2, sf::Vector2f(this->getLeftCenter()), 0);
+		projectileSystem->addProjectile("groundWave", this->getCenter().x, this->getCenter().y, this->getAttack(), 1, 2, sf::Vector2f(this->getLeftCenter().x, this->getUpCenter().y), 0);
+		if (!this->playedSound) {
+			soundEngine->addSound("punch");
+			this->playedSound = true;
+		}
+	
+	}
+}
+
+void Boss::update(const float& dt, ProjectileSystem* projectileSystem, SoundEngine* soundEngine)
 {
 	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(static_cast<float>(52 * this->monsterSize), this->vm));
 	if (this->playedSound && this->frame != 80) {
 		this->playedSound = false;
 	}
+
+	this->specialAttack(dt, projectileSystem, soundEngine);
 }
 
 void Boss::draw(sf::RenderTarget& target)

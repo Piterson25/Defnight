@@ -289,7 +289,7 @@ void Player::controls(const std::unordered_map<std::string, int>& keybinds, cons
 				sf::RectangleShape particle;
 				particle.setPosition(this->getDownCenter());
 				particle.setFillColor(sf::Color::White);
-				particle.setSize(sf::Vector2f(8.0f, 8.0f));
+				particle.setSize(sf::Vector2f(calcX(8, vm), calcY(8, vm)));
 				particle.rotate(Random::Float() * 360.f - 90.f);
 				this->particles.push_back(particle);
 			}
