@@ -49,6 +49,7 @@ public:
 	void setIsSprinting(const bool& isSprinting);
 	void setIsRegenerating(const bool& isRegenerating);
 	void setIsLeveling(const bool& isLeveling);
+	void setAbilityActive(const bool& abilityActive);
 	void setAbilityCooldown(const float& abilityCooldown);
 	void setAbilityTime(const float& abilityTime);
 	void setAbilityMaxTime(const float& abilityMaxTime);

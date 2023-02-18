@@ -215,6 +215,11 @@ void Player::setIsLeveling(const bool& isLeveling)
 	this->isLeveling = isLeveling;
 }
 
+void Player::setAbilityActive(const bool& abilityActive)
+{
+	this->abilityActive = abilityActive;
+}
+
 void Player::setAbilityCooldown(const float& abilityCooldown)
 {
 	this->abilityCooldown = abilityCooldown;

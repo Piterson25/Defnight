@@ -326,6 +326,9 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 {
 	this->texts["NAME"]->setText(this->lang[name]);
 	this->texts["NAME"]->center(calcX(196, this->vm));
+	if (this->player->getAbilityActive()) {
+		this->player->setAbilityActive(false);
+	}
 	if (name == "NINJA") {
 		this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
 		this->player->setTexturePath("external/assets/heroes/ninja.png");
@@ -420,7 +423,7 @@ void PlayerGUI::update_level(SoundEngine* soundEngine)
 	this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 20));
 	this->texts["LEVEL"]->setText("Level " + std::to_string(this->player->getLevel()));
 	this->texts["LEVEL"]->center(calcX(640, this->vm));
-	if (this->player->getLevel() == 5 || this->player->getLevel() == 10) this->isUpgrading = true;
+	if (this->player->getLevel() == 5 || (this->player->getLevel() == 10 && this->player->getName() != "scout")) this->isUpgrading = true;
 
 	std::vector<short> id = { 3, 4, 5 };
 	if (this->player->getArmor() < 10 || (this->player->getIncreasedArmor() && ((this->player->getAbilityActive() && this->player->getArmor() < 15)
