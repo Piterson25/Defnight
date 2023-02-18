@@ -47,6 +47,7 @@ Player::Player(const sf::VideoMode& vm, const std::string& hero_name, const floa
 	this->abilityMaxTime = 0.f;
 	this->abilityTime = 0.f;
 	this->abilityCooldown = 0.f;
+	this->increasedArmor = false;
 
 	this->gold = 0;
 
@@ -142,6 +143,11 @@ const bool Player::getSpawned() const
 const bool Player::getAbilityActive() const
 {
 	return this->abilityActive;
+}
+
+const bool Player::getIncreasedArmor() const
+{
+	return this->increasedArmor;
 }
 
 const float Player::getAbilityCooldown() const
@@ -334,14 +340,17 @@ void Player::abilityCounter(const float& dt)
 			this->abilityActive = false;
 			if (this->name == "knight") {
 				this->armor -= 5;
+				this->increasedArmor = false;
 			}
 			else if (this->name == "crusader") {
 				this->armor -= 5;
 				this->attack -= 5;
+				this->increasedArmor = false;
 			}
 			else if (this->name == "paladin") {
 				this->armor -= 5;
-				this->reg -= 3;
+				this->reg -= 5;
+				this->increasedArmor = false;
 			}
 		}
 		else if (this->abilityCooldown > this->abilityMaxTime) {
@@ -360,7 +369,9 @@ const bool Player::checkIfAbility()
 			if (this->name == "knight") {
 				this->ability.setTextureRect(sf::IntRect(0, 0, 16, 16));
 			}
-			else if (this->name == "scout") this->ability.setTextureRect(sf::IntRect(16, 0, 16, 16));
+			else if (this->name == "scout") {
+				this->ability.setTextureRect(sf::IntRect(16, 0, 16, 16));
+			}
 			else if (this->name == "crusader") {
 				this->ability.setTextureRect(sf::IntRect(32, 0, 16, 16));
 			}
@@ -377,36 +388,39 @@ const bool Player::checkIfAbility()
 void Player::doAbility(const sf::Vector2f& coords, ProjectileSystem* projectileSystem, SoundEngine* soundEngine)
 {
 	if (this->name == "ninja") {
-		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 3, 3, 4, coords, 0);
+		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 3, 3, 4, coords, 0, false);
 		soundEngine->addSound("shuriken");
 	}
 	else if (this->name == "knight") {
 		this->armor += 5;
+		this->increasedArmor = true;
 		soundEngine->addSound("ability");
 	}
 	else if (this->name == "scout") {
 		soundEngine->addSound("ability");
 	}
 	else if (this->name == "master") {
-		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 5, 4, 4, coords, 0);
+		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 5, 4, 4, coords, 0, false);
 		soundEngine->addSound("shuriken");
-		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 5, 4, 4, coords, -45.f);
+		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 5, 4, 4, coords, -45.f, false);
 		soundEngine->addSound("shuriken");
-		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 5, 4, 4, coords, 45.f);
+		projectileSystem->addProjectile("shuriken", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 5, 4, 4, coords, 45.f, false);
 		soundEngine->addSound("shuriken");
 	}
 	else if (this->name == "bomber") {
-		projectileSystem->addProjectile("bomb", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 7, 1, 3, coords, 0);
+		projectileSystem->addProjectile("bomb", this->getPosition().x + calcX(32, vm), this->getPosition().y + calcY(32, vm), 7, 1, 3, coords, 0, false);
 		soundEngine->addSound("shuriken");
 	}
 	else if (this->name == "crusader") {
+		this->increasedArmor = true;
 		this->armor += 5;
 		this->attack += 5;
 		soundEngine->addSound("ability");
 	}
 	else if (this->name == "paladin") {
+		this->increasedArmor = true;
 		this->armor += 5;
-		this->reg += 3;
+		this->reg += 5;
 		soundEngine->addSound("ability");
 	}
 }
@@ -444,7 +458,7 @@ void Player::update(const float& dt)
 void Player::draw(sf::RenderTarget& target)
 {
 	target.draw(this->sprite);
-	if (this->abilityActive && (this->name == "knight" || this->name == "scout" || this->name == "crusader" || this->name == "paladin")) target.draw(this->ability);
+	if (this->abilityActive && (this->increasedArmor || this->name == "scout")) target.draw(this->ability);
 }
 
 void Player::drawShadow(sf::RenderTarget& target)

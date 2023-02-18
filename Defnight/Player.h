@@ -34,6 +34,7 @@ public:
 	virtual const bool getLeveling() const;
 	virtual const bool getSpawned() const;
 	virtual const bool getAbilityActive() const;
+	virtual const bool getIncreasedArmor() const;
 	virtual const float getAbilityCooldown() const;
 	virtual const float getAbilityTime() const;
 	virtual const float getAbilityMaxTime() const;
@@ -90,6 +91,7 @@ private:
 	bool spawned;
 	float regCooldown;
 	float spawnCountdown;
+	bool increasedArmor;
 
 	bool abilityActive;
 	float abilityCooldown;

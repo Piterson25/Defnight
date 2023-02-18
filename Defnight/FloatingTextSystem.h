@@ -12,7 +12,7 @@ public:
 		const float& posX, const float& posY, const sf::Color& color, const bool& isgui);
 
 	void draw(sf::RenderTarget& target);
-	void drawGui(sf::RenderTarget& target, const bool& isShopping);
+	void drawGui(sf::RenderTarget& target);
 	void update(const float& dt);
 private:
 	std::list<std::unique_ptr<FloatingText>> floatingTexts;

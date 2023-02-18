@@ -25,10 +25,10 @@ void FloatingTextSystem::draw(sf::RenderTarget& target)
 	}
 }
 
-void FloatingTextSystem::drawGui(sf::RenderTarget& target, const bool& isShopping)
+void FloatingTextSystem::drawGui(sf::RenderTarget& target)
 {
 	for (const auto& text : floatingTexts) {
-		if (text->isGui() && isShopping) text->draw(target);
+		if (text->isGui()) text->draw(target);
 	}
 }
 

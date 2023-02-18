@@ -176,7 +176,7 @@ void GameState::draw(sf::RenderTarget* target)
 
 	this->playerGUI->draw(*target);
 
-	this->floatingTextSystem->drawGui(*target, this->playerGUI->getIsShopping());
+	this->floatingTextSystem->drawGui(*target);
 }
 
 void GameState::update(const float& dt)
@@ -283,8 +283,6 @@ void GameState::update(const float& dt)
 				if (this->player->checkIfAbility()) {
 					this->player->doAbility(sf::Vector2f(this->window->mapPixelToCoords(sf::Mouse::getPosition(*this->window), this->view)), this->projectileSystem, this->soundEngine);
 					this->playerGUI->setAbilityIcon();
-					this->playerGUI->updateArmor();
-					this->playerGUI->updateAttack();
 				}
 			}
 			this->player->spawn(dt);
@@ -292,6 +290,7 @@ void GameState::update(const float& dt)
 			this->player->abilityCounter(dt);
 			this->playerGUI->updateArmor();
 			this->playerGUI->updateAttack();
+			this->playerGUI->updateReg();
 			this->playerGUI->update_ability(dt);
 
 		}

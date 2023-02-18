@@ -35,6 +35,7 @@ public:
 	void updatePaused(bool& paused);
 	void updateArmor();
 	void updateAttack();
+	void updateReg();
 	void updateBossHP(const float& dt);
 	const bool updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine, FloatingTextSystem* floatingTextSystem);
 
@@ -62,13 +63,8 @@ private:
 	sf::VideoMode& vm;
 
 	sf::Texture attributes_texture;
-	std::vector<sf::Sprite> attribute_vec;
-
 	sf::Texture upgrades_texture;
-	std::vector<sf::Sprite> upgrades_vec;
-
 	sf::Texture abilities_texture;
-	std::vector<sf::Sprite> abilities_vec;
 
 	bool bossWave;
 

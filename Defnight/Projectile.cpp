@@ -3,7 +3,7 @@
 #include "Projectile.h"
 
 Projectile::Projectile(const sf::VideoMode& vm, const std::string& projectile_name, sf::Texture& texture, const float& x, const float& y, 
-	const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords, const float& coordsOffset)
+	const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords, const float& coordsOffset, const bool& monsterProjectile)
 {
 	this->vm = vm;
 	this->name = projectile_name;
@@ -22,6 +22,7 @@ Projectile::Projectile(const sf::VideoMode& vm, const std::string& projectile_na
 	this->collided = false;
 	this->collidedPlayer = false;
 	this->collidedMonster = false;
+	this->monsterProjectile = monsterProjectile;
 	this->bouncing = false;
 
 	if (this->name == "stone") {

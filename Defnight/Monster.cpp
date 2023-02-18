@@ -124,7 +124,7 @@ const bool Monster::attackPlayer(Player* player, TileMap* tileMap, ProjectileSys
 			this->doAttack();
 			if (!player->isDead() && !player->getPunched() && this->getIsAttacking() && this->getFrame() == 80) {
 				if (this->getAttack() > 0) {
-					projectileSystem->addProjectile("stone", this->getPosition().x + calcX(24, vm), this->getPosition().y + calcY(36, vm), this->getAttack(), 1, 1, sf::Vector2f(player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm)), 0);
+					projectileSystem->addProjectile("stone", this->getPosition().x + calcX(24, vm), this->getPosition().y + calcY(36, vm), this->getAttack(), 1, 1, sf::Vector2f(player->getPosition().x + calcX(32, vm), player->getPosition().y + calcY(32, vm)), 0, false);
 					this->isAttacking = false;
 
 					if (!this->playedSound) {
@@ -368,14 +368,16 @@ void Monster::initNodes()
 
 void Monster::AStarAlg()
 {
-	for (int x = 0; x < CollumsX; x++)
-		for (int y = 0; y < CollumsY; y++)
+	for (size_t x = 0; x < CollumsX; ++x)
+	{
+		for (size_t y = 0; y < CollumsY; ++y)
 		{
 			Nodes[x][y].isVisited = false;
 			Nodes[x][y].FCost = 100000.f;
 			Nodes[x][y].HCost = 100000.f;
 			Nodes[x][y].parent = nullptr;
 		}
+	}
 
 	auto GetDist = [](Node* P1, Node* P2) { return vectorDistance(float(P2->x), float(P1->x), float(P2->y), float(P2->y)); };
 

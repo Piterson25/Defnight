@@ -180,7 +180,7 @@ void MonsterSystem::monsterCollision(Monster* mob)
 
 void MonsterSystem::spawnMonsters(Player* player, const uint32_t& wave)
 {
-	const float wave_mod = 1.f + static_cast<uint32_t>(wave / 10.f);
+	const float wave_mod = 1.f + static_cast<uint32_t>(wave / 10.f) * 2.f;
 
 	for (const auto& id : this->monsterIDs) {
 		uint32_t rx = static_cast<uint32_t>(Random::Float() * 32.f), ry = static_cast<uint32_t>(Random::Float() * 32.f);

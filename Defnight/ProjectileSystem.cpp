@@ -14,9 +14,9 @@ ProjectileSystem::~ProjectileSystem()
 }
 
 void ProjectileSystem::addProjectile(const std::string& projectile_name, const float& x, const float& y,
-	const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords, const float& coordsOffset)
+	const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords, const float& coordsOffset, const bool& monsterProjectile)
 {
-	this->projectiles.emplace_back(new Projectile(this->vm, projectile_name, this->textures, x, y, attack, HP, speed, coords, coordsOffset));
+	this->projectiles.emplace_back(new Projectile(this->vm, projectile_name, this->textures, x, y, attack, HP, speed, coords, coordsOffset, monsterProjectile));
 }
 
 void ProjectileSystem::update(Player* player, PlayerGUI* playerGui, ParticleSystem* particleSystem, MonsterSystem* monsterSystem, sf::Sprite& background, TileMap* tileMap, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine, const float& dt)
@@ -42,7 +42,7 @@ void ProjectileSystem::update(Player* player, PlayerGUI* playerGui, ParticleSyst
 			proj = this->projectiles.erase(proj);
 		}
 		else if ((*proj)->getCollidedPlayer()) {
-			if (!(player->getAbilityActive() && (player->getName() == "knight" || player->getName() == "crusader"))) {
+			if (!(player->getAbilityActive() && (player->getIncreasedArmor()))) {
 				int attack = static_cast<int>(round((*proj)->getAttack() - ((*proj)->getAttack() * player->getArmor() * 0.05f)));
 
 				if (attack > 0) {
