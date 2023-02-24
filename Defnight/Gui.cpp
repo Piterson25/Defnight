@@ -149,9 +149,25 @@ gui::ButtonSprite::ButtonSprite(const std::string& texturePath, const float& pos
 	if (center) this->center(posX);
 }
 
+gui::ButtonSprite::ButtonSprite(const sf::Texture& texture, const float& posX, const float& posY, const float& scale, const bool& center)
+{
+	this->buttonState = BUTTON_IDLE;
+	this->texture = texture;
+	this->sprite.setTexture(this->texture);
+	this->sprite.setColor(sf::Color::Transparent);
+	this->sprite.setPosition(posX, posY);
+	this->sprite.setScale(scale, scale);
+	if (center) this->center(posX);
+}
+
 gui::ButtonSprite::~ButtonSprite()
 {
 
+}
+
+const sf::IntRect gui::ButtonSprite::getTextureRect() const
+{
+	return this->sprite.getTextureRect();
 }
 
 const bool gui::ButtonSprite::isPressed() const
@@ -164,6 +180,11 @@ void gui::ButtonSprite::setTransparent()
 {
 	this->buttonState = BUTTON_IDLE;
 	this->sprite.setColor(sf::Color::Transparent);
+}
+
+void gui::ButtonSprite::setTextureRect(const sf::IntRect& intRect)
+{
+	this->sprite.setTextureRect(intRect);
 }
 
 void gui::ButtonSprite::center(const float& posX)

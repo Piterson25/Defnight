@@ -65,6 +65,7 @@ private:
 	sf::Texture attributes_texture;
 	sf::Texture upgrades_texture;
 	sf::Texture abilities_texture;
+	sf::Texture select_texture;
 
 	bool bossWave;
 

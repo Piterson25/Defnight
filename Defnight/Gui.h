@@ -58,11 +58,15 @@ namespace gui {
 	{
 	public:
 		ButtonSprite(const std::string& texturePath, const float& posX, const float& posY, const float& scale, const bool& center);
+		ButtonSprite(const sf::Texture& texture, const float& posX, const float& posY, const float& scale, const bool& center);
 		~ButtonSprite();
+
+		virtual const sf::IntRect getTextureRect() const;
 
 		const bool isPressed() const;
 
 		void setTransparent();
+		void setTextureRect(const sf::IntRect& intRect);
 		void center(const float& posX);
 
 		void update(const sf::Vector2i& mousePosWindow);

@@ -74,7 +74,7 @@ void MainMenuState::initGUI()
 	this->text_buttons["SETTINGS"] = new gui::ButtonText(&this->font, this->lang["SETTINGS"], calcChar(32, vm), calcX(640, vm), calcY(466, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
 	this->text_buttons["QUIT"] = new gui::ButtonText(&this->font, this->lang["QUIT"], calcChar(32, vm), calcX(640, vm), calcY(558, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
 
-	this->texts["VERSION"] = new gui::Text(&this->font, "v0.2.3", calcChar(16, vm), calcX(1272, vm), calcY(700, vm), sf::Color(255, 255, 255), false);
+	this->texts["VERSION"] = new gui::Text(&this->font, "v0.2.4", calcChar(16, vm), calcX(1272, vm), calcY(700, vm), sf::Color(255, 255, 255), false);
 	this->texts["VERSION"]->setPosition(sf::Vector2f(calcX(1272, vm) - this->texts["VERSION"]->getWidth(), calcY(700, vm)));
 
 	this->quitwindow = false;

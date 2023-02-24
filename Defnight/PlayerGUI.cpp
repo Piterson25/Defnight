@@ -2,13 +2,14 @@
 #include "Functions.h"
 #include "PlayerGUI.h"
 
-PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const float& soundVolume, 
+PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const float& soundVolume,
 	const std::string& heroName, const std::string& difficulty_name, std::unordered_map<std::string, std::string>& lang)
 	:font(*font), player(player), vm(vm), lang(lang)
 {
 	this->attributes_texture.loadFromFile("external/assets/icons.png");
 	this->upgrades_texture.loadFromFile("external/assets/upgrade_icons.png");
 	this->abilities_texture.loadFromFile("external/assets/abilities_icons.png");
+	this->select_texture.loadFromFile("external/assets/select.png");
 
 	this->sprites["BAR"] = new gui::Sprite("external/assets/bar.png", 0, 0, calcScale(1, vm), false);
 
@@ -77,19 +78,25 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->waveCountdown = 0.f;
 
 	this->isLeveling = false;
-	
+
 	this->texts["LEVEL_UP"] = new gui::Text(&this->font, "LEVEL UP!", calcChar(32, vm), calcX(640, vm), calcY(256, vm), sf::Color(255, 246, 76), true);
 	this->sprites["UPGRADE_BAR"] = new gui::Sprite("external/assets/upgrade_bar.png", calcX(640, vm), calcY(476, vm), calcScale(1, vm), true);
 	this->sprites["SIDE_BAR"] = new gui::Sprite("external/assets/side_bar.png", calcX(988, vm), calcY(128, vm), calcScale(1, vm), false);
 
-	this->sprite_buttons["OPTION1"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(504, vm), calcY(500, vm), calcScale(1, vm), false);
-	this->sprite_buttons["OPTION2"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(688, vm), calcY(500, vm), calcScale(1, vm), false);
-	this->sprites["OPTION1"] = new gui::Sprite(this->attributes_texture, calcX(516, vm), calcY(512, vm), calcScale(4, vm), false);
-	this->sprites["OPTION2"] = new gui::Sprite(this->attributes_texture, calcX(700, vm), calcY(512, vm), calcScale(4, vm), false);
-	this->texts["OPTION1"] = new gui::Text(&this->font, "", calcChar(16, vm), calcX(548, vm), calcY(608, vm), sf::Color(255, 255, 255), false);
-	this->texts["OPTION2"] = new gui::Text(&this->font, "", calcChar(16, vm), calcX(732, vm), calcY(608, vm), sf::Color(255, 255, 255), false);
-	this->texts["OPTION1_VALUE"] = new gui::Text(&this->font, "", calcChar(16, vm), calcX(548, vm), calcY(632, vm), sf::Color(255, 255, 255), false);
-	this->texts["OPTION2_VALUE"] = new gui::Text(&this->font, "", calcChar(16, vm), calcX(732, vm), calcY(632, vm), sf::Color(255, 255, 255), false);
+	this->sprites["OPTION1_FRAME"] = new gui::Sprite(this->select_texture, calcX(504, vm), calcY(512, vm), calcScale(1, vm), false);
+	this->sprites["OPTION1_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
+	this->sprites["OPTION2_FRAME"] = new gui::Sprite(this->select_texture, calcX(688, vm), calcY(512, vm), calcScale(1, vm), false);
+	this->sprites["OPTION2_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
+	this->sprite_buttons["OPTION1"] = new gui::ButtonSprite(this->select_texture, calcX(504, vm), calcY(512, vm), calcScale(1, vm), false);
+	this->sprite_buttons["OPTION1"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
+	this->sprite_buttons["OPTION2"] = new gui::ButtonSprite(this->select_texture, calcX(688, vm), calcY(512, vm), calcScale(1, vm), false);
+	this->sprite_buttons["OPTION2"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
+	this->sprites["OPTION1"] = new gui::Sprite(this->attributes_texture, calcX(516, vm), calcY(524, vm), calcScale(4, vm), false);
+	this->sprites["OPTION2"] = new gui::Sprite(this->attributes_texture, calcX(700, vm), calcY(524, vm), calcScale(4, vm), false);
+	this->texts["OPTION1"] = new gui::Text(&this->font, "", calcChar(16, vm), calcX(548, vm), calcY(612, vm), sf::Color(255, 255, 255), false);
+	this->texts["OPTION2"] = new gui::Text(&this->font, "", calcChar(16, vm), calcX(732, vm), calcY(612, vm), sf::Color(255, 255, 255), false);
+	this->texts["OPTION1_VALUE"] = new gui::Text(&this->font, "", calcChar(16, vm), calcX(548, vm), calcY(636, vm), sf::Color(255, 255, 255), false);
+	this->texts["OPTION2_VALUE"] = new gui::Text(&this->font, "", calcChar(16, vm), calcX(732, vm), calcY(636, vm), sf::Color(255, 255, 255), false);
 
 	this->option1_id = 0;
 	this->option1_val = 0;
@@ -98,9 +105,18 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 
 	this->isUpgrading = false;
 
-	this->sprite_buttons["UPGRADE1"] = new gui::ButtonSprite("external/assets/select_upgrade.png", calcX(1008, vm), calcY(210, vm), calcScale(1, vm), false);
-	this->sprite_buttons["UPGRADE2"] = new gui::ButtonSprite("external/assets/select_upgrade.png", calcX(1008, vm), calcY(380, vm), calcScale(1, vm), false);
-	this->sprite_buttons["UPGRADE3"] = new gui::ButtonSprite("external/assets/select_upgrade.png", calcX(1008, vm), calcY(550, vm), calcScale(1, vm), false);
+	this->sprites["UPGRADE1_FRAME"] = new gui::Sprite(this->select_texture, calcX(1008, vm), calcY(210, vm), calcScale(1, vm), false);
+	this->sprites["UPGRADE1_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
+	this->sprites["UPGRADE2_FRAME"] = new gui::Sprite(this->select_texture, calcX(1008, vm), calcY(380, vm), calcScale(1, vm), false);
+	this->sprites["UPGRADE2_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
+	this->sprites["UPGRADE3_FRAME"] = new gui::Sprite(this->select_texture, calcX(1008, vm), calcY(550, vm), calcScale(1, vm), false);
+	this->sprites["UPGRADE3_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
+	this->sprite_buttons["UPGRADE1"] = new gui::ButtonSprite(this->select_texture, calcX(1008, vm), calcY(210, vm), calcScale(1, vm), false);
+	this->sprite_buttons["UPGRADE1"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
+	this->sprite_buttons["UPGRADE2"] = new gui::ButtonSprite(this->select_texture, calcX(1008, vm), calcY(380, vm), calcScale(1, vm), false);
+	this->sprite_buttons["UPGRADE2"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
+	this->sprite_buttons["UPGRADE3"] = new gui::ButtonSprite(this->select_texture, calcX(1008, vm), calcY(550, vm), calcScale(1, vm), false);
+	this->sprite_buttons["UPGRADE3"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
 
 	this->sprites["UPGRADE1"] = new gui::Sprite(this->upgrades_texture, calcX(1020, vm), calcY(222, vm), calcScale(4, vm), false);
 	this->sprites["UPGRADE1"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
@@ -131,6 +147,8 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->texts["UPGRADE2_ADD_VALUE"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(1224, vm), calcY(436, vm), sf::Color(255, 255, 255), false);
 	this->texts["UPGRADE3_ADD_VALUE"] = new gui::Text(&this->font, "+1", calcChar(16, vm), calcX(1224, vm), calcY(606, vm), sf::Color(255, 255, 255), false);
 
+	this->sprites["ABILITY_FRAME"] = new gui::Sprite(this->select_texture, calcX(268, vm), calcY(4, vm), calcScale(1, vm), false);
+	this->sprites["ABILITY_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
 	this->sprites["ABILITY_ICON"] = new gui::Sprite("external/assets/abilities_icons.png", calcX(280, vm), calcY(16, vm), calcScale(4, vm), false);
 	this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 
@@ -177,19 +195,23 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->sprites["ITEM4"] = new gui::Sprite(attributes_texture, calcX(44, vm), calcY(576, vm), calcScale(4, vm), false);
 	this->sprites["ITEM4"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
 
-	this->sprites["ITEM1_COLOR"] = new gui::Sprite("external/assets/item_color.png", calcX(32, vm), calcY(180, vm), calcScale(1, vm), false);
-	this->sprites["ITEM1_COLOR"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
-	this->sprites["ITEM2_COLOR"] = new gui::Sprite("external/assets/item_color.png", calcX(32, vm), calcY(308, vm), calcScale(1, vm), false);
-	this->sprites["ITEM2_COLOR"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
-	this->sprites["ITEM3_COLOR"] = new gui::Sprite("external/assets/item_color.png", calcX(32, vm), calcY(436, vm), calcScale(1, vm), false);
-	this->sprites["ITEM3_COLOR"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
-	this->sprites["ITEM4_COLOR"] = new gui::Sprite("external/assets/item_color.png", calcX(32, vm), calcY(564, vm), calcScale(1, vm), false);
-	this->sprites["ITEM4_COLOR"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
+	this->sprites["ITEM1_FRAME"] = new gui::Sprite(this->select_texture, calcX(32, vm), calcY(180, vm), calcScale(1, vm), false);
+	this->sprites["ITEM1_FRAME"]->setTextureRect(sf::IntRect(176, 0, 88, 88));
+	this->sprites["ITEM2_FRAME"] = new gui::Sprite(this->select_texture, calcX(32, vm), calcY(308, vm), calcScale(1, vm), false);
+	this->sprites["ITEM2_FRAME"]->setTextureRect(sf::IntRect(176, 0, 88, 88));
+	this->sprites["ITEM3_FRAME"] = new gui::Sprite(this->select_texture, calcX(32, vm), calcY(436, vm), calcScale(1, vm), false);
+	this->sprites["ITEM3_FRAME"]->setTextureRect(sf::IntRect(176, 0, 88, 88));
+	this->sprites["ITEM4_FRAME"] = new gui::Sprite(this->select_texture, calcX(32, vm), calcY(564, vm), calcScale(1, vm), false);
+	this->sprites["ITEM4_FRAME"]->setTextureRect(sf::IntRect(176, 0, 88, 88));
 
-	this->sprite_buttons["ITEM1"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(76, vm), calcY(180, vm), calcScale(1, vm), true);
-	this->sprite_buttons["ITEM2"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(76, vm), calcY(308, vm), calcScale(1, vm), true);
-	this->sprite_buttons["ITEM3"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(76, vm), calcY(436, vm), calcScale(1, vm), true);
-	this->sprite_buttons["ITEM4"] = new gui::ButtonSprite("external/assets/select_levelup.png", calcX(76, vm), calcY(564, vm), calcScale(1, vm), true);
+	this->sprite_buttons["ITEM1"] = new gui::ButtonSprite(this->select_texture, calcX(32, vm), calcY(180, vm), calcScale(1, vm), false);
+	this->sprite_buttons["ITEM1"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
+	this->sprite_buttons["ITEM2"] = new gui::ButtonSprite(this->select_texture, calcX(32, vm), calcY(308, vm), calcScale(1, vm), false);
+	this->sprite_buttons["ITEM2"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
+	this->sprite_buttons["ITEM3"] = new gui::ButtonSprite(this->select_texture, calcX(32, vm), calcY(436, vm), calcScale(1, vm), false);
+	this->sprite_buttons["ITEM3"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
+	this->sprite_buttons["ITEM4"] = new gui::ButtonSprite(this->select_texture, calcX(32, vm), calcY(564, vm), calcScale(1, vm), false);
+	this->sprite_buttons["ITEM4"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
 
 	this->texts["ITEM1"] = new gui::Text(&this->font, "Full HP", calcChar(16, vm), calcX(204, vm), calcY(190, vm), sf::Color(255, 255, 255), true);
 	this->texts["ITEM2"] = new gui::Text(&this->font, this->lang["MAX_HP"], calcChar(16, vm), calcX(204, vm), calcY(318, vm), sf::Color(255, 255, 255), true);
@@ -576,6 +598,38 @@ void PlayerGUI::updating_HP(SoundEngine* soundEngine, const float& dt)
 void PlayerGUI::update_Gold()
 {
 	this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
+
+	if (this->player->getGold() >= this->item1Price && this->player->getHP() < this->player->getMaxHP()) {
+		this->sprites["ITEM1_FRAME"]->setTextureRect(sf::IntRect(264, 0, 88, 88));
+	}
+	else {
+		this->sprites["ITEM1_FRAME"]->setTextureRect(sf::IntRect(176, 0, 88, 88));
+	}
+
+	if (this->player->getGold() >= this->item2Price) {
+		this->sprites["ITEM2_FRAME"]->setTextureRect(sf::IntRect(264, 0, 88, 88));
+	}
+	else {
+		this->sprites["ITEM2_FRAME"]->setTextureRect(sf::IntRect(176, 0, 88, 88));
+	}
+
+
+	if (this->player->getGold() >= this->item3Price) {
+		this->sprites["ITEM3_FRAME"]->setTextureRect(sf::IntRect(264, 0, 88, 88));
+	}
+	else {
+		this->sprites["ITEM3_FRAME"]->setTextureRect(sf::IntRect(176, 0, 88, 88));
+	}
+
+	if (this->player->getArmor() < 10 || (this->player->getIncreasedArmor() && ((this->player->getAbilityActive() && this->player->getArmor() < 15)
+		|| (!this->player->getAbilityActive() && this->player->getArmor() < 10)))) {
+		if (this->player->getGold() >= this->item4Price) {
+			this->sprites["ITEM4_FRAME"]->setTextureRect(sf::IntRect(264, 0, 88, 88));
+		}
+		else {
+			this->sprites["ITEM4_FRAME"]->setTextureRect(sf::IntRect(176, 0, 88, 88));
+		}
+	}
 }
 
 void PlayerGUI::update_ability(const float& dt)
@@ -741,7 +795,7 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 			if (this->sprite_buttons["ITEM1"]->isPressed() && !mouseClicked) {
 				this->player->setGold(this->player->getGold() - this->item1Price);
 				floatingTextSystem->addFloatingText("-" + std::to_string(this->item1Price), calcChar(16, vm), calcX(20, vm), calcY(96, vm), sf::Color(255, 246, 76), true);
-				this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
+				this->update_Gold();
 				this->player->setHP(this->player->getMaxHP());
 				this->update_HP();
 				this->player->setIsRegenerating(true);
@@ -758,7 +812,7 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 			if (this->sprite_buttons["ITEM2"]->isPressed() && !mouseClicked) {
 				this->player->setGold(this->player->getGold() - this->item2Price);
 				floatingTextSystem->addFloatingText("-" + std::to_string(this->item2Price), calcChar(16, vm), calcX(20, vm), calcY(96, vm), sf::Color(255, 246, 76), true);
-				this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
+				this->update_Gold();
 				this->player->setMaxHP(this->player->getMaxHP() + 2);
 				this->update_HP();
 				this->player->setIsRegenerating(true);
@@ -776,7 +830,7 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 			if (this->sprite_buttons["ITEM3"]->isPressed() && !mouseClicked) {
 				this->player->setGold(this->player->getGold() - this->item3Price);
 				floatingTextSystem->addFloatingText("-" + std::to_string(this->item3Price), calcChar(16, vm), calcX(20, vm), calcY(96, vm), sf::Color(255, 246, 76), true);
-				this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
+				this->update_Gold();
 				this->player->setAttack(this->player->getAttack() + 1);
 				this->texts["ATTACK"]->setText(std::to_string(this->player->getAttack()));
 				this->texts["ATTACK"]->center(calcX(828, vm));
@@ -795,7 +849,7 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 				if (this->sprite_buttons["ITEM4"]->isPressed() && !mouseClicked) {
 					this->player->setGold(this->player->getGold() - this->item4Price);
 					floatingTextSystem->addFloatingText("-" + std::to_string(this->item4Price), calcChar(16, vm), calcX(20, vm), calcX(96, vm), sf::Color(255, 246, 76), true);
-					this->texts["GOLD"]->setText(std::to_string(this->player->getGold()));
+					this->update_Gold();
 					this->player->setArmor(this->player->getArmor() + 1);
 					this->texts["ARMOR"]->setText(std::to_string(this->player->getArmor()));
 					this->texts["ARMOR"]->center(calcX(388, vm));
@@ -1029,7 +1083,7 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 	if (this->isShopping) {
 		this->sprites["SHOP"]->draw(target);
 
-		this->sprites["ITEM1_COLOR"]->draw(target);
+		this->sprites["ITEM1_FRAME"]->draw(target);
 		this->sprite_buttons["ITEM1"]->draw(target);
 		this->sprites["ITEM1"]->draw(target);
 		this->texts["ITEM1"]->draw(target);
@@ -1037,7 +1091,7 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 		this->texts["ITEM1_PRICE"]->draw(target);
 		this->sprites["ITEM1_COIN"]->draw(target);
 
-		this->sprites["ITEM2_COLOR"]->draw(target);
+		this->sprites["ITEM2_FRAME"]->draw(target);
 		this->sprite_buttons["ITEM2"]->draw(target);
 		this->sprites["ITEM2"]->draw(target);
 		this->texts["ITEM2"]->draw(target);
@@ -1045,7 +1099,7 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 		this->texts["ITEM2_PRICE"]->draw(target);
 		this->sprites["ITEM2_COIN"]->draw(target);
 
-		this->sprites["ITEM3_COLOR"]->draw(target);
+		this->sprites["ITEM3_FRAME"]->draw(target);
 		this->sprite_buttons["ITEM3"]->draw(target);
 		this->sprites["ITEM3"]->draw(target);
 		this->texts["ITEM3"]->draw(target);
@@ -1055,7 +1109,7 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 
 		if (this->player->getArmor() < 10 || (this->player->getIncreasedArmor() && ((this->player->getAbilityActive() && this->player->getArmor() < 15)
 			|| (!this->player->getAbilityActive() && this->player->getArmor() < 10)))) {
-			this->sprites["ITEM4_COLOR"]->draw(target);
+			this->sprites["ITEM4_FRAME"]->draw(target);
 			this->sprite_buttons["ITEM4"]->draw(target);
 			this->sprites["ITEM4"]->draw(target);
 			this->texts["ITEM4"]->draw(target);
@@ -1066,6 +1120,7 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 	}
 
 	if (this->player->getName() != "warrior") {
+		this->sprites["ABILITY_FRAME"]->draw(target);
 		this->sprites["ABILITY_ICON"]->draw(target);
 		if (this->player->getAbilityCooldown() < this->player->getAbilityMaxTime())
 			target.draw(this->ability_icon);
@@ -1086,10 +1141,12 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 		if (this->isLeveling) {
 			this->texts["LEVEL_UP"]->draw(target);
 			this->sprites["UPGRADE_BAR"]->draw(target);
+			this->sprites["OPTION1_FRAME"]->draw(target);
 			this->sprites["OPTION1"]->draw(target);
 			this->sprite_buttons["OPTION1"]->draw(target);
 			this->texts["OPTION1"]->draw(target);
 			this->texts["OPTION1_VALUE"]->draw(target);
+			this->sprites["OPTION2_FRAME"]->draw(target);
 			this->sprites["OPTION2"]->draw(target);
 			this->sprite_buttons["OPTION2"]->draw(target);
 			this->texts["OPTION2"]->draw(target);
@@ -1098,6 +1155,7 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 		if (this->isUpgrading) {
 			this->sprites["SIDE_BAR"]->draw(target);
 
+			this->sprites["UPGRADE1_FRAME"]->draw(target);
 			this->sprites["UPGRADE1"]->draw(target);
 			this->sprite_buttons["UPGRADE1"]->draw(target);
 			this->texts["UPGRADE1_NAME"]->draw(target);
@@ -1105,6 +1163,7 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 			this->sprites["UPGRADE1_ADD"]->draw(target);
 			this->texts["UPGRADE1_ADD_VALUE"]->draw(target);
 
+			this->sprites["UPGRADE2_FRAME"]->draw(target);
 			this->sprites["UPGRADE2"]->draw(target);
 			this->sprite_buttons["UPGRADE2"]->draw(target);
 			this->texts["UPGRADE2_NAME"]->draw(target);
@@ -1113,6 +1172,7 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 			this->texts["UPGRADE2_ADD_VALUE"]->draw(target);
 
 			if (this->player->getLevel() == 5) {
+				this->sprites["UPGRADE3_FRAME"]->draw(target);
 				this->sprites["UPGRADE3"]->draw(target);
 				this->sprite_buttons["UPGRADE3"]->draw(target);
 				this->texts["UPGRADE3_NAME"]->draw(target);
