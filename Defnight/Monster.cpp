@@ -135,7 +135,7 @@ const bool Monster::attackPlayer(Player* player, TileMap* tileMap, ProjectileSys
 			}
 		}
 	}
-	else if ((hasVelocity() && distance <= this->getReach() * calcX(static_cast<float>(32 * this->monsterSize), vm)) || (!hasVelocity() && distance <= this->getReach() * calcX(static_cast<float>(48 * this->monsterSize), vm))) {
+	else if (distance <= this->getReach() * calcX(static_cast<float>(32 * this->monsterSize), vm)) {
 		this->doAttack();
 		if (!player->isDead() && !player->getPunched() && this->getIsAttacking() && this->getFrame() == 80 * this->monsterSize) {
 			int Lattack = static_cast<int>(round(this->attack - (this->attack * player->getArmor() * 0.05f)));

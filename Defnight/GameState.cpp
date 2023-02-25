@@ -20,7 +20,7 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->floatingTextSystem = new FloatingTextSystem(&this->font, vm);
 	this->tileMap = new TileMap();
 
-	this->background_texture.loadFromFile("external/assets/" + map_name + ".png");
+	this->background_texture.loadFromFile("external/assets/maps/" + map_name + ".png");
 	this->background.setTexture(this->background_texture);
 	this->background.setScale(calcScale(4, vm), calcScale(4, vm));
 

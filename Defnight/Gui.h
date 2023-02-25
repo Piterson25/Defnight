@@ -87,6 +87,7 @@ namespace gui {
 
 		virtual const sf::FloatRect getGlobalBounds() const;
 		virtual const sf::IntRect getTextureRect() const;
+		void flipHorizontal();
 		void setColor(const sf::Color& color);
 		void setTextureRect(const sf::IntRect& intRect);
 		void center(const float& posX);

@@ -33,7 +33,7 @@ void MainMenuState::initGUI()
 
 	this->introCooldown = 0.f;
 	this->dimAlpha = 0.f;
-	this->sprites["LOGO"] = new gui::Sprite("external/assets/logo.png", calcX(640, vm), calcY(232, vm), calcScale(8, vm), true);
+	this->sprites["LOGO"] = new gui::Sprite("external/assets/icon.png", calcX(640, vm), calcY(232, vm), calcScale(8, vm), true);
 	this->sprites["LOGO"]->setColor(sf::Color(255, 255, 255, 0));
 
 	// PAGE 1
@@ -47,13 +47,13 @@ void MainMenuState::initGUI()
 	this->mapView.setCenter(static_cast<float>(vm.width / 2), static_cast<float>(vm.height / 2));
 
 	if (const uint8_t m = static_cast<uint8_t>(Random::Float() * 3.f); m == 0) {
-		this->map_texture.loadFromFile("external/assets/ruins.png");
+		this->map_texture.loadFromFile("external/assets/maps/ruins.png");
 	}
 	else if (m == 1) {
-		this->map_texture.loadFromFile("external/assets/desert.png");
+		this->map_texture.loadFromFile("external/assets/maps/desert.png");
 	}
 	else {
-		this->map_texture.loadFromFile("external/assets/permafrost.png");
+		this->map_texture.loadFromFile("external/assets/maps/permafrost.png");
 	}
 	
 	this->map.setTexture(this->map_texture);
@@ -92,14 +92,23 @@ void MainMenuState::initGUI()
 
 	this->map_name = "";
 	this->texts["CHOOSE_MAP"] = new gui::Text(&this->font, this->lang["CHOOSE_MAP"], calcChar(32, vm), calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
-	this->sprite_buttons["SELECT_MAP1"] = new gui::ButtonSprite("external/assets/select_map.png", calcX(24, vm), calcY(248, vm), calcScale(1, vm), false);
-	this->sprites["MAP1"] = new gui::Sprite("external/assets/ruins.png", calcX(48, vm), calcY(272, vm), calcScale(0.5f, vm), false);
+	this->sprites["MAP1_FRAME"] = new gui::Sprite("external/assets/select_map.png", calcX(24, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprites["MAP1_FRAME"]->setTextureRect(sf::IntRect(304, 0, 304, 304));
+	this->sprite_buttons["MAP1"] = new gui::ButtonSprite("external/assets/select_map.png", calcX(24, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprite_buttons["MAP1"]->setTextureRect(sf::IntRect(0, 0, 304, 304));
+	this->sprites["MAP1"] = new gui::Sprite("external/assets/maps/ruins.png", calcX(48, vm), calcY(272, vm), calcScale(0.5f, vm), false);
 	this->texts["RUINS"] = new gui::Text(&this->font, this->lang["RUINS"], calcChar(32, vm), calcX(176, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
-	this->sprite_buttons["SELECT_MAP2"] = new gui::ButtonSprite("external/assets/select_map.png", calcX(472, vm), calcY(248, vm), calcScale(1, vm), false);
-	this->sprites["MAP2"] = new gui::Sprite("external/assets/desert.png", calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
+	this->sprites["MAP2_FRAME"] = new gui::Sprite("external/assets/select_map.png", calcX(472, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprites["MAP2_FRAME"]->setTextureRect(sf::IntRect(304, 0, 304, 304));
+	this->sprite_buttons["MAP2"] = new gui::ButtonSprite("external/assets/select_map.png", calcX(472, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprite_buttons["MAP2"]->setTextureRect(sf::IntRect(0, 0, 304, 304));
+	this->sprites["MAP2"] = new gui::Sprite("external/assets/maps/desert.png", calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
 	this->texts["DESERT"] = new gui::Text(&this->font, this->lang["DESERT"], calcChar(32, vm), calcX(624, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
-	this->sprite_buttons["SELECT_MAP3"] = new gui::ButtonSprite("external/assets/select_map.png", calcX(920, vm), calcY(248, vm), calcScale(1, vm), false);
-	this->sprites["MAP3"] = new gui::Sprite("external/assets/permafrost.png", calcX(944, vm), calcY(272, vm), calcScale(0.5f, vm), false);
+	this->sprites["MAP3_FRAME"] = new gui::Sprite("external/assets/select_map.png", calcX(920, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprites["MAP3_FRAME"]->setTextureRect(sf::IntRect(304, 0, 304, 304));
+	this->sprite_buttons["MAP3"] = new gui::ButtonSprite("external/assets/select_map.png", calcX(920, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprite_buttons["MAP3"]->setTextureRect(sf::IntRect(0, 0, 304, 304));
+	this->sprites["MAP3"] = new gui::Sprite("external/assets/maps/permafrost.png", calcX(944, vm), calcY(272, vm), calcScale(0.5f, vm), false);
 	this->texts["PERMAFROST"] = new gui::Text(&this->font, this->lang["PERMAFROST"], calcChar(32, vm), calcX(1072, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
 
 
@@ -107,15 +116,18 @@ void MainMenuState::initGUI()
 
 	this->hero_name = "";
 	this->texts["CHOOSE_HERO"] = new gui::Text(&this->font, this->lang["CHOOSE_HERO"], calcChar(32, vm), calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
-	this->sprite_buttons["SELECT_HERO1"] = new gui::ButtonSprite("external/assets/select_hero.png", calcX(64, vm), calcY(256, vm), calcScale(1, vm), false);
-	this->sprites["HERO1"] = new gui::Sprite("external/assets/upgrade_icons.png", calcX(88, vm), calcY(272, vm), calcScale(8, vm), false);
+	this->sprites["HERO1_FRAME"] = new gui::Sprite("external/assets/select.png", calcX(64, vm), calcY(256, vm), calcScale(2, vm), false);
+	this->sprites["HERO1_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
+	this->sprite_buttons["HERO1"] = new gui::ButtonSprite("external/assets/select.png", calcX(64, vm), calcY(256, vm), calcScale(2, vm), false);
+	this->sprite_buttons["HERO1"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
+	this->sprites["HERO1"] = new gui::Sprite("external/assets/upgrades_icons.png", calcX(88, vm), calcY(280, vm), calcScale(8, vm), false);
 	this->sprites["HERO1"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 	this->texts["WARRIOR"] = new gui::Text(&this->font, this->lang["WARRIOR"], calcChar(32, vm), calcX(150, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
 
 	this->choosing_hero = false;
 
 	this->text_buttons["CHOOSE"] = new gui::ButtonText(&this->font, this->lang["CHOOSE"], calcChar(32, vm), calcX(200, vm), calcY(570, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
-	this->sprites["HERO_PREVIEW"] = new gui::Sprite("external/assets/upgrade_icons.png", calcX(640, vm), calcY(512, vm), calcScale(8, vm), true);
+	this->sprites["HERO_PREVIEW"] = new gui::Sprite("external/assets/upgrades_icons.png", calcX(640, vm), calcY(512, vm), calcScale(8, vm), true);
 	this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 	this->sprites["HERO_PREVIEW"]->center(calcX(640, vm));
 	this->sprites["HP_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(860, vm), calcY(526, vm), calcScale(1, vm), true);
@@ -127,7 +139,7 @@ void MainMenuState::initGUI()
 	this->sprites["SPRINT_BAR"]->center(calcX(860, vm));
 	this->texts["SPRINT"] = new gui::Text(&this->font, "100/100", calcChar(16, vm), calcX(860, vm), calcY(557, vm), sf::Color(255, 255, 255), true);
 
-	this->attributes_texture.loadFromFile("external/assets/icons.png");
+	this->attributes_texture.loadFromFile("external/assets/attributes_icons.png");
 	for (short i = 0; i < 10; ++i) {
 		sf::Sprite att;
 		att.setTexture(this->attributes_texture);
@@ -170,9 +182,18 @@ void MainMenuState::initGUI()
 	this->difficulty_name = "";
 	this->texts["CHOOSE_DIFFICULTY"] = new gui::Text(&this->font, this->lang["CHOOSE_DIFFICULTY"], calcChar(32, vm), calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
 
-	this->sprite_buttons["SELECT_DIFFICULTY1"] = new gui::ButtonSprite("external/assets/select_difficulty.png", calcX(32, vm), calcY(184, vm), calcScale(1, vm), false);
-	this->sprite_buttons["SELECT_DIFFICULTY2"] = new gui::ButtonSprite("external/assets/select_difficulty.png", calcX(448, vm), calcY(184, vm), calcScale(1, vm), false);
-	this->sprite_buttons["SELECT_DIFFICULTY3"] = new gui::ButtonSprite("external/assets/select_difficulty.png", calcX(864, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprites["DIFFICULTY1_FRAME"] = new gui::Sprite("external/assets/select_difficulty.png", calcX(32, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprites["DIFFICULTY1_FRAME"]->setTextureRect(sf::IntRect(384, 0, 384, 504));
+	this->sprite_buttons["DIFFICULTY1"] = new gui::ButtonSprite("external/assets/select_difficulty.png", calcX(32, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprite_buttons["DIFFICULTY1"]->setTextureRect(sf::IntRect(0, 0, 384, 504));
+	this->sprites["DIFFICULTY2_FRAME"] = new gui::Sprite("external/assets/select_difficulty.png", calcX(448, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprites["DIFFICULTY2_FRAME"]->setTextureRect(sf::IntRect(384, 0, 384, 504));
+	this->sprite_buttons["DIFFICULTY2"] = new gui::ButtonSprite("external/assets/select_difficulty.png", calcX(448, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprite_buttons["DIFFICULTY2"]->setTextureRect(sf::IntRect(0, 0, 384, 504));
+	this->sprites["DIFFICULTY3_FRAME"] = new gui::Sprite("external/assets/select_difficulty.png", calcX(864, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprites["DIFFICULTY3_FRAME"]->setTextureRect(sf::IntRect(384, 0, 384, 504));
+	this->sprite_buttons["DIFFICULTY3"] = new gui::ButtonSprite("external/assets/select_difficulty.png", calcX(864, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprite_buttons["DIFFICULTY3"]->setTextureRect(sf::IntRect(0, 0, 384, 504));
 
 	this->sprites["DIFFICULTY1"] = new gui::Sprite("external/assets/difficulty_icons.png", calcX(168, vm), calcY(272, vm), calcScale(16, vm), false);
 	this->sprites["DIFFICULTY1"]->setTextureRect(sf::IntRect(0, 0, 7, 6));
@@ -323,36 +344,28 @@ void MainMenuState::update(const float& dt)
 				this->map_name = "";
 			}
 
-			this->sprite_buttons["SELECT_MAP1"]->update(this->mousePosWindow);
-			if (this->sprite_buttons["SELECT_MAP1"]->isPressed() && !this->getMouseClick()) {
+			this->sprite_buttons["MAP1"]->update(this->mousePosWindow);
+			if (this->sprite_buttons["MAP1"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
 				this->map_name = "ruins";
 				this->page = 3;
-				this->sprite_buttons["SELECT_MAP1"]->setTransparent();
+				this->sprite_buttons["MAP1"]->setTransparent();
 			}
 
-			this->sprite_buttons["SELECT_MAP2"]->update(this->mousePosWindow);
-			if (this->sprite_buttons["SELECT_MAP2"]->isPressed() && !this->getMouseClick()) {
+			this->sprite_buttons["MAP2"]->update(this->mousePosWindow);
+			if (this->sprite_buttons["MAP2"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
 				this->map_name = "desert";
 				this->page = 3;
-				this->sprite_buttons["SELECT_MAP2"]->setTransparent();
+				this->sprite_buttons["MAP2"]->setTransparent();
 			}
 
-			this->sprite_buttons["SELECT_MAP1"]->update(this->mousePosWindow);
-			if (this->sprite_buttons["SELECT_MAP1"]->isPressed() && !this->getMouseClick()) {
-				this->setMouseClick(true);
-				this->map_name = "ruins";
-				this->page = 3;
-				this->sprite_buttons["SELECT_MAP1"]->setTransparent();
-			}
-
-			this->sprite_buttons["SELECT_MAP3"]->update(this->mousePosWindow);
-			if (this->sprite_buttons["SELECT_MAP3"]->isPressed() && !this->getMouseClick()) {
+			this->sprite_buttons["MAP3"]->update(this->mousePosWindow);
+			if (this->sprite_buttons["MAP3"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
 				this->map_name = "permafrost";
 				this->page = 3;
-				this->sprite_buttons["SELECT_MAP3"]->setTransparent();
+				this->sprite_buttons["MAP3"]->setTransparent();
 			}
 			break;
 		case 3:
@@ -364,11 +377,11 @@ void MainMenuState::update(const float& dt)
 				this->choosing_hero = false;
 			}
 
-			this->sprite_buttons["SELECT_HERO1"]->update(this->mousePosWindow);
-			if (this->sprite_buttons["SELECT_HERO1"]->isPressed() && !this->getMouseClick()) {
+			this->sprite_buttons["HERO1"]->update(this->mousePosWindow);
+			if (this->sprite_buttons["HERO1"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
 				this->choosing_hero = true;
-				this->sprite_buttons["SELECT_HERO1"]->setTransparent();
+				this->sprite_buttons["HERO1"]->setTransparent();
 				this->hero_name = "warrior";
 			}
 
@@ -388,31 +401,31 @@ void MainMenuState::update(const float& dt)
 				this->choosing_hero = false;
 			}
 
-			this->sprite_buttons["SELECT_DIFFICULTY1"]->update(this->mousePosWindow);
-			this->sprite_buttons["SELECT_DIFFICULTY2"]->update(this->mousePosWindow);
-			this->sprite_buttons["SELECT_DIFFICULTY3"]->update(this->mousePosWindow);
-			if (this->sprite_buttons["SELECT_DIFFICULTY1"]->isPressed() && !this->getMouseClick()) {
+			this->sprite_buttons["DIFFICULTY1"]->update(this->mousePosWindow);
+			this->sprite_buttons["DIFFICULTY2"]->update(this->mousePosWindow);
+			this->sprite_buttons["DIFFICULTY3"]->update(this->mousePosWindow);
+			if (this->sprite_buttons["DIFFICULTY1"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
 				this->difficulty_name = "easy";
 				this->page = 1;
 				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->musicEngine, this->states, this->map_name, this->hero_name, this->difficulty_name));
-				this->sprite_buttons["SELECT_DIFFICULTY1"]->setTransparent();
+				this->sprite_buttons["DIFFICULTY1"]->setTransparent();
 				this->choosing_hero = false;
 			}
-			else if (this->sprite_buttons["SELECT_DIFFICULTY2"]->isPressed() && !this->getMouseClick()) {
+			else if (this->sprite_buttons["DIFFICULTY2"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
 				this->difficulty_name = "normal";
 				this->page = 1;
 				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->musicEngine, this->states, this->map_name, this->hero_name, this->difficulty_name));
-				this->sprite_buttons["SELECT_DIFFICULTY2"]->setTransparent();
+				this->sprite_buttons["DIFFICULTY2"]->setTransparent();
 				this->choosing_hero = false;
 			}
-			else if (this->sprite_buttons["SELECT_DIFFICULTY3"]->isPressed() && !this->getMouseClick()) {
+			else if (this->sprite_buttons["DIFFICULTY3"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
 				this->difficulty_name = "hard";
 				this->page = 1;
 				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->musicEngine, this->states, this->map_name, this->hero_name, this->difficulty_name));
-				this->sprite_buttons["SELECT_DIFFICULTY3"]->setTransparent();
+				this->sprite_buttons["DIFFICULTY3"]->setTransparent();
 				this->choosing_hero = false;
 			}
 			break;
@@ -476,12 +489,15 @@ void MainMenuState::draw(sf::RenderTarget* target)
 		this->sprite_buttons["GO_BACK"]->draw(*target);
 
 		this->texts["CHOOSE_MAP"]->draw(*target);
+		this->sprites["MAP1_FRAME"]->draw(*target);
 		this->sprites["MAP1"]->draw(*target);
-		this->sprite_buttons["SELECT_MAP1"]->draw(*target);
+		this->sprite_buttons["MAP1"]->draw(*target);
+		this->sprites["MAP2_FRAME"]->draw(*target);
 		this->sprites["MAP2"]->draw(*target);
-		this->sprite_buttons["SELECT_MAP2"]->draw(*target);
+		this->sprite_buttons["MAP2"]->draw(*target);
+		this->sprites["MAP3_FRAME"]->draw(*target);
 		this->sprites["MAP3"]->draw(*target);
-		this->sprite_buttons["SELECT_MAP3"]->draw(*target);
+		this->sprite_buttons["MAP3"]->draw(*target);
 		
 		this->texts["RUINS"]->draw(*target);
 		this->texts["DESERT"]->draw(*target);
@@ -492,8 +508,9 @@ void MainMenuState::draw(sf::RenderTarget* target)
 		this->sprite_buttons["GO_BACK"]->draw(*target);
 
 		this->texts["CHOOSE_HERO"]->draw(*target);
+		this->sprites["HERO1_FRAME"]->draw(*target);
 		this->sprites["HERO1"]->draw(*target);
-		this->sprite_buttons["SELECT_HERO1"]->draw(*target);
+		this->sprite_buttons["HERO1"]->draw(*target);
 
 		this->texts["WARRIOR"]->draw(*target);
 
@@ -530,12 +547,15 @@ void MainMenuState::draw(sf::RenderTarget* target)
 
 		this->texts["CHOOSE_DIFFICULTY"]->draw(*target);
 
+		this->sprites["DIFFICULTY1_FRAME"]->draw(*target);
+		this->sprites["DIFFICULTY2_FRAME"]->draw(*target);
+		this->sprites["DIFFICULTY3_FRAME"]->draw(*target);
 		this->sprites["DIFFICULTY1"]->draw(*target);
 		this->sprites["DIFFICULTY2"]->draw(*target);
 		this->sprites["DIFFICULTY3"]->draw(*target);
-		this->sprite_buttons["SELECT_DIFFICULTY1"]->draw(*target);
-		this->sprite_buttons["SELECT_DIFFICULTY2"]->draw(*target);
-		this->sprite_buttons["SELECT_DIFFICULTY3"]->draw(*target);
+		this->sprite_buttons["DIFFICULTY1"]->draw(*target);
+		this->sprite_buttons["DIFFICULTY2"]->draw(*target);
+		this->sprite_buttons["DIFFICULTY3"]->draw(*target);
 
 		this->texts["EASY"]->draw(*target);
 		this->texts["NORMAL"]->draw(*target);

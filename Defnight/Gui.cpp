@@ -265,6 +265,11 @@ const sf::IntRect gui::Sprite::getTextureRect() const
 	return this->sprite.getTextureRect();
 }
 
+void gui::Sprite::flipHorizontal()
+{
+	this->sprite.setScale(-this->sprite.getScale().x, this->sprite.getScale().y);
+}
+
 void gui::Sprite::setColor(const sf::Color& color)
 {
 	this->sprite.setColor(color);

@@ -36,7 +36,7 @@ void Game::init()
 	this->window->setFramerateLimit(this->gameSettings.fpsLimit);
 
 	sf::Image icon;
-	icon.loadFromFile("external/assets/logo.png");
+	icon.loadFromFile("external/assets/icon.png");
 	this->window->setIcon(32, 32, icon.getPixelsPtr());
 
 	std::ifstream ifs("external/config/supported_keys.ini");
