@@ -548,6 +548,9 @@ void PlayerGUI::updating_HP(SoundEngine* soundEngine, const float& dt)
 		this->texts["HP"]->center(calcX(640, this->vm));
 		this->hp_bar_barrier = static_cast<float>(this->player->getHP()) / this->player->getMaxHP();
 		this->player->setIsRegenerating(true);
+		if (this->isShopping && this->player->getHP() / this->player->getMaxHP() == 1) {
+			this->sprites["ITEM1_FRAME"]->setTextureRect(sf::IntRect(176, 0, 88, 88));
+		}
 	}
 	else if (this->player->isDead()) {
 		this->hp_bar_barrier = 0.f;

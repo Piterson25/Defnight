@@ -259,7 +259,7 @@ void Projectile::monsterCollision(Monster* monster, Player* player, FloatingText
 
 			}
 
-			if (this->collidedMonster && this->name != "bomb") {
+			if (this->collidedMonster) {
 				if ((static_cast<uint32_t>(Random::Float() * 100.f) + 1) <= player->getCriticalChance()) {
 					const int attack = 2 * this->attack;
 					floatingTextSystem->addFloatingText(std::to_string(-attack), calcChar(16, vm), monster->getPosition().x + calcX(32, vm), monster->getPosition().y + calcY(32, vm), sf::Color(233, 134, 39), false);
