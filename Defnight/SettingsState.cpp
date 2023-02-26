@@ -165,12 +165,14 @@ void SettingsState::update(const float& dt)
 	this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
 	if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
 		this->setMouseClick(true);
+		this->soundEngine->addSound("button");
 		this->endState();
 	}
 
 	this->text_buttons["RESOLUTION"]->update(this->mousePosWindow);
 	if (this->text_buttons["RESOLUTION"]->isPressed() && !this->getMouseClick()) {
 		this->setMouseClick(true);
+		this->soundEngine->addSound("button");
 		
 		++this->id;
 		if (this->id == this->videoModes.size()) {
@@ -184,6 +186,7 @@ void SettingsState::update(const float& dt)
 	this->text_buttons["FULLSCREEN"]->update(this->mousePosWindow);
 	if (this->text_buttons["FULLSCREEN"]->isPressed() && !this->getMouseClick()) {
 		this->setMouseClick(true);
+		this->soundEngine->addSound("button");
 
 		if (this->fullscreen) {
 			this->fullscreen = false;
@@ -198,6 +201,7 @@ void SettingsState::update(const float& dt)
 	this->text_buttons["FPS_LIMIT"]->update(this->mousePosWindow);
 	if (this->text_buttons["FPS_LIMIT"]->isPressed() && !this->getMouseClick()) {
 		this->setMouseClick(true);
+		this->soundEngine->addSound("button");
 
 		++this->fps_id;
 		if (this->fps_id == this->fpsLimits.size()) {
@@ -214,6 +218,7 @@ void SettingsState::update(const float& dt)
 	this->text_buttons["MUSIC"]->update(this->mousePosWindow);
 	if (this->text_buttons["MUSIC"]->isPressed() && !this->getMouseClick()) {
 		this->setMouseClick(true);
+		this->soundEngine->addSound("button");
 
 		++this->musicVolume_id;
 		if (this->musicVolume_id == this->musicVolumes.size()) {
@@ -227,6 +232,7 @@ void SettingsState::update(const float& dt)
 	this->text_buttons["SOUNDS"]->update(this->mousePosWindow);
 	if (this->text_buttons["SOUNDS"]->isPressed() && !this->getMouseClick()) {
 		this->setMouseClick(true);
+		this->soundEngine->addSound("button");
 
 		++this->soundsVolume_id;
 		if (this->soundsVolume_id == this->soundsVolumes.size()) {
@@ -240,6 +246,7 @@ void SettingsState::update(const float& dt)
 	this->text_buttons["LANGUAGE"]->update(this->mousePosWindow);
 	if (this->text_buttons["LANGUAGE"]->isPressed() && !this->getMouseClick()) {
 		this->setMouseClick(true);
+		this->soundEngine->addSound("button");
 
 		if (this->language == "english") {
 			this->language = "polish";
@@ -254,6 +261,7 @@ void SettingsState::update(const float& dt)
 	this->text_buttons["FPS_COUNTER"]->update(this->mousePosWindow);
 	if (this->text_buttons["FPS_COUNTER"]->isPressed() && !this->getMouseClick()) {
 		this->setMouseClick(true);
+		this->soundEngine->addSound("button");
 
 		if (this->fpsCounterOn) {
 			this->fpsCounterOn = false;
@@ -268,6 +276,7 @@ void SettingsState::update(const float& dt)
 	this->text_buttons["APPLY"]->update(this->mousePosWindow);
 	if (this->text_buttons["APPLY"]->isPressed() && !this->getMouseClick()) {
 		this->setMouseClick(true);
+		this->soundEngine->addSound("button");
 		this->gameSettings->resolution = this->mode;
 		this->gameSettings->fullscreen = this->fullscreen;
 		this->gameSettings->fpsLimit = this->fpsLimit;

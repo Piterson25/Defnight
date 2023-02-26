@@ -309,16 +309,19 @@ void MainMenuState::update(const float& dt)
 				this->text_buttons["QUIT"]->update(this->mousePosWindow);
 
 				if (this->text_buttons["PLAY"]->isPressed() && !this->getMouseClick()) {
+					this->soundEngine->addSound("button");
 					this->setMouseClick(true);
 					this->map_name = "";
 					this->page = 2;
 				}
 				else if (this->text_buttons["SETTINGS"]->isPressed() && !this->getMouseClick()) {
 					this->setMouseClick(true);
+					this->soundEngine->addSound("button");
 					this->states->push(new SettingsState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->musicEngine, this->states));
 				}
 				else if (this->text_buttons["QUIT"]->isPressed() && !this->getMouseClick()) {
 					this->setMouseClick(true);
+					this->soundEngine->addSound("button");
 					this->quitwindow = true;
 				}
 			}
@@ -328,10 +331,12 @@ void MainMenuState::update(const float& dt)
 
 				if (this->text_buttons["YES"]->isPressed() && !this->getMouseClick()) {
 					this->setMouseClick(true);
+					this->soundEngine->addSound("button");
 					this->endState();
 				}
 				else if (this->text_buttons["NO"]->isPressed() && !this->getMouseClick()) {
 					this->setMouseClick(true);
+					this->soundEngine->addSound("button");
 					this->quitwindow = false;
 				}
 			}
@@ -340,6 +345,7 @@ void MainMenuState::update(const float& dt)
 			this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
 			if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
+				this->soundEngine->addSound("button");
 				--this->page;
 				this->map_name = "";
 			}
@@ -347,6 +353,7 @@ void MainMenuState::update(const float& dt)
 			this->sprite_buttons["MAP1"]->update(this->mousePosWindow);
 			if (this->sprite_buttons["MAP1"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
+				this->soundEngine->addSound("button");
 				this->map_name = "ruins";
 				this->page = 3;
 				this->sprite_buttons["MAP1"]->setTransparent();
@@ -355,6 +362,7 @@ void MainMenuState::update(const float& dt)
 			this->sprite_buttons["MAP2"]->update(this->mousePosWindow);
 			if (this->sprite_buttons["MAP2"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
+				this->soundEngine->addSound("button");
 				this->map_name = "desert";
 				this->page = 3;
 				this->sprite_buttons["MAP2"]->setTransparent();
@@ -363,6 +371,7 @@ void MainMenuState::update(const float& dt)
 			this->sprite_buttons["MAP3"]->update(this->mousePosWindow);
 			if (this->sprite_buttons["MAP3"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
+				this->soundEngine->addSound("button");
 				this->map_name = "permafrost";
 				this->page = 3;
 				this->sprite_buttons["MAP3"]->setTransparent();
@@ -372,6 +381,7 @@ void MainMenuState::update(const float& dt)
 			this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
 			if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
+				this->soundEngine->addSound("button");
 				--this->page;
 				this->hero_name = "";
 				this->choosing_hero = false;
@@ -380,6 +390,7 @@ void MainMenuState::update(const float& dt)
 			this->sprite_buttons["HERO1"]->update(this->mousePosWindow);
 			if (this->sprite_buttons["HERO1"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
+				this->soundEngine->addSound("button");
 				this->choosing_hero = true;
 				this->sprite_buttons["HERO1"]->setTransparent();
 				this->hero_name = "warrior";
@@ -388,6 +399,7 @@ void MainMenuState::update(const float& dt)
 			if (this->choosing_hero) {
 				this->text_buttons["CHOOSE"]->update(this->mousePosWindow);
 				if (this->text_buttons["CHOOSE"]->isPressed() && !this->getMouseClick()) {
+					this->soundEngine->addSound("button");
 					this->page = 4;
 				}
 			}
@@ -396,6 +408,7 @@ void MainMenuState::update(const float& dt)
 			this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
 			if (this->sprite_buttons["GO_BACK"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
+				this->soundEngine->addSound("button");
 				--this->page;
 				this->difficulty_name = "";
 				this->choosing_hero = false;
@@ -406,6 +419,7 @@ void MainMenuState::update(const float& dt)
 			this->sprite_buttons["DIFFICULTY3"]->update(this->mousePosWindow);
 			if (this->sprite_buttons["DIFFICULTY1"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
+				this->soundEngine->addSound("button");
 				this->difficulty_name = "easy";
 				this->page = 1;
 				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->musicEngine, this->states, this->map_name, this->hero_name, this->difficulty_name));
@@ -414,6 +428,7 @@ void MainMenuState::update(const float& dt)
 			}
 			else if (this->sprite_buttons["DIFFICULTY2"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
+				this->soundEngine->addSound("button");
 				this->difficulty_name = "normal";
 				this->page = 1;
 				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->musicEngine, this->states, this->map_name, this->hero_name, this->difficulty_name));
@@ -422,6 +437,7 @@ void MainMenuState::update(const float& dt)
 			}
 			else if (this->sprite_buttons["DIFFICULTY3"]->isPressed() && !this->getMouseClick()) {
 				this->setMouseClick(true);
+				this->soundEngine->addSound("button");
 				this->difficulty_name = "hard";
 				this->page = 1;
 				this->states->push(new GameState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->musicEngine, this->states, this->map_name, this->hero_name, this->difficulty_name));

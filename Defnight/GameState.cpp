@@ -192,10 +192,12 @@ void GameState::update(const float& dt)
 		const uint16_t result = this->playerGUI->updateDeathScreenButtons(this->mousePosWindow, this->getMouseClick());
 		if (result == 1) {
 			this->setMouseClick(true);
+			this->soundEngine->addSound("button");
 			this->endState();
 		}
 		else if (result == 2) {
 			this->setMouseClick(true);
+			this->soundEngine->addSound("button");
 			this->window->close();
 		}
 	}
@@ -219,19 +221,23 @@ void GameState::update(const float& dt)
 	}
 
 	if (this->playerGUI->getIsEscape() && (!this->playerGUI->getIsLeveling() && !this->playerGUI->getIsUpgrading())) {
-		const uint16_t result = this->playerGUI->updateEscapeButton(this->mousePosWindow, this->getMouseClick());
+		const uint8_t result = this->playerGUI->updateEscapeButton(this->mousePosWindow, this->getMouseClick());
 		if (result == 1) {
+			this->soundEngine->addSound("button");
 			this->endState();
 		}
 		else if (result == 2) {
+			this->soundEngine->addSound("button");
 			this->window->close();
 		}
 		else if (result == 3) {
 			this->paused = false;
 			this->musicEngine->playMusic();
 			this->soundEngine->playSounds();
+			this->soundEngine->addSound("button");
 		}
 		else if (result == 4) {
+			this->soundEngine->addSound("button");
 			this->states->push(new SettingsState(this->gridSize, this->window, this->gameSettings, this->supportedKeys, &this->font, this->soundEngine, this->musicEngine, this->states));
 		}
 	}
