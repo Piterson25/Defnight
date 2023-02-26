@@ -5,12 +5,14 @@
 #include "Entity.h"
 #include "ProjectileSystem.h"
 #include "FloatingTextSystem.h"
+#include "AIComponent.h"
 #include "SoundEngine.h"
 #include "TileMap.h"
 
 class Player;
 class ProjectileSystem;
 class FloatingTextSystem;
+class AIComponent;
 class SoundEngine;
 class TileMap;
 
@@ -18,7 +20,6 @@ class Monster
 	: public Entity
 {
 public:
-	Monster();
 	Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::Texture& texture, sf::Texture& shadow_texture, TileMap* tileMap, const float& x, const float& y, const float& difficulty_mod, const float& wave_mod);
 	virtual ~Monster();
 
@@ -33,7 +34,7 @@ public:
 
 	void setGold(const uint32_t& gold);
 
-	void AI(TileMap* tileMap, Player* player, const std::vector<sf::Vector2f>& positions, const float& dt);
+	void calculateAI(TileMap* tileMap, Player* player, const std::vector<sf::Vector2f>& positions, const float& dt);
 
 	virtual void update(const float& dt, ProjectileSystem* projectileSystem, SoundEngine* soundEngine);
 	virtual void draw(sf::RenderTarget& target);
@@ -49,34 +50,7 @@ protected:
 	float deadCountdown;
 	float spawnCountdown;
 
-	sf::Vector2f BlockSize;
-	const size_t CollumsX = 32;
-	const size_t CollumsY = 32;
-
-	bool activateAI;
-
-	struct Node
-	{
-		bool isWall = false;
-		bool isMonster = false;
-		bool isVisited = false;
-		float FCost = 0.f;
-		float HCost = 0.f;
-		int x = 0;
-		int y = 0;
-		std::vector<Node*> Neighbours = {};
-		Node* parent = nullptr;
-	};
-	std::vector<Node*> Nodes;
-	Node* Start;
-	Node* End;
-	Node* Current;
-
-	std::vector<sf::RectangleShape> greens;
-
-	void resetNodes(Player* player, const std::vector<sf::Vector2f>& positions);
-	void initNodes();
-	void AStarAlg();
+	AIComponent* AI;
 
 	bool playedSound;
 };

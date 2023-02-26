@@ -152,6 +152,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AIComponent.cpp" />
     <ClCompile Include="Boss.cpp" />
     <ClCompile Include="DropSystem.cpp" />
     <ClCompile Include="FloatingText.cpp" />
@@ -184,6 +185,7 @@
     <ClCompile Include="TileMap.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AIComponent.h" />
     <ClInclude Include="Boss.h" />
     <ClInclude Include="DropSystem.h" />
     <ClInclude Include="FloatingText.h" />

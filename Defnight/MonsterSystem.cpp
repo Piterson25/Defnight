@@ -307,7 +307,7 @@ void MonsterSystem::update(Player* player, PlayerGUI* playerGUI, ProjectileSyste
 				monster->smashed(dt);
 			}
 			else {
-				monster->AI(this->tileMap, player, this->monstersPositions(), dt);
+				monster->calculateAI(this->tileMap, player, this->monstersPositions(), dt);
 				if (monster->hasVelocity()) {
 					monsterCollision(&(*monster));
 					monster->obstacleCollision(this->tileMap);

@@ -2,8 +2,9 @@
 #include "Functions.h"
 #include "Boss.h"
 
-Boss::Boss(const sf::VideoMode& vm, const std::string& monster_name, sf::Texture& texture, sf::Texture& shadow_texture, TileMap* tileMap, 
+Boss::Boss(const sf::VideoMode& vm, const std::string& monster_name, sf::Texture& texture, sf::Texture& shadow_texture, TileMap* tileMap,
 	const float& x, const float& y, const float& difficulty_mod, const float& wave_mod, const uint32_t& monsterSize)
+	: Monster(vm, monster_name, texture, shadow_texture, tileMap, x, y, difficulty_mod, wave_mod)
 {
 	this->vm = vm;
 	this->name = monster_name;
@@ -27,20 +28,11 @@ Boss::Boss(const sf::VideoMode& vm, const std::string& monster_name, sf::Texture
 	this->spawnCountdown = 0.f;
 	this->deadCountdown = 0.f;
 	this->spawned = false;
-	this->activateAI = false;
 	this->specialAttackCountdown = 0.f;
 
 	this->playedSound = false;
 
-	this->BlockSize.x = calcX(64, vm);
-	this->BlockSize.y = calcY(64, vm);
-
-	this->Current = nullptr;
-
-	this->initNodes();
-	for (size_t i = 0; i < tileMap->getSize(); ++i) {
-		Nodes[static_cast<size_t>(tileMap->getPosition(i).x / this->BlockSize.x)][static_cast<size_t>(tileMap->getPosition(i).y / this->BlockSize.y)].isWall = true;
-	}
+	this->AI = new AIComponent(tileMap, this->vm);
 
 	if (this->name == "minotaur") {
 		this->attack = static_cast<uint32_t>(7 * difficulty_mod);
@@ -55,7 +47,7 @@ Boss::Boss(const sf::VideoMode& vm, const std::string& monster_name, sf::Texture
 
 Boss::~Boss()
 {
-	this->Nodes.clear();
+	this->AI->~AIComponent();
 }
 
 void Boss::specialAttack(const float& dt, ProjectileSystem* projectileSystem, SoundEngine* soundEngine)
@@ -92,8 +84,6 @@ void Boss::update(const float& dt, ProjectileSystem* projectileSystem, SoundEngi
 void Boss::draw(sf::RenderTarget& target)
 {
 	target.draw(this->sprite);
-	for (auto& e : greens)
-		target.draw(e);
 }
 
 void Boss::drawShadow(sf::RenderTarget& target)
