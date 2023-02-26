@@ -13,15 +13,15 @@ public:
 	AIComponent(TileMap* tileMap, sf::VideoMode& vm);
 	virtual ~AIComponent();
 
-	void initNodes();
-	void resetNodes(Entity* e1, Entity* e2, const std::vector<sf::Vector2f>& positions);
-	void AStarAlg();
-
 	void checkToDisable();
 	void update(Entity* e1, Entity* e2, const std::vector<sf::Vector2f>& positions, const float& vel);
 
 	virtual void draw(sf::RenderTarget& target);
 private:
+	void initNodes();
+	void resetNodes(Entity* e1, Entity* e2, const std::vector<sf::Vector2f>& positions);
+	void AStarAlg();
+
 	sf::Vector2f position;
 	sf::Vector2f target_position;
 	sf::VideoMode& vm;

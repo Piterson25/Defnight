@@ -354,7 +354,7 @@ void GameState::update(const float& dt)
 
 		this->playerGUI->updating_XP(dt);
 		this->playerGUI->updating_HP(this->soundEngine, dt);
-		this->playerGUI->updateSprint();
+		this->playerGUI->updateSprint(dt);
 
 		this->soundEngine->update();
 		this->musicEngine->update();

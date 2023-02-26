@@ -44,7 +44,7 @@ public:
 	const bool getIsUpgrading() const;
 	const bool getIsShopping() const;
 
-	void updateSprint();
+	void updateSprint(const float& dt);
 	void updateIsShopping();
 	void updateKills();
 	void updateMonsterCountWave(const std::string& language, const uint32_t& wave, const bool& bossWave, const size_t& monsterCount, SoundEngine* soundEngine);
@@ -74,10 +74,9 @@ private:
 	bool isUpgrading;
 	bool isShopping;
 	bool isEscape;
-	float hp_bar_barrier;
-	float xp_bar_barrier;
-	float sprint_bar_barrier;
-	float boss_bar_barrier;
+	float hp_bar_percent;
+	float xp_bar_percent;
+	float boss_bar_percent;
 	uint32_t option1_id;
 	uint32_t option2_id;
 	uint32_t option1_val;
