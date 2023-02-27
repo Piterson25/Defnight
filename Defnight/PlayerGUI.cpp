@@ -244,6 +244,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->texts["ITEM4_PRICE"] = new gui::Text(&this->font, std::to_string(this->item4Price), calcChar(16, vm), calcX(204, vm), calcY(624, vm), sf::Color(255, 246, 76), false);
 
 	this->bossWave = false;
+	this->bossCooldown = 0.f;
 
 	this->texts["BOSS"] = new gui::Text(&this->font, "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm), sf::Color(113, 43, 59), true);
 	this->sprites["BOSS_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(376, vm), calcY(158, vm), calcScale(1, vm), false);
@@ -1056,7 +1057,28 @@ void PlayerGUI::update(sf::Vector2f& mousePosView, const float& waveCountdown, M
 {
 	this->waveCountdown = waveCountdown;
 
-	if (this->bossWave) this->boss_bar_percent = monsterSystem->bossHP();
+	if (this->bossWave) {
+		this->boss_bar_percent = monsterSystem->bossHP();
+
+		if (this->boss_bar_percent != 0.f && this->bossCooldown < 255.f) {
+			this->bossCooldown += dt * 255.f;
+			if (this->bossCooldown > 255.f) this->bossCooldown = 255.f;
+
+			this->texts["BOSS"]->setFillColor(sf::Color(113, 43, 59, static_cast<sf::Uint8>(this->bossCooldown)));
+			this->sprites["BOSS_BAR_EMPTY"]->setColor(sf::Color(255, 255, 255, static_cast<sf::Uint8>(this->bossCooldown)));
+			this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 60, static_cast<int>(this->bossCooldown / 255.f * 528.f), 20));
+
+			this->sprites["BOSS_BAR"]->setColor(sf::Color(255, 255, 255, static_cast<sf::Uint8>(this->bossCooldown)));
+		}
+		else if (this->boss_bar_percent == 0.f && this->bossCooldown > 0.f) {
+			this->bossCooldown -= dt * 255.f;
+			if (this->bossCooldown < 0.f) this->bossCooldown = 0.f;
+
+			this->texts["BOSS"]->setFillColor(sf::Color(113, 43, 59, static_cast<sf::Uint8>(this->bossCooldown)));
+			this->sprites["BOSS_BAR_EMPTY"]->setColor(sf::Color(255, 255, 255, static_cast<sf::Uint8>(this->bossCooldown)));
+			this->sprites["BOSS_BAR"]->setColor(sf::Color(255, 255, 255, static_cast<sf::Uint8>(this->bossCooldown)));
+		}
+	}
 
 	this->isLevelshown = true;
 	if ((mousePosView.y >= calcY(12, vm) && mousePosView.y <= calcY(34, vm))

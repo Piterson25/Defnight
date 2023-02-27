@@ -68,6 +68,7 @@ private:
 	sf::Texture select_texture;
 
 	bool bossWave;
+	float bossCooldown;
 
 	bool isLevelshown;
 	bool isLeveling;
