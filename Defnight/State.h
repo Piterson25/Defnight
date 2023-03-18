@@ -34,17 +34,19 @@ public:
 	virtual void update(const float& dt) = 0;
 	virtual void draw(sf::RenderTarget* target = NULL) = 0;
 protected:
-	std::stack<State*>* states;
+	float gridSize;
 	sf::RenderWindow* window;
 	GameSettings* gameSettings;
 	std::unordered_map<std::string, int>* supportedKeys;
-	std::unordered_map<std::string, int> keybinds;
-	std::unordered_map<std::string, std::string> lang;
-	std::unordered_map<std::string, std::pair<bool, bool>> keysClick;
 	sf::Font font;
 	SoundEngine* soundEngine;
 	MusicEngine* musicEngine;
-	float gridSize;
+	std::stack<State*>* states;
+	
+	std::unordered_map<std::string, int> keybinds;
+	std::unordered_map<std::string, std::string> lang;
+	std::unordered_map<std::string, std::pair<bool, bool>> keysClick;
+	
 	float keytime;
 	float keytimeMax;
 	bool quit;

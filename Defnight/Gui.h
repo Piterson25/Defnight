@@ -1,6 +1,8 @@
 #ifndef GUI_H
 #define GUI_H
 
+#include "stdafx.h"
+
 namespace gui {
 
 	enum button_states { BUTTON_IDLE, BUTTON_HOVER, BUTTON_PRESSED };

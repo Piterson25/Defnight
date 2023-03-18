@@ -1,6 +1,8 @@
 #ifndef GAMESETTINGS_H
 #define GAMESETTINGS_H
 
+#include "stdafx.h"
+
 class GameSettings
 {
 public:

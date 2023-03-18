@@ -6,6 +6,7 @@
 #include <iostream>
 #include <list>
 #include <math.h>
+#include <memory>
 #include <stack>
 #include <string>
 #include <sstream>

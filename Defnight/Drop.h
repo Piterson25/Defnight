@@ -38,12 +38,13 @@ private:
 	float spinCooldown;
 	uint32_t worth;
 	float angle;
-	sf::VideoMode vm;
 
 	float vanishingCountdown;
 	bool vanishing;
 	bool spawned;
 	float spawnCountdown;
+
+	sf::VideoMode vm;
 };
 
 #endif

@@ -33,5 +33,7 @@
 
 x64
 SFML-2.5.1
-na_wypadek_release.txt
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
 *.vs
