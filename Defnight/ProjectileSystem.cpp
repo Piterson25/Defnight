@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "ProjectileSystem.h"
 #include "Functions.h"
 

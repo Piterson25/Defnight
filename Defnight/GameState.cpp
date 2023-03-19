@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Functions.h"
 #include "GameState.h"
 
@@ -140,10 +139,40 @@ GameState::~GameState()
 
 void GameState::initGUI()
 {
+
 }
 
 void GameState::resetGUI()
 {
+	for (auto it = this->texts.begin(); it != this->texts.end(); ++it)
+	{
+		delete it->second;
+		it->second = nullptr;
+	}
+	this->texts.clear();
+
+	for (auto it = this->text_buttons.begin(); it != this->text_buttons.end(); ++it)
+	{
+		delete it->second;
+		it->second = nullptr;
+	}
+	this->text_buttons.clear();
+
+	for (auto it = this->sprites.begin(); it != this->sprites.end(); ++it)
+	{
+		delete it->second;
+		it->second = nullptr;
+	}
+	this->sprites.clear();
+
+	for (auto it = this->sprite_buttons.begin(); it != this->sprite_buttons.end(); ++it)
+	{
+		delete it->second;
+		it->second = nullptr;
+	}
+	this->sprite_buttons.clear();
+
+	initGUI();
 }
 
 void GameState::draw(sf::RenderTarget* target)

@@ -3,6 +3,8 @@
 
 #include "FloatingText.h"
 
+class FloatingText;
+
 class FloatingTextSystem
 {
 public:

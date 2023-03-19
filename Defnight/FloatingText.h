@@ -1,6 +1,8 @@
 #ifndef FLOATINGTEXT_H
 #define FLOATINGTEXT_H
 
+#include "stdafx.h"
+
 class FloatingText
 {
 public:

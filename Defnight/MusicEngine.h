@@ -1,6 +1,8 @@
 #ifndef MUSICENGINE_H
 #define MUSICENGINE_H
 
+#include "stdafx.h"
+
 class MusicEngine
 {
 public:

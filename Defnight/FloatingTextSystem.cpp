@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "FloatingTextSystem.h"
 
 FloatingTextSystem::FloatingTextSystem(sf::Font* font, const sf::VideoMode& vm)

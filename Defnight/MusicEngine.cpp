@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "MusicEngine.h"
 
 MusicEngine::MusicEngine(const float& volume)

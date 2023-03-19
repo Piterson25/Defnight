@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "DropSystem.h"
 
 DropSystem::DropSystem(const float& difficulty_mod, const sf::VideoMode& vm)

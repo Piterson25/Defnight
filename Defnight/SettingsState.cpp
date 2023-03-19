@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "Functions.h"
 #include "SettingsState.h"
 
@@ -6,7 +5,7 @@ SettingsState::SettingsState(const float& gridSize, sf::RenderWindow* window, Ga
 	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, MusicEngine* musicEngine, std::stack<State*>* states)
 	: State(gridSize, window, grap, supportedKeys, font, soundEngine, musicEngine, states)
 {
-	initGUI();
+	this->initGUI();
 }
 
 SettingsState::~SettingsState()
