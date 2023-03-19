@@ -45,10 +45,22 @@ void AIComponent::initNodes()
 	{
 		for (size_t y = 0; y < CollumsY; ++y)
 		{
-			if (Nodes[x][y].x > 0) Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(Nodes[x][y].x - 1)][Nodes[x][y].y]);
-			if (Nodes[x][y].y > 0) Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][static_cast<size_t>(Nodes[x][y].y - 1)]);
-			if (Nodes[x][y].x < CollumsX - 1) Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(Nodes[x][y].x + 1)][Nodes[x][y].y]);
-			if (Nodes[x][y].y < CollumsY - 1) Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][static_cast<size_t>(Nodes[x][y].y + 1)]);
+			if (Nodes[x][y].x > 0) {
+				const int tempX = Nodes[x][y].x - 1;
+				Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(tempX)][Nodes[x][y].y]);
+			}
+			if (Nodes[x][y].y > 0) {
+				const int tempY = Nodes[x][y].y - 1;
+				Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][static_cast<size_t>(tempY)]);
+			}
+			if (Nodes[x][y].x < CollumsX - 1) {
+				const int tempX = Nodes[x][y].x + 1;
+				Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(tempX)][Nodes[x][y].y]);
+			}
+			if (Nodes[x][y].y < CollumsY - 1) {
+				const int tempY = Nodes[x][y].y + 1;
+				Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][static_cast<size_t>(tempY)]);
+			}
 		}
 	}
 }

@@ -52,7 +52,8 @@ const bool MusicEngine::isEmpty() const
 void MusicEngine::update()
 {
 	if (this->hasStopped() && this->tracks.size() > 0) {
-		if (!this->music.openFromFile("external/music/" + this->tracks[static_cast<size_t>(Random::Float() * this->tracks.size())])) {
+		const int tempTrack = static_cast<int>(Random::Float() * this->tracks.size());
+		if (!this->music.openFromFile("external/music/" + this->tracks[static_cast<size_t>(tempTrack)])) {
 			throw("ERROR - COULDN'T FIND MUSIC");
 		}
 		this->playMusic();

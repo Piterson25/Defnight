@@ -19,7 +19,7 @@ gui::ButtonText::ButtonText(sf::Font* font, const std::string& text, const unsig
 
 gui::ButtonText::~ButtonText()
 {
-
+	delete this->font;
 }
 
 const bool gui::ButtonText::isPressed() const
@@ -98,7 +98,7 @@ gui::Text::Text(sf::Font* font, const std::string& text, const unsigned& charSiz
 
 gui::Text::~Text()
 {
-
+	delete this->font;
 }
 
 const std::string gui::Text::getText() const

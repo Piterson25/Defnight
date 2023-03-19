@@ -61,7 +61,7 @@ namespace gui {
 	public:
 		ButtonSprite(const std::string& texturePath, const float& posX, const float& posY, const float& scale, const bool& center);
 		ButtonSprite(const sf::Texture& texture, const float& posX, const float& posY, const float& scale, const bool& center);
-		~ButtonSprite();
+		virtual ~ButtonSprite();
 
 		virtual const sf::IntRect getTextureRect() const;
 
@@ -85,7 +85,7 @@ namespace gui {
 		Sprite(const std::string& texturePath, const float& posX, const float& posY, const float& scale, const bool& center);
 		Sprite(const sf::Texture& texture, const float& posX, const float& posY, const float& scale, const bool& center);
 		Sprite(sf::Sprite& sprite, const float& posX, const float& posY, const float& scale, const bool& center);
-		~Sprite();
+		virtual ~Sprite();
 
 		virtual const sf::FloatRect getGlobalBounds() const;
 		virtual const sf::IntRect getTextureRect() const;
