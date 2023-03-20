@@ -16,7 +16,7 @@ public:
 	void update(const float& dt);
 	void draw(sf::RenderTarget& target);
 private:
-	sf::Font font;
+	sf::Font* font;
 	sf::Text text;
 	sf::Vector2f velocity;
 	bool gui;

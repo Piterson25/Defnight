@@ -5,9 +5,9 @@ FloatingText::FloatingText(sf::Font* font, const std::string& text, const unsign
 	const float& posX, const float& posY, const sf::Color& color, const bool& isgui, sf::VideoMode& vm)
 	:gui(isgui)
 {
-	this->font = *font;
+	this->font = font;
 
-	this->text.setFont(this->font);
+	this->text.setFont(*this->font);
 	this->text.setString(text);
 	this->text.setCharacterSize(charSize);
 	this->text.setFillColor(sf::Color(color.r, color.g, color.b, 0));

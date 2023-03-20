@@ -3,7 +3,7 @@
 
 #include "State.h"
 #include "SettingsState.h"
-#include "Gui.h"
+#include "GUI.h"
 #include "PlayerGUI.h"
 #include "Player.h"
 #include "MonsterSystem.h"

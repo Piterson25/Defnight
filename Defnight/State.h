@@ -25,8 +25,6 @@ public:
 	void setMouseClick(const bool& click);
 	void setKeysClick(const std::string& keyName, const bool& click);
 
-	void initGUI();
-	void resetGUI();
 	virtual void updateMousePositions(sf::View* view = NULL);
 	virtual void updateMouseClick();
 	virtual void updateKeysClick(const std::string& keyName, sf::Keyboard::Key key);

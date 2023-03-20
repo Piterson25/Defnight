@@ -2,7 +2,7 @@
 #define PLAYERGUI_H
 
 #include "Player.h"
-#include "Gui.h"
+#include "GUI.h"
 #include "FloatingTextSystem.h"
 #include "MonsterSystem.h"
 #include "SoundEngine.h"
