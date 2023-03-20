@@ -86,8 +86,10 @@ void MainMenuState::initGUI()
 
 	// PAGE 2
 
-	this->sprites["GO_BACK"] = new gui::Sprite("external/assets/go_back.png", calcX(1192, vm), calcY(24, vm), calcX(4, vm), false);
+	this->sprites["GO_BACK_FRAME"] = new gui::Sprite("external/assets/select_go_back.png", calcX(1192, vm), calcY(24, vm), calcX(4, vm), false);
+	this->sprites["GO_BACK_FRAME"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
 	this->sprite_buttons["GO_BACK"] = new gui::ButtonSprite("external/assets/select_go_back.png", calcX(1192, vm), calcY(24, vm), calcX(4, vm), false);
+	this->sprite_buttons["GO_BACK"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 
 	this->map_name = "";
 	this->texts["CHOOSE_MAP"] = new gui::Text(&this->font, this->lang["CHOOSE_MAP"], calcChar(32, vm), calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
@@ -500,7 +502,7 @@ void MainMenuState::draw(sf::RenderTarget* target)
 		}
 		break;
 	case 2:
-		this->sprites["GO_BACK"]->draw(*target);
+		this->sprites["GO_BACK_FRAME"]->draw(*target);
 		this->sprite_buttons["GO_BACK"]->draw(*target);
 
 		this->texts["CHOOSE_MAP"]->draw(*target);
@@ -519,7 +521,7 @@ void MainMenuState::draw(sf::RenderTarget* target)
 		this->texts["PERMAFROST"]->draw(*target);
 		break;
 	case 3:
-		this->sprites["GO_BACK"]->draw(*target);
+		this->sprites["GO_BACK_FRAME"]->draw(*target);
 		this->sprite_buttons["GO_BACK"]->draw(*target);
 
 		this->texts["CHOOSE_HERO"]->draw(*target);
@@ -557,7 +559,7 @@ void MainMenuState::draw(sf::RenderTarget* target)
 		}
 		break;
 	case 4:
-		this->sprites["GO_BACK"]->draw(*target);
+		this->sprites["GO_BACK_FRAME"]->draw(*target);
 		this->sprite_buttons["GO_BACK"]->draw(*target);
 
 		this->texts["CHOOSE_DIFFICULTY"]->draw(*target);

@@ -38,14 +38,17 @@ public:
 	void updateReg();
 	void updateBossHP(const float& dt);
 	const bool updateShop(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine, FloatingTextSystem* floatingTextSystem);
+	const bool updateBuyingAbility(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine, FloatingTextSystem* floatingTextSystem);
 
 	const bool getIsEscape() const;
 	const bool getIsLeveling() const;
 	const bool getIsUpgrading() const;
 	const bool getIsShopping() const;
+	const bool getIsBuyingAbility() const;
 
 	void updateSprint(const float& dt);
 	void updateIsShopping();
+	void updateIsBuyingAbility();
 	void updateKills();
 	void updateMonsterCountWave(const std::string& language, const uint32_t& wave, const bool& bossWave, const size_t& monsterCount, SoundEngine* soundEngine);
 	void updateMonsterCount(const size_t& monsterCount);
@@ -74,6 +77,7 @@ private:
 	bool isLeveling;
 	bool isUpgrading;
 	bool isShopping;
+	bool isBuyingAbility;
 	bool isEscape;
 	float hp_bar_percent;
 	float xp_bar_percent;

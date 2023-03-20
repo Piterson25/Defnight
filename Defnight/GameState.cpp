@@ -332,16 +332,33 @@ void GameState::update(const float& dt)
 		else this->player->spawn(dt);
 
 		if (this->player->getSpawned()) {
-			this->updateKeysClick("E", sf::Keyboard::E);
+			if (!this->playerGUI->getIsBuyingAbility()) {
 
-			if (this->getKeysClick1("E") && !this->getKeysClick2("E")) {
-				this->setKeysClick("E", true);
-				this->playerGUI->updateIsShopping();
+				this->updateKeysClick("E", sf::Keyboard::E);
+
+				if (this->getKeysClick1("E") && !this->getKeysClick2("E")) {
+					this->setKeysClick("E", true);
+					this->playerGUI->updateIsShopping();
+				}
+				this->setKeysClick("E", this->getKeysClick1("E"));
+
+				if (this->playerGUI->updateShop(this->mousePosWindow, this->getMouseClick(), this->soundEngine, this->floatingTextSystem)) {
+					this->setMouseClick(true);
+				}
 			}
-			this->setKeysClick("E", this->getKeysClick1("E"));
 
-			if (this->playerGUI->updateShop(this->mousePosWindow, this->getMouseClick(), this->soundEngine, this->floatingTextSystem)) {
-				this->setMouseClick(true);
+			if (this->player->getName() != "warrior" && !this->playerGUI->getIsShopping()) {
+				this->updateKeysClick("B", sf::Keyboard::B);
+
+				if (this->getKeysClick1("B") && !this->getKeysClick2("B")) {
+					this->setKeysClick("B", true);
+					this->playerGUI->updateIsBuyingAbility();
+				}
+				this->setKeysClick("B", this->getKeysClick1("B"));
+
+				if (this->playerGUI->updateBuyingAbility(this->mousePosWindow, this->getMouseClick(), this->soundEngine, this->floatingTextSystem)) {
+					this->setMouseClick(true);
+				}
 			}
 
 		}

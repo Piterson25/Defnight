@@ -29,8 +29,10 @@ void SettingsState::initGUI()
 	}
 
 	this->texts["SETTINGS"] = new gui::Text(&this->font, this->lang["SETTINGS"], calcChar(32, vm), calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
-	this->sprites["GO_BACK"] = new gui::Sprite("external/assets/go_back.png", calcX(1192, vm), calcY(24, vm), calcX(4, vm), false);
+	this->sprites["GO_BACK_FRAME"] = new gui::Sprite("external/assets/select_go_back.png", calcX(1192, vm), calcY(24, vm), calcX(4, vm), false);
+	this->sprites["GO_BACK_FRAME"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
 	this->sprite_buttons["GO_BACK"] = new gui::ButtonSprite("external/assets/select_go_back.png", calcX(1192, vm), calcY(24, vm), calcX(4, vm), false);
+	this->sprite_buttons["GO_BACK"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 
 	for (size_t i = 0; i < this->videoModes.size(); ++i) {
 		if (this->videoModes[i] == vm) {
@@ -123,6 +125,7 @@ void SettingsState::initGUI()
 	this->texts["ESCAPE"] = new gui::Text(&this->font, this->lang["ESCAPE"], calcChar(16, vm), calcX(800, vm), calcY(342, vm), sf::Color(255, 255, 255), false);
 	this->texts["SHOP"] = new gui::Text(&this->font, this->lang["SHOP"], calcChar(16, vm), calcX(800, vm), calcY(392, vm), sf::Color(255, 255, 255), false);
 	this->texts["RUN"] = new gui::Text(&this->font, this->lang["RUN"], calcChar(16, vm), calcX(800, vm), calcY(442, vm), sf::Color(255, 255, 255), false);
+	this->texts["BUY_ABILITY"] = new gui::Text(&this->font, this->lang["BUY_ABILITY"], calcChar(16, vm), calcX(800, vm), calcY(492, vm), sf::Color(255, 255, 255), false);
 
 	this->text_buttons["APPLY"] = new gui::ButtonText(&this->font, this->lang["APPLY"], calcChar(32, vm), calcX(1000, vm), calcY(592, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
 	this->text_buttons["APPLY"]->setPosition(sf::Vector2f(calcX(1184, vm) - this->text_buttons["APPLY"]->getWidth(), calcY(592, vm)));
@@ -310,7 +313,7 @@ void SettingsState::draw(sf::RenderTarget* target)
 	if (!target) target = this->window;
 
 	this->texts["SETTINGS"]->draw(*target);
-	this->sprites["GO_BACK"]->draw(*target);
+	this->sprites["GO_BACK_FRAME"]->draw(*target);
 	this->sprite_buttons["GO_BACK"]->draw(*target);
 	this->text_buttons["RESOLUTION"]->draw(*target);
 	this->text_buttons["FULLSCREEN"]->draw(*target);
@@ -325,5 +328,6 @@ void SettingsState::draw(sf::RenderTarget* target)
 	this->texts["ESCAPE"]->draw(*target);
 	this->texts["SHOP"]->draw(*target);
 	this->texts["RUN"]->draw(*target);
+	this->texts["BUY_ABILITY"]->draw(*target);
 	this->text_buttons["APPLY"]->draw(*target);
 }

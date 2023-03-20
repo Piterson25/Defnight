@@ -184,7 +184,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 
 	this->isShopping = false;
 
-	this->sprites["SHOP"] = new gui::Sprite("external/assets/side_gui.png", 0, calcY(128, vm), calcScale(1, vm), false);
+	this->sprites["SIDE_GUI"] = new gui::Sprite("external/assets/side_gui.png", 0, calcY(128, vm), calcScale(1, vm), false);
 
 	this->sprites["ITEM1"] = new gui::Sprite(attributes_texture, calcX(44, vm), calcY(192, vm), calcScale(4, vm), false);
 	this->sprites["ITEM1"]->setTextureRect(sf::IntRect(144, 0, 16, 16));
@@ -241,6 +241,10 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->texts["ITEM2_PRICE"] = new gui::Text(&this->font, std::to_string(this->item2Price), calcChar(16, vm), calcX(204, vm), calcY(368, vm), sf::Color(255, 246, 76), false);
 	this->texts["ITEM3_PRICE"] = new gui::Text(&this->font, std::to_string(this->item3Price), calcChar(16, vm), calcX(204, vm), calcY(496, vm), sf::Color(255, 246, 76), false);
 	this->texts["ITEM4_PRICE"] = new gui::Text(&this->font, std::to_string(this->item4Price), calcChar(16, vm), calcX(204, vm), calcY(624, vm), sf::Color(255, 246, 76), false);
+
+	this->isBuyingAbility = false;
+	this->sprites["BUYING_ABILITY_ICON"] = new gui::Sprite("external/assets/abilities_icons.png", calcX(80, vm), calcY(160, vm), calcScale(8, vm), false);
+	this->sprites["BUYING_ABILITY_ICON"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 
 	this->bossWave = false;
 	this->bossCooldown = 0.f;
@@ -445,6 +449,8 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 		this->player->setAbilityCooldown(20.f);
 		this->player->setAbilityTime(10.f);
 	}
+
+	this->sprites["BUYING_ABILITY_ICON"]->setTextureRect(this->sprites["ABILITY_ICON"]->getTextureRect());
 }
 
 void PlayerGUI::update_level(SoundEngine* soundEngine)
@@ -694,6 +700,11 @@ void PlayerGUI::updateIsShopping()
 	this->isShopping = !this->isShopping;
 }
 
+void PlayerGUI::updateIsBuyingAbility()
+{
+	this->isBuyingAbility = !this->isBuyingAbility;
+}
+
 void PlayerGUI::updateKills()
 {
 	this->texts["KILLS"]->setText(this->lang["KILLS"] + std::to_string(this->player->getKills()));
@@ -901,6 +912,15 @@ const bool PlayerGUI::updateShop(const sf::Vector2i& mousePos, const bool& mouse
 	return false;
 }
 
+const bool PlayerGUI::updateBuyingAbility(const sf::Vector2i& mousePos, const bool& mouseClicked, SoundEngine* soundEngine, FloatingTextSystem* floatingTextSystem)
+{
+	if (this->isBuyingAbility) {
+		return true;
+	}
+
+	return false;
+}
+
 const bool PlayerGUI::getIsEscape() const
 {
 	return this->isEscape;
@@ -919,6 +939,11 @@ const bool PlayerGUI::getIsUpgrading() const
 const bool PlayerGUI::getIsShopping() const
 {
 	return this->isShopping;
+}
+
+const bool PlayerGUI::getIsBuyingAbility() const
+{
+	return this->isBuyingAbility;
 }
 
 const uint8_t PlayerGUI::updateEscapeButton(const sf::Vector2i& mousePos, const bool& mouseClicked)
@@ -1137,7 +1162,7 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 	this->texts["SPRINT"]->draw(target);
 
 	if (this->isShopping) {
-		this->sprites["SHOP"]->draw(target);
+		this->sprites["SIDE_GUI"]->draw(target);
 
 		this->sprites["ITEM1_FRAME"]->draw(target);
 		this->sprite_buttons["ITEM1"]->draw(target);
@@ -1180,6 +1205,12 @@ void PlayerGUI::draw(sf::RenderTarget& target)
 		if (this->player->getAbilityCooldown() < this->player->getAbilityMaxTime())
 			target.draw(this->ability_icon);
 		this->sprites["ABILITY_FRAME"]->draw(target);
+
+		if (this->isBuyingAbility && !this->isShopping) {
+			this->sprites["SIDE_GUI"]->draw(target);
+
+			this->sprites["BUYING_ABILITY_ICON"]->draw(target);
+		}
 	}
 
 	if (this->waveCountdown < 10.f) {
