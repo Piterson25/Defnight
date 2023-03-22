@@ -27,7 +27,7 @@ private:
 
 	sf::Font font;
 	gui::Text* fpsCounter;
-	uint16_t fps;
+	uint32_t fps;
 	float fpsTimer;
 
 	std::stack<State*> states;

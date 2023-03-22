@@ -103,26 +103,32 @@ void Game::update()
 	}
 
 	this->checkEvents();
-	if (!this->states.empty()) {
-		if (this->window->hasFocus()) {
-			this->states.top()->update(this->dt);
-
-			if (this->states.top()->getQuit()) {
-				delete this->states.top();
-				this->states.pop();
-			}
-			else if (this->states.top()->getReseted()) {
-				while (!this->states.empty()) {
-					delete this->states.top();
-					this->states.pop();
-				}
-				this->musicEngine->stopMusic();
-				this->close();
-				this->init();
-			}
-		}
+	if (this->states.empty()) {
+		this->close();
+		return;
 	}
-	else this->close();
+
+	if (!this->window->hasFocus()) {
+		return;
+	}
+
+	auto currentState = this->states.top();
+
+	currentState->update(this->dt);
+
+	if (currentState->getQuit()) {
+		delete currentState;
+		this->states.pop();
+	}
+	else if (currentState->getReseted()) {
+		while (!this->states.empty()) {
+			delete this->states.top();
+			this->states.pop();
+		}
+		this->musicEngine->stopMusic();
+		this->close();
+		this->init();
+	}
 }
 
 void Game::run()
