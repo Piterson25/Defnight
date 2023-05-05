@@ -1,5 +1,5 @@
-#ifndef FLOATINGTEXTSYSTEM_H
-#define FLOATINGTEXTSYSTEM_H
+#ifndef FLOATINGTEXTSYSTEM_HPP
+#define FLOATINGTEXTSYSTEM_HPP
 
 #include "FloatingText.hpp"
 

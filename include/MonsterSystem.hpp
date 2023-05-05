@@ -1,5 +1,5 @@
-#ifndef MONSTERSYSTEM_H
-#define MONSTERSYSTEM_H
+#ifndef MONSTERSYSTEM_HPP
+#define MONSTERSYSTEM_HPP
 
 #include "Monster.hpp"
 #include "Player.hpp"

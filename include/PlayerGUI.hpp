@@ -1,5 +1,5 @@
-#ifndef PLAYERGUI_H
-#define PLAYERGUI_H
+#ifndef PLAYERGUI_HPP
+#define PLAYERGUI_HPP
 
 #include "Player.hpp"
 #include "GUI.hpp"

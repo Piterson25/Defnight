@@ -1,5 +1,5 @@
-#ifndef DROPSYSTEM_H
-#define DROPSYSTEM_H
+#ifndef DROPSYSTEM_HPP
+#define DROPSYSTEM_HPP
 
 #include "Drop.hpp"
 #include "Player.hpp"

@@ -1,5 +1,5 @@
-#ifndef GAMESETTINGS_H
-#define GAMESETTINGS_H
+#ifndef GAMESETTINGS_HPP
+#define GAMESETTINGS_HPP
 
 #include "header.h"
 

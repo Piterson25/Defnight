@@ -1,5 +1,5 @@
-#ifndef SETTINGSSTATE_H
-#define SETTINGSSTATE_H
+#ifndef SETTINGSSTATE_HPP
+#define SETTINGSSTATE_HPP
 
 #include "State.hpp"
 #include "GUI.hpp"

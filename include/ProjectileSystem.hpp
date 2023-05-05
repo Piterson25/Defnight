@@ -1,5 +1,5 @@
-#ifndef PROJECTILESYSTEM_H
-#define PROJECTILESYSTEM_H
+#ifndef PROJECTILESYSTEM_HPP
+#define PROJECTILESYSTEM_HPP
 
 #include "Projectile.hpp"
 #include "Player.hpp"

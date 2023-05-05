@@ -1,5 +1,5 @@
-#ifndef FLOATINGTEXT_H
-#define FLOATINGTEXT_H
+#ifndef FLOATINGTEXT_HPP
+#define FLOATINGTEXT_HPP
 
 #include "header.h"
 

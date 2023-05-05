@@ -1,5 +1,5 @@
-#ifndef PARTICLESYSTEM_H
-#define PARTICLESYSTEM_H
+#ifndef PARTICLESYSTEM_HPP
+#define PARTICLESYSTEM_HPP
 
 #include "Particle.hpp"
 #include "MonsterSystem.hpp"

@@ -1,5 +1,5 @@
-#ifndef MUSICENGINE_H
-#define MUSICENGINE_H
+#ifndef MUSICENGINE_HPP
+#define MUSICENGINE_HPP
 
 #include "header.h"
 

@@ -1,5 +1,5 @@
-#ifndef SOUNDENGINE_H
-#define SOUNDENGINE_H
+#ifndef SOUNDENGINE_HPP
+#define SOUNDENGINE_HPP
 
 #include "SoundEffect.hpp"
 

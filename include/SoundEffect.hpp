@@ -1,5 +1,5 @@
-#ifndef SOUNDEFFECT_H
-#define SOUNDEFFECT_H
+#ifndef SOUNDEFFECT_HPP
+#define SOUNDEFFECT_HPP
 
 #include "header.h"
 

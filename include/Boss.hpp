@@ -1,5 +1,5 @@
-#ifndef BOSS_H
-#define BOSS_H
+#ifndef BOSS_HPP
+#define BOSS_HPP
 
 #include "Monster.hpp"
 #include "TileMap.hpp"

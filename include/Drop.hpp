@@ -1,5 +1,5 @@
-#ifndef DROP_H
-#define DROP_H
+#ifndef DROP_HPP
+#define DROP_HPP
 
 #include "Player.hpp"
 #include "PlayerGUI.hpp"

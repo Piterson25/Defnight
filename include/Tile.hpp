@@ -1,5 +1,5 @@
-#ifndef TILE_H
-#define TILE_H
+#ifndef TILE_HPP
+#define TILE_HPP
 
 #include "header.h"
 

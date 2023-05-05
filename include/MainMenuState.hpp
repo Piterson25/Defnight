@@ -1,5 +1,5 @@
-#ifndef MAINMENUSTATE_H
-#define MAINMENUSTATE_H
+#ifndef MAINMENUSTATE_HPP
+#define MAINMENUSTATE_HPP
 
 #include "GameState.hpp"
 #include "SettingsState.hpp"

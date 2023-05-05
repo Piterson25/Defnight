@@ -1,5 +1,5 @@
-#ifndef STATE_H
-#define STATE_H
+#ifndef STATE_HPP
+#define STATE_HPP
 
 #include "GameSettings.hpp"
 #include "SoundEngine.hpp"

@@ -1,5 +1,5 @@
-#ifndef TILEMAP_H
-#define TILEMAP_H
+#ifndef TILEMAP_HPP
+#define TILEMAP_HPP
 
 #include "Tile.hpp"
 

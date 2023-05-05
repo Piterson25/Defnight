@@ -1,5 +1,5 @@
-#ifndef AICOMPONENT_H
-#define AICOMPONENT_H
+#ifndef AICOMPONENT_HPP
+#define AICOMPONENT_HPP
 
 #include "TileMap.hpp"
 #include "Entity.hpp"

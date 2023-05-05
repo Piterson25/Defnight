@@ -1,5 +1,5 @@
-#ifndef PARTICLE_H
-#define PARTICLE_H
+#ifndef PARTICLE_HPP
+#define PARTICLE_HPP
 
 #include "MonsterSystem.hpp"
 #include "FloatingTextSystem.hpp"
