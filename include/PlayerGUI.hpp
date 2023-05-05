@@ -1,11 +1,11 @@
 #ifndef PLAYERGUI_H
 #define PLAYERGUI_H
 
-#include "Player.h"
-#include "GUI.h"
-#include "FloatingTextSystem.h"
-#include "MonsterSystem.h"
-#include "SoundEngine.h"
+#include "Player.hpp"
+#include "GUI.hpp"
+#include "FloatingTextSystem.hpp"
+#include "MonsterSystem.hpp"
+#include "SoundEngine.hpp"
 
 class Player;
 class FloatingTextSystem;

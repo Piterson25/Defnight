@@ -1,5 +1,5 @@
-#include "ProjectileSystem.h"
-#include "Functions.h"
+#include "ProjectileSystem.hpp"
+#include "Functions.hpp"
 
 ProjectileSystem::ProjectileSystem(const sf::VideoMode& vm)
 	:vm(vm)

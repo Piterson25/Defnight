@@ -1,7 +1,7 @@
 #ifndef SOUNDENGINE_H
 #define SOUNDENGINE_H
 
-#include "SoundEffect.h"
+#include "SoundEffect.hpp"
 
 class SoundEngine
 {

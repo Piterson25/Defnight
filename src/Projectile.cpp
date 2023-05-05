@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "Projectile.h"
+#include "Functions.hpp"
+#include "Projectile.hpp"
 
 Projectile::Projectile(const sf::VideoMode& vm, const std::string& projectile_name, sf::Texture& texture, const float& x, const float& y, 
 	const uint32_t& attack, const uint32_t& HP, const uint32_t& speed, const sf::Vector2f& coords, const float& coordsOffset, const bool& monsterProjectile)

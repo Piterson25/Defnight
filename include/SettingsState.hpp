@@ -1,7 +1,8 @@
 #ifndef SETTINGSSTATE_H
 #define SETTINGSSTATE_H
-#include "State.h"
-#include "GUI.h"
+
+#include "State.hpp"
+#include "GUI.hpp"
 
 class SettingsState :
 	public State

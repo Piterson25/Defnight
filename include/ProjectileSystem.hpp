@@ -1,14 +1,14 @@
 #ifndef PROJECTILESYSTEM_H
 #define PROJECTILESYSTEM_H
 
-#include "Projectile.h"
-#include "Player.h"
-#include "MonsterSystem.h"
-#include "PlayerGUI.h"
-#include "FloatingTextSystem.h"
-#include "TileMap.h"
-#include "ParticleSystem.h"
-#include "SoundEngine.h"
+#include "Projectile.hpp"
+#include "Player.hpp"
+#include "MonsterSystem.hpp"
+#include "PlayerGUI.hpp"
+#include "FloatingTextSystem.hpp"
+#include "TileMap.hpp"
+#include "ParticleSystem.hpp"
+#include "SoundEngine.hpp"
 
 class Projectile;
 class Player;

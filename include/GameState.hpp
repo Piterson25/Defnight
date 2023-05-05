@@ -1,17 +1,17 @@
 #ifndef GAMESTATE_H
 #define GAMESTATE_H
 
-#include "State.h"
-#include "SettingsState.h"
-#include "GUI.h"
-#include "PlayerGUI.h"
-#include "Player.h"
-#include "MonsterSystem.h"
-#include "ProjectileSystem.h"
-#include "FloatingTextSystem.h"
-#include "DropSystem.h"
-#include "TileMap.h"
-#include "ParticleSystem.h"
+#include "State.hpp"
+#include "SettingsState.hpp"
+#include "GUI.hpp"
+#include "PlayerGUI.hpp"
+#include "Player.hpp"
+#include "MonsterSystem.hpp"
+#include "ProjectileSystem.hpp"
+#include "FloatingTextSystem.hpp"
+#include "DropSystem.hpp"
+#include "TileMap.hpp"
+#include "ParticleSystem.hpp"
 
 class GameState :
 	public State

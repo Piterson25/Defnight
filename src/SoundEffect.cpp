@@ -1,4 +1,4 @@
-#include "SoundEffect.h"
+#include "SoundEffect.hpp"
 
 SoundEffect::SoundEffect(const std::string& name, const float& volume)
 	:name(name)

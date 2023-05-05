@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "Boss.h"
+#include "Functions.hpp"
+#include "Boss.hpp"
 
 Boss::Boss(const sf::VideoMode& vm, const std::string& monster_name, sf::Texture& texture, sf::Texture& shadow_texture, TileMap* tileMap,
 	const float& x, const float& y, const float& difficulty_mod, const float& wave_mod, const uint32_t& monsterSize)

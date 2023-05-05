@@ -1,11 +1,11 @@
 #ifndef BOSS_H
 #define BOSS_H
 
-#include "Monster.h"
-#include "TileMap.h"
-#include "AIComponent.h"
-#include "ProjectileSystem.h"
-#include "SoundEngine.h"
+#include "Monster.hpp"
+#include "TileMap.hpp"
+#include "AIComponent.hpp"
+#include "ProjectileSystem.hpp"
+#include "SoundEngine.hpp"
 
 class TileMap;
 class AIComponent;

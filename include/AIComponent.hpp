@@ -1,8 +1,8 @@
 #ifndef AICOMPONENT_H
 #define AICOMPONENT_H
 
-#include "TileMap.h"
-#include "Entity.h"
+#include "TileMap.hpp"
+#include "Entity.hpp"
 
 class TileMap;
 class Entity;

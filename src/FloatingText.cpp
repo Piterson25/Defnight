@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "FloatingText.h"
+#include "Functions.hpp"
+#include "FloatingText.hpp"
 
 FloatingText::FloatingText(sf::Font* font, const std::string& text, const unsigned& charSize,
 	const float& posX, const float& posY, const sf::Color& color, const bool& isgui, sf::VideoMode& vm)

@@ -1,11 +1,11 @@
 #ifndef PROJECTILE_H
 #define PROJECTILE_H
 
-#include "Player.h"
-#include "Monster.h"
-#include "Entity.h"
-#include "FloatingTextSystem.h"
-#include "TileMap.h"
+#include "Player.hpp"
+#include "Monster.hpp"
+#include "Entity.hpp"
+#include "FloatingTextSystem.hpp"
+#include "TileMap.hpp"
 
 class Player;
 class Monster;

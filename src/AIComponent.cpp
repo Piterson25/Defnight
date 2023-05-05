@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "AIComponent.h"
+#include "Functions.hpp"
+#include "AIComponent.hpp"
 
 AIComponent::AIComponent(TileMap* tileMap, sf::VideoMode& vm)
 	:vm(vm)

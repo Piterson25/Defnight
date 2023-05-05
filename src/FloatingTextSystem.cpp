@@ -1,4 +1,4 @@
-#include "FloatingTextSystem.h"
+#include "FloatingTextSystem.hpp"
 
 FloatingTextSystem::FloatingTextSystem(sf::Font* font, const sf::VideoMode& vm)
 	:font(font), vm(vm)

@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "Drop.h"
+#include "Functions.hpp"
+#include "Drop.hpp"
 
 Drop::Drop(const std::string& name, const float& posX, const float& posY, const uint32_t& worth, const bool& vanishing, sf::VideoMode& vm)
 	:name(name), worth(worth), vanishing(vanishing), vm(vm)

@@ -1,7 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include "TileMap.h"
+#include "TileMap.hpp"
 
 class TileMap;
 

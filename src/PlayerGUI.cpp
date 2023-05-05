@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "PlayerGUI.h"
+#include "Functions.hpp"
+#include "PlayerGUI.hpp"
 
 PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const float& soundVolume,
 	const std::string& heroName, const std::string& difficulty_name, std::unordered_map<std::string, std::string>& lang)

@@ -1,4 +1,4 @@
-#include "DropSystem.h"
+#include "DropSystem.hpp"
 
 DropSystem::DropSystem(const float& difficulty_mod, const sf::VideoMode& vm)
 	:difficulty_mod(difficulty_mod), vm(vm)

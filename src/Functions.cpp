@@ -1,4 +1,4 @@
-#include "Functions.h"
+#include "Functions.hpp"
 
 const float calcX(const float& x, const sf::VideoMode& vm)
 {

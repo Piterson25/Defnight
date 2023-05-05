@@ -1,7 +1,7 @@
 #ifndef FLOATINGTEXTSYSTEM_H
 #define FLOATINGTEXTSYSTEM_H
 
-#include "FloatingText.h"
+#include "FloatingText.hpp"
 
 class FloatingText;
 

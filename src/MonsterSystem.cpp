@@ -1,6 +1,6 @@
-#include "Functions.h"
-#include "MonsterSystem.h"
-#include "Boss.h"
+#include "Functions.hpp"
+#include "MonsterSystem.hpp"
+#include "Boss.hpp"
 
 MonsterSystem::MonsterSystem(const sf::VideoMode& vm, TileMap* tileMap, const float& gridSize, const float& difficulty_mod)
 	:vm(vm), tileMap(tileMap), gridSize(gridSize), difficulty_mod(difficulty_mod)

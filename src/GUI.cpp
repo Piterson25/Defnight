@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "GUI.h"
+#include "Functions.hpp"
+#include "GUI.hpp"
 
 gui::ButtonText::ButtonText(sf::Font* font, const std::string& text, const unsigned& charSize, 
 	const float& posX, const float& posY, const sf::Color& idleColor, const sf::Color& hoverColor, const bool& center)

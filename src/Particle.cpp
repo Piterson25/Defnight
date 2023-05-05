@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "Particle.h"
+#include "Functions.hpp"
+#include "Particle.hpp"
 
 Particle::Particle(const sf::VideoMode& vm, const std::string& name, const float& x, const float& y, const std::uint32_t& attack)
 	:vm(vm), name(name), attack(attack)

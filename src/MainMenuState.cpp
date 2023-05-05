@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "MainMenuState.h"
+#include "Functions.hpp"
+#include "MainMenuState.hpp"
 
 MainMenuState::MainMenuState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap,
 	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, MusicEngine* musicEngine, std::stack<State*>* states)

@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "Entity.h"
+#include "Functions.hpp"
+#include "Entity.hpp"
 
 Entity::Entity()
 {

@@ -1,9 +1,9 @@
 #ifndef MAINMENUSTATE_H
 #define MAINMENUSTATE_H
 
-#include "GameState.h"
-#include "SettingsState.h"
-#include "GUI.h"
+#include "GameState.hpp"
+#include "SettingsState.hpp"
+#include "GUI.hpp"
 
 class MainMenuState :
 	public State

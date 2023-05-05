@@ -13,7 +13,7 @@
 #include <vector>
 #include <unordered_map>
 #include <utility>
-#include "Random.h"
+#include "Random.hpp"
 
 // SFML
 #include <SFML/Audio.hpp>

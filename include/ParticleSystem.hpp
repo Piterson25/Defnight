@@ -1,10 +1,10 @@
 #ifndef PARTICLESYSTEM_H
 #define PARTICLESYSTEM_H
 
-#include "Particle.h"
-#include "MonsterSystem.h"
-#include "FloatingTextSystem.h"
-#include "SoundEngine.h"
+#include "Particle.hpp"
+#include "MonsterSystem.hpp"
+#include "FloatingTextSystem.hpp"
+#include "SoundEngine.hpp"
 
 class Particle;
 class MonsterSystem;

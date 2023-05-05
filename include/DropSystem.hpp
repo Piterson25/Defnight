@@ -1,11 +1,11 @@
 #ifndef DROPSYSTEM_H
 #define DROPSYSTEM_H
 
-#include "Drop.h"
-#include "Player.h"
-#include "PlayerGUI.h"
-#include "FloatingTextSystem.h"
-#include "SoundEngine.h"
+#include "Drop.hpp"
+#include "Player.hpp"
+#include "PlayerGUI.hpp"
+#include "FloatingTextSystem.hpp"
+#include "SoundEngine.hpp"
 
 class Drop;
 class Player;

@@ -1,9 +1,9 @@
 #ifndef PARTICLE_H
 #define PARTICLE_H
 
-#include "MonsterSystem.h"
-#include "FloatingTextSystem.h"
-#include "SoundEngine.h"
+#include "MonsterSystem.hpp"
+#include "FloatingTextSystem.hpp"
+#include "SoundEngine.hpp"
 
 class MonsterSystem;
 class FloatingTextSystem;

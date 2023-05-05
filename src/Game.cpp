@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "Game.h"
+#include "Functions.hpp"
+#include "Game.hpp"
 
 Game::Game()
 {

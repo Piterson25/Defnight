@@ -1,4 +1,4 @@
-#include "SoundEngine.h"
+#include "SoundEngine.hpp"
 
 SoundEngine::SoundEngine(const float& volume)
 	:volume(volume)

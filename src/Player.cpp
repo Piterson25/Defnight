@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "Player.h"
+#include "Functions.hpp"
+#include "Player.hpp"
 
 Player::Player(const sf::VideoMode& vm, const std::string& hero_name, const float& x, const float& y)
 {

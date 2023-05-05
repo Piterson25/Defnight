@@ -1,16 +1,16 @@
 #ifndef MONSTERSYSTEM_H
 #define MONSTERSYSTEM_H
 
-#include "Monster.h"
-#include "Player.h"
-#include "PlayerGUI.h"
-#include "TileMap.h"
-#include "SoundEngine.h"
-#include "DropSystem.h"
-#include "Particle.h"
-#include "ProjectileSystem.h"
-#include "Projectile.h"
-#include "FloatingTextSystem.h"
+#include "Monster.hpp"
+#include "Player.hpp"
+#include "PlayerGUI.hpp"
+#include "TileMap.hpp"
+#include "SoundEngine.hpp"
+#include "DropSystem.hpp"
+#include "Particle.hpp"
+#include "ProjectileSystem.hpp"
+#include "Projectile.hpp"
+#include "FloatingTextSystem.hpp"
 
 class Monster;
 class Player;

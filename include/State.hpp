@@ -1,9 +1,9 @@
 #ifndef STATE_H
 #define STATE_H
 
-#include "GameSettings.h"
-#include "SoundEngine.h"
-#include "MusicEngine.h"
+#include "GameSettings.hpp"
+#include "SoundEngine.hpp"
+#include "MusicEngine.hpp"
 
 class State
 {

@@ -1,7 +1,7 @@
 #ifndef TILEMAP_H
 #define TILEMAP_H
 
-#include "Tile.h"
+#include "Tile.hpp"
 
 class TileMap
 {

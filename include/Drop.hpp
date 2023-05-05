@@ -1,10 +1,10 @@
 #ifndef DROP_H
 #define DROP_H
 
-#include "Player.h"
-#include "PlayerGUI.h"
-#include "FloatingTextSystem.h"
-#include "SoundEngine.h"
+#include "Player.hpp"
+#include "PlayerGUI.hpp"
+#include "FloatingTextSystem.hpp"
+#include "SoundEngine.hpp"
 
 class Player;
 class PlayerGUI;

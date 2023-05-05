@@ -1,11 +1,11 @@
 #ifndef PLAYER_H
 #define PLAYER_H
 
-#include "MonsterSystem.h"
-#include "Entity.h"
-#include "ProjectileSystem.h"
-#include "FloatingTextSystem.h"
-#include "SoundEngine.h"
+#include "MonsterSystem.hpp"
+#include "Entity.hpp"
+#include "ProjectileSystem.hpp"
+#include "FloatingTextSystem.hpp"
+#include "SoundEngine.hpp"
 
 class MonsterSystem;
 class FloatingTextSystem;

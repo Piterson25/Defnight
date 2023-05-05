@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "State.h"
+#include "Functions.hpp"
+#include "State.hpp"
 
 State::State(const float& gridSize, sf::RenderWindow* window, GameSettings* grap, std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, MusicEngine* musicEngine, std::stack<State*>* states)
 	:gridSize(gridSize), window(window), gameSettings(grap), supportedKeys(supportedKeys), font(*font), soundEngine(soundEngine), musicEngine(musicEngine), states(states)

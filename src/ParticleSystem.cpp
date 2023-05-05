@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "ParticleSystem.h"
+#include "Functions.hpp"
+#include "ParticleSystem.hpp"
 
 ParticleSystem::ParticleSystem(const sf::VideoMode& vm)
 	:vm(vm)

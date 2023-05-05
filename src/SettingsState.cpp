@@ -1,5 +1,5 @@
-#include "Functions.h"
-#include "SettingsState.h"
+#include "Functions.hpp"
+#include "SettingsState.hpp"
 
 SettingsState::SettingsState(const float& gridSize, sf::RenderWindow* window, GameSettings* grap, 
 	std::unordered_map<std::string, int>* supportedKeys, sf::Font* font, SoundEngine* soundEngine, MusicEngine* musicEngine, std::stack<State*>* states)
