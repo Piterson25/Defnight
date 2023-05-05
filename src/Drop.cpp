@@ -4,7 +4,7 @@
 Drop::Drop(const std::string& name, const float& posX, const float& posY, const uint32_t& worth, const bool& vanishing, sf::VideoMode& vm)
 	:name(name), worth(worth), vanishing(vanishing), vm(vm)
 {
-	this->texture.loadFromFile("external/assets/drop.png");
+	this->texture.loadFromFile("assets/textures/drop.png");
 	this->sprite.setTexture(this->texture);
 	this->sprite.setPosition(posX, posY);
 	this->sprite.setScale(calcScale(2, vm), calcScale(2, vm));

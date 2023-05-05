@@ -1,7 +1,7 @@
 #ifndef MUSICENGINE_H
 #define MUSICENGINE_H
 
-#include "stdafx.h"
+#include "header.h"
 
 class MusicEngine
 {

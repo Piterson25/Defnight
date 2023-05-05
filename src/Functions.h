@@ -1,7 +1,7 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include "stdafx.h"
+#include "header.h"
 
 const float calcX(const float& x, const sf::VideoMode& vm);
 const float calcY(const float& y, const sf::VideoMode& vm);

@@ -1,7 +1,7 @@
 #ifndef GUI_H
 #define GUI_H
 
-#include "stdafx.h"
+#include "header.h"
 
 namespace gui {
 

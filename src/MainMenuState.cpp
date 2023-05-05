@@ -32,7 +32,7 @@ void MainMenuState::initGUI()
 
 	this->introCooldown = 0.f;
 	this->dimAlpha = 0.f;
-	this->sprites["LOGO"] = new gui::Sprite("external/assets/icon.png", calcX(640, vm), calcY(232, vm), calcScale(8, vm), true);
+	this->sprites["LOGO"] = new gui::Sprite("assets/textures/icon.png", calcX(640, vm), calcY(232, vm), calcScale(8, vm), true);
 	this->sprites["LOGO"]->setColor(sf::Color(255, 255, 255, 0));
 
 	// PAGE 1
@@ -46,13 +46,13 @@ void MainMenuState::initGUI()
 	this->mapView.setCenter(static_cast<float>(vm.width / 2), static_cast<float>(vm.height / 2));
 
 	if (const uint8_t m = static_cast<uint8_t>(Random::Float() * 3.f); m == 0) {
-		this->map_texture.loadFromFile("external/assets/maps/ruins.png");
+		this->map_texture.loadFromFile("assets/textures/maps/ruins.png");
 	}
 	else if (m == 1) {
-		this->map_texture.loadFromFile("external/assets/maps/desert.png");
+		this->map_texture.loadFromFile("assets/textures/maps/desert.png");
 	}
 	else {
-		this->map_texture.loadFromFile("external/assets/maps/permafrost.png");
+		this->map_texture.loadFromFile("assets/textures/maps/permafrost.png");
 	}
 	
 	this->map.setTexture(this->map_texture);
@@ -67,7 +67,7 @@ void MainMenuState::initGUI()
 	this->quitBackground.setSize(sf::Vector2f(static_cast<float>(vm.width), static_cast<float>(vm.height)));
 	this->quitBackground.setFillColor(sf::Color(0, 0, 0, 192));
 
-	this->sprites["TITLE"] = new gui::Sprite("external/assets/title.png", calcX(640, vm), calcY(144, vm), calcScale(1, vm), true);
+	this->sprites["TITLE"] = new gui::Sprite("assets/textures/title.png", calcX(640, vm), calcY(144, vm), calcScale(1, vm), true);
 
 	this->text_buttons["PLAY"] = new gui::ButtonText(&this->font, this->lang["PLAY"], calcChar(32, vm), calcX(640, vm), calcY(370, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
 	this->text_buttons["SETTINGS"] = new gui::ButtonText(&this->font, this->lang["SETTINGS"], calcChar(32, vm), calcX(640, vm), calcY(466, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
@@ -86,30 +86,30 @@ void MainMenuState::initGUI()
 
 	// PAGE 2
 
-	this->sprites["GO_BACK_FRAME"] = new gui::Sprite("external/assets/select_go_back.png", calcX(1192, vm), calcY(24, vm), calcX(4, vm), false);
+	this->sprites["GO_BACK_FRAME"] = new gui::Sprite("assets/textures/select_go_back.png", calcX(1192, vm), calcY(24, vm), calcX(4, vm), false);
 	this->sprites["GO_BACK_FRAME"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
-	this->sprite_buttons["GO_BACK"] = new gui::ButtonSprite("external/assets/select_go_back.png", calcX(1192, vm), calcY(24, vm), calcX(4, vm), false);
+	this->sprite_buttons["GO_BACK"] = new gui::ButtonSprite("assets/textures/select_go_back.png", calcX(1192, vm), calcY(24, vm), calcX(4, vm), false);
 	this->sprite_buttons["GO_BACK"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 
 	this->map_name = "";
 	this->texts["CHOOSE_MAP"] = new gui::Text(&this->font, this->lang["CHOOSE_MAP"], calcChar(32, vm), calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
-	this->sprites["MAP1_FRAME"] = new gui::Sprite("external/assets/select_map.png", calcX(24, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprites["MAP1_FRAME"] = new gui::Sprite("assets/textures/select_map.png", calcX(24, vm), calcY(248, vm), calcScale(1, vm), false);
 	this->sprites["MAP1_FRAME"]->setTextureRect(sf::IntRect(304, 0, 304, 304));
-	this->sprite_buttons["MAP1"] = new gui::ButtonSprite("external/assets/select_map.png", calcX(24, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprite_buttons["MAP1"] = new gui::ButtonSprite("assets/textures/select_map.png", calcX(24, vm), calcY(248, vm), calcScale(1, vm), false);
 	this->sprite_buttons["MAP1"]->setTextureRect(sf::IntRect(0, 0, 304, 304));
-	this->sprites["MAP1"] = new gui::Sprite("external/assets/maps/ruins.png", calcX(48, vm), calcY(272, vm), calcScale(0.5f, vm), false);
+	this->sprites["MAP1"] = new gui::Sprite("assets/textures/maps/ruins.png", calcX(48, vm), calcY(272, vm), calcScale(0.5f, vm), false);
 	this->texts["RUINS"] = new gui::Text(&this->font, this->lang["RUINS"], calcChar(32, vm), calcX(176, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
-	this->sprites["MAP2_FRAME"] = new gui::Sprite("external/assets/select_map.png", calcX(472, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprites["MAP2_FRAME"] = new gui::Sprite("assets/textures/select_map.png", calcX(472, vm), calcY(248, vm), calcScale(1, vm), false);
 	this->sprites["MAP2_FRAME"]->setTextureRect(sf::IntRect(304, 0, 304, 304));
-	this->sprite_buttons["MAP2"] = new gui::ButtonSprite("external/assets/select_map.png", calcX(472, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprite_buttons["MAP2"] = new gui::ButtonSprite("assets/textures/select_map.png", calcX(472, vm), calcY(248, vm), calcScale(1, vm), false);
 	this->sprite_buttons["MAP2"]->setTextureRect(sf::IntRect(0, 0, 304, 304));
-	this->sprites["MAP2"] = new gui::Sprite("external/assets/maps/desert.png", calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
+	this->sprites["MAP2"] = new gui::Sprite("assets/textures/maps/desert.png", calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
 	this->texts["DESERT"] = new gui::Text(&this->font, this->lang["DESERT"], calcChar(32, vm), calcX(624, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
-	this->sprites["MAP3_FRAME"] = new gui::Sprite("external/assets/select_map.png", calcX(920, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprites["MAP3_FRAME"] = new gui::Sprite("assets/textures/select_map.png", calcX(920, vm), calcY(248, vm), calcScale(1, vm), false);
 	this->sprites["MAP3_FRAME"]->setTextureRect(sf::IntRect(304, 0, 304, 304));
-	this->sprite_buttons["MAP3"] = new gui::ButtonSprite("external/assets/select_map.png", calcX(920, vm), calcY(248, vm), calcScale(1, vm), false);
+	this->sprite_buttons["MAP3"] = new gui::ButtonSprite("assets/textures/select_map.png", calcX(920, vm), calcY(248, vm), calcScale(1, vm), false);
 	this->sprite_buttons["MAP3"]->setTextureRect(sf::IntRect(0, 0, 304, 304));
-	this->sprites["MAP3"] = new gui::Sprite("external/assets/maps/permafrost.png", calcX(944, vm), calcY(272, vm), calcScale(0.5f, vm), false);
+	this->sprites["MAP3"] = new gui::Sprite("assets/textures/maps/permafrost.png", calcX(944, vm), calcY(272, vm), calcScale(0.5f, vm), false);
 	this->texts["PERMAFROST"] = new gui::Text(&this->font, this->lang["PERMAFROST"], calcChar(32, vm), calcX(1072, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
 
 
@@ -117,30 +117,30 @@ void MainMenuState::initGUI()
 
 	this->hero_name = "";
 	this->texts["CHOOSE_HERO"] = new gui::Text(&this->font, this->lang["CHOOSE_HERO"], calcChar(32, vm), calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
-	this->sprites["HERO1_FRAME"] = new gui::Sprite("external/assets/select.png", calcX(64, vm), calcY(256, vm), calcScale(2, vm), false);
+	this->sprites["HERO1_FRAME"] = new gui::Sprite("assets/textures/select.png", calcX(64, vm), calcY(256, vm), calcScale(2, vm), false);
 	this->sprites["HERO1_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
-	this->sprite_buttons["HERO1"] = new gui::ButtonSprite("external/assets/select.png", calcX(64, vm), calcY(256, vm), calcScale(2, vm), false);
+	this->sprite_buttons["HERO1"] = new gui::ButtonSprite("assets/textures/select.png", calcX(64, vm), calcY(256, vm), calcScale(2, vm), false);
 	this->sprite_buttons["HERO1"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
-	this->sprites["HERO1"] = new gui::Sprite("external/assets/upgrades_icons.png", calcX(88, vm), calcY(280, vm), calcScale(8, vm), false);
+	this->sprites["HERO1"] = new gui::Sprite("assets/textures/upgrades_icons.png", calcX(88, vm), calcY(280, vm), calcScale(8, vm), false);
 	this->sprites["HERO1"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 	this->texts["WARRIOR"] = new gui::Text(&this->font, this->lang["WARRIOR"], calcChar(32, vm), calcX(150, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
 
 	this->choosing_hero = false;
 
 	this->text_buttons["CHOOSE"] = new gui::ButtonText(&this->font, this->lang["CHOOSE"], calcChar(32, vm), calcX(200, vm), calcY(570, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
-	this->sprites["HERO_PREVIEW"] = new gui::Sprite("external/assets/upgrades_icons.png", calcX(640, vm), calcY(512, vm), calcScale(8, vm), true);
+	this->sprites["HERO_PREVIEW"] = new gui::Sprite("assets/textures/upgrades_icons.png", calcX(640, vm), calcY(512, vm), calcScale(8, vm), true);
 	this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 	this->sprites["HERO_PREVIEW"]->center(calcX(640, vm));
-	this->sprites["HP_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(860, vm), calcY(526, vm), calcScale(1, vm), true);
+	this->sprites["HP_BAR"] = new gui::Sprite("assets/textures/bars.png", calcX(860, vm), calcY(526, vm), calcScale(1, vm), true);
 	this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 264, 20));
 	this->sprites["HP_BAR"]->center(calcX(860, vm));
 	this->texts["HP"] = new gui::Text(&this->font, "HP:10/10", calcChar(16, vm), calcX(860, vm), calcY(529, vm), sf::Color(255, 255, 255), true);
-	this->sprites["SPRINT_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(860, vm), calcY(554, vm), calcScale(1, vm), true);
+	this->sprites["SPRINT_BAR"] = new gui::Sprite("assets/textures/bars.png", calcX(860, vm), calcY(554, vm), calcScale(1, vm), true);
 	this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect(0, 40, 264, 20));
 	this->sprites["SPRINT_BAR"]->center(calcX(860, vm));
 	this->texts["SPRINT"] = new gui::Text(&this->font, "100/100", calcChar(16, vm), calcX(860, vm), calcY(557, vm), sf::Color(255, 255, 255), true);
 
-	this->attributes_texture.loadFromFile("external/assets/attributes_icons.png");
+	this->attributes_texture.loadFromFile("assets/textures/attributes_icons.png");
 	for (short i = 0; i < 10; ++i) {
 		sf::Sprite att;
 		att.setTexture(this->attributes_texture);
@@ -150,7 +150,7 @@ void MainMenuState::initGUI()
 		this->attribute_vec.push_back(att);
 	}
 
-	this->abilities_texture.loadFromFile("external/assets/abilities_icons.png");
+	this->abilities_texture.loadFromFile("assets/textures/abilities_icons.png");
 	for (short i = 0; i < 7; ++i) {
 		sf::Sprite upgrade;
 		upgrade.setTexture(this->abilities_texture);
@@ -183,24 +183,24 @@ void MainMenuState::initGUI()
 	this->difficulty_name = "";
 	this->texts["CHOOSE_DIFFICULTY"] = new gui::Text(&this->font, this->lang["CHOOSE_DIFFICULTY"], calcChar(32, vm), calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
 
-	this->sprites["DIFFICULTY1_FRAME"] = new gui::Sprite("external/assets/select_difficulty.png", calcX(32, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprites["DIFFICULTY1_FRAME"] = new gui::Sprite("assets/textures/select_difficulty.png", calcX(32, vm), calcY(184, vm), calcScale(1, vm), false);
 	this->sprites["DIFFICULTY1_FRAME"]->setTextureRect(sf::IntRect(384, 0, 384, 504));
-	this->sprite_buttons["DIFFICULTY1"] = new gui::ButtonSprite("external/assets/select_difficulty.png", calcX(32, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprite_buttons["DIFFICULTY1"] = new gui::ButtonSprite("assets/textures/select_difficulty.png", calcX(32, vm), calcY(184, vm), calcScale(1, vm), false);
 	this->sprite_buttons["DIFFICULTY1"]->setTextureRect(sf::IntRect(0, 0, 384, 504));
-	this->sprites["DIFFICULTY2_FRAME"] = new gui::Sprite("external/assets/select_difficulty.png", calcX(448, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprites["DIFFICULTY2_FRAME"] = new gui::Sprite("assets/textures/select_difficulty.png", calcX(448, vm), calcY(184, vm), calcScale(1, vm), false);
 	this->sprites["DIFFICULTY2_FRAME"]->setTextureRect(sf::IntRect(384, 0, 384, 504));
-	this->sprite_buttons["DIFFICULTY2"] = new gui::ButtonSprite("external/assets/select_difficulty.png", calcX(448, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprite_buttons["DIFFICULTY2"] = new gui::ButtonSprite("assets/textures/select_difficulty.png", calcX(448, vm), calcY(184, vm), calcScale(1, vm), false);
 	this->sprite_buttons["DIFFICULTY2"]->setTextureRect(sf::IntRect(0, 0, 384, 504));
-	this->sprites["DIFFICULTY3_FRAME"] = new gui::Sprite("external/assets/select_difficulty.png", calcX(864, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprites["DIFFICULTY3_FRAME"] = new gui::Sprite("assets/textures/select_difficulty.png", calcX(864, vm), calcY(184, vm), calcScale(1, vm), false);
 	this->sprites["DIFFICULTY3_FRAME"]->setTextureRect(sf::IntRect(384, 0, 384, 504));
-	this->sprite_buttons["DIFFICULTY3"] = new gui::ButtonSprite("external/assets/select_difficulty.png", calcX(864, vm), calcY(184, vm), calcScale(1, vm), false);
+	this->sprite_buttons["DIFFICULTY3"] = new gui::ButtonSprite("assets/textures/select_difficulty.png", calcX(864, vm), calcY(184, vm), calcScale(1, vm), false);
 	this->sprite_buttons["DIFFICULTY3"]->setTextureRect(sf::IntRect(0, 0, 384, 504));
 
-	this->sprites["DIFFICULTY1"] = new gui::Sprite("external/assets/difficulty_icons.png", calcX(168, vm), calcY(272, vm), calcScale(16, vm), false);
+	this->sprites["DIFFICULTY1"] = new gui::Sprite("assets/textures/difficulty_icons.png", calcX(168, vm), calcY(272, vm), calcScale(16, vm), false);
 	this->sprites["DIFFICULTY1"]->setTextureRect(sf::IntRect(0, 0, 7, 6));
-	this->sprites["DIFFICULTY2"] = new gui::Sprite("external/assets/difficulty_icons.png", calcX(584, vm), calcY(272, vm), calcScale(16, vm), false);
+	this->sprites["DIFFICULTY2"] = new gui::Sprite("assets/textures/difficulty_icons.png", calcX(584, vm), calcY(272, vm), calcScale(16, vm), false);
 	this->sprites["DIFFICULTY2"]->setTextureRect(sf::IntRect(7, 0, 7, 6));
-	this->sprites["DIFFICULTY3"] = new gui::Sprite("external/assets/difficulty_icons.png", calcX(1000, vm), calcY(272, vm), calcScale(16, vm), false);
+	this->sprites["DIFFICULTY3"] = new gui::Sprite("assets/textures/difficulty_icons.png", calcX(1000, vm), calcY(272, vm), calcScale(16, vm), false);
 	this->sprites["DIFFICULTY3"]->setTextureRect(sf::IntRect(14, 0, 7, 6));
 
 	this->texts["EASY"] = new gui::Text(&this->font, this->lang["EASY"], calcChar(32, vm), calcX(224, vm), calcY(400, vm), sf::Color(255, 255, 255), true);

@@ -4,7 +4,7 @@
 ProjectileSystem::ProjectileSystem(const sf::VideoMode& vm)
 	:vm(vm)
 {
-	this->textures.loadFromFile("external/assets/projectiles.png");
+	this->textures.loadFromFile("assets/textures/projectiles.png");
 }
 
 ProjectileSystem::~ProjectileSystem()

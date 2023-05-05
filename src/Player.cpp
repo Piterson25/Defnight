@@ -6,20 +6,20 @@ Player::Player(const sf::VideoMode& vm, const std::string& hero_name, const floa
 	this->vm = vm;
 	this->name = hero_name;
 
-	this->texture.loadFromFile("external/assets/heroes/" + hero_name + ".png");
+	this->texture.loadFromFile("assets/textures/heroes/" + hero_name + ".png");
 	this->sprite.setTexture(this->texture);
 	this->sprite.setTextureRect(sf::IntRect(0, 32, 16, 16));
 	this->sprite.setScale(calcScale(4, vm), calcScale(4, vm));
 	this->sprite.setPosition(x, y);
 	this->sprite.setColor(sf::Color(255, 255, 255, 0));
 
-	this->shadow_texture.loadFromFile("external/assets/entity_shadow.png");
+	this->shadow_texture.loadFromFile("assets/textures/entity_shadow.png");
 	this->shadow.setTexture(this->shadow_texture);
 	this->shadow.setScale(calcScale(4, vm), calcScale(4, vm));
 	this->shadow.setPosition(this->sprite.getPosition().x, this->sprite.getPosition().y + calcY(52, vm));
 	this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
-	this->ability_texture.loadFromFile("external/assets/abilities.png");
+	this->ability_texture.loadFromFile("assets/textures/abilities.png");
 	this->ability.setTexture(this->ability_texture);
 	this->ability.setScale(calcScale(4, vm), calcScale(4, vm));
 	this->ability.setTextureRect(sf::IntRect(0, 0, 16, 16));

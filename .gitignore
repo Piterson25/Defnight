@@ -31,9 +31,6 @@
 *.out
 *.app
 
-x64
+.vscode
+build
 SFML-2.5.1
-*.vcxproj
-*.vcxproj.filters
-*.vcxproj.user
-*.vs

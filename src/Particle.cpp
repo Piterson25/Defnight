@@ -5,7 +5,7 @@ Particle::Particle(const sf::VideoMode& vm, const std::string& name, const float
 	:vm(vm), name(name), attack(attack)
 {
 	if (this->name == "bomb")
-		this->texture.loadFromFile("external/assets/explosion.png");
+		this->texture.loadFromFile("assets/textures/explosion.png");
 	this->sprite.setTexture(this->texture);
 	this->sprite.setScale(calcScale(4, vm), calcScale(4, vm));
 	this->sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));

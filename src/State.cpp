@@ -14,10 +14,10 @@ State::State(const float& gridSize, sf::RenderWindow* window, GameSettings* grap
 
 	std::ifstream f;
 	if (this->gameSettings->language == "polish") {
-		f.open("external/languages/polish.ini");
+		f.open("assets/languages/polish.ini");
 	}
 	else {
-		f.open("external/languages/english.ini");
+		f.open("assets/languages/english.ini");
 	}
 	while (!f.eof()) {
 		std::string key;

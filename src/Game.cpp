@@ -35,10 +35,10 @@ void Game::init()
 	this->window->setFramerateLimit(this->gameSettings.fpsLimit);
 
 	sf::Image icon;
-	icon.loadFromFile("external/assets/icon.png");
+	icon.loadFromFile("assets/textures/icon.png");
 	this->window->setIcon(32, 32, icon.getPixelsPtr());
 
-	std::ifstream ifs("external/config/supported_keys.ini");
+	std::ifstream ifs("assets/config/supported_keys.ini");
 	if (ifs.is_open()) {
 		std::string key = "";
 		int key_value = 0;
@@ -49,7 +49,7 @@ void Game::init()
 	}
 	ifs.close();
 
-	if (!this->font.loadFromFile("external/font/PressStart2P-vaV7.ttf")) {
+	if (!this->font.loadFromFile("assets/font/PressStart2P-vaV7.ttf")) {
 		throw("ERROR - COULDN'T FIND FONT");
 	}
 

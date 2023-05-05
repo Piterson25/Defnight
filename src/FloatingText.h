@@ -1,7 +1,7 @@
 #ifndef FLOATINGTEXT_H
 #define FLOATINGTEXT_H
 
-#include "stdafx.h"
+#include "header.h"
 
 class FloatingText
 {

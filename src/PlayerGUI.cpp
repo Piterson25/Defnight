@@ -5,14 +5,14 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	const std::string& heroName, const std::string& difficulty_name, std::unordered_map<std::string, std::string>& lang)
 	:font(*font), player(player), vm(vm), lang(lang)
 {
-	this->attributes_texture.loadFromFile("external/assets/attributes_icons.png");
-	this->upgrades_texture.loadFromFile("external/assets/upgrades_icons.png");
-	this->abilities_texture.loadFromFile("external/assets/abilities_icons.png");
-	this->select_texture.loadFromFile("external/assets/select.png");
+	this->attributes_texture.loadFromFile("assets/textures/attributes_icons.png");
+	this->upgrades_texture.loadFromFile("assets/textures/upgrades_icons.png");
+	this->abilities_texture.loadFromFile("assets/textures/abilities_icons.png");
+	this->select_texture.loadFromFile("assets/textures/select.png");
 
-	this->sprites["TOP_GUI"] = new gui::Sprite("external/assets/top_gui.png", 0, 0, calcScale(1, vm), false);
+	this->sprites["TOP_GUI"] = new gui::Sprite("assets/textures/top_gui.png", 0, 0, calcScale(1, vm), false);
 
-	this->sprites["PROGRESS_BAR"] = new gui::Sprite("external/assets/progress_bar.png", calcX(640, vm), calcY(44, vm), calcScale(1, vm), true);
+	this->sprites["PROGRESS_BAR"] = new gui::Sprite("assets/textures/progress_bar.png", calcX(640, vm), calcY(44, vm), calcScale(1, vm), true);
 	this->sprites["PROGRESS_BAR"]->setColor(sf::Color::Transparent);
 
 	this->sprites["MINIATURE"] = new gui::Sprite(this->upgrades_texture, calcX(164, vm), calcX(16, vm), calcScale(4, vm), false);
@@ -47,19 +47,19 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->sprites["CRITICAL"]->setTextureRect(sf::IntRect(128, 0, 16, 16));
 	this->texts["CRITICAL"] = new gui::Text(&this->font, std::to_string(player->getCriticalChance()) + "%", calcChar(16, vm), calcX(1020, vm), calcY(70, vm), sf::Color(192, 192, 192), true);
 
-	this->sprites["XP_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(508, vm), calcY(12, vm), calcScale(1, vm), false);
+	this->sprites["XP_BAR"] = new gui::Sprite("assets/textures/bars.png", calcX(508, vm), calcY(12, vm), calcScale(1, vm), false);
 	this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 0));
 	this->texts["XP"] = new gui::Text(&this->font, "XP:" + std::to_string(this->player->getXP()) + "/" + std::to_string(this->player->getMaxXP()), calcChar(16, vm), calcX(640, vm), calcY(15, vm), sf::Color(255, 255, 255), true);
 	this->texts["LEVEL"] = new gui::Text(&this->font, "Level " + std::to_string(this->player->getLevel()), calcChar(16, vm), calcX(640, vm), calcY(15, vm), sf::Color(255, 255, 255), true);
 	this->isLevelshown = true;
 	this->xp_bar_percent = 0.f;
 
-	this->sprites["HP_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(508, vm), calcY(52, vm), calcScale(1, vm), false);
+	this->sprites["HP_BAR"] = new gui::Sprite("assets/textures/bars.png", calcX(508, vm), calcY(52, vm), calcScale(1, vm), false);
 	this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 264, 20));
 	this->texts["HP"] = new gui::Text(&this->font, "HP:" + std::to_string(this->player->getHP()) + "/" + std::to_string(this->player->getMaxHP()), calcChar(16, vm), calcX(640, vm), calcY(55, vm), sf::Color(255, 255, 255), true);
 	this->hp_bar_percent = 1.f;
 
-	this->sprites["SPRINT_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(508, vm), calcY(92, vm), calcScale(1, vm), false);
+	this->sprites["SPRINT_BAR"] = new gui::Sprite("assets/textures/bars.png", calcX(508, vm), calcY(92, vm), calcScale(1, vm), false);
 	this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect(0, 40, 264, 20));
 	this->texts["SPRINT"] = new gui::Text(&this->font, std::to_string(this->player->getSprint()) + "/" + std::to_string(this->player->getMaxSprint()), calcChar(16, vm), calcX(640, vm), calcY(95, vm), sf::Color(255, 255, 255), true);
 
@@ -78,7 +78,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->isLeveling = false;
 
 	this->texts["LEVEL_UP"] = new gui::Text(&this->font, "LEVEL UP!", calcChar(32, vm), calcX(640, vm), calcY(256, vm), sf::Color(255, 246, 76), true);
-	this->sprites["LEVEL_UP"] = new gui::Sprite("external/assets/bottom_gui.png", calcX(640, vm), calcY(476, vm), calcScale(1, vm), true);
+	this->sprites["LEVEL_UP"] = new gui::Sprite("assets/textures/bottom_gui.png", calcX(640, vm), calcY(476, vm), calcScale(1, vm), true);
 
 	this->sprites["OPTION1_FRAME"] = new gui::Sprite(this->select_texture, calcX(504, vm), calcY(512, vm), calcScale(1, vm), false);
 	this->sprites["OPTION1_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
@@ -102,7 +102,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 
 
 	this->isUpgrading = false;
-	this->sprites["UPGRADES"] = new gui::Sprite("external/assets/side_gui.png", calcX(1280, vm), calcY(128, vm), calcScale(1, vm), false);
+	this->sprites["UPGRADES"] = new gui::Sprite("assets/textures/side_gui.png", calcX(1280, vm), calcY(128, vm), calcScale(1, vm), false);
 	this->sprites["UPGRADES"]->flipHorizontal();
 
 	this->sprites["UPGRADE1_FRAME"] = new gui::Sprite(this->select_texture, calcX(1008, vm), calcY(210, vm), calcScale(1, vm), false);
@@ -149,7 +149,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 
 	this->sprites["ABILITY_FRAME"] = new gui::Sprite(this->select_texture, calcX(264, vm), calcY(4, vm), calcScale(1, vm), false);
 	this->sprites["ABILITY_FRAME"]->setTextureRect(sf::IntRect(440, 0, 88, 88));
-	this->sprites["ABILITY_ICON"] = new gui::Sprite("external/assets/abilities_icons.png", calcX(276, vm), calcY(16, vm), calcScale(4, vm), false);
+	this->sprites["ABILITY_ICON"] = new gui::Sprite("assets/textures/abilities_icons.png", calcX(276, vm), calcY(16, vm), calcScale(4, vm), false);
 	this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 
 	this->ability_icon.setFillColor(sf::Color(128, 128, 128, 128));
@@ -184,7 +184,7 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 
 	this->isShopping = false;
 
-	this->sprites["SIDE_GUI"] = new gui::Sprite("external/assets/side_gui.png", 0, calcY(128, vm), calcScale(1, vm), false);
+	this->sprites["SIDE_GUI"] = new gui::Sprite("assets/textures/side_gui.png", 0, calcY(128, vm), calcScale(1, vm), false);
 
 	this->sprites["ITEM1"] = new gui::Sprite(attributes_texture, calcX(44, vm), calcY(192, vm), calcScale(4, vm), false);
 	this->sprites["ITEM1"]->setTextureRect(sf::IntRect(144, 0, 16, 16));
@@ -243,16 +243,16 @@ PlayerGUI::PlayerGUI(sf::Font* font, Player* player, sf::VideoMode& vm, const fl
 	this->texts["ITEM4_PRICE"] = new gui::Text(&this->font, std::to_string(this->item4Price), calcChar(16, vm), calcX(204, vm), calcY(624, vm), sf::Color(255, 246, 76), false);
 
 	this->isBuyingAbility = false;
-	this->sprites["BUYING_ABILITY_ICON"] = new gui::Sprite("external/assets/abilities_icons.png", calcX(80, vm), calcY(160, vm), calcScale(8, vm), false);
+	this->sprites["BUYING_ABILITY_ICON"] = new gui::Sprite("assets/textures/abilities_icons.png", calcX(80, vm), calcY(160, vm), calcScale(8, vm), false);
 	this->sprites["BUYING_ABILITY_ICON"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 
 	this->bossWave = false;
 	this->bossCooldown = 0.f;
 
 	this->texts["BOSS"] = new gui::Text(&this->font, "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm), sf::Color(113, 43, 59), true);
-	this->sprites["BOSS_BAR"] = new gui::Sprite("external/assets/bars.png", calcX(376, vm), calcY(158, vm), calcScale(1, vm), false);
+	this->sprites["BOSS_BAR"] = new gui::Sprite("assets/textures/bars.png", calcX(376, vm), calcY(158, vm), calcScale(1, vm), false);
 	this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 60, 528, 20));
-	this->sprites["BOSS_BAR_EMPTY"] = new gui::Sprite("external/assets/bars.png", calcX(376, vm), calcY(158, vm), calcScale(1, vm), false);
+	this->sprites["BOSS_BAR_EMPTY"] = new gui::Sprite("assets/textures/bars.png", calcX(376, vm), calcY(158, vm), calcScale(1, vm), false);
 	this->sprites["BOSS_BAR_EMPTY"]->setTextureRect(sf::IntRect(0, 80, 528, 20));
 
 	this->boss_bar_percent = 1.f;
@@ -367,7 +367,7 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 	}
 	if (name == "NINJA") {
 		this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
-		this->player->setTexturePath("external/assets/heroes/ninja.png");
+		this->player->setTexturePath("assets/textures/heroes/ninja.png");
 		this->player->setSpeed(this->player->getSpeed() + 1);
 		this->texts["SPEED"]->setText(std::to_string(this->player->getSpeed()));
 		this->texts["SPEED"]->center(calcX(956, vm));
@@ -379,7 +379,7 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 	}
 	else if (name == "KNIGHT") {
 		this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(32, 0, 16, 16));
-		this->player->setTexturePath("external/assets/heroes/knight.png");
+		this->player->setTexturePath("assets/textures/heroes/knight.png");
 		this->player->setAttack(this->player->getAttack() + 1);
 		this->texts["ATTACK"]->setText(std::to_string(this->player->getAttack()));
 		this->texts["ATTACK"]->center(calcX(828, vm));
@@ -391,7 +391,7 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 	}
 	else if (name == "SCOUT") {
 		this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(48, 0, 16, 16));
-		this->player->setTexturePath("external/assets/heroes/scout.png");
+		this->player->setTexturePath("assets/textures/heroes/scout.png");
 		this->player->setReg(this->player->getReg() + 1);
 		this->texts["REG"]->setText(std::to_string(this->player->getReg()));
 		this->texts["REG"]->center(calcX(452, vm));
@@ -403,7 +403,7 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 	}
 	else if (name == "MASTER") {
 		this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(64, 0, 16, 16));
-		this->player->setTexturePath("external/assets/heroes/master.png");
+		this->player->setTexturePath("assets/textures/heroes/master.png");
 		this->player->setAttackSpeed(this->player->getAttackSpeed() + 1);
 		this->texts["ATTACK_SPEED"]->setText(std::to_string(this->player->getAttackSpeed()));
 		this->texts["ATTACK_SPEED"]->center(calcX(892, vm));
@@ -415,7 +415,7 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 	}
 	else if (name == "BOMBER") {
 		this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(80, 0, 16, 16));
-		this->player->setTexturePath("external/assets/heroes/bomber.png");
+		this->player->setTexturePath("assets/textures/heroes/bomber.png");
 		this->player->setCriticalChance(this->player->getCriticalChance() + 10);
 		this->texts["CRITICAL"]->setText(std::to_string(this->player->getCriticalChance()));
 		this->texts["CRITICAL"]->center(calcX(1020, vm));
@@ -427,7 +427,7 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 	}
 	else if (name == "CRUSADER") {
 		this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(96, 0, 16, 16));
-		this->player->setTexturePath("external/assets/heroes/crusader.png");
+		this->player->setTexturePath("assets/textures/heroes/crusader.png");
 		this->player->setMaxHP(this->player->getMaxHP() + 2);
 		this->update_HP();
 		this->player->setIsRegenerating(true);
@@ -439,7 +439,7 @@ void PlayerGUI::upgradePlayer(const std::string& name)
 	}
 	else if (name == "PALADIN") {
 		this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(112, 0, 16, 16));
-		this->player->setTexturePath("external/assets/heroes/paladin.png");
+		this->player->setTexturePath("assets/textures/heroes/paladin.png");
 		this->player->setAttackSpeed(this->player->getAttackSpeed() + 1);
 		this->texts["ATTACK_SPEED"]->setText(std::to_string(this->player->getAttackSpeed()));
 		this->texts["ATTACK_SPEED"]->center(calcX(892, vm));

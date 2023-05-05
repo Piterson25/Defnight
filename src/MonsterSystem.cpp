@@ -6,18 +6,18 @@ MonsterSystem::MonsterSystem(const sf::VideoMode& vm, TileMap* tileMap, const fl
 	:vm(vm), tileMap(tileMap), gridSize(gridSize), difficulty_mod(difficulty_mod)
 {
 	this->bossWave = false;
-	this->shadow_texture.loadFromFile("external/assets/entity_shadow.png");
+	this->shadow_texture.loadFromFile("assets/textures/entity_shadow.png");
 
 	sf::Texture texture;
-	texture.loadFromFile("external/assets/monsters/goblin.png");
+	texture.loadFromFile("assets/textures/monsters/goblin.png");
 	this->textures["GOBLIN"] = texture;
-	texture.loadFromFile("external/assets/monsters/spider.png");
+	texture.loadFromFile("assets/textures/monsters/spider.png");
 	this->textures["SPIDER"] = texture;
-	texture.loadFromFile("external/assets/monsters/orc.png");
+	texture.loadFromFile("assets/textures/monsters/orc.png");
 	this->textures["ORC"] = texture;
-	texture.loadFromFile("external/assets/monsters/cyclope.png");
+	texture.loadFromFile("assets/textures/monsters/cyclope.png");
 	this->textures["CYCLOPE"] = texture;
-	texture.loadFromFile("external/assets/monsters/minotaur.png");
+	texture.loadFromFile("assets/textures/monsters/minotaur.png");
 	this->textures["MINOTAUR"] = texture;
 }
 

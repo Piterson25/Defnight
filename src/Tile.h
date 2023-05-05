@@ -1,7 +1,7 @@
 #ifndef TILE_H
 #define TILE_H
 
-#include "stdafx.h"
+#include "header.h"
 
 class Tile
 {

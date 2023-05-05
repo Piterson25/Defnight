@@ -3,7 +3,7 @@
 SoundEffect::SoundEffect(const std::string& name, const float& volume)
 	:name(name)
 {
-    if (!this->buffer.loadFromFile("external/music/" + name + ".wav")) {
+    if (!this->buffer.loadFromFile("assets/music/" + name + ".wav")) {
         throw("ERROR - COULDN'T LOAD SOUND:" + name);
     }
     else {

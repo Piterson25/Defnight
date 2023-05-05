@@ -2,7 +2,7 @@
 
 GameSettings::GameSettings()
 {
-	this->path = "external/config/game_settings.ini";
+	this->path = "assets/config/game_settings.ini";
 	this->resolution = sf::VideoMode::getDesktopMode();
 	this->fullscreen = false;
 	this->fpsLimit = 60;

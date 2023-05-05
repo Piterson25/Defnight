@@ -1,7 +1,7 @@
 #ifndef SOUNDEFFECT_H
 #define SOUNDEFFECT_H
 
-#include "stdafx.h"
+#include "header.h"
 
 class SoundEffect
 {

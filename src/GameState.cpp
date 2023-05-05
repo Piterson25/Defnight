@@ -19,11 +19,11 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	this->floatingTextSystem = new FloatingTextSystem(&this->font, vm);
 	this->tileMap = new TileMap();
 
-	this->background_texture.loadFromFile("external/assets/maps/" + map_name + ".png");
+	this->background_texture.loadFromFile("assets/textures/maps/" + map_name + ".png");
 	this->background.setTexture(this->background_texture);
 	this->background.setScale(calcScale(4, vm), calcScale(4, vm));
 
-	std::ifstream ifs("external/config/game_keybinds.ini");
+	std::ifstream ifs("assets/config/game_keybinds.ini");
 	if (ifs.is_open()) {
 		std::string key = "";
 		std::string key2 = "";
@@ -33,10 +33,10 @@ GameState::GameState(const float& gridSize, sf::RenderWindow* window, GameSettin
 	}
 	ifs.close();
 
-	this->tiles_texture.loadFromFile("external/assets/tiles.png");
+	this->tiles_texture.loadFromFile("assets/textures/tiles.png");
 	this->vertexArray.setPrimitiveType(sf::Quads);
 	this->vertexArray.resize(static_cast<size_t>(calcX(64 * 64 * 4, vm)));
-	std::ifstream mapa("external/maps/" + map_name + ".txt");
+	std::ifstream mapa("assets/maps/" + map_name + ".txt");
 	float x = 0.f, y = 0.f, pos = calcX(this->gridSize, vm);
 
 	float offsetY = 0.f;
