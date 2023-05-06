@@ -3,38 +3,38 @@
 
 #include "MainMenuState.hpp"
 
-class Game
-{
+class Game {
 public:
-	Game();
-	virtual ~Game();
+    Game();
+    virtual ~Game();
 
-	void init();
+    void init();
 
-	void checkEvents();
-	void close();
-	void draw();
-	void update();
-	void run();
+    void checkEvents();
+    void close();
+    void draw();
+    void update();
+    void run();
+
 private:
-	sf::RenderWindow* window;
-	GameSettings gameSettings;
-	sf::Event sfEvent;
-	std::unordered_map<std::string, int> supportedKeys;
+    sf::RenderWindow *window;
+    GameSettings gameSettings;
+    sf::Event sfEvent;
+    std::unordered_map<std::string, int> supportedKeys;
 
-	sf::Clock dtClock;
-	float dt;
+    sf::Clock dtClock;
+    float dt;
 
-	sf::Font font;
-	gui::Text* fpsCounter;
-	uint32_t fps;
-	float fpsTimer;
+    sf::Font font;
+    gui::Text *fpsCounter;
+    uint32_t fps;
+    float fpsTimer;
 
-	std::stack<State*> states;
-	SoundEngine* soundEngine;
-	MusicEngine* musicEngine;
+    std::stack<State *> states;
+    SoundEngine *soundEngine;
+    MusicEngine *musicEngine;
 
-	float gridSize;
+    float gridSize;
 };
 
 #endif

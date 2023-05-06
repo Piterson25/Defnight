@@ -3,26 +3,26 @@
 
 #include "header.h"
 
-class MusicEngine
-{
+class MusicEngine {
 public:
-	MusicEngine(const float& volume);
-	virtual ~MusicEngine();
+    MusicEngine(const float &volume);
+    virtual ~MusicEngine();
 
-	const bool hasStopped() const;
-	const bool isEmpty() const;
+    const bool hasStopped() const;
+    const bool isEmpty() const;
 
-	void addMusic(const std::string& name);
-	void clearMusic();
-	void playMusic();
-	void pauseMusic();
-	void stopMusic();
+    void addMusic(const std::string &name);
+    void clearMusic();
+    void playMusic();
+    void pauseMusic();
+    void stopMusic();
 
-	void update();
+    void update();
+
 private:
-	sf::Music music;
-	float volume;
-	std::vector<std::string> tracks;
+    sf::Music music;
+    float volume;
+    std::vector<std::string> tracks;
 };
 
 #endif

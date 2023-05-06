@@ -3,24 +3,23 @@
 
 #include "header.h"
 
-class GameSettings
-{
+class GameSettings {
 public:
-	GameSettings();
+    GameSettings();
 
-	std::string path;
-	sf::VideoMode resolution;
-	bool fullscreen;
-	uint32_t fpsLimit;
-	bool fpsCounterOn;
-	float musicVolume;
-	float soundsVolume;
-	std::string language;
+    std::string path;
+    sf::VideoMode resolution;
+    bool fullscreen;
+    uint32_t fpsLimit;
+    bool fpsCounterOn;
+    float musicVolume;
+    float soundsVolume;
+    std::string language;
 
-	std::vector<sf::VideoMode> videoModes;
+    std::vector<sf::VideoMode> videoModes;
 
-	void save();
-	void load();
+    void save();
+    void load();
 };
 
 #endif

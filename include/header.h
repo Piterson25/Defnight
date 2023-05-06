@@ -1,19 +1,19 @@
 #ifndef HEADER_H
 #define HEADER_H
 
+#include "Random.hpp"
 #include <algorithm>
 #include <fstream>
 #include <iostream>
 #include <list>
 #include <math.h>
 #include <memory>
+#include <sstream>
 #include <stack>
 #include <string>
-#include <sstream>
-#include <vector>
 #include <unordered_map>
 #include <utility>
-#include "Random.hpp"
+#include <vector>
 
 // SFML
 #include <SFML/Audio.hpp>

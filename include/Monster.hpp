@@ -1,11 +1,11 @@
 #ifndef MONSTER_HPP
 #define MONSTER_HPP
 
-#include "Player.hpp"
-#include "Entity.hpp"
-#include "ProjectileSystem.hpp"
-#include "FloatingTextSystem.hpp"
 #include "AIComponent.hpp"
+#include "Entity.hpp"
+#include "FloatingTextSystem.hpp"
+#include "Player.hpp"
+#include "ProjectileSystem.hpp"
 #include "SoundEngine.hpp"
 #include "TileMap.hpp"
 
@@ -16,42 +16,46 @@ class AIComponent;
 class SoundEngine;
 class TileMap;
 
-class Monster
-	: public Entity
-{
+class Monster : public Entity {
 public:
-	Monster(const sf::VideoMode& vm, const std::string& monster_name, sf::Texture& texture, sf::Texture& shadow_texture, TileMap* tileMap, const float& x, const float& y, const float& difficulty_mod, const float& wave_mod);
-	virtual ~Monster();
+    Monster(const sf::VideoMode &vm, const std::string &monster_name, sf::Texture &texture,
+            sf::Texture &shadow_texture, TileMap *tileMap, const float &x, const float &y,
+            const float &difficulty_mod, const float &wave_mod);
+    virtual ~Monster();
 
-	virtual const uint32_t getGold() const;
-	virtual const bool getSpawned() const;
-	virtual const bool getDeadCountdown() const;
+    virtual const uint32_t getGold() const;
+    virtual const bool getSpawned() const;
+    virtual const bool getDeadCountdown() const;
 
-	const bool attackPlayer(Player* player, TileMap* tileMap, ProjectileSystem* projectileSystem, FloatingTextSystem* floatingTextSystem, SoundEngine* soundEngine);
-	const bool sightCollision(TileMap* tileMap, const sf::Vector2f& a_p1, const sf::Vector2f& a_p2);
-	void spawn(const float& dt);
-	const bool dying(const float& dt);
+    const bool attackPlayer(Player *player, TileMap *tileMap, ProjectileSystem *projectileSystem,
+                            FloatingTextSystem *floatingTextSystem, SoundEngine *soundEngine);
+    const bool sightCollision(TileMap *tileMap, const sf::Vector2f &a_p1, const sf::Vector2f &a_p2);
+    void spawn(const float &dt);
+    const bool dying(const float &dt);
 
-	void setGold(const uint32_t& gold);
+    void setGold(const uint32_t &gold);
 
-	void calculateAI(TileMap* tileMap, Player* player, const std::vector<sf::Vector2f>& positions, const float& dt);
+    void calculateAI(TileMap *tileMap, Player *player, const std::vector<sf::Vector2f> &positions,
+                     const float &dt);
 
-	virtual void update(const float& dt, ProjectileSystem* projectileSystem, SoundEngine* soundEngine);
-	virtual void draw(sf::RenderTarget& target);
-	virtual void drawShadow(sf::RenderTarget& target);
+    virtual void update(const float &dt, ProjectileSystem *projectileSystem,
+                        SoundEngine *soundEngine);
+    virtual void draw(sf::RenderTarget &target);
+    virtual void drawShadow(sf::RenderTarget &target);
+
 protected:
-	sf::Sprite shadow;
-	sf::Texture shadow_texture;
+    sf::Sprite shadow;
+    sf::Texture shadow_texture;
 
-	uint32_t gold;
-	uint32_t monsterSize;
+    uint32_t gold;
+    uint32_t monsterSize;
 
-	bool spawned;
-	float deadCountdown;
-	float spawnCountdown;
+    bool spawned;
+    float deadCountdown;
+    float spawnCountdown;
 
-	AIComponent* AI;
+    AIComponent *AI;
 
-	bool playedSound;
+    bool playedSound;
 };
 #endif

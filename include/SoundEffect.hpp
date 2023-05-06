@@ -3,20 +3,20 @@
 
 #include "header.h"
 
-class SoundEffect
-{
+class SoundEffect {
 public:
-	SoundEffect(const std::string& name, const float& volume);
-	virtual ~SoundEffect();
+    SoundEffect(const std::string &name, const float &volume);
+    virtual ~SoundEffect();
 
-	virtual const bool hasStopped();
+    virtual const bool hasStopped();
 
-	void play();
-	void stop();
+    void play();
+    void stop();
+
 private:
-	std::string name;
-	sf::SoundBuffer buffer;
-	sf::Sound sound;
+    std::string name;
+    sf::SoundBuffer buffer;
+    sf::Sound sound;
 };
 
 #endif

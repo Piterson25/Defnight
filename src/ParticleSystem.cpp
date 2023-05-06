@@ -1,8 +1,7 @@
-#include "Functions.hpp"
 #include "ParticleSystem.hpp"
+#include "Functions.hpp"
 
-ParticleSystem::ParticleSystem(const sf::VideoMode& vm)
-	:vm(vm)
+ParticleSystem::ParticleSystem(const sf::VideoMode &vm) : vm(vm)
 {
 }
 
@@ -10,30 +9,36 @@ ParticleSystem::~ParticleSystem()
 {
 }
 
-void ParticleSystem::addParticle(const std::string& name, const float& x, const float& y, const std::uint32_t& attack)
+void ParticleSystem::addParticle(const std::string &name, const float &x, const float &y,
+                                 const std::uint32_t &attack)
 {
-	this->particles.emplace_back(new Particle(this->vm, name, x, y, attack));
+    this->particles.emplace_back(new Particle(this->vm, name, x, y, attack));
 }
 
-void ParticleSystem::update(MonsterSystem* monsterSystem, FloatingTextSystem* floatingTextSystem, const float& dt)
+void ParticleSystem::update(MonsterSystem *monsterSystem, FloatingTextSystem *floatingTextSystem,
+                            const float &dt)
 {
-	for (const auto& particle : this->particles) {
-		particle->update(dt);
-		if (particle->getExploded()) monsterSystem->explosionAttack(&(*particle), floatingTextSystem);
-	}
+    for (const auto &particle : this->particles) {
+        particle->update(dt);
+        if (particle->getExploded()) {
+            monsterSystem->explosionAttack(&(*particle), floatingTextSystem);
+        }
+    }
 
-	for (auto particle = this->particles.begin(); particle != this->particles.end();) {
-		if ((*particle)->getExploded()) {
-	
-			particle = this->particles.erase(particle);
-		}
-		else ++particle;
-	}
+    for (auto particle = this->particles.begin(); particle != this->particles.end();) {
+        if ((*particle)->getExploded()) {
+
+            particle = this->particles.erase(particle);
+        }
+        else {
+            ++particle;
+        }
+    }
 }
 
-void ParticleSystem::draw(sf::RenderTarget& target)
+void ParticleSystem::draw(sf::RenderTarget &target)
 {
-	for (const auto& particle : this->particles) {
-		particle->draw(target);
-	}
+    for (const auto &particle : this->particles) {
+        particle->draw(target);
+    }
 }
