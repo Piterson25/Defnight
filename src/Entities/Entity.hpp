@@ -87,10 +87,9 @@ protected:
     uint32_t speed;
     uint32_t reach;
 
-    bool up;
-    bool right;
-    bool down;
-    bool left;
+    enum class FaceDirections { UP, RIGHT, DOWN, LEFT };
+
+    FaceDirections faceDirection;
 
     float attackCooldown;
     bool isAttacking;

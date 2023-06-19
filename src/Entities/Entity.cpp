@@ -16,10 +16,7 @@ Entity::Entity(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->speed = 0;
     this->reach = 1;
 
-    this->up = false;
-    this->right = false;
-    this->down = false;
-    this->left = true;
+    this->faceDirection = FaceDirections::LEFT;
 
     this->attackCooldown = 0.f;
     this->isAttacking = false;
@@ -136,22 +133,22 @@ const uint32_t Entity::getReach() const
 
 const bool Entity::getUp() const
 {
-    return this->up;
+    return this->faceDirection == FaceDirections::UP;
 }
 
 const bool Entity::getRight() const
 {
-    return this->right;
+    return this->faceDirection == FaceDirections::RIGHT;
 }
 
 const bool Entity::getDown() const
 {
-    return this->down;
+    return this->faceDirection == FaceDirections::DOWN;
 }
 
 const bool Entity::getLeft() const
 {
-    return this->left;
+    return this->faceDirection == FaceDirections::LEFT;
 }
 
 const bool Entity::IsAttacking() const
@@ -280,16 +277,16 @@ const bool Entity::bottomCollision(const sf::FloatRect &e1Bounds,
 
 const float Entity::attackDistance(const Entity &e1, const Entity &e2) const
 {
-    if (this->left) {
+    if (getLeft()) {
         return vectorDistance(e1.getCenter(), e2.getLeftCenter());
     }
-    else if (this->right) {
+    else if (getRight()) {
         return vectorDistance(e1.getCenter(), e2.getRightCenter());
     }
-    else if (this->up) {
+    else if (getUp()) {
         return vectorDistance(e1.getCenter(), e2.getUpCenter());
     }
-    else if (this->down) {
+    else if (getDown()) {
         return vectorDistance(e1.getCenter(), e2.getDownCenter());
     }
     return 1000.f;
@@ -398,29 +395,17 @@ void Entity::smashed(const float dt)
 void Entity::animation(float dt)
 {
     if (this->velocity.x < 0) {
-        this->left = true;
-        this->right = false;
-        this->up = false;
-        this->down = false;
+        this->faceDirection = FaceDirections::LEFT;
     }
     else if (this->velocity.x > 0) {
-        this->left = false;
-        this->right = true;
-        this->up = false;
-        this->down = false;
+        this->faceDirection = FaceDirections::RIGHT;
     }
     else {
         if (this->velocity.y < 0) {
-            this->up = true;
-            this->down = false;
-            this->left = false;
-            this->right = false;
+            this->faceDirection = FaceDirections::UP;
         }
         else if (this->velocity.y > 0) {
-            this->up = false;
-            this->down = true;
-            this->left = false;
-            this->right = false;
+            this->faceDirection = FaceDirections::DOWN;
         }
     }
 
@@ -441,17 +426,17 @@ void Entity::draw(sf::RenderTarget &target)
 void Entity::attackAnimation(int offsetY, float dt)
 {
     int y = 0;
-    if (this->left) {
+    if (getLeft()) {
         y = 2 + offsetY;
     }
-    else if (this->right) {
+    else if (getRight()) {
         y = 3 + offsetY;
     }
     else {
-        if (this->up) {
+        if (getUp()) {
             y = 0 + offsetY;
         }
-        else if (this->down) {
+        else if (getDown()) {
             y = 1 + offsetY;
         }
     }
