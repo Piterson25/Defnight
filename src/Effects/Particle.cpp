@@ -22,7 +22,7 @@ Particle::~Particle()
 {
 }
 
-const bool Particle::getExploded() const
+const bool Particle::hasExploded() const
 {
     return this->exploded;
 }

@@ -18,9 +18,9 @@ public:
                   float gridSize, float difficulty_mod);
     ~MonsterSystem();
 
-    const bool monsterIDsEmpty() const;
+    const bool isMonsterIDsEmpty() const;
     const size_t monsterIDsSize() const;
-    const bool monstersEmpty() const;
+    const bool isMonstersEmpty() const;
     const bool isBossWave() const;
     const std::vector<sf::Vector2f> monstersPositions() const;
     const float bossHP() const;

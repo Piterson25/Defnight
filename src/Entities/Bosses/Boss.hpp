@@ -9,7 +9,7 @@ public:
          const std::vector<sf::FloatRect> &obstaclesBounds);
     virtual ~Boss();
 
-    const bool specialReady() const;
+    const bool isSpecialAttackReady() const;
     void resetSpecialAttack();
     void loadSpecialAttack(float dt);
 

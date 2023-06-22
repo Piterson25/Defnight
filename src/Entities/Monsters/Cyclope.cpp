@@ -18,10 +18,11 @@ Cyclope::Cyclope(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
 Cyclope::~Cyclope() = default;
 
 const bool
-Cyclope::attackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
-                      Player &player, SoundEngine &soundEngine, FloatingTextSystem &floatingTextSystem)
+Cyclope::hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
+                           Player &player, SoundEngine &soundEngine,
+                           FloatingTextSystem &floatingTextSystem)
 {
-    if (!checkAttack(obstaclesBounds, player)) {
+    if (!canAttackPlayer(obstaclesBounds, player)) {
         return false;
     }
 
@@ -29,29 +30,29 @@ Cyclope::attackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
         return false;
     }
 
-    this->isAttacking = false;
+    this->attacking = false;
 
-    if (!this->playedSound) {
+    if (!this->soundPlayed) {
         soundEngine.addSound("punch");
-        this->playedSound = true;
+        this->soundPlayed = true;
     }
 
     return true;
 }
 
 const bool
-Cyclope::checkAttack(const std::vector<sf::FloatRect> &obstaclesBounds,
-                     Player &player)
+Cyclope::canAttackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
+                         Player &player)
 {
     const float distance = this->attackDistance(player, *this);
 
     if (distance <= static_cast<float>(this->reach) * 8.f * calcX(64, vm) &&
-        !sightCollision(obstaclesBounds,
+        !hasLineOfSight(obstaclesBounds,
                         sf::Vector2f(this->getPosition().x + calcX(24, vm),
                                      this->getPosition().y + calcY(36, vm)),
                         player.getCenter())) {
         this->doAttack();
-        if (!player.isDead() && !player.getPunched() && this->isAttacking &&
+        if (!player.isDead() && !player.isPunched() && this->attacking &&
             this->frame == 80) {
             return true;
         }

@@ -26,9 +26,9 @@ void DropSystem::update(Player &player, PlayerGUI &playerGUI,
     }
 
     for (auto drop = this->drops.begin(); drop != this->drops.end();) {
-        if ((*drop)->getSpawned() &&
-            ((*drop)->playerPick(player, playerGUI, floatingTextSystem,
-                                 soundEngine, dt) ||
+        if ((*drop)->hasSpawned() &&
+            ((*drop)->isPickedByPlayer(player, playerGUI, floatingTextSystem,
+                                       soundEngine, dt) ||
              (*drop)->hasVanished())) {
 
             drop = this->drops.erase(drop);

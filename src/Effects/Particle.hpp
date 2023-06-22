@@ -8,7 +8,7 @@ public:
              std::uint32_t attack);
     ~Particle();
 
-    const bool getExploded() const;
+    const bool hasExploded() const;
     const uint32_t getAttack() const;
     const sf::FloatRect getGlobalBounds() const;
 

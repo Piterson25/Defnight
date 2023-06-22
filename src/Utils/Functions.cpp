@@ -69,8 +69,8 @@ void center(sf::Sprite &sprite, float x)
                        sprite.getPosition().y);
 }
 
-const bool sight(const sf::FloatRect &rect, const sf::Vector2f &a_p1,
-                 const sf::Vector2f &a_p2)
+const bool isPointVisible(const sf::FloatRect &rect, const sf::Vector2f &a_p1,
+                          const sf::Vector2f &a_p2)
 {
     float minX = std::min(a_p1.x, a_p2.x);
     float maxX = std::max(a_p1.x, a_p2.x);

@@ -23,24 +23,24 @@ public:
     void update_Gold();
     void update_ability(float dt);
     void setAbilityIcon();
-    void setIsEscape(const bool &escape);
+    void setIsEscape(bool escape);
     void updatePaused(bool &paused);
     void updateArmor();
     void updateAttack();
     void updateReg();
     void updateBossHP(float dt);
-    const bool updateShop(const sf::Vector2i &mousePos, bool mouseClicked,
-                          SoundEngine &soundEngine,
-                          FloatingTextSystem &floatingTextSystem);
-    const bool updateBuyingAbility(const sf::Vector2i &mousePos,
-                                   bool mouseClicked, SoundEngine &soundEngine,
-                                   FloatingTextSystem &floatingTextSystem);
+    const bool hasClickedShopBuy(const sf::Vector2i &mousePos,
+                                 bool mouseClicked, SoundEngine &soundEngine,
+                                 FloatingTextSystem &floatingTextSystem);
+    const bool hasClickedAbilityBuy(const sf::Vector2i &mousePos,
+                                    bool mouseClicked, SoundEngine &soundEngine,
+                                    FloatingTextSystem &floatingTextSystem);
 
-    const bool getIsEscape() const;
-    const bool getIsLeveling() const;
-    const bool getIsUpgrading() const;
-    const bool getIsShopping() const;
-    const bool getIsBuyingAbility() const;
+    const bool isEscape() const;
+    const bool isLeveling() const;
+    const bool isUpgrading() const;
+    const bool isShopping() const;
+    const bool isBuyingAbility() const;
 
     void updateSprint(float dt);
     void updateIsShopping();
@@ -52,14 +52,14 @@ public:
     void updateMonsterCount(const size_t &monsterCount);
     const uint8_t updateEscapeButton(const sf::Vector2i &mousePos,
                                      const bool &mouseClicked);
-    const bool updateButtons(const sf::Vector2i &mousePos, bool mouseClicked,
-                             SoundEngine &soundEngine);
-    const bool updateLevelUpButtons(const sf::Vector2i &mousePos,
-                                    bool mouseClicked,
-                                    SoundEngine &soundEngine);
-    const bool updateUpgradeButtons(const sf::Vector2i &mousePos,
-                                    bool mouseClicked,
-                                    SoundEngine &soundEngine);
+    const bool hasClickedButtons(const sf::Vector2i &mousePos,
+                                 bool mouseClicked, SoundEngine &soundEngine);
+    const bool hasClickedLevelUpButtons(const sf::Vector2i &mousePos,
+                                        bool mouseClicked,
+                                        SoundEngine &soundEngine);
+    const bool hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
+                                        bool mouseClicked,
+                                        SoundEngine &soundEngine);
     const uint8_t updateDeathScreenButtons(const sf::Vector2i &mousePos,
                                            bool mouseClicked);
     void update(sf::Vector2f &mousePosView, float waveCountdown, float bossHP,
@@ -78,13 +78,13 @@ private:
     bool bossWave;
     float bossCooldown;
 
-    bool isUpgraded;
-    bool isLevelshown;
-    bool isLeveling;
-    bool isUpgrading;
-    bool isShopping;
-    bool isBuyingAbility;
-    bool isEscape;
+    bool upgraded;
+    bool levelShown;
+    bool leveling;
+    bool upgrading;
+    bool shopping;
+    bool buyingAbility;
+    bool escape;
     float hp_bar_percent;
     float xp_bar_percent;
     float boss_bar_percent;

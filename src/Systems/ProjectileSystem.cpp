@@ -104,14 +104,14 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
         (*proj)->move();
 
         if ((*proj)->isBomb() &&
-            ((*proj)->getCollided() || (*proj)->getCollidedMonster())) {
+            ((*proj)->hasCollidedWall() || (*proj)->hasCollidedMonster())) {
             particleSystem.addParticle(
                 (*proj)->getName(), (*proj)->getPosition().x,
                 (*proj)->getPosition().y, (*proj)->getAttack());
             soundEngine.addSound("explosion");
             proj = this->projectiles.erase(proj);
         }
-        else if ((*proj)->getExploded()) {
+        else if ((*proj)->hasExploded()) {
             particleSystem.addParticle(
                 (*proj)->getName(), (*proj)->getPosition().x,
                 (*proj)->getPosition().y, (*proj)->getAttack());
@@ -121,8 +121,8 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
         else if ((*proj)->getHP() == 0) {
             proj = this->projectiles.erase(proj);
         }
-        else if ((*proj)->getCollidedPlayer()) {
-            if (!(player.getAbilityActive() && (player.getIncreasedArmor()))) {
+        else if ((*proj)->hasCollidedPlayer()) {
+            if (!(player.isAbilityActive() && (player.isIncreasedArmor()))) {
                 int attack = static_cast<int>(
                     round((*proj)->getAttack() -
                           ((*proj)->getAttack() * player.getArmor() * 0.05f)));

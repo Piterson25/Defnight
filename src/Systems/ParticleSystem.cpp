@@ -26,7 +26,7 @@ void ParticleSystem::update(float dt)
     for (auto particle = this->particles.begin();
          particle != this->particles.end();) {
         (*particle)->update(dt);
-        if ((*particle)->getExploded()) {
+        if ((*particle)->hasExploded()) {
             this->particlesGlobalBounds.emplace_back(
                 (*particle)->getGlobalBounds());
             particle = this->particles.erase(particle);

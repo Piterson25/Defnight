@@ -19,16 +19,16 @@ public:
     const uint32_t getMaxSprint() const;
     const uint32_t getCriticalChance() const;
     const uint32_t getKills() const;
-    const bool getIncreasedArmor() const;
-    const bool getRegenerating() const;
-    const bool getLeveling() const;
-    const bool getSprinting() const;
-    const bool getSpawned() const;
-    const bool getAbilityActive() const;
+    const bool isIncreasedArmor() const;
+    const bool isRegenerating() const;
+    const bool isLeveling() const;
+    const bool isSprinting() const;
+    const bool hasSpawned() const;
+    const bool isAbilityActive() const;
     const float getAbilityCooldown() const;
     const float getAbilityTime() const;
     const float getAbilityMaxTime() const;
-    const bool getPlayedSound() const;
+    const bool isSoundPlayed() const;
 
     void setGold(uint32_t t_gold);
     void setArmor(uint32_t t_armor);
@@ -44,14 +44,14 @@ public:
     void setAbilityCooldown(float t_abilityCooldown);
     void setAbilityTime(float t_abilityTime);
     void setAbilityMaxTime(float t_abilityMaxTime);
-    void setPlayedSound(bool t_playedSound);
+    void setPlayedSound(bool t_soundPlayed);
 
     void controls(const std::unordered_map<std::string, int> &keybinds,
                   float dt);
     void whooshSound(SoundEngine &soundEngine);
-    const bool addXP(uint32_t monsterXP);
-    const bool regeneration(float dt);
-    const bool checkIfAbility();
+    const bool hasLeveledUp(uint32_t monsterXP);
+    const bool isHPRegenerating(float dt);
+    const bool isAbilityActivated();
     void abilityCounter(float dt);
     void endAbility();
     void doAbility(SoundEngine &soundEngine);
@@ -80,10 +80,10 @@ protected:
     uint32_t criticalChance;
     uint32_t kills;
     bool increasedArmor;
-    bool isRegenerating;
+    bool regenerating;
     float regCooldown;
-    bool isLeveling;
-    bool isSprinting;
+    bool leveling;
+    bool sprinting;
     bool spawned;
     float spawnCountdown;
 
@@ -92,5 +92,5 @@ protected:
     float abilityTime;
     float abilityMaxTime;
 
-    bool playedSound;
+    bool soundPlayed;
 };

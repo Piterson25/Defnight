@@ -123,11 +123,11 @@ void Game::update()
 
     currentState->update(this->dt);
 
-    if (currentState->getQuit()) {
+    if (currentState->isQuitted()) {
         delete currentState;
         this->states.pop();
     }
-    else if (currentState->getReseted()) {
+    else if (currentState->isReseted()) {
         while (!this->states.empty()) {
             delete this->states.top();
             this->states.pop();

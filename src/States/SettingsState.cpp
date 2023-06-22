@@ -243,7 +243,7 @@ void SettingsState::update(float dt)
 
     this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
     if (this->sprite_buttons["GO_BACK"]->isPressed() &&
-        !this->getMouseClick()) {
+        !this->isMouseClicked()) {
         this->setMouseClick(true);
         this->soundEngine.addSound("button");
         this->endState();
@@ -251,7 +251,7 @@ void SettingsState::update(float dt)
 
     this->text_buttons["RESOLUTION"]->update(this->mousePosWindow);
     if (this->text_buttons["RESOLUTION"]->isPressed() &&
-        !this->getMouseClick()) {
+        !this->isMouseClicked()) {
         this->setMouseClick(true);
         this->soundEngine.addSound("button");
 
@@ -269,7 +269,7 @@ void SettingsState::update(float dt)
 
     this->text_buttons["FULLSCREEN"]->update(this->mousePosWindow);
     if (this->text_buttons["FULLSCREEN"]->isPressed() &&
-        !this->getMouseClick()) {
+        !this->isMouseClicked()) {
         this->setMouseClick(true);
         this->soundEngine.addSound("button");
 
@@ -289,7 +289,7 @@ void SettingsState::update(float dt)
 
     this->text_buttons["FPS_LIMIT"]->update(this->mousePosWindow);
     if (this->text_buttons["FPS_LIMIT"]->isPressed() &&
-        !this->getMouseClick()) {
+        !this->isMouseClicked()) {
         this->setMouseClick(true);
         this->soundEngine.addSound("button");
 
@@ -312,7 +312,7 @@ void SettingsState::update(float dt)
     }
 
     this->text_buttons["MUSIC"]->update(this->mousePosWindow);
-    if (this->text_buttons["MUSIC"]->isPressed() && !this->getMouseClick()) {
+    if (this->text_buttons["MUSIC"]->isPressed() && !this->isMouseClicked()) {
         this->setMouseClick(true);
         this->soundEngine.addSound("button");
 
@@ -328,7 +328,7 @@ void SettingsState::update(float dt)
     }
 
     this->text_buttons["SOUNDS"]->update(this->mousePosWindow);
-    if (this->text_buttons["SOUNDS"]->isPressed() && !this->getMouseClick()) {
+    if (this->text_buttons["SOUNDS"]->isPressed() && !this->isMouseClicked()) {
         this->setMouseClick(true);
         this->soundEngine.addSound("button");
 
@@ -344,7 +344,7 @@ void SettingsState::update(float dt)
     }
 
     this->text_buttons["LANGUAGE"]->update(this->mousePosWindow);
-    if (this->text_buttons["LANGUAGE"]->isPressed() && !this->getMouseClick()) {
+    if (this->text_buttons["LANGUAGE"]->isPressed() && !this->isMouseClicked()) {
         this->setMouseClick(true);
         this->soundEngine.addSound("button");
 
@@ -364,7 +364,7 @@ void SettingsState::update(float dt)
 
     this->text_buttons["FPS_COUNTER"]->update(this->mousePosWindow);
     if (this->text_buttons["FPS_COUNTER"]->isPressed() &&
-        !this->getMouseClick()) {
+        !this->isMouseClicked()) {
         this->setMouseClick(true);
         this->soundEngine.addSound("button");
 
@@ -383,7 +383,7 @@ void SettingsState::update(float dt)
     }
 
     this->text_buttons["APPLY"]->update(this->mousePosWindow);
-    if (this->text_buttons["APPLY"]->isPressed() && !this->getMouseClick()) {
+    if (this->text_buttons["APPLY"]->isPressed() && !this->isMouseClicked()) {
         this->setMouseClick(true);
         this->soundEngine.addSound("button");
         this->gameSettings.resolution = this->mode;
@@ -402,11 +402,11 @@ void SettingsState::update(float dt)
 
     this->updateKeysClick("Escape", sf::Keyboard::Escape);
 
-    if (this->getKeysClick1("Escape") && !this->getKeysClick2("Escape")) {
+    if (this->isKeyClicked1("Escape") && !this->isKeyClicked2("Escape")) {
         this->setKeysClick("Escape", true);
         this->endState();
     }
-    this->setKeysClick("Escape", this->getKeysClick1("Escape"));
+    this->setKeysClick("Escape", this->isKeyClicked1("Escape"));
 
     this->musicEngine.update();
 }

@@ -25,12 +25,12 @@ public:
     const uint32_t getXP() const;
     const uint32_t getSpeed() const;
     const uint32_t getReach() const;
-    const bool getUp() const;
-    const bool getRight() const;
-    const bool getDown() const;
-    const bool getLeft() const;
-    const bool IsAttacking() const;
-    const bool getPunched() const;
+    const bool isFacingUp() const;
+    const bool isFacingRight() const;
+    const bool isFacingDown() const;
+    const bool isFacingLeft() const;
+    const bool isAttacking() const;
+    const bool isPunched() const;
     const uint32_t getFrame() const;
 
     void setName(const std::string &t_name);
@@ -46,14 +46,14 @@ public:
     void setSpeed(uint32_t t_speed);
     void setReach(uint32_t t_reach);
 
-    const bool topCollision(const sf::FloatRect &e1Bounds,
-                            const sf::FloatRect &e2Bounds) const;
-    const bool rightCollision(const sf::FloatRect &e1Bounds,
+    const bool hasCollidedTop(const sf::FloatRect &e1Bounds,
                               const sf::FloatRect &e2Bounds) const;
-    const bool leftCollision(const sf::FloatRect &e1Bounds,
-                             const sf::FloatRect &e2Bounds) const;
-    const bool bottomCollision(const sf::FloatRect &e1Bounds,
+    const bool hasCollidedRight(const sf::FloatRect &e1Bounds,
+                                const sf::FloatRect &e2Bounds) const;
+    const bool hasCollidedLeft(const sf::FloatRect &e1Bounds,
                                const sf::FloatRect &e2Bounds) const;
+    const bool hasCollidedBottom(const sf::FloatRect &e1Bounds,
+                                 const sf::FloatRect &e2Bounds) const;
     const float attackDistance(const Entity &e1, const Entity &e2) const;
     const bool hasVelocity() const;
     const bool isDead() const;
@@ -92,7 +92,7 @@ protected:
     FaceDirections faceDirection;
 
     float attackCooldown;
-    bool isAttacking;
+    bool attacking;
     float punchedCooldown;
     bool punched;
 

@@ -5,7 +5,7 @@ Monster::Monster(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
                  const std::vector<sf::FloatRect> &obstaclesBounds)
     : Entity(t_name, t_vm, t_x, t_y), difficultyMod(difficulty_mod), gold(0),
       spawned(false), spawnCountdown(0.f), deadCountdown(0.f),
-      playedSound(false)
+      soundPlayed(false)
 {
     this->texture.loadFromFile("assets/textures/monsters/" + t_name + ".png");
     this->sprite.setTexture(this->texture);
@@ -43,12 +43,12 @@ const uint32_t Monster::getGold() const
     return this->gold;
 }
 
-const bool Monster::getSpawned() const
+const bool Monster::hasSpawned() const
 {
     return this->spawned;
 }
 
-const bool Monster::getDeadCountdown() const
+const bool Monster::hasDeadCountdownExpired() const
 {
     return this->deadCountdown >= 0.25f;
 }
@@ -59,16 +59,16 @@ void Monster::setGold(uint32_t gold)
 }
 
 const bool
-Monster::attackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
-                      Player &player, SoundEngine &soundEngine,
-                      FloatingTextSystem &floatingTextSystem)
+Monster::hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
+                           Player &player, SoundEngine &soundEngine,
+                           FloatingTextSystem &floatingTextSystem)
 {
     const float distance = this->attackDistance(player, *this);
 
     if (distance <=
         this->reach * calcX(static_cast<float>(32 * this->entitySize), vm)) {
         this->doAttack();
-        if (!player.isDead() && !player.getPunched() && this->isAttacking &&
+        if (!player.isDead() && !player.isPunched() && this->attacking &&
             this->frame == 80 * this->entitySize) {
             int Lattack = static_cast<int>(round(
                 this->attack - (this->attack * player.getArmor() * 0.05f)));
@@ -86,9 +86,9 @@ Monster::attackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
                     player.setHP(player.getHP() - Lattack);
                 }
 
-                if (!this->playedSound) {
+                if (!this->soundPlayed) {
                     soundEngine.addSound("punch");
-                    this->playedSound = true;
+                    this->soundPlayed = true;
                 }
 
                 player.punch();
@@ -102,14 +102,14 @@ Monster::attackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
 }
 
 const bool
-Monster::sightCollision(const std::vector<sf::FloatRect> &obstaclesBounds,
+Monster::hasLineOfSight(const std::vector<sf::FloatRect> &obstaclesBounds,
                         const sf::Vector2f &a_p1, const sf::Vector2f &a_p2)
 {
     for (const auto &obstacle : obstaclesBounds) {
         if (vectorDistance(this->sprite.getPosition(),
                            sf::Vector2f(obstacle.left, obstacle.top)) <=
                 20.f * calcX(32, vm) &&
-            sight(obstacle, a_p1, a_p2)) {
+            isPointVisible(obstacle, a_p1, a_p2)) {
             return true;
         }
     }
@@ -134,7 +134,7 @@ void Monster::spawn(float dt)
     }
 }
 
-const bool Monster::dyingAnimation(float dt)
+void Monster::dyingAnimation(float dt)
 {
     if (this->deadCountdown < 0.25f) {
         this->sprite.setColor(sf::Color(
@@ -145,12 +145,10 @@ const bool Monster::dyingAnimation(float dt)
             static_cast<sf::Uint8>(255.f - (this->deadCountdown * 1020.f))));
         this->deadCountdown += dt;
     }
-    if (this->deadCountdown >= 0.25f) {
+    if (this->hasDeadCountdownExpired()) {
         this->sprite.setColor(sf::Color(255, 255, 255, 0));
         this->shadow.setColor(sf::Color(255, 255, 255, 0));
-        return true;
     }
-    return false;
 }
 
 void Monster::calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds,
@@ -162,7 +160,7 @@ void Monster::calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds,
                        this->sprite.getGlobalBounds().width) *
                       dt;
 
-    if (!sightCollision(obstaclesBounds, this->getCenter(),
+    if (!hasLineOfSight(obstaclesBounds, this->getCenter(),
                         player.getCenter())) {
 
         if (player.getCenter().x > this->getCenter().x) {
@@ -196,8 +194,8 @@ void Monster::update(float dt)
         this->sprite.getPosition().x,
         this->sprite.getPosition().y +
             calcY(static_cast<float>(52 * this->entitySize), this->vm));
-    if (this->playedSound && this->frame != 80) {
-        this->playedSound = false;
+    if (this->soundPlayed && this->frame != 80) {
+        this->soundPlayed = false;
     }
 }
 
@@ -212,15 +210,15 @@ void Monster::drawShadow(sf::RenderTarget &target)
 }
 
 const bool
-Monster::checkAttack(const std::vector<sf::FloatRect> &obstaclesBounds,
-                     Player &player)
+Monster::canAttackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
+                         Player &player)
 {
     const float distance = this->attackDistance(player, *this);
 
     if (distance <= this->getReach() *
                         calcX(static_cast<float>(32 * this->entitySize), vm)) {
         this->doAttack();
-        if (!player.isDead() && !player.getPunched() && this->IsAttacking() &&
+        if (!player.isDead() && !player.isPunched() && this->attacking &&
             this->getFrame() == 80 * this->entitySize) {
             return true;
         }

@@ -11,7 +11,7 @@ Boss::Boss(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
 
 Boss::~Boss() = default;
 
-const bool Boss::specialReady() const
+const bool Boss::isSpecialAttackReady() const
 {
     return this->specialAttackCountdown >= this->specialAttackCooldown;
 }
@@ -42,8 +42,8 @@ void Boss::update(float dt)
         this->sprite.getPosition().x,
         this->sprite.getPosition().y +
             calcY(static_cast<float>(52 * this->entitySize), this->vm));
-    if (this->playedSound && this->frame != 80) {
-        this->playedSound = false;
+    if (this->soundPlayed && this->frame != 80) {
+        this->soundPlayed = false;
     }
 
     this->loadSpecialAttack(dt);

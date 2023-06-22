@@ -26,7 +26,7 @@ MonsterSystem::~MonsterSystem()
     this->monsters.clear();
 }
 
-const bool MonsterSystem::monsterIDsEmpty() const
+const bool MonsterSystem::isMonsterIDsEmpty() const
 {
     return this->monsterIDs.empty();
 }
@@ -36,7 +36,7 @@ const size_t MonsterSystem::monsterIDsSize() const
     return this->monsterIDs.size();
 }
 
-const bool MonsterSystem::monstersEmpty() const
+const bool MonsterSystem::isMonstersEmpty() const
 {
     return this->monsters.empty();
 }
@@ -80,8 +80,8 @@ void MonsterSystem::playerAttack(Player &player,
 
         if (distance <= player.getReach() * calcX(32, vm)) {
 
-            if (!monster->isDead() && !monster->getPunched() &&
-                monster->getSpawned() && player.IsAttacking() &&
+            if (!monster->isDead() && !monster->isPunched() &&
+                monster->hasSpawned() && player.isAttacking() &&
                 player.getFrame() == 80) {
                 if ((static_cast<uint32_t>(Random::Float() * 100.f) + 1) <=
                     player.getCriticalChance()) {
@@ -113,7 +113,7 @@ void MonsterSystem::playerAttack(Player &player,
                     }
                 }
 
-                if (!player.getPlayedSound()) {
+                if (!player.isSoundPlayed()) {
                     soundEngine.addSound("whoosh_hit");
                     player.setPlayedSound(true);
                 }
@@ -132,8 +132,8 @@ void MonsterSystem::explosionAttack(
     for (const auto &bounds : particlesBounds) {
         for (const auto &monster : monsters) {
             if (monster->getGlobalBounds().intersects(bounds)) {
-                if (!monster->isDead() && !monster->getPunched() &&
-                    monster->getSpawned()) {
+                if (!monster->isDead() && !monster->isPunched() &&
+                    monster->hasSpawned()) {
                     const int attack = 7;
                     floatingTextSystem.addFloatingText(
                         std::to_string(-attack), calcChar(16, vm),
@@ -159,7 +159,7 @@ void MonsterSystem::projectileCollision(Projectile &proj, Player &player,
 {
     for (const auto &monster : monsters) {
         proj.monsterCollision(*monster, player, floatingTextSystem);
-        if (proj.getCollidedMonster()) {
+        if (proj.hasCollidedMonster()) {
             break;
         }
     }
@@ -178,23 +178,23 @@ void MonsterSystem::monsterCollision(Monster &mob)
             nextPos.top += mob.getVelocity().y;
 
             if (monsterBounds.intersects(nextPos)) {
-                if (mob.bottomCollision(mobBounds, monsterBounds)) {
+                if (mob.hasCollidedBottom(mobBounds, monsterBounds)) {
                     mob.setVeloctiy(sf::Vector2f(mob.getVelocity().x, 0.f));
                     mob.setPosition(mobBounds.left,
                                     monsterBounds.top - mobBounds.height);
                 }
-                else if (mob.topCollision(mobBounds, monsterBounds)) {
+                else if (mob.hasCollidedTop(mobBounds, monsterBounds)) {
                     mob.setVeloctiy(sf::Vector2f(mob.getVelocity().x, 0.f));
                     mob.setPosition(mobBounds.left,
                                     monsterBounds.top + monsterBounds.height);
                 }
 
-                if (mob.rightCollision(mobBounds, monsterBounds)) {
+                if (mob.hasCollidedRight(mobBounds, monsterBounds)) {
                     mob.setVeloctiy(sf::Vector2f(0.f, mob.getVelocity().y));
                     mob.setPosition(monsterBounds.left - mobBounds.width,
                                     mobBounds.top);
                 }
-                else if (mob.leftCollision(mobBounds, monsterBounds)) {
+                else if (mob.hasCollidedLeft(mobBounds, monsterBounds)) {
                     mob.setVeloctiy(sf::Vector2f(0.f, mob.getVelocity().y));
                     mob.setPosition(monsterBounds.left + monsterBounds.width,
                                     mobBounds.top);
@@ -375,11 +375,11 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
                            bool &paused, float dt)
 {
     for (const auto &monster : this->monsters) {
-        if (monster->getSpawned()) {
+        if (monster->hasSpawned()) {
             if (monster->isDead()) {
                 monster->dyingAnimation(dt);
             }
-            else if (monster->getPunched()) {
+            else if (monster->isPunched()) {
                 monster->smashed(dt);
             }
             else {
@@ -392,8 +392,9 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
                 }
                 monster->update(dt);
                 monster->loadAttack(dt);
-                if (monster->attackPlayer(obstaclesBounds, player, soundEngine,
-                                          floatingTextSystem)) {
+                if (monster->hasAttackedPlayer(obstaclesBounds, player,
+                                               soundEngine,
+                                               floatingTextSystem)) {
 
                     if (monster->getName() != "cyclope") {
                         floatingTextSystem.addFloatingText(
@@ -429,8 +430,8 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
     }
     for (auto monster = this->monsters.begin();
          monster != this->monsters.end();) {
-        if ((*monster)->getDeadCountdown()) {
-            if (player.addXP((*monster)->getXP())) {
+        if ((*monster)->hasDeadCountdownExpired()) {
+            if (player.hasLeveledUp((*monster)->getXP())) {
                 playerGUI.update_level(soundEngine);
                 paused = true;
             }

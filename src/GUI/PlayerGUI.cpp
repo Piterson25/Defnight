@@ -95,7 +95,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->texts["LEVEL"] = new gui::Text(
         "Level " + std::to_string(player.getLevel()), calcChar(16, vm),
         calcX(640, vm), calcY(15, vm), sf::Color(255, 255, 255), true);
-    this->isLevelshown = true;
+    this->levelShown = true;
     this->xp_bar_percent = 0.f;
 
     this->sprites["HP_BAR"] =
@@ -147,7 +147,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
                       calcY(512, vm), sf::Color(192, 192, 192), true);
     this->waveCountdown = 0.f;
 
-    this->isLeveling = false;
+    this->leveling = false;
 
     this->texts["LEVEL_UP"] =
         new gui::Text("LEVEL UP!", calcChar(32, vm), calcX(640, vm),
@@ -196,7 +196,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->option2_id = 0;
     this->option2_val = 0;
 
-    this->isUpgrading = false;
+    this->upgrading = false;
     this->sprites["UPGRADES"] =
         new gui::Sprite("assets/textures/side_gui.png", calcX(1280, vm),
                         calcY(128, vm), calcScale(1, vm), false);
@@ -289,6 +289,8 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
         new gui::Text("+1", calcChar(16, vm), calcX(1224, vm), calcY(606, vm),
                       sf::Color(255, 255, 255), false);
 
+    this->upgraded = false;
+
     this->sprites["ABILITY_FRAME"] =
         new gui::Sprite(this->select_texture, calcX(264, vm), calcY(4, vm),
                         calcScale(1, vm), false);
@@ -352,9 +354,9 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->escape_background.setFillColor(sf::Color(0, 0, 0, 192));
     this->escape_background.setSize(
         sf::Vector2f(calcX(1280, vm), calcY(720, vm)));
-    this->isEscape = false;
+    this->escape = false;
 
-    this->isShopping = false;
+    this->shopping = false;
 
     this->sprites["SIDE_GUI"] =
         new gui::Sprite("assets/textures/side_gui.png", 0, calcY(128, vm),
@@ -472,7 +474,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
         std::to_string(this->item4Price), calcChar(16, vm), calcX(204, vm),
         calcY(624, vm), sf::Color(255, 246, 76), false);
 
-    this->isBuyingAbility = false;
+    this->buyingAbility = false;
     this->sprites["BUYING_ABILITY_ICON"] =
         new gui::Sprite("assets/textures/abilities_icons.png", calcX(80, vm),
                         calcY(160, vm), calcScale(8, vm), false);
@@ -607,7 +609,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
 {
     this->texts["NAME"]->setText(this->lang[name]);
     this->texts["NAME"]->center(calcX(196, this->vm));
-    if (player.getAbilityActive()) {
+    if (player.isAbilityActive()) {
         player.setAbilityActive(false);
     }
     if (name == "NINJA") {
@@ -712,21 +714,21 @@ void PlayerGUI::upgradePlayer(const std::string &name)
 void PlayerGUI::update_level(SoundEngine &soundEngine)
 {
     soundEngine.addSound("levelup");
-    this->isLeveling = true;
-    this->isShopping = false;
+    this->leveling = true;
+    this->shopping = false;
     this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 20));
     this->texts["LEVEL"]->setText("Level " + std::to_string(player.getLevel()));
     this->texts["LEVEL"]->center(calcX(640, this->vm));
     if (player.getLevel() == 5 ||
         (player.getLevel() == 10 && player.getName() != "scout")) {
-        this->isUpgrading = true;
+        this->upgrading = true;
     }
 
     std::vector<short> id = {3, 4, 5};
     if (player.getArmor() < 10 ||
-        (player.getIncreasedArmor() &&
-         ((player.getAbilityActive() && player.getArmor() < 15) ||
-          (!player.getAbilityActive() && player.getArmor() < 10)))) {
+        (player.isIncreasedArmor() &&
+         ((player.isAbilityActive() && player.getArmor() < 15) ||
+          (!player.isAbilityActive() && player.getArmor() < 10)))) {
         id.push_back(1);
     }
     if (player.getReg() < 10) {
@@ -806,7 +808,7 @@ void PlayerGUI::updating_XP(float dt)
     const int width = this->sprites["XP_BAR"]->getTextureRect().width;
     const int barrier = static_cast<int>(this->xp_bar_percent * 264.f);
 
-    if (width < barrier && player.getLeveling()) {
+    if (width < barrier && player.isLeveling()) {
         const int distance = static_cast<int>(width + 1000.f * dt);
         if (distance > barrier) {
             this->sprites["XP_BAR"]->setTextureRect(
@@ -830,7 +832,7 @@ void PlayerGUI::update_HP()
     if (player.isDead()) {
         this->hp_bar_percent = 0.f;
         this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 0, 20));
-        this->isShopping = false;
+        this->shopping = false;
     }
     else {
         this->hp_bar_percent =
@@ -844,14 +846,14 @@ void PlayerGUI::update_HP()
 
 void PlayerGUI::updating_HP(SoundEngine &soundEngine, float dt)
 {
-    if (player.regeneration(dt) && !player.isDead()) {
+    if (player.isHPRegenerating(dt) && !player.isDead()) {
         this->texts["HP"]->setText("HP:" + std::to_string(player.getHP()) +
                                    "/" + std::to_string(player.getMaxHP()));
         this->texts["HP"]->center(calcX(640, this->vm));
         this->hp_bar_percent =
             static_cast<float>(player.getHP()) / player.getMaxHP();
         player.setRegenerating(true);
-        if (this->isShopping && player.getHP() / player.getMaxHP() == 1) {
+        if (this->shopping && player.getHP() / player.getMaxHP() == 1) {
             this->sprites["ITEM1_FRAME"]->setTextureRect(
                 sf::IntRect(176, 0, 88, 88));
         }
@@ -885,7 +887,7 @@ void PlayerGUI::updating_HP(SoundEngine &soundEngine, float dt)
             this->sprites["PROGRESS_BAR"]->setColor(sf::Color::White);
         }
     }
-    else if (width < barrier && player.getRegenerating()) {
+    else if (width < barrier && player.isRegenerating()) {
         const int distance = static_cast<int>(width + 1000.f * dt);
         if (distance > barrier) {
             this->sprites["HP_BAR"]->setTextureRect(
@@ -942,9 +944,9 @@ void PlayerGUI::update_Gold()
     }
 
     if (player.getArmor() < 10 ||
-        (player.getIncreasedArmor() &&
-         ((player.getAbilityActive() && player.getArmor() < 15) ||
-          (!player.getAbilityActive() && player.getArmor() < 10)))) {
+        (player.isIncreasedArmor() &&
+         ((player.isAbilityActive() && player.getArmor() < 15) ||
+          (!player.isAbilityActive() && player.getArmor() < 10)))) {
         if (player.getGold() >= this->item4Price) {
             this->sprites["ITEM4_FRAME"]->setTextureRect(
                 sf::IntRect(264, 0, 88, 88));
@@ -1024,12 +1026,12 @@ void PlayerGUI::updateSprint(float dt)
 
 void PlayerGUI::updateIsShopping()
 {
-    this->isShopping = !this->isShopping;
+    this->shopping = !this->shopping;
 }
 
 void PlayerGUI::updateIsBuyingAbility()
 {
-    this->isBuyingAbility = !this->isBuyingAbility;
+    this->buyingAbility = !this->buyingAbility;
 }
 
 void PlayerGUI::updateKills()
@@ -1130,9 +1132,9 @@ void PlayerGUI::updateMonsterCount(const size_t &monsterCount)
                                           std::to_string(monsterCount));
 }
 
-void PlayerGUI::setIsEscape(const bool &escape)
+void PlayerGUI::setIsEscape(bool escape)
 {
-    this->isEscape = escape;
+    this->escape = escape;
 }
 
 void PlayerGUI::updatePaused(bool &paused)
@@ -1189,11 +1191,12 @@ void PlayerGUI::updateBossHP(float dt)
     }
 }
 
-const bool PlayerGUI::updateShop(const sf::Vector2i &mousePos,
-                                 bool mouseClicked, SoundEngine &soundEngine,
-                                 FloatingTextSystem &floatingTextSystem)
+const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
+                                        bool mouseClicked,
+                                        SoundEngine &soundEngine,
+                                        FloatingTextSystem &floatingTextSystem)
 {
-    if (this->isShopping) {
+    if (this->shopping) {
         if (player.getGold() >= this->item1Price &&
             player.getHP() < player.getMaxHP()) {
             this->sprite_buttons["ITEM1"]->update(mousePos);
@@ -1263,9 +1266,9 @@ const bool PlayerGUI::updateShop(const sf::Vector2i &mousePos,
         }
 
         if (player.getArmor() < 10 ||
-            (player.getIncreasedArmor() &&
-             ((player.getAbilityActive() && player.getArmor() < 15) ||
-              (!player.getAbilityActive() && player.getArmor() < 10)))) {
+            (player.isIncreasedArmor() &&
+             ((player.isAbilityActive() && player.getArmor() < 15) ||
+              (!player.isAbilityActive() && player.getArmor() < 10)))) {
             if (player.getGold() >= this->item4Price) {
                 this->sprite_buttons["ITEM4"]->update(mousePos);
                 if (this->sprite_buttons["ITEM4"]->isPressed() &&
@@ -1296,40 +1299,40 @@ const bool PlayerGUI::updateShop(const sf::Vector2i &mousePos,
 }
 
 const bool
-PlayerGUI::updateBuyingAbility(const sf::Vector2i &mousePos, bool mouseClicked,
-                               SoundEngine &soundEngine,
-                               FloatingTextSystem &floatingTextSystem)
+PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
+                                SoundEngine &soundEngine,
+                                FloatingTextSystem &floatingTextSystem)
 {
-    if (this->isBuyingAbility) {
+    if (this->buyingAbility) {
         return true;
     }
 
     return false;
 }
 
-const bool PlayerGUI::getIsEscape() const
+const bool PlayerGUI::isEscape() const
 {
-    return this->isEscape;
+    return this->escape;
 }
 
-const bool PlayerGUI::getIsLeveling() const
+const bool PlayerGUI::isLeveling() const
 {
-    return this->isLeveling;
+    return this->leveling;
 }
 
-const bool PlayerGUI::getIsUpgrading() const
+const bool PlayerGUI::isUpgrading() const
 {
-    return this->isUpgrading;
+    return this->upgrading;
 }
 
-const bool PlayerGUI::getIsShopping() const
+const bool PlayerGUI::isShopping() const
 {
-    return this->isShopping;
+    return this->shopping;
 }
 
-const bool PlayerGUI::getIsBuyingAbility() const
+const bool PlayerGUI::isBuyingAbility() const
 {
-    return this->isBuyingAbility;
+    return this->buyingAbility;
 }
 
 const uint8_t PlayerGUI::updateEscapeButton(const sf::Vector2i &mousePos,
@@ -1337,7 +1340,7 @@ const uint8_t PlayerGUI::updateEscapeButton(const sf::Vector2i &mousePos,
 {
     this->text_buttons["RESUME"]->update(mousePos);
     if (this->text_buttons["RESUME"]->isPressed() && !mouseClicked) {
-        this->isEscape = false;
+        this->escape = false;
         return 3;
     }
 
@@ -1359,31 +1362,34 @@ const uint8_t PlayerGUI::updateEscapeButton(const sf::Vector2i &mousePos,
     return 0;
 }
 
-const bool PlayerGUI::updateButtons(const sf::Vector2i &mousePos,
-                                    bool mouseClicked, SoundEngine &soundEngine)
+const bool PlayerGUI::hasClickedButtons(const sf::Vector2i &mousePos,
+                                        bool mouseClicked,
+                                        SoundEngine &soundEngine)
 {
-    if (this->isLeveling && this->isUpgrading) {
-        this->updateLevelUpButtons(mousePos, mouseClicked, soundEngine);
-        this->updateUpgradeButtons(mousePos, mouseClicked, soundEngine);
+    if (this->leveling && this->upgrading) {
+        this->hasClickedLevelUpButtons(mousePos, mouseClicked, soundEngine);
+        this->hasClickedUpgradeButtons(mousePos, mouseClicked, soundEngine);
     }
-    else if (this->isLeveling) {
-        return this->updateLevelUpButtons(mousePos, mouseClicked, soundEngine);
+    else if (this->leveling) {
+        return this->hasClickedLevelUpButtons(mousePos, mouseClicked,
+                                              soundEngine);
     }
-    else if (this->isUpgrading) {
-        this->isUpgraded = true;
-        return this->updateUpgradeButtons(mousePos, mouseClicked, soundEngine);
+    else if (this->upgrading) {
+        this->upgraded = true;
+        return this->hasClickedUpgradeButtons(mousePos, mouseClicked,
+                                              soundEngine);
     }
     return false;
 }
 
-const bool PlayerGUI::updateLevelUpButtons(const sf::Vector2i &mousePos,
-                                           bool mouseClicked,
-                                           SoundEngine &soundEngine)
+const bool PlayerGUI::hasClickedLevelUpButtons(const sf::Vector2i &mousePos,
+                                               bool mouseClicked,
+                                               SoundEngine &soundEngine)
 {
     this->sprite_buttons["OPTION1"]->update(mousePos);
     if (this->sprite_buttons["OPTION1"]->isPressed() && !mouseClicked) {
         this->levelUpPlayer(this->option1_id, this->option1_val);
-        this->isLeveling = false;
+        this->leveling = false;
         this->sprite_buttons["OPTION1"]->setTransparent();
         soundEngine.addSound("option");
         return true;
@@ -1392,7 +1398,7 @@ const bool PlayerGUI::updateLevelUpButtons(const sf::Vector2i &mousePos,
     this->sprite_buttons["OPTION2"]->update(mousePos);
     if (this->sprite_buttons["OPTION2"]->isPressed() && !mouseClicked) {
         this->levelUpPlayer(this->option2_id, this->option2_val);
-        this->isLeveling = false;
+        this->leveling = false;
         this->sprite_buttons["OPTION2"]->setTransparent();
         soundEngine.addSound("option");
         return true;
@@ -1400,9 +1406,9 @@ const bool PlayerGUI::updateLevelUpButtons(const sf::Vector2i &mousePos,
     return false;
 }
 
-const bool PlayerGUI::updateUpgradeButtons(const sf::Vector2i &mousePos,
-                                           bool mouseClicked,
-                                           SoundEngine &soundEngine)
+const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
+                                               bool mouseClicked,
+                                               SoundEngine &soundEngine)
 {
     this->sprite_buttons["UPGRADE1"]->update(mousePos);
     if (this->sprite_buttons["UPGRADE1"]->isPressed() && !mouseClicked) {
@@ -1418,7 +1424,7 @@ const bool PlayerGUI::updateUpgradeButtons(const sf::Vector2i &mousePos,
             }
         }
 
-        this->isUpgrading = false;
+        this->upgrading = false;
         this->sprite_buttons["UPGRADE1"]->setTransparent();
         soundEngine.addSound("upgrade");
         return true;
@@ -1437,7 +1443,7 @@ const bool PlayerGUI::updateUpgradeButtons(const sf::Vector2i &mousePos,
                 this->upgradePlayer("PALADIN");
             }
         }
-        this->isUpgrading = false;
+        this->upgrading = false;
         this->sprite_buttons["UPGRADE2"]->setTransparent();
         soundEngine.addSound("upgrade");
         return true;
@@ -1447,7 +1453,7 @@ const bool PlayerGUI::updateUpgradeButtons(const sf::Vector2i &mousePos,
         this->sprite_buttons["UPGRADE3"]->update(mousePos);
         if (this->sprite_buttons["UPGRADE3"]->isPressed() && !mouseClicked) {
             this->upgradePlayer("SCOUT");
-            this->isUpgrading = false;
+            this->upgrading = false;
             this->sprite_buttons["UPGRADE3"]->setTransparent();
             soundEngine.addSound("upgrade");
             return true;
@@ -1511,11 +1517,11 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
         }
     }
 
-    this->isLevelshown = true;
+    this->levelShown = true;
     if ((mousePosView.y >= calcY(12, vm) && mousePosView.y <= calcY(34, vm)) &&
         (mousePosView.x >= calcX(508, vm) &&
          mousePosView.x <= calcX(772, vm))) {
-        this->isLevelshown = false;
+        this->levelShown = false;
     }
 
     if (this->waveCountdown < 10.f) {
@@ -1575,7 +1581,7 @@ void PlayerGUI::draw(sf::RenderTarget &target)
     this->sprites["REG"]->draw(target);
     this->texts["REG"]->draw(target);
     this->sprites["XP_BAR"]->draw(target);
-    if (this->isLevelshown) {
+    if (this->levelShown) {
         this->texts["LEVEL"]->draw(target);
     }
     else {
@@ -1586,7 +1592,7 @@ void PlayerGUI::draw(sf::RenderTarget &target)
     this->sprites["SPRINT_BAR"]->draw(target);
     this->texts["SPRINT"]->draw(target);
 
-    if (this->isShopping) {
+    if (this->shopping) {
         this->sprites["SIDE_GUI"]->draw(target);
 
         this->sprites["ITEM1_FRAME"]->draw(target);
@@ -1614,9 +1620,9 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         this->sprites["ITEM3_COIN"]->draw(target);
 
         if (player.getArmor() < 10 ||
-            (player.getIncreasedArmor() &&
-             ((player.getAbilityActive() && player.getArmor() < 15) ||
-              (!player.getAbilityActive() && player.getArmor() < 10)))) {
+            (player.isIncreasedArmor() &&
+             ((player.isAbilityActive() && player.getArmor() < 15) ||
+              (!player.isAbilityActive() && player.getArmor() < 10)))) {
             this->sprites["ITEM4_FRAME"]->draw(target);
             this->sprite_buttons["ITEM4"]->draw(target);
             this->sprites["ITEM4"]->draw(target);
@@ -1627,14 +1633,14 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         }
     }
 
-    if (this->isUpgraded) {
+    if (this->upgraded) {
         this->sprites["ABILITY_ICON"]->draw(target);
         if (player.getAbilityCooldown() < player.getAbilityMaxTime()) {
             target.draw(this->ability_icon);
         }
         this->sprites["ABILITY_FRAME"]->draw(target);
 
-        if (this->isBuyingAbility && !this->isShopping) {
+        if (this->buyingAbility && !this->shopping) {
             this->sprites["SIDE_GUI"]->draw(target);
 
             this->sprites["BUYING_ABILITY_ICON"]->draw(target);
@@ -1653,7 +1659,7 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         this->texts["WAVE_NUMBER"]->draw(target);
         this->texts["MONSTER_COUNT"]->draw(target);
 
-        if (this->isLeveling) {
+        if (this->leveling) {
             this->texts["LEVEL_UP"]->draw(target);
             this->sprites["LEVEL_UP"]->draw(target);
 
@@ -1668,7 +1674,7 @@ void PlayerGUI::draw(sf::RenderTarget &target)
             this->texts["OPTION2"]->draw(target);
             this->texts["OPTION2_VALUE"]->draw(target);
         }
-        if (this->isUpgrading) {
+        if (this->upgrading) {
             this->sprites["UPGRADES"]->draw(target);
 
             this->sprites["UPGRADE1_FRAME"]->draw(target);
@@ -1711,7 +1717,7 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         this->text_buttons["MAIN_MENU"]->draw(target);
         this->text_buttons["QUIT"]->draw(target);
     }
-    else if (this->isEscape) {
+    else if (this->escape) {
         target.draw(this->escape_background);
         this->texts["DIFFICULTY"]->draw(target);
         this->text_buttons["RESUME"]->draw(target);

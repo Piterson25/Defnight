@@ -10,11 +10,11 @@ public:
                float coordsOffset);
     virtual ~Projectile();
 
-    const bool getCollided() const;
-    const bool getCollidedPlayer() const;
-    const bool getCollidedMonster() const;
+    const bool hasCollidedWall() const;
+    const bool hasCollidedPlayer() const;
+    const bool hasCollidedMonster() const;
     const float getTimeExisting() const;
-    const bool getExploded() const;
+    const bool hasExploded() const;
     const bool isBomb() const;
 
     void calculateVelocity(const sf::Vector2f &coords);
@@ -27,7 +27,7 @@ public:
 
 protected:
     float timeExisting;
-    bool collided;
+    bool collidedWall;
     bool collidedPlayer;
     bool collidedMonster;
     float angle;

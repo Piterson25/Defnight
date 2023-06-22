@@ -23,7 +23,8 @@ void Bomb::monsterCollision(Monster &monster, Player &player,
 
     if (vectorDistance(this->sprite.getPosition(), monster.getPosition()) <
             distance &&
-        !this->collided && !this->collidedPlayer && !this->collidedMonster) {
+        !this->collidedWall && !this->collidedPlayer &&
+        !this->collidedMonster) {
 
         sf::FloatRect projectileBounds = this->sprite.getGlobalBounds();
         sf::FloatRect mobBounds = monster.getGlobalBounds();
@@ -33,28 +34,28 @@ void Bomb::monsterCollision(Monster &monster, Player &player,
         nextPos.top += this->velocity.y;
 
         if (mobBounds.intersects(nextPos)) {
-            if (bottomCollision(projectileBounds, mobBounds)) {
+            if (hasCollidedBottom(projectileBounds, mobBounds)) {
                 this->velocity.y = 0.f;
                 this->sprite.setPosition(projectileBounds.left,
                                          mobBounds.top -
                                              projectileBounds.height);
                 this->collidedMonster = true;
             }
-            else if (topCollision(projectileBounds, mobBounds)) {
+            else if (hasCollidedTop(projectileBounds, mobBounds)) {
                 this->velocity.y = 0.f;
                 this->sprite.setPosition(projectileBounds.left,
                                          mobBounds.top + mobBounds.height);
                 this->collidedMonster = true;
             }
 
-            if (rightCollision(projectileBounds, mobBounds)) {
+            if (hasCollidedRight(projectileBounds, mobBounds)) {
                 this->velocity.x = 0.f;
                 this->sprite.setPosition(mobBounds.left -
                                              projectileBounds.width,
                                          projectileBounds.top);
                 this->collidedMonster = true;
             }
-            else if (leftCollision(projectileBounds, mobBounds)) {
+            else if (hasCollidedLeft(projectileBounds, mobBounds)) {
                 this->velocity.x = 0.f;
                 this->sprite.setPosition(mobBounds.left + mobBounds.width,
                                          projectileBounds.top);

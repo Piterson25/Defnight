@@ -20,7 +20,8 @@ void Stone::playerCollision(Player &player)
 
     if (vectorDistance(this->sprite.getPosition(), player.getPosition()) <
             distance &&
-        !this->collided && !this->collidedPlayer && !this->collidedMonster) {
+        !this->collidedWall && !this->collidedPlayer &&
+        !this->collidedMonster) {
 
         sf::FloatRect projectileBounds = this->sprite.getGlobalBounds();
         sf::FloatRect playerBounds = player.getGlobalBounds();
@@ -30,14 +31,14 @@ void Stone::playerCollision(Player &player)
         nextPos.top += this->velocity.y;
 
         if (playerBounds.intersects(nextPos)) {
-            if (bottomCollision(projectileBounds, playerBounds)) {
+            if (hasCollidedBottom(projectileBounds, playerBounds)) {
                 this->velocity.y = 0.f;
                 this->sprite.setPosition(projectileBounds.left,
                                          playerBounds.top -
                                              projectileBounds.height);
                 this->collidedPlayer = true;
             }
-            else if (topCollision(projectileBounds, playerBounds)) {
+            else if (hasCollidedTop(projectileBounds, playerBounds)) {
                 this->velocity.y = 0.f;
                 this->sprite.setPosition(projectileBounds.left,
                                          playerBounds.top +
@@ -45,14 +46,14 @@ void Stone::playerCollision(Player &player)
                 this->collidedPlayer = true;
             }
 
-            if (rightCollision(projectileBounds, playerBounds)) {
+            if (hasCollidedRight(projectileBounds, playerBounds)) {
                 this->velocity.x = 0.f;
                 this->sprite.setPosition(playerBounds.left -
                                              projectileBounds.width,
                                          projectileBounds.top);
                 this->collidedPlayer = true;
             }
-            else if (leftCollision(projectileBounds, playerBounds)) {
+            else if (hasCollidedLeft(projectileBounds, playerBounds)) {
                 this->velocity.x = 0.f;
                 this->sprite.setPosition(playerBounds.left + playerBounds.width,
                                          projectileBounds.top);

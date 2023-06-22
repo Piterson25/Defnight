@@ -19,7 +19,7 @@ Entity::Entity(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->faceDirection = FaceDirections::LEFT;
 
     this->attackCooldown = 0.f;
-    this->isAttacking = false;
+    this->attacking = false;
     this->punchedCooldown = 0.f;
     this->punched = false;
 
@@ -131,32 +131,32 @@ const uint32_t Entity::getReach() const
     return this->reach;
 }
 
-const bool Entity::getUp() const
+const bool Entity::isFacingUp() const
 {
     return this->faceDirection == FaceDirections::UP;
 }
 
-const bool Entity::getRight() const
+const bool Entity::isFacingRight() const
 {
     return this->faceDirection == FaceDirections::RIGHT;
 }
 
-const bool Entity::getDown() const
+const bool Entity::isFacingDown() const
 {
     return this->faceDirection == FaceDirections::DOWN;
 }
 
-const bool Entity::getLeft() const
+const bool Entity::isFacingLeft() const
 {
     return this->faceDirection == FaceDirections::LEFT;
 }
 
-const bool Entity::IsAttacking() const
+const bool Entity::isAttacking() const
 {
-    return this->isAttacking;
+    return this->attacking;
 }
 
-const bool Entity::getPunched() const
+const bool Entity::isPunched() const
 {
     return this->punched;
 }
@@ -227,8 +227,8 @@ void Entity::setReach(const uint32_t reach)
     this->reach = reach;
 }
 
-const bool Entity::topCollision(const sf::FloatRect &e1Bounds,
-                                const sf::FloatRect &e2Bounds) const
+const bool Entity::hasCollidedTop(const sf::FloatRect &e1Bounds,
+                                  const sf::FloatRect &e2Bounds) const
 {
     if (e1Bounds.top > e2Bounds.top &&
         e1Bounds.top + e1Bounds.height > e2Bounds.top + e2Bounds.height &&
@@ -239,8 +239,8 @@ const bool Entity::topCollision(const sf::FloatRect &e1Bounds,
     return false;
 }
 
-const bool Entity::rightCollision(const sf::FloatRect &e1Bounds,
-                                  const sf::FloatRect &e2Bounds) const
+const bool Entity::hasCollidedRight(const sf::FloatRect &e1Bounds,
+                                    const sf::FloatRect &e2Bounds) const
 {
     if (e1Bounds.left < e2Bounds.left &&
         e1Bounds.left + e1Bounds.width < e2Bounds.left + e2Bounds.width &&
@@ -251,8 +251,8 @@ const bool Entity::rightCollision(const sf::FloatRect &e1Bounds,
     return false;
 }
 
-const bool Entity::leftCollision(const sf::FloatRect &e1Bounds,
-                                 const sf::FloatRect &e2Bounds) const
+const bool Entity::hasCollidedLeft(const sf::FloatRect &e1Bounds,
+                                   const sf::FloatRect &e2Bounds) const
 {
     if (e1Bounds.left > e2Bounds.left &&
         e1Bounds.left + e1Bounds.width > e2Bounds.left + e2Bounds.width &&
@@ -263,8 +263,8 @@ const bool Entity::leftCollision(const sf::FloatRect &e1Bounds,
     return false;
 }
 
-const bool Entity::bottomCollision(const sf::FloatRect &e1Bounds,
-                                   const sf::FloatRect &e2Bounds) const
+const bool Entity::hasCollidedBottom(const sf::FloatRect &e1Bounds,
+                                     const sf::FloatRect &e2Bounds) const
 {
     if (e1Bounds.top < e2Bounds.top &&
         e1Bounds.top + e1Bounds.height < e2Bounds.top + e2Bounds.height &&
@@ -277,16 +277,16 @@ const bool Entity::bottomCollision(const sf::FloatRect &e1Bounds,
 
 const float Entity::attackDistance(const Entity &e1, const Entity &e2) const
 {
-    if (getLeft()) {
+    if (isFacingLeft()) {
         return vectorDistance(e1.getCenter(), e2.getLeftCenter());
     }
-    else if (getRight()) {
+    else if (isFacingRight()) {
         return vectorDistance(e1.getCenter(), e2.getRightCenter());
     }
-    else if (getUp()) {
+    else if (isFacingUp()) {
         return vectorDistance(e1.getCenter(), e2.getUpCenter());
     }
-    else if (getDown()) {
+    else if (isFacingDown()) {
         return vectorDistance(e1.getCenter(), e2.getDownCenter());
     }
     return 1000.f;
@@ -323,23 +323,23 @@ void Entity::checkCollision(const sf::FloatRect &obstacleBounds)
     nextPos.top += this->velocity.y;
 
     if (obstacleBounds.intersects(nextPos)) {
-        if (bottomCollision(spriteBounds, obstacleBounds)) {
+        if (hasCollidedBottom(spriteBounds, obstacleBounds)) {
             this->velocity.y = 0.f;
             this->sprite.setPosition(spriteBounds.left,
                                      obstacleBounds.top - spriteBounds.height);
         }
-        else if (topCollision(spriteBounds, obstacleBounds)) {
+        else if (hasCollidedTop(spriteBounds, obstacleBounds)) {
             this->velocity.y = 0.f;
             this->sprite.setPosition(
                 spriteBounds.left, obstacleBounds.top + obstacleBounds.height);
         }
 
-        if (rightCollision(spriteBounds, obstacleBounds)) {
+        if (hasCollidedRight(spriteBounds, obstacleBounds)) {
             this->velocity.x = 0.f;
             this->sprite.setPosition(obstacleBounds.left - spriteBounds.width,
                                      spriteBounds.top);
         }
-        else if (leftCollision(spriteBounds, obstacleBounds)) {
+        else if (hasCollidedLeft(spriteBounds, obstacleBounds)) {
             this->velocity.x = 0.f;
             this->sprite.setPosition(obstacleBounds.left + obstacleBounds.width,
                                      spriteBounds.top);
@@ -361,8 +361,8 @@ void Entity::loadAttack(float dt)
 
 void Entity::doAttack()
 {
-    if (!this->isAttacking && this->attackCooldown >= 1.f) {
-        this->isAttacking = true;
+    if (!this->attacking && this->attackCooldown >= 1.f) {
+        this->attacking = true;
         this->attackCooldown = 0.f;
         this->frame = 0;
     }
@@ -409,7 +409,7 @@ void Entity::animation(float dt)
         }
     }
 
-    if (this->isAttacking) {
+    if (this->attacking) {
         const int animationOffset = hasVelocity() ? 8 : 4;
         attackAnimation(animationOffset, dt);
     }
@@ -426,17 +426,17 @@ void Entity::draw(sf::RenderTarget &target)
 void Entity::attackAnimation(int offsetY, float dt)
 {
     int y = 0;
-    if (getLeft()) {
+    if (isFacingLeft()) {
         y = 2 + offsetY;
     }
-    else if (getRight()) {
+    else if (isFacingRight()) {
         y = 3 + offsetY;
     }
     else {
-        if (getUp()) {
+        if (isFacingUp()) {
             y = 0 + offsetY;
         }
-        else if (getDown()) {
+        else if (isFacingDown()) {
             y = 1 + offsetY;
         }
     }
@@ -451,7 +451,7 @@ void Entity::attackAnimation(int offsetY, float dt)
 
         if (this->frame == 112 * entitySize) {
             this->frame = 0;
-            this->isAttacking = false;
+            this->attacking = false;
         }
         else {
             this->frame += 16 * entitySize;

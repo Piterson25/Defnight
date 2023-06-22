@@ -20,15 +20,15 @@ public:
     const std::string getName() const;
     const uint32_t getWorth() const;
     const sf::Vector2f getPosition() const;
-    const bool getSpawned() const;
+    const bool hasSpawned() const;
     const bool hasVanished() const;
 
     void spawn(float dt);
     void spin(float dt);
     void move(float posX, float posY, float dt);
-    const bool playerPick(Player &player, PlayerGUI &playerGUI,
-                          FloatingTextSystem &floatingTextSystem,
-                          SoundEngine &soundEngine, float dt);
+    const bool isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
+                                FloatingTextSystem &floatingTextSystem,
+                                SoundEngine &soundEngine, float dt);
 
     void update(float dt);
     void draw(sf::RenderTarget &target);

@@ -12,12 +12,11 @@ public:
           std::stack<State *> &states);
     virtual ~State();
 
-    const bool getReseted() const;
-    const bool getQuit() const;
-    const bool getKeytime();
-    const bool getMouseClick() const;
-    const bool getKeysClick1(const std::string &keyName);
-    const bool getKeysClick2(const std::string &keyName);
+    const bool isReseted() const;
+    const bool isQuitted() const;
+    const bool isMouseClicked() const;
+    const bool isKeyClicked1(const std::string &keyName);
+    const bool isKeyClicked2(const std::string &keyName);
 
     void endState();
     void pauseState();

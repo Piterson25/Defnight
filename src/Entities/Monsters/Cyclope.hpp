@@ -9,11 +9,11 @@ public:
             const std::vector<sf::FloatRect> &obstaclesBounds);
     ~Cyclope();
 
-    const bool attackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
+    const bool hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
                             Player &player, SoundEngine &soundEngine,
                             FloatingTextSystem &floatingTextSystem) override;
 
 private:
-    const bool checkAttack(const std::vector<sf::FloatRect> &obstaclesBounds,
+    const bool canAttackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
                            Player &player) override;
 };

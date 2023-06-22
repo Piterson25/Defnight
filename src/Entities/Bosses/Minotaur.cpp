@@ -22,10 +22,10 @@ Minotaur::~Minotaur() = default;
 
 void Minotaur::specialAttack(SoundEngine &soundEngine, float dt)
 {
-    if (specialReady()) {
-        if (!this->playedSound) {
+    if (isSpecialAttackReady()) {
+        if (!this->soundPlayed) {
             soundEngine.addSound("punch");
-            this->playedSound = true;
+            this->soundPlayed = true;
         }
     }
 }

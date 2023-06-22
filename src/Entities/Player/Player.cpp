@@ -47,17 +47,17 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->criticalChance = 0;
     this->kills = 0;
     this->increasedArmor = false;
-    this->isRegenerating = false;
+    this->regenerating = false;
     this->regCooldown = 0.f;
-    this->isLeveling = false;
-    this->isSprinting = false;
+    this->leveling = false;
+    this->sprinting = false;
     this->spawned = false;
     this->spawnCountdown = 0.f;
     this->abilityActive = false;
     this->abilityCooldown = 0.f;
     this->abilityTime = 0.f;
     this->abilityMaxTime = 0.f;
-    this->playedSound = false;
+    this->soundPlayed = false;
 }
 
 Player::~Player() = default;
@@ -112,32 +112,32 @@ const uint32_t Player::getKills() const
     return this->kills;
 }
 
-const bool Player::getIncreasedArmor() const
+const bool Player::isIncreasedArmor() const
 {
     return this->increasedArmor;
 }
 
-const bool Player::getRegenerating() const
+const bool Player::isRegenerating() const
 {
-    return this->isRegenerating;
+    return this->regenerating;
 }
 
-const bool Player::getLeveling() const
+const bool Player::isLeveling() const
 {
-    return this->isLeveling;
+    return this->leveling;
 }
 
-const bool Player::getSprinting() const
+const bool Player::isSprinting() const
 {
-    return this->isSprinting;
+    return this->sprinting;
 }
 
-const bool Player::getSpawned() const
+const bool Player::hasSpawned() const
 {
     return this->spawned;
 }
 
-const bool Player::getAbilityActive() const
+const bool Player::isAbilityActive() const
 {
     return this->abilityActive;
 }
@@ -157,9 +157,9 @@ const float Player::getAbilityMaxTime() const
     return this->abilityMaxTime;
 }
 
-const bool Player::getPlayedSound() const
+const bool Player::isSoundPlayed() const
 {
-    return this->playedSound;
+    return this->soundPlayed;
 }
 
 void Player::setGold(uint32_t t_gold)
@@ -199,17 +199,17 @@ void Player::setKills(uint32_t t_kills)
 
 void Player::setRegenerating(bool t_regenerating)
 {
-    this->isRegenerating = t_regenerating;
+    this->regenerating = t_regenerating;
 }
 
 void Player::setLeveling(bool t_leveling)
 {
-    this->isLeveling = t_leveling;
+    this->leveling = t_leveling;
 }
 
 void Player::setSprinting(bool t_isSprinting)
 {
-    this->isSprinting = t_isSprinting;
+    this->sprinting = t_isSprinting;
 }
 
 void Player::setAbilityActive(bool t_abilityActive)
@@ -232,9 +232,9 @@ void Player::setAbilityMaxTime(float t_abilityMaxTime)
     this->abilityMaxTime = t_abilityMaxTime;
 }
 
-void Player::setPlayedSound(bool t_playedSound)
+void Player::setPlayedSound(bool t_soundPlayed)
 {
-    this->playedSound = t_playedSound;
+    this->soundPlayed = t_soundPlayed;
 }
 
 void Player::controls(const std::unordered_map<std::string, int> &keybinds,
@@ -271,7 +271,7 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds,
         if (this->sprint > 0) {
             this->velocity *= 1.5f;
 
-            this->isSprinting = true;
+            this->sprinting = true;
             const float minusSprint = dt * 10.f;
 
             if (static_cast<uint32_t>(this->sprint - minusSprint) <
@@ -292,11 +292,11 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds,
             }
         }
         else {
-            this->isSprinting = false;
+            this->sprinting = false;
         }
     }
     else {
-        this->isSprinting = false;
+        this->sprinting = false;
         const float plusSprint = dt * this->maxSprint / 40.f;
         if (this->sprint + plusSprint < this->maxSprint) {
             this->sprint += plusSprint;
@@ -309,16 +309,16 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds,
 
 void Player::whooshSound(SoundEngine &soundEngine)
 {
-    if (this->isAttacking && this->frame == 80 && !this->playedSound) {
+    if (this->isAttacking() && this->frame == 80 && !this->soundPlayed) {
         soundEngine.addSound("whoosh");
-        this->playedSound = true;
+        this->soundPlayed = true;
     }
-    if (this->playedSound && this->frame != 80) {
-        this->playedSound = false;
+    if (this->soundPlayed && this->frame != 80) {
+        this->soundPlayed = false;
     }
 }
 
-const bool Player::addXP(uint32_t monsterXP)
+const bool Player::hasLeveledUp(uint32_t monsterXP)
 {
     this->setLeveling(true);
     this->setXP(this->getXP() + monsterXP);
@@ -337,7 +337,7 @@ const bool Player::addXP(uint32_t monsterXP)
     return false;
 }
 
-const bool Player::regeneration(float dt)
+const bool Player::isHPRegenerating(float dt)
 {
     if (this->regCooldown < 1.f && this->HP < this->maxHP) {
         this->regCooldown += ((this->reg * 0.2f + 0.8f) / 4.f) * dt;
@@ -353,7 +353,7 @@ const bool Player::regeneration(float dt)
     return false;
 }
 
-const bool Player::checkIfAbility()
+const bool Player::isAbilityActivated()
 {
     if (this->level >= 5 && sf::Mouse::isButtonPressed(sf::Mouse::Right) &&
         this->abilityCooldown == this->abilityMaxTime) {

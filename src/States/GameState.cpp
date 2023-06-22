@@ -226,15 +226,15 @@ void GameState::update(float dt)
 {
     this->updateMousePositions(&this->viewHUD);
 
-    if (this->playerGUI->updateButtons(
-            this->mousePosWindow, this->getMouseClick(), this->soundEngine)) {
+    if (this->playerGUI->hasClickedButtons(
+            this->mousePosWindow, this->isMouseClicked(), this->soundEngine)) {
         this->setMouseClick(true);
         this->unpauseState();
     }
 
     if (this->player->isDead()) {
         const uint16_t result = this->playerGUI->updateDeathScreenButtons(
-            this->mousePosWindow, this->getMouseClick());
+            this->mousePosWindow, this->isMouseClicked());
         if (result == 1) {
             this->setMouseClick(true);
             this->soundEngine.addSound("button");
@@ -247,12 +247,11 @@ void GameState::update(float dt)
         }
     }
 
-    if (!this->playerGUI->getIsLeveling() &&
-        !this->playerGUI->getIsUpgrading()) {
+    if (!this->playerGUI->isLeveling() && !this->playerGUI->isUpgrading()) {
 
         this->updateKeysClick("Escape", sf::Keyboard::Escape);
 
-        if (this->getKeysClick1("Escape") && !this->getKeysClick2("Escape")) {
+        if (this->isKeyClicked1("Escape") && !this->isKeyClicked2("Escape")) {
             this->setKeysClick("Escape", true);
             this->playerGUI->updatePaused(this->paused);
             if (this->paused) {
@@ -263,14 +262,13 @@ void GameState::update(float dt)
                 this->musicEngine.playMusic();
             }
         }
-        this->setKeysClick("Escape", this->getKeysClick1("Escape"));
+        this->setKeysClick("Escape", this->isKeyClicked1("Escape"));
     }
 
-    if (this->playerGUI->getIsEscape() &&
-        (!this->playerGUI->getIsLeveling() &&
-         !this->playerGUI->getIsUpgrading())) {
+    if (this->playerGUI->isEscape() &&
+        (!this->playerGUI->isLeveling() && !this->playerGUI->isUpgrading())) {
         const uint8_t result = this->playerGUI->updateEscapeButton(
-            this->mousePosWindow, this->getMouseClick());
+            this->mousePosWindow, this->isMouseClicked());
         if (result == 1) {
             this->soundEngine.addSound("button");
             this->endState();
@@ -294,11 +292,11 @@ void GameState::update(float dt)
     }
 
     if (!this->paused) {
-        if (this->player->getSpawned()) {
+        if (this->player->hasSpawned()) {
             this->player->controls(this->gameSettings.keybinds, dt);
             this->player->updateSprint(dt);
 
-            if (this->player->getPunched()) {
+            if (this->player->isPunched()) {
                 this->player->smashed(dt);
             }
 
@@ -354,11 +352,11 @@ void GameState::update(float dt)
 
             if (this->mousePosView.y >
                 calcY(128, this->gameSettings.resolution)) {
-                if (!this->playerGUI->getIsShopping() && this->mouseClick) {
+                if (!this->playerGUI->isShopping() && this->mouseClick) {
                     this->player->doAttack();
                 }
 
-                if (this->player->checkIfAbility()) {
+                if (this->player->isAbilityActivated()) {
                     this->player->doAbility(this->soundEngine);
                     this->projectileSystem->playerAbility(
                         sf::Vector2f(this->window.mapPixelToCoords(
@@ -379,36 +377,36 @@ void GameState::update(float dt)
             this->player->spawn(dt);
         }
 
-        if (this->player->getSpawned()) {
-            if (!this->playerGUI->getIsBuyingAbility()) {
+        if (this->player->hasSpawned()) {
+            if (!this->playerGUI->isBuyingAbility()) {
 
                 this->updateKeysClick("E", sf::Keyboard::E);
 
-                if (this->getKeysClick1("E") && !this->getKeysClick2("E")) {
+                if (this->isKeyClicked1("E") && !this->isKeyClicked2("E")) {
                     this->setKeysClick("E", true);
                     this->playerGUI->updateIsShopping();
                 }
-                this->setKeysClick("E", this->getKeysClick1("E"));
+                this->setKeysClick("E", this->isKeyClicked1("E"));
 
-                if (this->playerGUI->updateShop(
-                        this->mousePosWindow, this->getMouseClick(),
+                if (this->playerGUI->hasClickedShopBuy(
+                        this->mousePosWindow, this->isMouseClicked(),
                         this->soundEngine, *this->floatingTextSystem)) {
                     this->setMouseClick(true);
                 }
             }
 
             if (this->player->getName() != "warrior" &&
-                !this->playerGUI->getIsShopping()) {
+                !this->playerGUI->isShopping()) {
                 this->updateKeysClick("B", sf::Keyboard::B);
 
-                if (this->getKeysClick1("B") && !this->getKeysClick2("B")) {
+                if (this->isKeyClicked1("B") && !this->isKeyClicked2("B")) {
                     this->setKeysClick("B", true);
                     this->playerGUI->updateIsBuyingAbility();
                 }
-                this->setKeysClick("B", this->getKeysClick1("B"));
+                this->setKeysClick("B", this->isKeyClicked1("B"));
 
-                if (this->playerGUI->updateBuyingAbility(
-                        this->mousePosWindow, this->getMouseClick(),
+                if (this->playerGUI->hasClickedAbilityBuy(
+                        this->mousePosWindow, this->isMouseClicked(),
                         this->soundEngine, *this->floatingTextSystem)) {
                     this->setMouseClick(true);
                 }
@@ -424,7 +422,7 @@ void GameState::update(float dt)
                     this->wave);
             }
             else if (this->waveCountdown > 8.f &&
-                     this->monsterSystem->monsterIDsEmpty()) {
+                     this->monsterSystem->isMonsterIDsEmpty()) {
                 this->monsterSystem->prepareWave(this->wave, this->sumHP);
                 this->playerGUI->updateMonsterCountWave(
                     this->gameSettings.language, this->wave,
@@ -433,7 +431,7 @@ void GameState::update(float dt)
             }
         }
         else {
-            if (this->monsterSystem->monstersEmpty()) {
+            if (this->monsterSystem->isMonstersEmpty()) {
                 this->waveCountdown = 0.f;
                 this->monsterSystem->monsterIDsClear();
                 this->gems += 5;

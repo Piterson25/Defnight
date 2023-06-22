@@ -46,7 +46,7 @@ const sf::Vector2f Drop::getPosition() const
     return this->sprite.getPosition();
 }
 
-const bool Drop::getSpawned() const
+const bool Drop::hasSpawned() const
 {
     return this->spawned;
 }
@@ -110,9 +110,9 @@ void Drop::move(float posX, float posY, float dt)
     this->sprite.move(this->velocity);
 }
 
-const bool Drop::playerPick(Player &player, PlayerGUI &playerGUI,
-                            FloatingTextSystem &floatingTextSystem,
-                            SoundEngine &soundEngine, float dt)
+const bool Drop::isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
+                                  FloatingTextSystem &floatingTextSystem,
+                                  SoundEngine &soundEngine, float dt)
 {
     const float distance = vectorDistance(
         sf::Vector2f(this->sprite.getPosition().x + calcX(8, vm),

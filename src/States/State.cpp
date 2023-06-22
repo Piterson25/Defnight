@@ -16,36 +16,27 @@ State::State(float gridSize, sf::RenderWindow &window,
 
 State::~State() = default;
 
-const bool State::getReseted() const
+const bool State::isReseted() const
 {
     return this->reseted;
 }
 
-const bool State::getQuit() const
+const bool State::isQuitted() const
 {
     return this->quit;
 }
 
-const bool State::getKeytime()
-{
-    if (this->keytime >= this->keytimeMax) {
-        this->keytime = 0.f;
-        return true;
-    }
-    return false;
-}
-
-const bool State::getMouseClick() const
+const bool State::isMouseClicked() const
 {
     return this->mouseClick;
 }
 
-const bool State::getKeysClick1(const std::string &keyName)
+const bool State::isKeyClicked1(const std::string &keyName)
 {
     return this->keysClick[keyName].first;
 }
 
-const bool State::getKeysClick2(const std::string &keyName)
+const bool State::isKeyClicked2(const std::string &keyName)
 {
     return this->keysClick[keyName].second;
 }

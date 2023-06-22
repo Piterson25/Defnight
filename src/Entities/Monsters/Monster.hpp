@@ -15,20 +15,20 @@ public:
 
     const float getDifficultyMod() const;
     const uint32_t getGold() const;
-    const bool getSpawned() const;
-    const bool getDeadCountdown() const;
+    const bool hasSpawned() const;
+    const bool hasDeadCountdownExpired() const;
 
     void setGold(uint32_t gold);
 
     virtual const bool
-    attackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
-                 Player &player, SoundEngine &soundEngine,
-                 FloatingTextSystem &floatingTextSystem);
-    const bool sightCollision(const std::vector<sf::FloatRect> &obstaclesBounds,
+    hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
+                      Player &player, SoundEngine &soundEngine,
+                      FloatingTextSystem &floatingTextSystem);
+    const bool hasLineOfSight(const std::vector<sf::FloatRect> &obstaclesBounds,
                               const sf::Vector2f &a_p1,
                               const sf::Vector2f &a_p2);
 
-    const bool dyingAnimation(float dt);
+    void dyingAnimation(float dt);
 
     void calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds,
                      Player &player, const std::vector<sf::Vector2f> &positions,
@@ -41,8 +41,8 @@ public:
 
 protected:
     virtual const bool
-    checkAttack(const std::vector<sf::FloatRect> &obstaclesBounds,
-                Player &player);
+    canAttackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
+                    Player &player);
 
     sf::Sprite shadow;
     sf::Texture shadow_texture;
@@ -54,7 +54,7 @@ protected:
     float spawnCountdown;
     float deadCountdown;
 
-    bool playedSound;
+    bool soundPlayed;
 
     std::unique_ptr<AIComponent> AI;
 };
