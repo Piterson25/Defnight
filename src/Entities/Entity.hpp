@@ -59,7 +59,7 @@ public:
     const bool isDead() const;
     void obstacleCollision(const std::vector<sf::FloatRect> &obstaclesBounds);
     void checkCollision(const sf::FloatRect &obstacleBounds);
-    void move();
+    virtual void move();
     void loadAttack(float dt);
     void doAttack();
     void punch();

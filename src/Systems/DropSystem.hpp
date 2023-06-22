@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Entities/Drop/Drop.hpp"
+#include "Entities/Drops/Coin.hpp"
+#include "Entities/Drops/Heart.hpp"
 #include "GUI/PlayerGUI.hpp"
 
 class PlayerGUI;

@@ -25,7 +25,7 @@ include_directories("${CMAKE_SOURCE_DIR}/src/Systems")
 include_directories("${CMAKE_SOURCE_DIR}/src/Utils")
 
 file(GLOB SOURCES "src/*.cpp" "src/Audio/*.cpp" "src/Components/*.cpp" "src/Effects/*.cpp"
-"src/Entities/*.cpp" "src/Entities/Bosses/*.cpp" "src/Entities/Drop/*.cpp" "src/Entities/Monsters/*.cpp"
+"src/Entities/*.cpp" "src/Entities/Bosses/*.cpp" "src/Entities/Drops/*.cpp" "src/Entities/Monsters/*.cpp"
 "src/Entities/Player/*.cpp" "src/Entities/Projectiles/*.cpp" "src/Game/*.cpp" "src/GUI/*.cpp"
 "src/Map/*.cpp" "src/States/*.cpp" "src/Systems/*.cpp" "src/Utils/*.cpp")
 

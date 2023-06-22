@@ -1,49 +1,32 @@
 #include "Drop.hpp"
 #include "Functions.hpp"
 
-Drop::Drop(sf::VideoMode &vm, const std::string &name, float posX, float posY,
-           uint32_t worth, bool vanishing)
-    : name(name), worth(worth), vanishing(vanishing), vm(vm)
+Drop::Drop(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
+           uint32_t t_worth, bool t_vanishing)
+    : Entity(t_name, t_vm, t_x, t_y)
 {
+
     this->texture.loadFromFile("assets/textures/drop.png");
     this->sprite.setTexture(this->texture);
-    this->sprite.setPosition(posX, posY);
     this->sprite.setScale(calcScale(2, vm), calcScale(2, vm));
+    this->sprite.setPosition(t_x, t_y);
     this->sprite.setColor(sf::Color::Transparent);
 
-    if (this->name == "coin") {
-        this->sprite.setTextureRect(sf::IntRect(0, 0, 16, 16));
-    }
-    else {
-        this->sprite.setTextureRect(sf::IntRect(0, 16, 16, 16));
-    }
-
     this->spinCooldown = 0.f;
-    this->velocity = sf::Vector2f(0.f, 0.f);
+    this->worth = t_worth;
     this->angle = 0.f;
-    this->vanishingCountdown = 0.f;
 
+    this->vanishingCountdown = 0.f;
+    this->vanishing = t_vanishing;
     this->spawned = false;
     this->spawnCountdown = 0.f;
 }
 
-Drop::~Drop()
-{
-}
-
-const std::string Drop::getName() const
-{
-    return this->name;
-}
+Drop::~Drop() = default;
 
 const uint32_t Drop::getWorth() const
 {
     return this->worth;
-}
-
-const sf::Vector2f Drop::getPosition() const
-{
-    return this->sprite.getPosition();
 }
 
 const bool Drop::hasSpawned() const
@@ -72,28 +55,6 @@ void Drop::spawn(float dt)
 
 void Drop::spin(float dt)
 {
-    this->spinCooldown += dt;
-    if (this->spinCooldown > 0.166f) {
-        const int w = this->sprite.getTextureRect().left;
-        if (this->name == "coin") {
-            if (w == 80) {
-                this->sprite.setTextureRect(sf::IntRect(0, 0, 16, 16));
-            }
-            else {
-                this->sprite.setTextureRect(sf::IntRect(w + 16, 0, 16, 16));
-            }
-        }
-        else {
-            if (w == 80) {
-                this->sprite.setTextureRect(sf::IntRect(0, 16, 16, 16));
-            }
-            else {
-                this->sprite.setTextureRect(sf::IntRect(w + 16, 16, 16, 16));
-            }
-        }
-
-        this->spinCooldown = 0.f;
-    }
 }
 
 void Drop::move(float posX, float posY, float dt)
@@ -161,9 +122,4 @@ void Drop::update(float dt)
     if (this->vanishing) {
         this->vanishingCountdown += dt;
     }
-}
-
-void Drop::draw(sf::RenderTarget &target)
-{
-    target.draw(this->sprite);
 }
