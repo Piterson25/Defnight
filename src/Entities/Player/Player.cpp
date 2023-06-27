@@ -14,9 +14,12 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
 
     this->shadow_texture.loadFromFile("assets/textures/entity_shadow.png");
     this->shadow.setTexture(this->shadow_texture);
+    this->shadow.setTextureRect(sf::IntRect(0, 0, 8, 4));
     this->shadow.setScale(calcScale(4, vm), calcScale(4, vm));
-    this->shadow.setPosition(this->sprite.getPosition().x,
-                             this->sprite.getPosition().y + calcY(52, vm));
+    this->shadow.setPosition(this->getDownCenter().x -
+                                 this->shadow.getTextureRect().width / 2 *
+                                     this->shadow.getScale().x,
+                             this->getDownCenter().y);
     this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
     this->ability_texture.loadFromFile("assets/textures/abilities.png");
@@ -481,9 +484,10 @@ void Player::updateSprint(float dt)
 
 void Player::update(float dt)
 {
-    this->shadow.setPosition(this->sprite.getPosition().x,
-                             this->sprite.getPosition().y +
-                                 calcY(52, this->vm));
+    this->shadow.setPosition(this->getDownCenter().x -
+                                 this->shadow.getTextureRect().width / 2 *
+                                     this->shadow.getScale().x,
+                             this->getDownCenter().y);
     this->ability.setPosition(this->sprite.getPosition());
 }
 

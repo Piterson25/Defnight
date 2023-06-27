@@ -54,7 +54,6 @@ private:
     sf::VideoMode &vm;
     std::list<std::unique_ptr<Monster>> monsters;
     std::unordered_map<std::string, sf::Texture> textures;
-    sf::Texture shadow_texture;
     std::vector<short> monsterIDs;
     float gridSize;
     float difficulty_mod;

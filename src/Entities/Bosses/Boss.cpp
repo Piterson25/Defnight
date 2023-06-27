@@ -38,10 +38,10 @@ void Boss::specialAttack(float dt)
 
 void Boss::update(float dt)
 {
-    this->shadow.setPosition(
-        this->sprite.getPosition().x,
-        this->sprite.getPosition().y +
-            calcY(static_cast<float>(52 * this->entitySize), this->vm));
+    this->shadow.setPosition(this->getDownCenter().x -
+                                 this->shadow.getTextureRect().width / 2 *
+                                     this->shadow.getScale().x,
+                             this->getDownCenter().y);
     if (this->soundPlayed && this->frame != 80) {
         this->soundPlayed = false;
     }

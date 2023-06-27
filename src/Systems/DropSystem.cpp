@@ -48,6 +48,10 @@ void DropSystem::update(Player &player, PlayerGUI &playerGUI,
 void DropSystem::draw(sf::RenderTarget &target)
 {
     for (const auto &drop : this->drops) {
+        drop->drawShadow(target);
+    }
+
+    for (const auto &drop : this->drops) {
         drop->draw(target);
     }
 }

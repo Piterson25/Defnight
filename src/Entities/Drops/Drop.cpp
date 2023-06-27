@@ -12,6 +12,19 @@ Drop::Drop(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
     this->sprite.setPosition(t_x, t_y);
     this->sprite.setColor(sf::Color::Transparent);
 
+    this->entitySize =
+        static_cast<uint32_t>(this->sprite.getGlobalBounds().width / 96);
+
+    this->shadow_texture.loadFromFile("assets/textures/entity_shadow.png");
+    this->shadow.setTexture(this->shadow_texture);
+    this->shadow.setTextureRect(sf::IntRect(0, 0, 8, 4));
+    this->shadow.setScale(calcScale(2, vm), calcScale(2, vm));
+    this->shadow.setPosition(this->getDownCenter().x -
+                                 this->shadow.getTextureRect().width / 2 *
+                                     this->shadow.getScale().x,
+                             this->getDownCenter().y);
+    this->shadow.setColor(sf::Color(255, 255, 255, 0));
+
     this->spinCooldown = 0.f;
     this->worth = t_worth;
     this->angle = 0.f;
@@ -45,11 +58,15 @@ void Drop::spawn(float dt)
         this->sprite.setColor(
             sf::Color(255, 255, 255,
                       static_cast<sf::Uint8>(this->spawnCountdown * 1020.f)));
+        this->shadow.setColor(
+            sf::Color(255, 255, 255,
+                      static_cast<sf::Uint8>(this->spawnCountdown * 510.f)));
         this->spawnCountdown += dt;
     }
     if (this->spawnCountdown >= 0.25) {
         this->spawned = true;
         this->sprite.setColor(sf::Color::White);
+        this->shadow.setColor(sf::Color::White);
     }
 }
 
@@ -113,6 +130,10 @@ const bool Drop::isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
 
 void Drop::update(float dt)
 {
+    this->shadow.setPosition(this->getDownCenter().x -
+                                 this->shadow.getTextureRect().width / 2 *
+                                     this->shadow.getScale().x,
+                             this->getDownCenter().y);
     if (this->spawned) {
         this->spin(dt);
     }
@@ -122,4 +143,9 @@ void Drop::update(float dt)
     if (this->vanishing) {
         this->vanishingCountdown += dt;
     }
+}
+
+void Drop::drawShadow(sf::RenderTarget &target)
+{
+    target.draw(this->shadow);
 }

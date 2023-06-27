@@ -6,7 +6,6 @@ MonsterSystem::MonsterSystem(sf::VideoMode &vm,
     : vm(vm), gridSize(gridSize), difficulty_mod(difficulty_mod)
 {
     this->bossWave = false;
-    this->shadow_texture.loadFromFile("assets/textures/entity_shadow.png");
 
     sf::Texture texture;
     texture.loadFromFile("assets/textures/monsters/goblin.png");

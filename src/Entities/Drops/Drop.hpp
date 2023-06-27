@@ -20,8 +20,12 @@ public:
                                         SoundEngine &soundEngine, float dt);
 
     void update(float dt);
+    void drawShadow(sf::RenderTarget &target);
 
 protected:
+    sf::Sprite shadow;
+    sf::Texture shadow_texture;
+
     float spinCooldown;
     uint32_t worth;
     float angle;
