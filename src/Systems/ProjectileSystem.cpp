@@ -55,35 +55,36 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
 
 void ProjectileSystem::bossSpecialAttack(Boss &boss)
 {
-    boss.resetSpecialAttack();
-    if (boss.getName() == "minotaur") {
-        addProjectile("groundWave", boss.getDifficultyMod(), boss.getCenter().x,
-                      boss.getCenter().y, sf::Vector2f(boss.getUpCenter()), 0);
+    if (boss.isSpecialAttackReady() && boss.getName() == "minotaur") {
+        addProjectile("groundWave", boss.getCenter().x, boss.getCenter().y,
+                      boss.getDifficultyMod(), sf::Vector2f(boss.getUpCenter()),
+                      0);
         addProjectile(
-            "groundWave", boss.getCenter().x, boss.getDifficultyMod(),
-            boss.getCenter().y,
+            "groundWave", boss.getCenter().x, boss.getCenter().y,
+            boss.getDifficultyMod(),
             sf::Vector2f(boss.getRightCenter().x, boss.getUpCenter().y), 0);
-        addProjectile("groundWave", boss.getDifficultyMod(), boss.getCenter().x,
-                      boss.getCenter().y, sf::Vector2f(boss.getRightCenter()),
-                      0);
+        addProjectile("groundWave", boss.getCenter().x, boss.getCenter().y,
+                      boss.getDifficultyMod(),
+                      sf::Vector2f(boss.getRightCenter()), 0);
         addProjectile(
-            "groundWave", boss.getCenter().x, boss.getDifficultyMod(),
-            boss.getCenter().y,
+            "groundWave", boss.getCenter().x, boss.getCenter().y,
+            boss.getDifficultyMod(),
             sf::Vector2f(boss.getRightCenter().x, boss.getDownCenter().y), 0);
-        addProjectile("groundWave", boss.getDifficultyMod(), boss.getCenter().x,
-                      boss.getCenter().y, sf::Vector2f(boss.getDownCenter()),
-                      0);
+        addProjectile("groundWave", boss.getCenter().x, boss.getCenter().y,
+                      boss.getDifficultyMod(),
+                      sf::Vector2f(boss.getDownCenter()), 0);
         addProjectile(
-            "groundWave", boss.getCenter().x, boss.getDifficultyMod(),
-            boss.getCenter().y,
+            "groundWave", boss.getCenter().x, boss.getCenter().y,
+            boss.getDifficultyMod(),
             sf::Vector2f(boss.getLeftCenter().x, boss.getDownCenter().y), 0);
-        addProjectile("groundWave", boss.getDifficultyMod(), boss.getCenter().x,
-                      boss.getCenter().y, sf::Vector2f(boss.getLeftCenter()),
-                      0);
+        addProjectile("groundWave", boss.getCenter().x, boss.getCenter().y,
+                      boss.getDifficultyMod(),
+                      sf::Vector2f(boss.getLeftCenter()), 0);
         addProjectile(
-            "groundWave", boss.getCenter().x, boss.getDifficultyMod(),
-            boss.getCenter().y,
+            "groundWave", boss.getCenter().x, boss.getCenter().y,
+            boss.getDifficultyMod(),
             sf::Vector2f(boss.getLeftCenter().x, boss.getUpCenter().y), 0);
+        boss.resetSpecialAttack();
     }
 }
 

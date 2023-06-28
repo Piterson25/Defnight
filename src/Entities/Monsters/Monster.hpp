@@ -35,7 +35,7 @@ public:
                      float dt);
 
     void spawn(float dt);
-    void update(float dt);
+    virtual void update(float dt);
     void draw(sf::RenderTarget &target);
     void drawShadow(sf::RenderTarget &target);
 

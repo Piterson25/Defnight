@@ -5,7 +5,7 @@ GroundWave::GroundWave(const std::string &t_name, sf::VideoMode &t_vm,
                        const sf::Vector2f &coords, float coordsOffset)
     : Projectile(t_name, t_vm, t_x, t_y, difficulty_mod, coords, coordsOffset)
 {
-    this->sprite.setTextureRect(sf::IntRect(8, 0, 4, 4));
+    this->sprite.setTextureRect(sf::IntRect(12, 0, 4, 4));
     this->attack = static_cast<uint32_t>(7 * difficulty_mod);
     this->HP = 1;
     this->speed = 2;

@@ -5,7 +5,7 @@ Boss::Boss(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
            const std::vector<sf::FloatRect> &obstaclesBounds)
     : Monster(t_name, t_vm, t_x, t_y, difficulty_mod, wave_mod,
               obstaclesBounds),
-      specialAttackCountdown(0.f), specialAttackCooldown(5.f)
+      specialAttackTimer(0.f), specialAttackLimit(5.f)
 {
 }
 
@@ -13,26 +13,18 @@ Boss::~Boss() = default;
 
 const bool Boss::isSpecialAttackReady() const
 {
-    return this->specialAttackCountdown >= this->specialAttackCooldown;
+    return this->specialAttackTimer >= this->specialAttackLimit;
 }
 
 void Boss::resetSpecialAttack()
 {
-    this->specialAttackCountdown = 0.f;
+    this->specialAttackTimer = 0.f;
 }
 
 void Boss::loadSpecialAttack(float dt)
 {
-    if (this->specialAttackCountdown < this->specialAttackCooldown) {
-        this->specialAttackCountdown += dt;
-    }
-}
-
-void Boss::specialAttack(float dt)
-{
-    this->specialAttackCountdown += dt;
-    if (this->specialAttackCountdown >= 5.f) {
-        this->specialAttackCountdown = 0.f;
+    if (this->specialAttackTimer < this->specialAttackLimit) {
+        this->specialAttackTimer += dt;
     }
 }
 

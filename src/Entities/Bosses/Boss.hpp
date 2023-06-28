@@ -13,12 +13,12 @@ public:
     void resetSpecialAttack();
     void loadSpecialAttack(float dt);
 
-    virtual void specialAttack(float dt);
+    virtual void specialAttack(SoundEngine &soundEngine, float dt) = 0;
     void update(float dt);
     void draw(sf::RenderTarget &target);
     void drawShadow(sf::RenderTarget &target);
 
 protected:
-    float specialAttackCountdown;
-    float specialAttackCooldown;
+    float specialAttackTimer;
+    float specialAttackLimit;
 };

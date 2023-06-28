@@ -14,8 +14,8 @@ Minotaur::Minotaur(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->gold = static_cast<uint32_t>(50 * wave_mod);
     this->XP = static_cast<uint32_t>(200 * wave_mod);
 
-    this->specialAttackCooldown = 5.f;
-    this->specialAttackCountdown = 0.f;
+    this->specialAttackLimit = 5.f;
+    this->specialAttackTimer = 0.f;
 }
 
 Minotaur::~Minotaur() = default;
@@ -23,6 +23,7 @@ Minotaur::~Minotaur() = default;
 void Minotaur::specialAttack(SoundEngine &soundEngine, float dt)
 {
     if (isSpecialAttackReady()) {
+
         if (!this->soundPlayed) {
             soundEngine.addSound("punch");
             this->soundPlayed = true;

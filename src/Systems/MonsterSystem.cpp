@@ -391,6 +391,11 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
                 }
                 monster->update(dt);
                 monster->loadAttack(dt);
+                auto boss = dynamic_cast<Boss *>(monster.get());
+                if (boss) {
+                    boss->specialAttack(soundEngine, dt);
+                    projectileSystem.bossSpecialAttack(*boss);
+                }
                 if (monster->hasAttackedPlayer(obstaclesBounds, player,
                                                soundEngine,
                                                floatingTextSystem)) {
