@@ -14,8 +14,8 @@ void FloatingTextSystem::addFloatingText(const std::string &text,
                                          float posY, const sf::Color &color,
                                          bool isgui)
 {
-    this->floatingTexts.emplace_back(
-        new FloatingText(vm, text, charSize, posX, posY, color, isgui));
+    this->floatingTexts.emplace_back(std::make_unique<FloatingText>(
+        vm, text, charSize, posX, posY, color, isgui));
 }
 
 void FloatingTextSystem::draw(sf::RenderTarget &target)

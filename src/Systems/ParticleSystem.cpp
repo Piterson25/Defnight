@@ -18,7 +18,8 @@ ParticleSystem::getParticlesGlobalBounds() const
 void ParticleSystem::addParticle(const std::string &name, float x, float y,
                                  std::uint32_t attack)
 {
-    this->particles.emplace_back(new Particle(this->vm, name, x, y, attack));
+    this->particles.emplace_back(
+        std::make_unique<Particle>(this->vm, name, x, y, attack));
 }
 
 void ParticleSystem::update(float dt)

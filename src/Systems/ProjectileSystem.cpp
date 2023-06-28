@@ -16,19 +16,19 @@ void ProjectileSystem::addProjectile(const std::string &name, float x, float y,
                                      float coordsOffset)
 {
     if (name == "stone") {
-        this->projectiles.emplace_back(new Stone(
+        this->projectiles.emplace_back(std::make_unique<Stone>(
             name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
     }
     else if (name == "shuriken") {
-        this->projectiles.emplace_back(new Shuriken(
+        this->projectiles.emplace_back(std::make_unique<Shuriken>(
             name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
     }
     else if (name == "bomb") {
-        this->projectiles.emplace_back(new Bomb(
+        this->projectiles.emplace_back(std::make_unique<Bomb>(
             name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
     }
     else if (name == "groundWave") {
-        this->projectiles.emplace_back(new GroundWave(
+        this->projectiles.emplace_back(std::make_unique<GroundWave>(
             name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
     }
 }

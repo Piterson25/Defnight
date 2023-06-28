@@ -32,7 +32,7 @@ const std::vector<sf::FloatRect> TileMap::getTilesGlobalBounds() const
 void TileMap::addTile(const std::string &name, const sf::Vector2f &size,
                       float x, float y)
 {
-    this->tiles.emplace_back(new Tile(name, size, x, y));
+    this->tiles.emplace_back(std::make_unique<Tile>(name, size, x, y));
     this->tilesGlobalBounds.emplace_back(
         sf::FloatRect(sf::Vector2f(x, y), size));
 }
