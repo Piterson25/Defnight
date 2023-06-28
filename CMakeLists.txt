@@ -3,10 +3,10 @@ project(Defnight VERSION 0.2.4)
 
 set(CMAKE_CXX_STANDARD 23)
 
-set(SFML_DIR "${CMAKE_SOURCE_DIR}/external/SFML-2.5.1/lib/cmake/SFML")
-find_package(SFML 2.5 COMPONENTS graphics window system audio REQUIRED)
+set(SFML_DIR "${CMAKE_SOURCE_DIR}/external/SFML-2.6.0/lib/cmake/SFML")
+find_package(SFML 2.6 COMPONENTS graphics window system audio REQUIRED)
 
-include_directories("${CMAKE_SOURCE_DIR}/external/SFML-2.5.1/include")
+include_directories("${CMAKE_SOURCE_DIR}/external/SFML-2.6.0/include")
 include_directories("${CMAKE_SOURCE_DIR}/src")
 include_directories("${CMAKE_SOURCE_DIR}/src/Audio")
 include_directories("${CMAKE_SOURCE_DIR}/src/Components")
