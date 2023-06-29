@@ -208,6 +208,7 @@ void MonsterSystem::spawnMonsters(
     uint32_t wave)
 {
     float wave_mod = 1.f + static_cast<uint32_t>(wave / 10.f) * 2.f;
+    const float minSpawnDistance = calcX(3.f * this->gridSize, this->vm);
 
     for (const auto &id : this->monsterIDs) {
         uint32_t rx = static_cast<uint32_t>(Random::Float() * 32.f),
@@ -224,9 +225,14 @@ void MonsterSystem::spawnMonsters(
                                         calcY(this->gridSize * ry, this->vm),
                                         monsterWidth, monsterHeight);
 
-            if (monsterBounds.intersects(obstacle)) {
+            if (monsterBounds.intersects(obstacle) ||
+                vectorDistance(monsterBounds.left + monsterBounds.width / 2,
+                               monsterBounds.top + monsterBounds.height / 2,
+                               player.getPosition().x,
+                               player.getPosition().y) <= minSpawnDistance) {
                 rx = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
                 ry = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
+                continue;
             }
 
             for (const auto &mob : this->monsters) {
