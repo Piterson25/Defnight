@@ -273,8 +273,8 @@ void MonsterSystem::spawnMonsters(
                 break;
             case 4:
                 this->monsters.emplace_back(std::make_unique<Minotaur>(
-                    "minotaur", this->vm, calcX(this->gridSize * 16, this->vm),
-                    calcY(this->gridSize * 16, this->vm), this->difficulty_mod,
+                    "minotaur", this->vm, calcX(this->gridSize * rx, this->vm),
+                    calcY(this->gridSize * ry, this->vm), this->difficulty_mod,
                     wave_mod, obstaclesBounds));
                 break;
             default:

@@ -29,7 +29,7 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
     this->tiles_texture.loadFromFile("assets/textures/tiles.png");
     this->vertexArray.setPrimitiveType(sf::Quads);
     this->vertexArray.resize(static_cast<size_t>(calcX(64 * 64 * 4, vm)));
-    std::ifstream mapa("assets/maps/" + map_name + ".txt");
+    std::ifstream map("assets/maps/" + map_name + ".txt");
     float x = 0.f, y = 0.f, pos = calcX(this->gridSize, vm);
 
     float offsetY = 0.f;
@@ -41,9 +41,9 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
     }
     size_t t = 0;
     const sf::Vector2f tile = sf::Vector2f(calcX(64, vm), calcY(64, vm));
-    if (mapa.is_open()) {
+    if (map.is_open()) {
         std::string temp;
-        while (std::getline(mapa, temp)) {
+        while (std::getline(map, temp)) {
             for (size_t i = 0; i < temp.size(); ++i) {
                 if (temp[i] == '#') {
                     this->tileMap->addTile("wall", tile, x, y);
@@ -75,12 +75,6 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
                     quad[2].texCoords = sf::Vector2f(80, 32 + offsetY);
                     quad[3].texCoords = sf::Vector2f(64, 32 + offsetY);
                 }
-                else if (temp[i] == 'S') {
-                    if (hero_name == "warrior") {
-                        this->player = new Warrior(
-                            hero_name, gameSettings.resolution, x, y);
-                    }
-                }
                 x += pos;
                 t++;
             }
@@ -88,7 +82,14 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
             y += pos;
         }
     }
-    mapa.close();
+    map.close();
+
+    if (hero_name == "warrior") {
+        this->player = new Warrior(
+            hero_name, gameSettings.resolution,
+            this->vertexArray.getBounds().width / 2 - calcX(32, vm),
+            this->vertexArray.getBounds().height / 2 - calcY(32, vm));
+    }
 
     this->playerGUI =
         new PlayerGUI(this->gameSettings.resolution, *this->player,
