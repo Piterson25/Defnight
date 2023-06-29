@@ -19,6 +19,7 @@ public:
     const uint32_t getMaxSprint() const;
     const uint32_t getCriticalChance() const;
     const uint32_t getKills() const;
+    const bool isUpgraded() const;
     const bool isIncreasedArmor() const;
     const bool isRegenerating() const;
     const bool isLeveling() const;
@@ -37,6 +38,7 @@ public:
     void setMaxSprint(uint32_t t_maxSprint);
     void setCriticalChance(uint32_t t_criticalChance);
     void setKills(uint32_t t_kills);
+    void setUpgraded(bool t_upgraded);
     void setRegenerating(bool t_regenerating);
     void setLeveling(bool t_leveling);
     void setSprinting(bool t_sprinting);
@@ -79,6 +81,7 @@ protected:
     uint32_t maxSprint;
     uint32_t criticalChance;
     uint32_t kills;
+    bool upgraded;
     bool increasedArmor;
     bool regenerating;
     float regCooldown;

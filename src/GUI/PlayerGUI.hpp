@@ -1,7 +1,6 @@
 #pragma once
 
-#include "Entities/Player/Player.hpp"
-#include "Systems/FloatingTextSystem.hpp"
+#include "AbilityUpgradeGUI.hpp"
 
 class PlayerGUI {
 public:
@@ -33,8 +32,7 @@ public:
                                  bool mouseClicked, SoundEngine &soundEngine,
                                  FloatingTextSystem &floatingTextSystem);
     const bool hasClickedAbilityBuy(const sf::Vector2i &mousePos,
-                                    bool mouseClicked, SoundEngine &soundEngine,
-                                    FloatingTextSystem &floatingTextSystem);
+                                    bool mouseClicked);
 
     const bool isEscape() const;
     const bool isLeveling() const;
@@ -69,6 +67,11 @@ public:
 private:
     sf::VideoMode &vm;
     Player &player;
+    AbilityUpgradeGUI *abilityUpgradeGUI;
+
+    enum class SideGUI { SHOP, ABILITY_UPGRADE, NONE };
+
+    SideGUI sideGUI;
 
     sf::Texture attributes_texture;
     sf::Texture upgrades_texture;
@@ -78,12 +81,9 @@ private:
     bool bossWave;
     float bossCooldown;
 
-    bool upgraded;
     bool levelShown;
     bool leveling;
     bool upgrading;
-    bool shopping;
-    bool buyingAbility;
     bool escape;
     float hp_bar_percent;
     float xp_bar_percent;

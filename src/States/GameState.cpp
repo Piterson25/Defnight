@@ -378,25 +378,27 @@ void GameState::update(float dt)
         }
 
         if (this->player->hasSpawned()) {
-            if (!this->playerGUI->isBuyingAbility()) {
 
-                this->updateKeysClick("E", sf::Keyboard::E);
+            this->updateKeysClick("E", sf::Keyboard::E);
 
-                if (this->isKeyClicked1("E") && !this->isKeyClicked2("E")) {
-                    this->setKeysClick("E", true);
-                    this->playerGUI->updateIsShopping();
-                }
-                this->setKeysClick("E", this->isKeyClicked1("E"));
+            if (this->isKeyClicked1("E") && !this->isKeyClicked2("E")) {
+                this->setKeysClick("E", true);
+                this->playerGUI->updateIsShopping();
+            }
+            this->setKeysClick("E", this->isKeyClicked1("E"));
 
-                if (this->playerGUI->hasClickedShopBuy(
-                        this->mousePosWindow, this->isMouseClicked(),
-                        this->soundEngine, *this->floatingTextSystem)) {
-                    this->setMouseClick(true);
-                }
+            if (this->playerGUI->hasClickedShopBuy(
+                    this->mousePosWindow, this->isMouseClicked(),
+                    this->soundEngine, *this->floatingTextSystem)) {
+                this->setMouseClick(true);
             }
 
-            if (this->player->getName() != "warrior" &&
-                !this->playerGUI->isShopping()) {
+            if (this->player->isUpgraded()) {
+                if (this->playerGUI->hasClickedAbilityBuy(
+                        this->mousePosWindow, this->isMouseClicked())) {
+                    this->setMouseClick(true);
+                }
+
                 this->updateKeysClick("B", sf::Keyboard::B);
 
                 if (this->isKeyClicked1("B") && !this->isKeyClicked2("B")) {
@@ -404,12 +406,6 @@ void GameState::update(float dt)
                     this->playerGUI->updateIsBuyingAbility();
                 }
                 this->setKeysClick("B", this->isKeyClicked1("B"));
-
-                if (this->playerGUI->hasClickedAbilityBuy(
-                        this->mousePosWindow, this->isMouseClicked(),
-                        this->soundEngine, *this->floatingTextSystem)) {
-                    this->setMouseClick(true);
-                }
             }
         }
 

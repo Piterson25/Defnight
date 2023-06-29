@@ -289,8 +289,6 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
         new gui::Text("+1", calcChar(16, vm), calcX(1224, vm), calcY(606, vm),
                       sf::Color(255, 255, 255), false);
 
-    this->upgraded = false;
-
     this->sprites["ABILITY_FRAME"] =
         new gui::Sprite(this->select_texture, calcX(264, vm), calcY(4, vm),
                         calcScale(1, vm), false);
@@ -299,6 +297,12 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
         new gui::Sprite("assets/textures/abilities_icons.png", calcX(276, vm),
                         calcY(16, vm), calcScale(4, vm), false);
     this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
+
+    this->sprite_buttons["ABILITY_UPGRADE"] =
+        new gui::ButtonSprite(this->select_texture, calcX(264, vm),
+                              calcY(4, vm), calcScale(1, vm), false);
+    this->sprite_buttons["ABILITY_UPGRADE"]->setTextureRect(
+        sf::IntRect(0, 0, 88, 88));
 
     this->ability_icon.setFillColor(sf::Color(128, 128, 128, 128));
     this->ability_icon.setSize(sf::Vector2f(calcX(80, vm), calcY(80, vm)));
@@ -355,8 +359,6 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->escape_background.setSize(
         sf::Vector2f(calcX(1280, vm), calcY(720, vm)));
     this->escape = false;
-
-    this->shopping = false;
 
     this->sprites["SIDE_GUI"] =
         new gui::Sprite("assets/textures/side_gui.png", 0, calcY(128, vm),
@@ -474,12 +476,8 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
         std::to_string(this->item4Price), calcChar(16, vm), calcX(204, vm),
         calcY(624, vm), sf::Color(255, 246, 76), false);
 
-    this->buyingAbility = false;
-    this->sprites["BUYING_ABILITY_ICON"] =
-        new gui::Sprite("assets/textures/abilities_icons.png", calcX(80, vm),
-                        calcY(160, vm), calcScale(8, vm), false);
-    this->sprites["BUYING_ABILITY_ICON"]->setTextureRect(
-        sf::IntRect(0, 0, 16, 16));
+    this->abilityUpgradeGUI = new AbilityUpgradeGUI(vm, this->player);
+    this->sideGUI = SideGUI::NONE;
 
     this->bossWave = false;
     this->bossCooldown = 0.f;
@@ -500,7 +498,10 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->boss_bar_percent = 1.f;
 }
 
-PlayerGUI::~PlayerGUI() = default;
+PlayerGUI::~PlayerGUI()
+{
+    delete this->abilityUpgradeGUI;
+}
 
 void PlayerGUI::update_options(uint32_t &option_id, uint32_t &option_val,
                                std::vector<short> &id_vector, gui::Text *text,
@@ -706,16 +707,14 @@ void PlayerGUI::upgradePlayer(const std::string &name)
         player.setAbilityCooldown(20.f);
         player.setAbilityTime(10.f);
     }
-
-    this->sprites["BUYING_ABILITY_ICON"]->setTextureRect(
-        this->sprites["ABILITY_ICON"]->getTextureRect());
+    player.setUpgraded(true);
 }
 
 void PlayerGUI::update_level(SoundEngine &soundEngine)
 {
     soundEngine.addSound("levelup");
     this->leveling = true;
-    this->shopping = false;
+    this->sideGUI = SideGUI::NONE;
     this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 20));
     this->texts["LEVEL"]->setText("Level " + std::to_string(player.getLevel()));
     this->texts["LEVEL"]->center(calcX(640, this->vm));
@@ -832,7 +831,7 @@ void PlayerGUI::update_HP()
     if (player.isDead()) {
         this->hp_bar_percent = 0.f;
         this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 0, 20));
-        this->shopping = false;
+        this->sideGUI = SideGUI::NONE;
     }
     else {
         this->hp_bar_percent =
@@ -853,7 +852,7 @@ void PlayerGUI::updating_HP(SoundEngine &soundEngine, float dt)
         this->hp_bar_percent =
             static_cast<float>(player.getHP()) / player.getMaxHP();
         player.setRegenerating(true);
-        if (this->shopping && player.getHP() / player.getMaxHP() == 1) {
+        if (this->isShopping() && player.getHP() / player.getMaxHP() == 1) {
             this->sprites["ITEM1_FRAME"]->setTextureRect(
                 sf::IntRect(176, 0, 88, 88));
         }
@@ -1026,12 +1025,22 @@ void PlayerGUI::updateSprint(float dt)
 
 void PlayerGUI::updateIsShopping()
 {
-    this->shopping = !this->shopping;
+    if (this->isShopping()) {
+        this->sideGUI = SideGUI::NONE;
+    }
+    else {
+        this->sideGUI = SideGUI::SHOP;
+    }
 }
 
 void PlayerGUI::updateIsBuyingAbility()
 {
-    this->buyingAbility = !this->buyingAbility;
+    if (this->isBuyingAbility()) {
+        this->sideGUI = SideGUI::NONE;
+    }
+    else {
+        this->sideGUI = SideGUI::ABILITY_UPGRADE;
+    }
 }
 
 void PlayerGUI::updateKills()
@@ -1196,7 +1205,7 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
                                         SoundEngine &soundEngine,
                                         FloatingTextSystem &floatingTextSystem)
 {
-    if (this->shopping) {
+    if (this->isShopping()) {
         if (player.getGold() >= this->item1Price &&
             player.getHP() < player.getMaxHP()) {
             this->sprite_buttons["ITEM1"]->update(mousePos);
@@ -1298,12 +1307,12 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
     return false;
 }
 
-const bool
-PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
-                                SoundEngine &soundEngine,
-                                FloatingTextSystem &floatingTextSystem)
+const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
+                                           bool mouseClicked)
 {
-    if (this->buyingAbility) {
+    this->sprite_buttons["ABILITY_UPGRADE"]->update(mousePos);
+    if (this->sprite_buttons["ABILITY_UPGRADE"]->isPressed() && !mouseClicked) {
+        updateIsBuyingAbility();
         return true;
     }
 
@@ -1327,12 +1336,12 @@ const bool PlayerGUI::isUpgrading() const
 
 const bool PlayerGUI::isShopping() const
 {
-    return this->shopping;
+    return this->sideGUI == SideGUI::SHOP;
 }
 
 const bool PlayerGUI::isBuyingAbility() const
 {
-    return this->buyingAbility;
+    return this->sideGUI == SideGUI::ABILITY_UPGRADE;
 }
 
 const uint8_t PlayerGUI::updateEscapeButton(const sf::Vector2i &mousePos,
@@ -1375,7 +1384,6 @@ const bool PlayerGUI::hasClickedButtons(const sf::Vector2i &mousePos,
                                               soundEngine);
     }
     else if (this->upgrading) {
-        this->upgraded = true;
         return this->hasClickedUpgradeButtons(mousePos, mouseClicked,
                                               soundEngine);
     }
@@ -1592,7 +1600,7 @@ void PlayerGUI::draw(sf::RenderTarget &target)
     this->sprites["SPRINT_BAR"]->draw(target);
     this->texts["SPRINT"]->draw(target);
 
-    if (this->shopping) {
+    if (isShopping()) {
         this->sprites["SIDE_GUI"]->draw(target);
 
         this->sprites["ITEM1_FRAME"]->draw(target);
@@ -1633,17 +1641,18 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         }
     }
 
-    if (this->upgraded) {
+    if (player.isUpgraded()) {
         this->sprites["ABILITY_ICON"]->draw(target);
         if (player.getAbilityCooldown() < player.getAbilityMaxTime()) {
             target.draw(this->ability_icon);
         }
         this->sprites["ABILITY_FRAME"]->draw(target);
+        this->sprite_buttons["ABILITY_UPGRADE"]->draw(target);
 
-        if (this->buyingAbility && !this->shopping) {
+        if (isBuyingAbility() && !isShopping()) {
             this->sprites["SIDE_GUI"]->draw(target);
 
-            this->sprites["BUYING_ABILITY_ICON"]->draw(target);
+            this->abilityUpgradeGUI->draw(target);
         }
     }
 

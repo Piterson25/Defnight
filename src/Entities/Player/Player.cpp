@@ -49,6 +49,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->maxSprint = 100;
     this->criticalChance = 0;
     this->kills = 0;
+    this->upgraded = false;
     this->increasedArmor = false;
     this->regenerating = false;
     this->regCooldown = 0.f;
@@ -113,6 +114,11 @@ const uint32_t Player::getCriticalChance() const
 const uint32_t Player::getKills() const
 {
     return this->kills;
+}
+
+const bool Player::isUpgraded() const
+{
+    return this->upgraded;
 }
 
 const bool Player::isIncreasedArmor() const
@@ -198,6 +204,11 @@ void Player::setCriticalChance(uint32_t t_criticalChance)
 void Player::setKills(uint32_t t_kills)
 {
     this->kills = t_kills;
+}
+
+void Player::setUpgraded(bool t_upgraded)
+{
+    this->upgraded = t_upgraded;
 }
 
 void Player::setRegenerating(bool t_regenerating)
