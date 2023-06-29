@@ -214,25 +214,28 @@ void MonsterSystem::spawnMonsters(
                  ry = static_cast<uint32_t>(Random::Float() * 32.f);
 
         for (const auto &obstacle : obstaclesBounds) {
-            const sf::Vector2f position =
-                sf::Vector2f(obstacle.left, obstacle.top);
-            while ((position.x == calcX(this->gridSize * rx, this->vm) &&
-                    position.y == calcY(this->gridSize * ry, this->vm)) ||
-                   vectorDistance(calcX(this->gridSize * rx, this->vm),
-                                  calcY(this->gridSize * ry, this->vm),
-                                  player.getPosition().x,
-                                  player.getPosition().y) <=
-                       calcX(3.f * this->gridSize, this->vm)) {
+
+            const float monsterWidth =
+                (id == 4) ? calcX(128, vm) : calcX(64, vm);
+            const float monsterHeight =
+                (id == 4) ? calcX(128, vm) : calcX(64, vm);
+
+            sf::FloatRect monsterBounds(calcX(this->gridSize * rx, this->vm),
+                                        calcY(this->gridSize * ry, this->vm),
+                                        monsterWidth, monsterHeight);
+
+            if (monsterBounds.intersects(obstacle)) {
                 rx = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
                 ry = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
             }
+
             for (const auto &mob : this->monsters) {
-                if (mob->getPosition().x ==
-                        calcX(this->gridSize * rx, this->vm) &&
-                    mob->getPosition().y ==
-                        calcY(this->gridSize * ry, this->vm)) {
+                sf::FloatRect mobBounds = mob->getGlobalBounds();
+
+                if (monsterBounds.intersects(mobBounds)) {
                     rx = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
                     ry = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
+                    break;
                 }
             }
         }
