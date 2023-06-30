@@ -61,6 +61,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->abilityCooldown = 0.f;
     this->abilityTime = 0.f;
     this->abilityMaxTime = 0.f;
+    this->abilityMaxTimeModifier = 1.f;
     this->soundPlayed = false;
 }
 
@@ -166,6 +167,11 @@ const float Player::getAbilityMaxTime() const
     return this->abilityMaxTime;
 }
 
+const float Player::getAbilityMaxTimeModifier() const
+{
+    return this->abilityMaxTimeModifier;
+}
+
 const bool Player::isSoundPlayed() const
 {
     return this->soundPlayed;
@@ -244,6 +250,11 @@ void Player::setAbilityTime(float t_abilityTime)
 void Player::setAbilityMaxTime(float t_abilityMaxTime)
 {
     this->abilityMaxTime = t_abilityMaxTime;
+}
+
+void Player::setAbilityMaxTimeModifier(float t_abilityMaxTimeModifier)
+{
+    this->abilityMaxTimeModifier = t_abilityMaxTimeModifier;
 }
 
 void Player::setPlayedSound(bool t_soundPlayed)
@@ -369,8 +380,9 @@ const bool Player::isHPRegenerating(float dt)
 
 const bool Player::isAbilityActivated()
 {
-    if (this->level >= 5 && sf::Mouse::isButtonPressed(sf::Mouse::Right) &&
-        this->abilityCooldown == this->abilityMaxTime) {
+    if (this->upgraded && sf::Mouse::isButtonPressed(sf::Mouse::Right) &&
+        this->abilityCooldown ==
+            this->abilityMaxTime * this->abilityMaxTimeModifier) {
         this->abilityActive = true;
         this->abilityCooldown = 0.f;
 
@@ -394,8 +406,9 @@ const bool Player::isAbilityActivated()
 
 void Player::abilityCounter(float dt)
 {
-    if (this->abilityMaxTime > 0.f && this->level >= 5) {
-        if (this->abilityCooldown < this->abilityMaxTime) {
+    const float maxTime = this->abilityMaxTime * this->abilityMaxTimeModifier;
+    if (maxTime > 0.f && this->upgraded) {
+        if (this->abilityCooldown < maxTime) {
             this->abilityCooldown += dt;
         }
 
@@ -403,8 +416,8 @@ void Player::abilityCounter(float dt)
             this->abilityActive = false;
             endAbility();
         }
-        else if (this->abilityCooldown > this->abilityMaxTime) {
-            this->abilityCooldown = this->abilityMaxTime;
+        else if (this->abilityCooldown > maxTime) {
+            this->abilityCooldown = maxTime;
         }
     }
 }

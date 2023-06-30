@@ -211,8 +211,8 @@ void MonsterSystem::spawnMonsters(
     const float minSpawnDistance = calcX(3.f * this->gridSize, this->vm);
 
     for (const auto &id : this->monsterIDs) {
-        uint32_t rx = static_cast<uint32_t>(Random::Float() * 32.f),
-                 ry = static_cast<uint32_t>(Random::Float() * 32.f);
+        uint32_t rx = static_cast<uint32_t>(Random::Float() * 30.f) + 1,
+                 ry = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
 
         for (const auto &obstacle : obstaclesBounds) {
 

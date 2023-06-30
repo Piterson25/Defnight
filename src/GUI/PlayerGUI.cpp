@@ -477,6 +477,9 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
         calcY(624, vm), sf::Color(255, 246, 76), false);
 
     this->abilityUpgradeGUI = new AbilityUpgradeGUI(vm, this->player);
+    this->abilityUpgradeGUI->addAbilityUpgrade("LOWER_COOLDOWN", calcX(44, vm),
+                                               calcY(384, vm), 0, "Cooldown",
+                                               "-10%", 20);
     this->sideGUI = SideGUI::NONE;
 
     this->bossWave = false;
@@ -708,6 +711,10 @@ void PlayerGUI::upgradePlayer(const std::string &name)
         player.setAbilityTime(10.f);
     }
     player.setUpgraded(true);
+    abilityUpgradeGUI->setAbility(
+        this->sprites["ABILITY_ICON"]->getTextureRect());
+    this->abilityUpgradeGUI->updatePlayerInfo();
+    player.setAbilityMaxTimeModifier(1.f);
 }
 
 void PlayerGUI::update_level(SoundEngine &soundEngine)
@@ -955,13 +962,17 @@ void PlayerGUI::update_Gold()
                 sf::IntRect(176, 0, 88, 88));
         }
     }
+
+    abilityUpgradeGUI->updateItemFrames();
 }
 
 void PlayerGUI::update_ability(float dt)
 {
     if (player.getAbilityCooldown() > 0.f) {
-        const float value = player.getAbilityCooldown() /
-                            player.getAbilityMaxTime() * calcX(80, vm);
+        const float value =
+            player.getAbilityCooldown() /
+            (player.getAbilityMaxTime() * player.getAbilityMaxTimeModifier()) *
+            calcX(80, vm);
         this->ability_icon.setSize(
             sf::Vector2f(calcX(80, vm), calcX(80, vm) - value));
         this->ability_icon.setPosition(
@@ -1307,13 +1318,30 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
     return false;
 }
 
-const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
-                                           bool mouseClicked)
+const bool
+PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
+                                SoundEngine &soundEngine,
+                                FloatingTextSystem &floatingTextSystem)
 {
     this->sprite_buttons["ABILITY_UPGRADE"]->update(mousePos);
     if (this->sprite_buttons["ABILITY_UPGRADE"]->isPressed() && !mouseClicked) {
         updateIsBuyingAbility();
         return true;
+    }
+
+    if (this->isBuyingAbility()) {
+        if (player.getGold() >= abilityUpgradeGUI->getPrice("LOWER_COOLDOWN")) {
+            abilityUpgradeGUI->update("LOWER_COOLDOWN", mousePos);
+            if (abilityUpgradeGUI->isPressed("LOWER_COOLDOWN", mouseClicked)) {
+                abilityUpgradeGUI->buy("LOWER_COOLDOWN", &floatingTextSystem);
+                player.setAbilityMaxTimeModifier(
+                    player.getAbilityMaxTimeModifier() - 0.1f);
+                this->update_Gold();
+                this->abilityUpgradeGUI->updatePlayerInfo();
+                soundEngine.addSound("buy");
+                return true;
+            }
+        }
     }
 
     return false;
@@ -1643,7 +1671,8 @@ void PlayerGUI::draw(sf::RenderTarget &target)
 
     if (player.isUpgraded()) {
         this->sprites["ABILITY_ICON"]->draw(target);
-        if (player.getAbilityCooldown() < player.getAbilityMaxTime()) {
+        if (player.getAbilityCooldown() <
+            player.getAbilityMaxTime() * player.getAbilityMaxTimeModifier()) {
             target.draw(this->ability_icon);
         }
         this->sprites["ABILITY_FRAME"]->draw(target);

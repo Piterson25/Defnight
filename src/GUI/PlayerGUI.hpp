@@ -32,7 +32,8 @@ public:
                                  bool mouseClicked, SoundEngine &soundEngine,
                                  FloatingTextSystem &floatingTextSystem);
     const bool hasClickedAbilityBuy(const sf::Vector2i &mousePos,
-                                    bool mouseClicked);
+                                    bool mouseClicked, SoundEngine &soundEngine,
+                                    FloatingTextSystem &floatingTextSystem);
 
     const bool isEscape() const;
     const bool isLeveling() const;

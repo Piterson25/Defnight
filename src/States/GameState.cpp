@@ -396,7 +396,8 @@ void GameState::update(float dt)
 
             if (this->player->isUpgraded()) {
                 if (this->playerGUI->hasClickedAbilityBuy(
-                        this->mousePosWindow, this->isMouseClicked())) {
+                        this->mousePosWindow, this->isMouseClicked(),
+                        this->soundEngine, *this->floatingTextSystem)) {
                     this->setMouseClick(true);
                 }
 

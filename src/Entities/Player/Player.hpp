@@ -29,6 +29,7 @@ public:
     const float getAbilityCooldown() const;
     const float getAbilityTime() const;
     const float getAbilityMaxTime() const;
+    const float getAbilityMaxTimeModifier() const;
     const bool isSoundPlayed() const;
 
     void setGold(uint32_t t_gold);
@@ -46,6 +47,7 @@ public:
     void setAbilityCooldown(float t_abilityCooldown);
     void setAbilityTime(float t_abilityTime);
     void setAbilityMaxTime(float t_abilityMaxTime);
+    void setAbilityMaxTimeModifier(float t_abilityMaxTimeModifier);
     void setPlayedSound(bool t_soundPlayed);
 
     void controls(const std::unordered_map<std::string, int> &keybinds,
@@ -94,6 +96,8 @@ protected:
     float abilityCooldown;
     float abilityTime;
     float abilityMaxTime;
+
+    float abilityMaxTimeModifier;
 
     bool soundPlayed;
 };
