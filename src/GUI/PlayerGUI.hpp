@@ -61,6 +61,7 @@ public:
                                         SoundEngine &soundEngine);
     const uint8_t updateDeathScreenButtons(const sf::Vector2i &mousePos,
                                            bool mouseClicked);
+    void updatePlayerAttributes();
     void update(sf::Vector2f &mousePosView, float waveCountdown, float bossHP,
                 float dt);
     void draw(sf::RenderTarget &target);

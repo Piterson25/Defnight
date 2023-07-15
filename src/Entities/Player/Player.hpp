@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Audio/SoundEngine.hpp"
+#include "Components/AbilityComponent.hpp"
 #include "Entities/Entity.hpp"
 
 class Player : public Entity {
@@ -25,12 +26,12 @@ public:
     const bool isLeveling() const;
     const bool isSprinting() const;
     const bool hasSpawned() const;
+    const bool isSoundPlayed() const;
     const bool isAbilityActive() const;
     const float getAbilityCooldown() const;
     const float getAbilityTime() const;
     const float getAbilityMaxTime() const;
     const float getAbilityMaxTimeModifier() const;
-    const bool isSoundPlayed() const;
 
     void setGold(uint32_t t_gold);
     void setArmor(uint32_t t_armor);
@@ -44,8 +45,6 @@ public:
     void setLeveling(bool t_leveling);
     void setSprinting(bool t_sprinting);
     void setAbilityActive(bool t_abilityActive);
-    void setAbilityCooldown(float t_abilityCooldown);
-    void setAbilityTime(float t_abilityTime);
     void setAbilityMaxTime(float t_abilityMaxTime);
     void setAbilityMaxTimeModifier(float t_abilityMaxTimeModifier);
     void setPlayedSound(bool t_soundPlayed);
@@ -60,6 +59,9 @@ public:
     void endAbility();
     void doAbility(SoundEngine &soundEngine);
     void spawn(float dt);
+    void upgrade(const std::string &t_name, sf::IntRect &intRect);
+    virtual void upgradeAttributes(const std::string &t_name,
+                                   sf::IntRect &intRect) = 0;
     void updateSprint(float dt);
     void update(float dt);
     void draw(sf::RenderTarget &target);
@@ -92,12 +94,7 @@ protected:
     bool spawned;
     float spawnCountdown;
 
-    bool abilityActive;
-    float abilityCooldown;
-    float abilityTime;
-    float abilityMaxTime;
-
-    float abilityMaxTimeModifier;
+    std::unique_ptr<AbilityComponent> abilityComponent;
 
     bool soundPlayed;
 };

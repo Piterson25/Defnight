@@ -57,12 +57,9 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->sprinting = false;
     this->spawned = false;
     this->spawnCountdown = 0.f;
-    this->abilityActive = false;
-    this->abilityCooldown = 0.f;
-    this->abilityTime = 0.f;
-    this->abilityMaxTime = 0.f;
-    this->abilityMaxTimeModifier = 1.f;
     this->soundPlayed = false;
+
+    this->abilityComponent = std::make_unique<AbilityComponent>(this->vm);
 }
 
 Player::~Player() = default;
@@ -147,34 +144,34 @@ const bool Player::hasSpawned() const
     return this->spawned;
 }
 
-const bool Player::isAbilityActive() const
-{
-    return this->abilityActive;
-}
-
-const float Player::getAbilityCooldown() const
-{
-    return this->abilityCooldown;
-}
-
-const float Player::getAbilityTime() const
-{
-    return this->abilityTime;
-}
-
 const float Player::getAbilityMaxTime() const
 {
-    return this->abilityMaxTime;
+    return this->abilityComponent->getAbilityMaxTime();
 }
 
 const float Player::getAbilityMaxTimeModifier() const
 {
-    return this->abilityMaxTimeModifier;
+    return this->abilityComponent->getAbilityMaxTimeModifier();
 }
 
 const bool Player::isSoundPlayed() const
 {
     return this->soundPlayed;
+}
+
+const bool Player::isAbilityActive() const
+{
+    return this->abilityComponent->isAbilityActive();
+}
+
+const float Player::getAbilityCooldown() const
+{
+    return this->abilityComponent->getAbilityCooldown();
+}
+
+const float Player::getAbilityTime() const
+{
+    return this->abilityComponent->getAbilityTime();
 }
 
 void Player::setGold(uint32_t t_gold)
@@ -234,27 +231,17 @@ void Player::setSprinting(bool t_isSprinting)
 
 void Player::setAbilityActive(bool t_abilityActive)
 {
-    this->abilityActive = t_abilityActive;
-}
-
-void Player::setAbilityCooldown(float t_abilityCooldown)
-{
-    this->abilityCooldown = t_abilityCooldown;
-}
-
-void Player::setAbilityTime(float t_abilityTime)
-{
-    this->abilityTime = t_abilityTime;
+    this->abilityComponent->setAbilityActive(t_abilityActive);
 }
 
 void Player::setAbilityMaxTime(float t_abilityMaxTime)
 {
-    this->abilityMaxTime = t_abilityMaxTime;
+    this->abilityComponent->setAbilityMaxTime(t_abilityMaxTime);
 }
 
 void Player::setAbilityMaxTimeModifier(float t_abilityMaxTimeModifier)
 {
-    this->abilityMaxTimeModifier = t_abilityMaxTimeModifier;
+    this->abilityComponent->setAbilityMaxTimeModifier(t_abilityMaxTimeModifier);
 }
 
 void Player::setPlayedSound(bool t_soundPlayed)
@@ -287,7 +274,7 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds,
         this->velocity.x += vel;
     }
 
-    if (this->name == "scout" && this->abilityActive) {
+    if (this->name == "scout" && this->isAbilityActive()) {
         this->velocity *= 1.3f;
     }
 
@@ -381,10 +368,10 @@ const bool Player::isHPRegenerating(float dt)
 const bool Player::isAbilityActivated()
 {
     if (this->upgraded && sf::Mouse::isButtonPressed(sf::Mouse::Right) &&
-        this->abilityCooldown ==
-            this->abilityMaxTime * this->abilityMaxTimeModifier) {
-        this->abilityActive = true;
-        this->abilityCooldown = 0.f;
+        this->getAbilityCooldown() ==
+            this->getAbilityMaxTime() * this->getAbilityMaxTimeModifier()) {
+        this->abilityComponent->setAbilityActive(true);
+        this->abilityComponent->setAbilityCooldown(0.f);
 
         if (this->name == "knight") {
             this->ability.setTextureRect(sf::IntRect(0, 0, 16, 16));
@@ -406,18 +393,11 @@ const bool Player::isAbilityActivated()
 
 void Player::abilityCounter(float dt)
 {
-    const float maxTime = this->abilityMaxTime * this->abilityMaxTimeModifier;
-    if (maxTime > 0.f && this->upgraded) {
-        if (this->abilityCooldown < maxTime) {
-            this->abilityCooldown += dt;
-        }
-
-        if (this->abilityCooldown >= this->abilityTime && this->abilityActive) {
-            this->abilityActive = false;
+    if (this->upgraded) {
+        this->abilityComponent->abilityCounter(dt);
+        if (this->abilityComponent->getAbilityCooldown() >=
+            this->abilityComponent->getAbilityTime()) {
             endAbility();
-        }
-        else if (this->abilityCooldown > maxTime) {
-            this->abilityCooldown = maxTime;
         }
     }
 }
@@ -491,6 +471,15 @@ void Player::spawn(float dt)
     }
 }
 
+void Player::upgrade(const std::string &t_name, sf::IntRect &intRect)
+{
+    this->setAbilityActive(false);
+    this->upgradeAttributes(name, intRect);
+    this->setTexturePath("assets/textures/player/" + this->getName() + ".png");
+    this->setUpgraded(true);
+    this->setAbilityMaxTimeModifier(1.f);
+}
+
 void Player::updateSprint(float dt)
 {
     for (auto particle = this->particles.begin();
@@ -518,7 +507,7 @@ void Player::update(float dt)
 void Player::draw(sf::RenderTarget &target)
 {
     target.draw(this->sprite);
-    if (this->abilityActive &&
+    if (this->isAbilityActive() &&
         (this->increasedArmor || this->name == "scout")) {
         target.draw(this->ability);
     }

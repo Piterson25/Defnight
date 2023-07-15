@@ -613,108 +613,14 @@ void PlayerGUI::upgradePlayer(const std::string &name)
 {
     this->texts["NAME"]->setText(this->lang[name]);
     this->texts["NAME"]->center(calcX(196, this->vm));
-    if (player.isAbilityActive()) {
-        player.setAbilityActive(false);
-    }
-    if (name == "NINJA") {
-        this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
-        player.setTexturePath("assets/textures/player/ninja.png");
-        player.setSpeed(player.getSpeed() + 1);
-        this->texts["SPEED"]->setText(std::to_string(player.getSpeed()));
-        this->texts["SPEED"]->center(calcX(956, vm));
-        player.setName("ninja");
-        this->sprites["ABILITY_ICON"]->setTextureRect(
-            sf::IntRect(0, 0, 16, 16));
-        player.setAbilityMaxTime(2.f);
-        player.setAbilityCooldown(2.f);
-        player.setAbilityTime(2.f);
-    }
-    else if (name == "KNIGHT") {
-        this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(32, 0, 16, 16));
-        player.setTexturePath("assets/textures/player/knight.png");
-        player.setAttack(player.getAttack() + 1);
-        this->texts["ATTACK"]->setText(std::to_string(player.getAttack()));
-        this->texts["ATTACK"]->center(calcX(828, vm));
-        player.setName("knight");
-        this->sprites["ABILITY_ICON"]->setTextureRect(
-            sf::IntRect(16, 0, 16, 16));
-        player.setAbilityMaxTime(20.f);
-        player.setAbilityCooldown(20.f);
-        player.setAbilityTime(5.f);
-    }
-    else if (name == "SCOUT") {
-        this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(48, 0, 16, 16));
-        player.setTexturePath("assets/textures/player/scout.png");
-        player.setReg(player.getReg() + 1);
-        this->texts["REG"]->setText(std::to_string(player.getReg()));
-        this->texts["REG"]->center(calcX(452, vm));
-        player.setName("scout");
-        this->sprites["ABILITY_ICON"]->setTextureRect(
-            sf::IntRect(32, 0, 16, 16));
-        player.setAbilityMaxTime(10.f);
-        player.setAbilityCooldown(10.f);
-        player.setAbilityTime(5.f);
-    }
-    else if (name == "MASTER") {
-        this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(64, 0, 16, 16));
-        player.setTexturePath("assets/textures/player/master.png");
-        player.setAttackSpeed(player.getAttackSpeed() + 1);
-        this->texts["ATTACK_SPEED"]->setText(
-            std::to_string(player.getAttackSpeed()));
-        this->texts["ATTACK_SPEED"]->center(calcX(892, vm));
-        player.setName("master");
-        this->sprites["ABILITY_ICON"]->setTextureRect(
-            sf::IntRect(48, 0, 16, 16));
-        player.setAbilityMaxTime(2.f);
-        player.setAbilityCooldown(2.f);
-        player.setAbilityTime(2.f);
-    }
-    else if (name == "BOMBER") {
-        this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(80, 0, 16, 16));
-        player.setTexturePath("assets/textures/player/bomber.png");
-        player.setCriticalChance(player.getCriticalChance() + 10);
-        this->texts["CRITICAL"]->setText(
-            std::to_string(player.getCriticalChance()));
-        this->texts["CRITICAL"]->center(calcX(1020, vm));
-        player.setName("bomber");
-        this->sprites["ABILITY_ICON"]->setTextureRect(
-            sf::IntRect(64, 0, 16, 16));
-        player.setAbilityMaxTime(2.f);
-        player.setAbilityCooldown(2.f);
-        player.setAbilityTime(2.f);
-    }
-    else if (name == "CRUSADER") {
-        this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(96, 0, 16, 16));
-        player.setTexturePath("assets/textures/player/crusader.png");
-        player.setMaxHP(player.getMaxHP() + 2);
-        this->update_HP();
-        player.setRegenerating(true);
-        player.setName("crusader");
-        this->sprites["ABILITY_ICON"]->setTextureRect(
-            sf::IntRect(80, 0, 16, 16));
-        player.setAbilityMaxTime(20.f);
-        player.setAbilityCooldown(20.f);
-        player.setAbilityTime(10.f);
-    }
-    else if (name == "PALADIN") {
-        this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(112, 0, 16, 16));
-        player.setTexturePath("assets/textures/player/paladin.png");
-        player.setAttackSpeed(player.getAttackSpeed() + 1);
-        this->texts["ATTACK_SPEED"]->setText(
-            std::to_string(player.getAttackSpeed()));
-        this->texts["ATTACK_SPEED"]->center(calcX(892, vm));
-        player.setName("paladin");
-        this->sprites["ABILITY_ICON"]->setTextureRect(
-            sf::IntRect(96, 0, 16, 16));
-        player.setAbilityMaxTime(20.f);
-        player.setAbilityCooldown(20.f);
-        player.setAbilityTime(10.f);
-    }
-    player.setUpgraded(true);
-    abilityUpgradeGUI->setAbility(
+    sf::IntRect intRect;
+    player.upgrade(name, intRect);
+    this->sprites["MINIATURE"]->setTextureRect(intRect);
+    this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(
+        intRect.left - 16, intRect.top, intRect.width, intRect.height));
+    this->abilityUpgradeGUI->setAbility(
         this->sprites["ABILITY_ICON"]->getTextureRect());
     this->abilityUpgradeGUI->updatePlayerInfo();
-    player.setAbilityMaxTimeModifier(1.f);
 }
 
 void PlayerGUI::update_level(SoundEngine &soundEngine)
@@ -725,8 +631,7 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
     this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 20));
     this->texts["LEVEL"]->setText("Level " + std::to_string(player.getLevel()));
     this->texts["LEVEL"]->center(calcX(640, this->vm));
-    if (player.getLevel() == 5 ||
-        (player.getLevel() == 10 && player.getName() != "scout")) {
+    if (player.getLevel() == 5 || player.getLevel() == 10) {
         this->upgrading = true;
     }
 
@@ -969,10 +874,8 @@ void PlayerGUI::update_Gold()
 void PlayerGUI::update_ability(float dt)
 {
     if (player.getAbilityCooldown() > 0.f) {
-        const float value =
-            player.getAbilityCooldown() /
-            (player.getAbilityMaxTime() * player.getAbilityMaxTimeModifier()) *
-            calcX(80, vm);
+        const float value = player.getAbilityCooldown() /
+                            (player.getAbilityMaxTime()) * calcX(80, vm);
         this->ability_icon.setSize(
             sf::Vector2f(calcX(80, vm), calcX(80, vm) - value));
         this->ability_icon.setPosition(
@@ -1513,6 +1416,28 @@ const uint8_t PlayerGUI::updateDeathScreenButtons(const sf::Vector2i &mousePos,
     return 0;
 }
 
+void PlayerGUI::updatePlayerAttributes()
+{
+    this->texts["ARMOR"]->setText(std::to_string(player.getArmor()));
+    this->texts["ARMOR"]->center(calcX(388, vm));
+    this->texts["REG"]->setText(std::to_string(player.getReg()));
+    this->texts["REG"]->center(calcX(452, vm));
+    this->texts["ATTACK"]->setText(std::to_string(player.getAttack()));
+    this->texts["ATTACK"]->center(calcX(828, vm));
+    this->texts["ATTACK_SPEED"]->setText(
+        std::to_string(player.getAttackSpeed()));
+    this->texts["ATTACK_SPEED"]->center(calcX(892, vm));
+    this->texts["SPEED"]->setText(std::to_string(player.getSpeed()));
+    this->texts["SPEED"]->center(calcX(956, vm));
+    this->texts["CRITICAL"]->setText(
+        std::to_string(player.getCriticalChance()));
+    this->texts["CRITICAL"]->center(calcX(1020, vm));
+    this->update_HP();
+    if (player.getHP() < player.getMaxHP()) {
+        player.setRegenerating(true);
+    }
+}
+
 void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
                        float bossHP, float dt)
 {
@@ -1671,8 +1596,7 @@ void PlayerGUI::draw(sf::RenderTarget &target)
 
     if (player.isUpgraded()) {
         this->sprites["ABILITY_ICON"]->draw(target);
-        if (player.getAbilityCooldown() <
-            player.getAbilityMaxTime() * player.getAbilityMaxTimeModifier()) {
+        if (player.getAbilityCooldown() < player.getAbilityMaxTime()) {
             target.draw(this->ability_icon);
         }
         this->sprites["ABILITY_FRAME"]->draw(target);

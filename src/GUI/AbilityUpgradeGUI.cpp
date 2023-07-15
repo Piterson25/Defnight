@@ -123,7 +123,7 @@ void AbilityUpgradeGUI::updateItemFrames()
 
 void AbilityUpgradeGUI::updatePlayerInfo()
 {
-    float maxTime =
+    const float maxTime =
         player.getAbilityMaxTime() * player.getAbilityMaxTimeModifier();
     std::string cooldownText = "Cooldown: ";
 
