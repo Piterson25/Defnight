@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AbilityUpgradeGUI.hpp"
+#include "ShopGUI.hpp"
 
 class PlayerGUI {
 public:
@@ -70,6 +70,7 @@ private:
     sf::VideoMode &vm;
     Player &player;
     AbilityUpgradeGUI *abilityUpgradeGUI;
+    ShopGUI *shopGUI;
 
     enum class SideGUI { SHOP, ABILITY_UPGRADE, NONE };
 
