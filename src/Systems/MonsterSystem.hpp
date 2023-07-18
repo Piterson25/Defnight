@@ -53,8 +53,8 @@ public:
 private:
     sf::VideoMode &vm;
     std::list<std::unique_ptr<Monster>> monsters;
-    std::unordered_map<std::string, sf::Texture> textures;
     std::vector<short> monsterIDs;
+    std::list<sf::FloatRect> freePositions;
     float gridSize;
     float difficulty_mod;
     bool bossWave;

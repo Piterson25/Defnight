@@ -6,18 +6,7 @@ MonsterSystem::MonsterSystem(sf::VideoMode &vm,
     : vm(vm), gridSize(gridSize), difficulty_mod(difficulty_mod)
 {
     this->bossWave = false;
-
-    sf::Texture texture;
-    texture.loadFromFile("assets/textures/monsters/goblin.png");
-    this->textures["GOBLIN"] = texture;
-    texture.loadFromFile("assets/textures/monsters/spider.png");
-    this->textures["SPIDER"] = texture;
-    texture.loadFromFile("assets/textures/monsters/orc.png");
-    this->textures["ORC"] = texture;
-    texture.loadFromFile("assets/textures/monsters/cyclope.png");
-    this->textures["CYCLOPE"] = texture;
-    texture.loadFromFile("assets/textures/monsters/minotaur.png");
-    this->textures["MINOTAUR"] = texture;
+    freePositions.assign(obstaclesBounds.begin(), obstaclesBounds.end());
 }
 
 MonsterSystem::~MonsterSystem()
@@ -57,7 +46,8 @@ const std::vector<sf::Vector2f> MonsterSystem::monstersPositions() const
 const float MonsterSystem::bossHP() const
 {
     for (const auto &monster : monsters) {
-        if (monster->getName() == "minotaur") {
+        auto boss = dynamic_cast<Boss *>(monster.get());
+        if (boss) {
             return static_cast<float>(static_cast<float>(monster->getHP()) /
                                       static_cast<float>(monster->getMaxHP()));
         }
@@ -211,11 +201,20 @@ void MonsterSystem::spawnMonsters(
     const float minSpawnDistance = calcX(3.f * this->gridSize, this->vm);
 
     for (const auto &id : this->monsterIDs) {
+        if (freePositions.empty()) {
+            break;
+        }
+
+        uint32_t randomIndex =
+            static_cast<uint32_t>(Random::Float() * freePositions.size());
+        auto positionIt = std::next(freePositions.begin(), randomIndex);
+        sf::FloatRect monsterBounds = *positionIt;
+
         uint32_t rx = static_cast<uint32_t>(Random::Float() * 30.f) + 1,
                  ry = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
 
         for (const auto &obstacle : obstaclesBounds) {
-
+            bool intersectsObstacle = false;
             const float monsterWidth =
                 (id == 4) ? calcX(128, vm) : calcX(64, vm);
             const float monsterHeight =
@@ -226,10 +225,30 @@ void MonsterSystem::spawnMonsters(
                                         monsterWidth, monsterHeight);
 
             if (monsterBounds.intersects(obstacle) ||
-                vectorDistance(monsterBounds.left + monsterBounds.width / 2,
-                               monsterBounds.top + monsterBounds.height / 2,
+                vectorDistance(monsterBounds.left, monsterBounds.top,
                                player.getPosition().x,
                                player.getPosition().y) <= minSpawnDistance) {
+                intersectsObstacle = true;
+            }
+
+            if (id == 4 && !intersectsObstacle) {
+                sf::FloatRect monsterBounds2(
+                    monsterBounds.left + this->gridSize, monsterBounds.top,
+                    monsterWidth, monsterHeight);
+                sf::FloatRect monsterBounds3(monsterBounds.left,
+                                             monsterBounds.top + this->gridSize,
+                                             monsterWidth, monsterHeight);
+                sf::FloatRect monsterBounds4(monsterBounds.left +
+                                                 this->gridSize,
+                                             monsterBounds.top + this->gridSize,
+                                             monsterWidth, monsterHeight);
+
+                intersectsObstacle = monsterBounds2.intersects(obstacle) ||
+                                     monsterBounds3.intersects(obstacle) ||
+                                     monsterBounds4.intersects(obstacle);
+            }
+
+            if (intersectsObstacle) {
                 rx = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
                 ry = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
                 continue;
@@ -279,6 +298,17 @@ void MonsterSystem::spawnMonsters(
                 break;
             default:
                 break;
+        }
+
+        if (id == 4) {
+            positionIt = freePositions.erase(positionIt);
+            for (int i = 1; i < 4; ++i) {
+                ++positionIt;
+                positionIt = freePositions.erase(positionIt);
+            }
+        }
+        else {
+            freePositions.erase(positionIt);
         }
     }
 }
@@ -408,8 +438,14 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
                 if (monster->hasAttackedPlayer(obstaclesBounds, player,
                                                soundEngine,
                                                floatingTextSystem)) {
-
-                    if (monster->getName() != "cyclope") {
+                    auto cyclope = dynamic_cast<Cyclope *>(monster.get());
+                    if (cyclope) {
+                        projectileSystem.addProjectile(
+                            "stone", monster->getPosition().x + calcX(24, vm),
+                            monster->getPosition().y + calcY(36, vm),
+                            monster->getDifficultyMod(), player.getCenter(), 0);
+                    }
+                    else {
                         floatingTextSystem.addFloatingText(
                             std::to_string(static_cast<int>(
                                 -round(monster->getAttack() -
@@ -419,17 +455,6 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
                             player.getPosition().x + calcX(48, vm),
                             player.getPosition().y + calcY(32, vm),
                             sf::Color(228, 92, 95), false);
-                    }
-                    else {
-
-                        projectileSystem.addProjectile(
-                            "stone", monster->getPosition().x + calcX(24, vm),
-                            monster->getPosition().y + calcY(36, vm),
-                            monster->getDifficultyMod(),
-                            sf::Vector2f(player.getPosition().x + calcX(32, vm),
-                                         player.getPosition().y +
-                                             calcY(32, vm)),
-                            0);
                     }
 
                     playerGUI.update_HP();
