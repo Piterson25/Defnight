@@ -205,33 +205,52 @@ void MonsterSystem::spawnMonsters(
             break;
         }
 
-        uint32_t randomIndex =
-            static_cast<uint32_t>(Random::Float() * freePositions.size());
-        auto positionIt = std::next(freePositions.begin(), randomIndex);
-        sf::FloatRect monsterBounds = *positionIt;
+        uint32_t rx = 0, ry = 0;
+        sf::FloatRect monsterBounds;
+        auto positionIt = freePositions.begin();
 
-        uint32_t rx = static_cast<uint32_t>(Random::Float() * 30.f) + 1,
-                 ry = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
+        bool canSpawnMonster = false;
 
-        for (const auto &obstacle : obstaclesBounds) {
-            bool intersectsObstacle = false;
+        while (!canSpawnMonster && positionIt != freePositions.end()) {
+            rx = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
+            ry = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
+
             const float monsterWidth =
                 (id == 4) ? calcX(128, vm) : calcX(64, vm);
             const float monsterHeight =
                 (id == 4) ? calcX(128, vm) : calcX(64, vm);
+            monsterBounds = sf::FloatRect(calcX(this->gridSize * rx, this->vm),
+                                          calcY(this->gridSize * ry, this->vm),
+                                          monsterWidth, monsterHeight);
 
-            sf::FloatRect monsterBounds(calcX(this->gridSize * rx, this->vm),
-                                        calcY(this->gridSize * ry, this->vm),
-                                        monsterWidth, monsterHeight);
+            canSpawnMonster = true;
 
-            if (monsterBounds.intersects(obstacle) ||
+            if (monsterBounds.intersects(player.getGlobalBounds()) ||
                 vectorDistance(monsterBounds.left, monsterBounds.top,
                                player.getPosition().x,
                                player.getPosition().y) <= minSpawnDistance) {
-                intersectsObstacle = true;
+                canSpawnMonster = false;
+                continue;
             }
 
-            if (id == 4 && !intersectsObstacle) {
+            for (const auto &obstacle : obstaclesBounds) {
+                if (monsterBounds.intersects(obstacle)) {
+                    canSpawnMonster = false;
+                    break;
+                }
+            }
+
+            if (canSpawnMonster) {
+                for (const auto &mob : this->monsters) {
+                    sf::FloatRect mobBounds = mob->getGlobalBounds();
+                    if (monsterBounds.intersects(mobBounds)) {
+                        canSpawnMonster = false;
+                        break;
+                    }
+                }
+            }
+
+            if (id == 4 && canSpawnMonster) {
                 sf::FloatRect monsterBounds2(
                     monsterBounds.left + this->gridSize, monsterBounds.top,
                     monsterWidth, monsterHeight);
@@ -243,26 +262,35 @@ void MonsterSystem::spawnMonsters(
                                              monsterBounds.top + this->gridSize,
                                              monsterWidth, monsterHeight);
 
-                intersectsObstacle = monsterBounds2.intersects(obstacle) ||
-                                     monsterBounds3.intersects(obstacle) ||
-                                     monsterBounds4.intersects(obstacle);
-            }
+                for (const auto &obstacle : obstaclesBounds) {
+                    if (monsterBounds2.intersects(obstacle) ||
+                        monsterBounds3.intersects(obstacle) ||
+                        monsterBounds4.intersects(obstacle)) {
+                        canSpawnMonster = false;
+                        break;
+                    }
+                }
 
-            if (intersectsObstacle) {
-                rx = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
-                ry = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
-                continue;
-            }
-
-            for (const auto &mob : this->monsters) {
-                sf::FloatRect mobBounds = mob->getGlobalBounds();
-
-                if (monsterBounds.intersects(mobBounds)) {
-                    rx = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
-                    ry = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
-                    break;
+                if (canSpawnMonster) {
+                    for (const auto &mob : this->monsters) {
+                        sf::FloatRect mobBounds = mob->getGlobalBounds();
+                        if (monsterBounds2.intersects(mobBounds) ||
+                            monsterBounds3.intersects(mobBounds) ||
+                            monsterBounds4.intersects(mobBounds)) {
+                            canSpawnMonster = false;
+                            break;
+                        }
+                    }
                 }
             }
+
+            if (!canSpawnMonster) {
+                ++positionIt;
+            }
+        }
+
+        if (positionIt == freePositions.end()) {
+            break;
         }
 
         switch (id) {
