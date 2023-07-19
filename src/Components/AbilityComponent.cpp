@@ -31,6 +31,11 @@ const float AbilityComponent::getAbilityTime() const
     return this->abilityTime;
 }
 
+const float AbilityComponent::getAbilityTotalMaxTime() const
+{
+    return this->abilityMaxTime * this->abilityMaxTimeModifier;
+}
+
 const float AbilityComponent::getAbilityMaxTime() const
 {
     return this->abilityMaxTime;
@@ -107,7 +112,8 @@ void AbilityComponent::setSpeedModifier(float t_speedModifier)
 
 void AbilityComponent::abilityCounter(float dt)
 {
-    const float maxTime = this->getAbilityMaxTime();
+    const float maxTime = this->getAbilityTotalMaxTime();
+
     if (maxTime > 0.f) {
         if (this->abilityCooldown < maxTime) {
             this->abilityCooldown += dt;

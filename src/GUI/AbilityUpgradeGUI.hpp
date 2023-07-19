@@ -29,6 +29,10 @@ public:
 
     void setAbility(const sf::IntRect &intRect);
     const bool isPressed(const std::string &t_name, bool mouseClicked);
+    const bool hasBoughtUpgrade(const sf::Vector2i &mousePos,
+                                  bool mouseClicked, const std::string &t_name,
+                                  FloatingTextSystem *floatingTextSystem,
+                                  SoundEngine *soundEngine);
     void buy(const std::string &t_name, FloatingTextSystem *floatingTextSystem);
     void updateItemFrames();
     void updatePlayerInfo();

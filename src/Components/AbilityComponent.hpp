@@ -10,6 +10,7 @@ public:
     const bool isAbilityActive() const;
     const float getAbilityCooldown() const;
     const float getAbilityTime() const;
+    const float getAbilityTotalMaxTime() const;
     const float getAbilityMaxTime() const;
     const float getAbilityMaxTimeModifier() const;
     const float getAttackModifier() const;

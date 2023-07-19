@@ -513,7 +513,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
 {
     this->texts["NAME"]->setText(this->lang[name]);
     this->texts["NAME"]->center(calcX(196, this->vm));
-    sf::IntRect intRect;
+    sf::IntRect intRect = sf::IntRect(0, 0, 16, 16);
     player.upgrade(name, intRect);
     this->sprites["MINIATURE"]->setTextureRect(intRect);
     this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(
@@ -521,6 +521,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     this->abilityUpgradeGUI->setAbility(
         this->sprites["ABILITY_ICON"]->getTextureRect());
     this->abilityUpgradeGUI->updatePlayerInfo();
+    updatePlayerAttributes();
 }
 
 void PlayerGUI::update_level(SoundEngine &soundEngine)
@@ -668,8 +669,7 @@ void PlayerGUI::updating_HP(SoundEngine &soundEngine, float dt)
             static_cast<float>(player.getHP()) / player.getMaxHP();
         player.setRegenerating(true);
         if (this->isShopping() && player.getHP() / player.getMaxHP() == 1) {
-            this->sprites["ITEM1_FRAME"]->setTextureRect(
-                sf::IntRect(176, 0, 88, 88));
+            this->shopGUI->disableItem("FULL_HP");
         }
     }
     else if (player.isDead()) {
@@ -737,7 +737,7 @@ void PlayerGUI::update_ability(float dt)
 {
     if (player.getAbilityCooldown() > 0.f) {
         const float value = player.getAbilityCooldown() /
-                            (player.getAbilityMaxTime()) * calcX(80, vm);
+                            (player.getAbilityTotalMaxTime()) * calcX(80, vm);
         this->ability_icon.setSize(
             sf::Vector2f(calcX(80, vm), calcX(80, vm) - value));
         this->ability_icon.setPosition(
@@ -1033,17 +1033,14 @@ PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
     }
 
     if (this->isBuyingAbility()) {
-        if (player.getGold() >= abilityUpgradeGUI->getPrice("LOWER_COOLDOWN")) {
-            abilityUpgradeGUI->update("LOWER_COOLDOWN", mousePos);
-            if (abilityUpgradeGUI->isPressed("LOWER_COOLDOWN", mouseClicked)) {
-                abilityUpgradeGUI->buy("LOWER_COOLDOWN", &floatingTextSystem);
-                player.setAbilityMaxTimeModifier(
-                    player.getAbilityMaxTimeModifier() - 0.1f);
-                this->update_Gold();
-                this->abilityUpgradeGUI->updatePlayerInfo();
-                soundEngine.addSound("buy");
-                return true;
-            }
+        if (abilityUpgradeGUI->hasBoughtUpgrade(
+                mousePos, mouseClicked, "LOWER_COOLDOWN", &floatingTextSystem,
+                &soundEngine)) {
+            player.setAbilityMaxTimeModifier(
+                player.getAbilityMaxTimeModifier() - 0.1f);
+            this->update_Gold();
+            this->abilityUpgradeGUI->updatePlayerInfo();
+            return true;
         }
     }
 

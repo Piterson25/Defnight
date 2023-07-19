@@ -98,6 +98,12 @@ const bool ShopGUI::hasBoughtItem(const sf::Vector2i &mousePos,
     return false;
 }
 
+void ShopGUI::disableItem(const std::string t_name)
+{
+    this->shopItems[t_name].itemFrame->setTextureRect(
+        sf::IntRect(176, 0, 88, 88));
+}
+
 void ShopGUI::buy(const std::string &t_name,
                   FloatingTextSystem *floatingTextSystem)
 {
@@ -113,11 +119,26 @@ void ShopGUI::updateItemFrames()
     for (auto &pair : shopItems) {
         pair.second.itemButton->setTransparent();
 
-        if (player.getGold() >= pair.second.price) {
-            pair.second.itemFrame->setTextureRect(sf::IntRect(264, 0, 88, 88));
+        if (pair.first == "FULL_HP") {
+            if (player.getGold() >= pair.second.price &&
+                player.getHP() < player.getMaxHP()) {
+                pair.second.itemFrame->setTextureRect(
+                    sf::IntRect(264, 0, 88, 88));
+            }
+            else {
+                pair.second.itemFrame->setTextureRect(
+                    sf::IntRect(176, 0, 88, 88));
+            }
         }
         else {
-            pair.second.itemFrame->setTextureRect(sf::IntRect(176, 0, 88, 88));
+            if (player.getGold() >= pair.second.price) {
+                pair.second.itemFrame->setTextureRect(
+                    sf::IntRect(264, 0, 88, 88));
+            }
+            else {
+                pair.second.itemFrame->setTextureRect(
+                    sf::IntRect(176, 0, 88, 88));
+            }
         }
     }
 }

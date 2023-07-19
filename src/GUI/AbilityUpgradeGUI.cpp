@@ -97,6 +97,22 @@ const bool AbilityUpgradeGUI::isPressed(const std::string &t_name,
            !mouseClicked;
 }
 
+const bool AbilityUpgradeGUI::hasBoughtUpgrade(
+    const sf::Vector2i &mousePos, bool mouseClicked, const std::string &t_name,
+    FloatingTextSystem *floatingTextSystem, SoundEngine *soundEngine)
+{
+    if (player.getGold() >= getPrice(t_name)) {
+        update(t_name, mousePos);
+        if (isPressed(t_name, mouseClicked)) {
+            buy(t_name, floatingTextSystem);
+            soundEngine->addSound("buy");
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void AbilityUpgradeGUI::buy(const std::string &t_name,
                             FloatingTextSystem *floatingTextSystem)
 {
@@ -123,8 +139,7 @@ void AbilityUpgradeGUI::updateItemFrames()
 
 void AbilityUpgradeGUI::updatePlayerInfo()
 {
-    const float maxTime =
-        player.getAbilityMaxTime() * player.getAbilityMaxTimeModifier();
+    const float maxTime = player.getAbilityTotalMaxTime();
     std::string cooldownText = "Cooldown: ";
 
     cooldownText += std::format("{:g}", maxTime);

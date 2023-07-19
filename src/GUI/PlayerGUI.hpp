@@ -96,11 +96,6 @@ private:
     uint32_t option1_val;
     uint32_t option2_val;
 
-    uint32_t item1Price;
-    uint32_t item2Price;
-    uint32_t item3Price;
-    uint32_t item4Price;
-
     float titleCooldown;
     float waveCountdown;
 

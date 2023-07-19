@@ -30,6 +30,7 @@ public:
     const bool isAbilityActive() const;
     const float getAbilityCooldown() const;
     const float getAbilityTime() const;
+    const float getAbilityTotalMaxTime() const;
     const float getAbilityMaxTime() const;
     const float getAbilityMaxTimeModifier() const;
 
@@ -45,6 +46,7 @@ public:
     void setLeveling(bool t_leveling);
     void setSprinting(bool t_sprinting);
     void setAbilityActive(bool t_abilityActive);
+    void setAbilityCooldown(bool t_abilityCooldown);
     void setAbilityMaxTime(float t_abilityMaxTime);
     void setAbilityMaxTimeModifier(float t_abilityMaxTimeModifier);
     void setPlayedSound(bool t_soundPlayed);

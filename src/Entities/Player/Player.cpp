@@ -174,6 +174,11 @@ const float Player::getAbilityTime() const
     return this->abilityComponent->getAbilityTime();
 }
 
+const float Player::getAbilityTotalMaxTime() const
+{
+    return this->abilityComponent->getAbilityTotalMaxTime();
+}
+
 void Player::setGold(uint32_t t_gold)
 {
     this->gold = t_gold;
@@ -232,6 +237,11 @@ void Player::setSprinting(bool t_isSprinting)
 void Player::setAbilityActive(bool t_abilityActive)
 {
     this->abilityComponent->setAbilityActive(t_abilityActive);
+}
+
+void Player::setAbilityCooldown(bool t_abilityCooldown)
+{
+    this->abilityComponent->setAbilityCooldown(t_abilityCooldown);
 }
 
 void Player::setAbilityMaxTime(float t_abilityMaxTime)
@@ -368,8 +378,7 @@ const bool Player::isHPRegenerating(float dt)
 const bool Player::isAbilityActivated()
 {
     if (this->upgraded && sf::Mouse::isButtonPressed(sf::Mouse::Right) &&
-        this->getAbilityCooldown() ==
-            this->getAbilityMaxTime() * this->getAbilityMaxTimeModifier()) {
+        this->getAbilityCooldown() == this->getAbilityTotalMaxTime()) {
         this->abilityComponent->setAbilityActive(true);
         this->abilityComponent->setAbilityCooldown(0.f);
 
@@ -474,7 +483,7 @@ void Player::spawn(float dt)
 void Player::upgrade(const std::string &t_name, sf::IntRect &intRect)
 {
     this->setAbilityActive(false);
-    this->upgradeAttributes(name, intRect);
+    this->upgradeAttributes(t_name, intRect);
     this->setTexturePath("assets/textures/player/" + this->getName() + ".png");
     this->setUpgraded(true);
     this->setAbilityMaxTimeModifier(1.f);
