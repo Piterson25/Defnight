@@ -110,7 +110,7 @@ void AbilityComponent::setSpeedModifier(float t_speedModifier)
     this->speedModifier = t_speedModifier;
 }
 
-void AbilityComponent::abilityCounter(float dt)
+const bool AbilityComponent::abilityCounter(float dt)
 {
     const float maxTime = this->getAbilityTotalMaxTime();
 
@@ -121,9 +121,11 @@ void AbilityComponent::abilityCounter(float dt)
 
         if (this->abilityCooldown >= this->abilityTime && this->abilityActive) {
             this->abilityActive = false;
+            return true;
         }
         else if (this->abilityCooldown > maxTime) {
             this->abilityCooldown = maxTime;
         }
     }
+    return false;
 }

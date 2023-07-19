@@ -58,8 +58,9 @@ public:
     const bool isHPRegenerating(float dt);
     const bool isAbilityActivated();
     void abilityCounter(float dt);
-    void endAbility();
-    void doAbility(SoundEngine &soundEngine);
+    virtual void setAbilityTexture() = 0;
+    virtual void endAbility() = 0;
+    virtual void doAbility(SoundEngine &soundEngine) = 0;
     void spawn(float dt);
     void upgrade(const std::string &t_name, sf::IntRect &intRect);
     virtual void upgradeAttributes(const std::string &t_name,

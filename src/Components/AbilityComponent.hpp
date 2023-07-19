@@ -17,6 +17,8 @@ public:
     const float getArmorModifier() const;
     const float getSpeedModifier() const;
 
+    const bool abilityCounter(float dt);
+
     void setAbilityStats(float t_abilityMaxTime, float t_abilityCooldown,
                          float t_abilityTime);
     void setAbilityActive(bool t_abilityActive);
@@ -27,9 +29,6 @@ public:
     void setAttackModifier(float t_attackModifier);
     void setArmorModifier(float t_armorModifier);
     void setSpeedModifier(float t_speedModifier);
-
-    void abilityCounter(float dt);
-    void endAbility();
 
 private:
     sf::VideoMode &vm;

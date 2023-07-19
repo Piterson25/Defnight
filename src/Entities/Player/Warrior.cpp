@@ -17,6 +17,73 @@ Warrior::Warrior(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
 
 Warrior::~Warrior() = default;
 
+void Warrior::setAbilityTexture()
+{
+    if (this->name == "knight") {
+        this->ability.setTextureRect(sf::IntRect(0, 0, 16, 16));
+    }
+    else if (this->name == "scout") {
+        this->ability.setTextureRect(sf::IntRect(16, 0, 16, 16));
+    }
+    else if (this->name == "crusader") {
+        this->ability.setTextureRect(sf::IntRect(32, 0, 16, 16));
+    }
+    else if (this->name == "paladin") {
+        this->ability.setTextureRect(sf::IntRect(48, 0, 16, 16));
+    }
+}
+
+void Warrior::endAbility()
+{
+    if (this->name == "knight") {
+        this->armor -= 5;
+        this->increasedArmor = false;
+    }
+    else if (this->name == "crusader") {
+        this->armor -= 5;
+        this->attack -= 5;
+        this->increasedArmor = false;
+    }
+    else if (this->name == "paladin") {
+        this->armor -= 5;
+        this->reg -= 5;
+        this->increasedArmor = false;
+    }
+}
+
+void Warrior::doAbility(SoundEngine &soundEngine)
+{
+    if (this->name == "ninja") {
+        soundEngine.addSound("shuriken");
+    }
+    else if (this->name == "knight") {
+        this->armor += 5;
+        this->increasedArmor = true;
+        soundEngine.addSound("ability");
+    }
+    else if (this->name == "scout") {
+        soundEngine.addSound("ability");
+    }
+    else if (this->name == "master") {
+        soundEngine.addSound("shuriken");
+    }
+    else if (this->name == "bomber") {
+        soundEngine.addSound("shuriken");
+    }
+    else if (this->name == "crusader") {
+        this->increasedArmor = true;
+        this->armor += 5;
+        this->attack += 5;
+        soundEngine.addSound("ability");
+    }
+    else if (this->name == "paladin") {
+        this->increasedArmor = true;
+        this->armor += 5;
+        this->reg += 5;
+        soundEngine.addSound("ability");
+    }
+}
+
 void Warrior::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
 {
     if (t_name == "NINJA") {
