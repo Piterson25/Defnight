@@ -38,18 +38,23 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
     if (player.getName() == "ninja") {
         addProjectile("shuriken", player.getPosition().x + calcX(32, vm),
                       player.getPosition().y + calcY(32, vm), 0, coords, 0);
+        this->projectiles.back()->setAttack(player.getProjectileAttack());
     }
     else if (player.getName() == "master") {
         addProjectile("shuriken", player.getPosition().x + calcX(32, vm),
                       player.getPosition().y + calcY(32, vm), 0, coords, 0);
+        this->projectiles.back()->setAttack(player.getProjectileAttack());
         addProjectile("shuriken", player.getPosition().x + calcX(32, vm),
                       player.getPosition().y + calcY(32, vm), 0, coords, -45.f);
+        this->projectiles.back()->setAttack(player.getProjectileAttack());
         addProjectile("shuriken", player.getPosition().x + calcX(32, vm),
                       player.getPosition().y + calcY(32, vm), 0, coords, 45.f);
+        this->projectiles.back()->setAttack(player.getProjectileAttack());
     }
     else if (player.getName() == "bomber") {
         addProjectile("bomb", player.getPosition().x + calcX(32, vm),
                       player.getPosition().y + calcY(32, vm), 0, coords, 0);
+        this->projectiles.back()->setAttack(player.getProjectileAttack());
     }
 }
 

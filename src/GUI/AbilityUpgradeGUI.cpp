@@ -7,9 +7,9 @@ AbilityUpgradeGUI::AbilityUpgradeGUI(sf::VideoMode &t_vm, Player &t_player)
         new gui::Sprite("assets/textures/abilities_icons.png", calcX(80, vm),
                         calcY(160, vm), calcScale(8, vm), false);
     this->abilitySprite->setTextureRect(sf::IntRect(0, 0, 16, 16));
-    this->playerCooldown =
-        new gui::Text("Cooldown: 0s", calcChar(16, vm), calcX(16, vm),
-                      calcY(320, vm), sf::Color(255, 255, 255, 255), false);
+    this->playerStats["COOLDOWN"] = std::make_unique<gui::Text>(
+        "Cooldown: 0s", calcChar(16, vm), calcX(16, vm), calcY(320, vm),
+        sf::Color(255, 255, 255, 255), false);
     this->abilityUpgradesTexture.loadFromFile(
         "assets/textures/abilities_upgrades.png");
     this->selectsTexture.loadFromFile("assets/textures/select.png");
@@ -20,7 +20,6 @@ AbilityUpgradeGUI::AbilityUpgradeGUI(sf::VideoMode &t_vm, Player &t_player)
 AbilityUpgradeGUI::~AbilityUpgradeGUI()
 {
     delete this->abilitySprite;
-    delete this->playerCooldown;
     for (auto &pair : abilityUpgrades) {
         delete pair.second.itemSprite;
         delete pair.second.itemFrame;
@@ -43,6 +42,13 @@ void AbilityUpgradeGUI::increasePrice(const std::string &t_name)
         (((1 + sqrtf(5)) / 2.f) - 1) * this->abilityUpgrades[t_name].price);
     this->abilityUpgrades[t_name].itemPrice->setText(
         std::to_string(getPrice(t_name)));
+}
+
+void AbilityUpgradeGUI::addPlayerStat(const std::string &t_name, float t_x,
+                                      float t_y, const std::string &desc)
+{
+    this->playerStats[t_name] = std::make_unique<gui::Text>(
+        desc, calcChar(16, vm), t_x, t_y, sf::Color(255, 255, 255, 255), false);
 }
 
 void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
@@ -137,15 +143,23 @@ void AbilityUpgradeGUI::updateItemFrames()
     }
 }
 
-void AbilityUpgradeGUI::updatePlayerInfo()
+void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
+                                         const std::string &t_desc)
 {
-    const float maxTime = player.getAbilityTotalMaxTime();
-    std::string cooldownText = "Cooldown: ";
+    std::string text = t_desc + ": ";
 
-    cooldownText += std::format("{:g}", maxTime);
+    if (t_name == "COOLDOWN") {
+        const float maxTime = player.getAbilityTotalMaxTime();
 
-    cooldownText += "s";
-    this->playerCooldown->setText(cooldownText);
+        text += std::format("{:g}", maxTime);
+
+        text += "s";
+        playerStats[t_name]->setText(text);
+    }
+    else if (t_name == "ATTACK") {
+        playerStats[t_name]->setText(
+            text + std::to_string(player.getProjectileAttack()));
+    }
 }
 
 void AbilityUpgradeGUI::update(const std::string &t_name,
@@ -157,7 +171,9 @@ void AbilityUpgradeGUI::update(const std::string &t_name,
 void AbilityUpgradeGUI::draw(sf::RenderTarget &target)
 {
     this->abilitySprite->draw(target);
-    this->playerCooldown->draw(target);
+    for (const auto &stats : playerStats) {
+        stats.second->draw(target);
+    }
     for (const auto &pair : abilityUpgrades) {
         BuyItem item = pair.second;
 

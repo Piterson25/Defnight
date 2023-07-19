@@ -13,6 +13,7 @@ Warrior::Warrior(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->speed = 4;
     this->armor = 3;
     this->criticalChance = 20;
+    this->projectileAttack = 3;
 }
 
 Warrior::~Warrior() = default;

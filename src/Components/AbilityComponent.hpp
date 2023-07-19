@@ -13,7 +13,7 @@ public:
     const float getAbilityTotalMaxTime() const;
     const float getAbilityMaxTime() const;
     const float getAbilityMaxTimeModifier() const;
-    const float getAttackModifier() const;
+    const uint32_t getAttackIncrease() const;
     const float getArmorModifier() const;
     const float getSpeedModifier() const;
 
@@ -26,7 +26,7 @@ public:
     void setAbilityTime(float t_abilityTime);
     void setAbilityMaxTime(float t_abilityMaxTime);
     void setAbilityMaxTimeModifier(float t_abilityMaxTimeModifier);
-    void setAttackModifier(float t_attackModifier);
+    void setAttackIncrease(uint32_t t_attackIncrease);
     void setArmorModifier(float t_armorModifier);
     void setSpeedModifier(float t_speedModifier);
 
@@ -39,7 +39,7 @@ private:
     float abilityMaxTime;
     float abilityMaxTimeModifier;
 
-    float attackModifier;
+    uint32_t attackIncrease;
     float armorModifier;
     float speedModifier;
 };

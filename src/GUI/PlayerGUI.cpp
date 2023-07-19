@@ -366,7 +366,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
 
     this->abilityUpgradeGUI = new AbilityUpgradeGUI(vm, this->player);
     this->abilityUpgradeGUI->addAbilityUpgrade("LOWER_COOLDOWN", calcX(44, vm),
-                                               calcY(384, vm), 0, "Cooldown",
+                                               calcY(386, vm), 0, "Cooldown",
                                                "-10%", 20);
 
     this->shopGUI = new ShopGUI(vm, this->player);
@@ -520,7 +520,8 @@ void PlayerGUI::upgradePlayer(const std::string &name)
         intRect.left - 16, intRect.top, intRect.width, intRect.height));
     this->abilityUpgradeGUI->setAbility(
         this->sprites["ABILITY_ICON"]->getTextureRect());
-    this->abilityUpgradeGUI->updatePlayerInfo();
+    this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");
+    this->abilityUpgradeGUI->updatePlayerInfo("ATTACK", this->lang["ATTACK"]);
     updatePlayerAttributes();
 }
 
@@ -1039,7 +1040,16 @@ PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
             player.setAbilityMaxTimeModifier(
                 player.getAbilityMaxTimeModifier() - 0.1f);
             this->update_Gold();
-            this->abilityUpgradeGUI->updatePlayerInfo();
+            this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");
+            return true;
+        }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(
+                     mousePos, mouseClicked, "ATTACK", &floatingTextSystem,
+                     &soundEngine)) {
+            player.setAttackIncrease(player.getAttackIncrease() + 1);
+            this->update_Gold();
+            this->abilityUpgradeGUI->updatePlayerInfo("ATTACK",
+                                                      this->lang["ATTACK"]);
             return true;
         }
     }
@@ -1149,6 +1159,10 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
     this->sprite_buttons["UPGRADE1"]->update(mousePos);
     if (this->sprite_buttons["UPGRADE1"]->isPressed() && !mouseClicked) {
         if (player.getLevel() == 5) {
+            this->abilityUpgradeGUI->addPlayerStat(
+                "ATTACK", calcX(16, vm), calcY(344, vm), this->lang["ATTACK"]);
+            this->abilityUpgradeGUI->addAbilityUpgrade(
+                "ATTACK", calcX(44, vm), calcY(514, vm), 1, "Attack", "+1", 30);
             this->upgradePlayer("NINJA");
         }
         else if (player.getLevel() == 10) {
@@ -1227,7 +1241,7 @@ void PlayerGUI::updatePlayerAttributes()
     this->texts["SPEED"]->setText(std::to_string(player.getSpeed()));
     this->texts["SPEED"]->center(calcX(956, vm));
     this->texts["CRITICAL"]->setText(
-        std::to_string(player.getCriticalChance()));
+        std::to_string(player.getCriticalChance()) + "%");
     this->texts["CRITICAL"]->center(calcX(1020, vm));
     this->update_HP();
     if (player.getHP() < player.getMaxHP()) {

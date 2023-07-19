@@ -48,6 +48,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->sprint = 100.f;
     this->maxSprint = 100;
     this->criticalChance = 0;
+    this->projectileAttack = 0;
     this->kills = 0;
     this->upgraded = false;
     this->increasedArmor = false;
@@ -109,6 +110,11 @@ const uint32_t Player::getCriticalChance() const
     return this->criticalChance;
 }
 
+const uint32_t Player::getProjectileAttack() const
+{
+    return this->projectileAttack + this->abilityComponent->getAttackIncrease();
+}
+
 const uint32_t Player::getKills() const
 {
     return this->kills;
@@ -152,6 +158,11 @@ const float Player::getAbilityMaxTime() const
 const float Player::getAbilityMaxTimeModifier() const
 {
     return this->abilityComponent->getAbilityMaxTimeModifier();
+}
+
+const uint32_t Player::getAttackIncrease() const
+{
+    return this->abilityComponent->getAttackIncrease();
 }
 
 const bool Player::isSoundPlayed() const
@@ -209,6 +220,11 @@ void Player::setCriticalChance(uint32_t t_criticalChance)
     this->criticalChance = t_criticalChance;
 }
 
+void Player::setProjectileAttack(uint32_t t_projectileAttack)
+{
+    this->projectileAttack = t_projectileAttack;
+}
+
 void Player::setKills(uint32_t t_kills)
 {
     this->kills = t_kills;
@@ -252,6 +268,11 @@ void Player::setAbilityMaxTime(float t_abilityMaxTime)
 void Player::setAbilityMaxTimeModifier(float t_abilityMaxTimeModifier)
 {
     this->abilityComponent->setAbilityMaxTimeModifier(t_abilityMaxTimeModifier);
+}
+
+void Player::setAttackIncrease(uint32_t t_attackIncrease)
+{
+    this->abilityComponent->setAttackIncrease(t_attackIncrease);
 }
 
 void Player::setPlayedSound(bool t_soundPlayed)

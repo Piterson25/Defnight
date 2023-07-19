@@ -7,14 +7,12 @@ AbilityComponent::AbilityComponent(sf::VideoMode &t_vm) : vm(t_vm)
     this->abilityTime = 0.f;
     this->abilityMaxTime = 0.f;
     this->abilityMaxTimeModifier = 1.f;
-    this->attackModifier = 1.f;
+    this->attackIncrease = 0;
     this->armorModifier = 1.f;
     this->speedModifier = 1.f;
 }
 
-AbilityComponent::~AbilityComponent()
-{
-}
+AbilityComponent::~AbilityComponent() = default;
 
 const bool AbilityComponent::isAbilityActive() const
 {
@@ -46,9 +44,9 @@ const float AbilityComponent::getAbilityMaxTimeModifier() const
     return this->abilityMaxTimeModifier;
 }
 
-const float AbilityComponent::getAttackModifier() const
+const uint32_t AbilityComponent::getAttackIncrease() const
 {
-    return this->attackModifier;
+    return this->attackIncrease;
 }
 
 const float AbilityComponent::getArmorModifier() const
@@ -95,9 +93,9 @@ void AbilityComponent::setAbilityMaxTimeModifier(float t_abilityMaxTimeModifier)
     this->abilityMaxTimeModifier = t_abilityMaxTimeModifier;
 }
 
-void AbilityComponent::setAttackModifier(float t_attackModifier)
+void AbilityComponent::setAttackIncrease(uint32_t t_attackIncrease)
 {
-    this->attackModifier = t_attackModifier;
+    this->attackIncrease = t_attackIncrease;
 }
 
 void AbilityComponent::setArmorModifier(float t_armorModifier)

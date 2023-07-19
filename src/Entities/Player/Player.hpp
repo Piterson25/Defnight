@@ -19,6 +19,7 @@ public:
     const float getSprint() const;
     const uint32_t getMaxSprint() const;
     const uint32_t getCriticalChance() const;
+    const uint32_t getProjectileAttack() const;
     const uint32_t getKills() const;
     const bool isUpgraded() const;
     const bool isIncreasedArmor() const;
@@ -33,6 +34,7 @@ public:
     const float getAbilityTotalMaxTime() const;
     const float getAbilityMaxTime() const;
     const float getAbilityMaxTimeModifier() const;
+    const uint32_t getAttackIncrease() const;
 
     void setGold(uint32_t t_gold);
     void setArmor(uint32_t t_armor);
@@ -40,6 +42,7 @@ public:
     void setSprint(float t_sprint);
     void setMaxSprint(uint32_t t_maxSprint);
     void setCriticalChance(uint32_t t_criticalChance);
+    void setProjectileAttack(uint32_t t_projectileAttack);
     void setKills(uint32_t t_kills);
     void setUpgraded(bool t_upgraded);
     void setRegenerating(bool t_regenerating);
@@ -49,6 +52,7 @@ public:
     void setAbilityCooldown(bool t_abilityCooldown);
     void setAbilityMaxTime(float t_abilityMaxTime);
     void setAbilityMaxTimeModifier(float t_abilityMaxTimeModifier);
+    void setAttackIncrease(uint32_t t_attackIncrease);
     void setPlayedSound(bool t_soundPlayed);
 
     void controls(const std::unordered_map<std::string, int> &keybinds,
@@ -87,6 +91,7 @@ protected:
     float sprint;
     uint32_t maxSprint;
     uint32_t criticalChance;
+    uint32_t projectileAttack;
     uint32_t kills;
     bool upgraded;
     bool increasedArmor;
