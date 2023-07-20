@@ -10,6 +10,16 @@ ProjectileSystem::~ProjectileSystem()
     this->projectiles.clear();
 }
 
+void ProjectileSystem::addShuriken(const sf::Vector2f &t_position,
+                                   float difficulty_mod,
+                                   const sf::Vector2f &coords,
+                                   float coordsOffset, Player &player)
+{
+    this->projectiles.emplace_back(std::make_unique<Shuriken>(
+        "shuriken", this->vm, t_position, difficulty_mod, coords, coordsOffset,
+        player));
+}
+
 void ProjectileSystem::addProjectile(const std::string &name, float x, float y,
                                      float difficulty_mod,
                                      const sf::Vector2f &coords,
@@ -17,10 +27,6 @@ void ProjectileSystem::addProjectile(const std::string &name, float x, float y,
 {
     if (name == "stone") {
         this->projectiles.emplace_back(std::make_unique<Stone>(
-            name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
-    }
-    else if (name == "shuriken") {
-        this->projectiles.emplace_back(std::make_unique<Shuriken>(
             name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
     }
     else if (name == "bomb") {
@@ -36,20 +42,12 @@ void ProjectileSystem::addProjectile(const std::string &name, float x, float y,
 void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
 {
     if (player.getName() == "ninja") {
-        addProjectile("shuriken", player.getPosition().x + calcX(32, vm),
-                      player.getPosition().y + calcY(32, vm), 0, coords, 0);
-        this->projectiles.back()->setAttack(player.getProjectileAttack());
+        addShuriken(player.getCenter(), 0, coords, 0, player);
     }
     else if (player.getName() == "master") {
-        addProjectile("shuriken", player.getPosition().x + calcX(32, vm),
-                      player.getPosition().y + calcY(32, vm), 0, coords, 0);
-        this->projectiles.back()->setAttack(player.getProjectileAttack());
-        addProjectile("shuriken", player.getPosition().x + calcX(32, vm),
-                      player.getPosition().y + calcY(32, vm), 0, coords, -45.f);
-        this->projectiles.back()->setAttack(player.getProjectileAttack());
-        addProjectile("shuriken", player.getPosition().x + calcX(32, vm),
-                      player.getPosition().y + calcY(32, vm), 0, coords, 45.f);
-        this->projectiles.back()->setAttack(player.getProjectileAttack());
+        addShuriken(player.getCenter(), 0, coords, 0, player);
+        addShuriken(player.getCenter(), 0, coords, -45.f, player);
+        addShuriken(player.getCenter(), 0, coords, 45.f, player);
     }
     else if (player.getName() == "bomber") {
         addProjectile("bomb", player.getPosition().x + calcX(32, vm),

@@ -148,7 +148,7 @@ void MonsterSystem::projectileCollision(Projectile &proj, Player &player,
 {
     for (const auto &monster : monsters) {
         proj.monsterCollision(*monster, player, floatingTextSystem);
-        if (proj.hasCollidedMonster()) {
+        if (proj.getPiercing() == 0) {
             break;
         }
     }

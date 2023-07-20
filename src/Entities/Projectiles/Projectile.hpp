@@ -14,9 +14,11 @@ public:
     const bool hasCollidedPlayer() const;
     const bool hasCollidedMonster() const;
     const float getTimeExisting() const;
+    const uint32_t getPiercing() const;
     const bool hasExploded() const;
     const bool isBomb() const;
 
+    void setPiercing(uint32_t t_piercing);
     void calculateVelocity(const sf::Vector2f &coords);
     void wallCollision(const std::vector<sf::FloatRect> &obstacles);
     void checkWallCollision(const sf::FloatRect &obstacleBounds);
@@ -32,5 +34,6 @@ protected:
     bool collidedMonster;
     float angle;
 
+    uint32_t piercing;
     bool bouncing;
 };

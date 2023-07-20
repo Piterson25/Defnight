@@ -1,14 +1,17 @@
 #include "Shuriken.hpp"
 
-Shuriken::Shuriken(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
-                   float t_y, float difficulty_mod, const sf::Vector2f &coords,
-                   float coordsOffset)
-    : Projectile(t_name, t_vm, t_x, t_y, difficulty_mod, coords, coordsOffset)
+Shuriken::Shuriken(const std::string &t_name, sf::VideoMode &t_vm,
+                   const sf::Vector2f &t_position, float difficulty_mod,
+                   const sf::Vector2f &coords, float coordsOffset,
+                   Player &player)
+    : Projectile(t_name, t_vm, t_position.x, t_position.y, difficulty_mod,
+                 coords, coordsOffset)
 {
     this->sprite.setTextureRect(sf::IntRect(4, 0, 4, 4));
-    this->attack = 3;
+    this->attack = player.getProjectileAttack();
     this->HP = 3;
     this->speed = 4;
+    this->piercing = player.getProjectilePiercing();
 }
 
 Shuriken::~Shuriken() = default;
@@ -22,10 +25,10 @@ void Shuriken::monsterCollision(Monster &monster, Player &player,
 {
     const float distance = 2 * monster.getGlobalBounds().width;
 
-    if (vectorDistance(this->sprite.getPosition(), monster.getPosition()) <
+    if (!monster.isPunched() &&
+        vectorDistance(this->sprite.getPosition(), monster.getPosition()) <
             distance &&
-        !this->collidedWall && !this->collidedPlayer &&
-        !this->collidedMonster) {
+        !this->collidedWall && !this->collidedPlayer) {
 
         sf::FloatRect projectileBounds = this->sprite.getGlobalBounds();
         sf::FloatRect mobBounds = monster.getGlobalBounds();
@@ -35,36 +38,7 @@ void Shuriken::monsterCollision(Monster &monster, Player &player,
         nextPos.top += this->velocity.y;
 
         if (mobBounds.intersects(nextPos)) {
-            if (hasCollidedBottom(projectileBounds, mobBounds)) {
-                this->velocity.y = 0.f;
-                this->sprite.setPosition(projectileBounds.left,
-                                         mobBounds.top -
-                                             projectileBounds.height);
-                this->collidedMonster = true;
-            }
-            else if (hasCollidedTop(projectileBounds, mobBounds)) {
-                this->velocity.y = 0.f;
-                this->sprite.setPosition(projectileBounds.left,
-                                         mobBounds.top + mobBounds.height);
-                this->collidedMonster = true;
-            }
-
-            if (hasCollidedRight(projectileBounds, mobBounds)) {
-                this->velocity.x = 0.f;
-                this->sprite.setPosition(mobBounds.left -
-                                             projectileBounds.width,
-                                         projectileBounds.top);
-                this->collidedMonster = true;
-            }
-            else if (hasCollidedLeft(projectileBounds, mobBounds)) {
-                this->velocity.x = 0.f;
-                this->sprite.setPosition(mobBounds.left + mobBounds.width,
-                                         projectileBounds.top);
-                this->collidedMonster = true;
-            }
-        }
-
-        if (this->collidedMonster) {
+            this->collidedMonster = true;
             if ((static_cast<uint32_t>(Random::Float() * 100.f) + 1) <=
                 player.getCriticalChance()) {
                 const int attack = 2 * this->attack;
@@ -97,7 +71,11 @@ void Shuriken::monsterCollision(Monster &monster, Player &player,
 
             monster.punch();
 
-            this->HP = 0;
+            piercing -= 1;
+
+            if (this->piercing == 0) {
+                this->HP = 0;
+            }
         }
     }
 }

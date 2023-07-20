@@ -86,6 +86,10 @@ const bool ShopGUI::hasBoughtItem(const sf::Vector2i &mousePos,
                                   FloatingTextSystem *floatingTextSystem,
                                   SoundEngine *soundEngine)
 {
+    if (this->shopItems.find(t_name) == this->shopItems.end()) {
+        return false;
+    }
+
     if (player.getGold() >= getPrice(t_name)) {
         update(t_name, mousePos);
         if (isPressed(t_name, mouseClicked)) {

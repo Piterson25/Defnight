@@ -17,6 +17,7 @@ Projectile::Projectile(const std::string &t_name, sf::VideoMode &t_vm,
     this->collidedWall = false;
     this->collidedPlayer = false;
     this->collidedMonster = false;
+    this->piercing = 1;
     this->bouncing = false;
 
     if (this->name == "stone") {
@@ -58,6 +59,11 @@ const float Projectile::getTimeExisting() const
     return this->timeExisting;
 }
 
+const uint32_t Projectile::getPiercing() const
+{
+    return this->piercing;
+}
+
 const bool Projectile::hasExploded() const
 {
     if (this->name == "bomb") {
@@ -69,6 +75,11 @@ const bool Projectile::hasExploded() const
 const bool Projectile::isBomb() const
 {
     return this->name == "bomb";
+}
+
+void Projectile::setPiercing(uint32_t t_piercing)
+{
+    this->piercing = t_piercing;
 }
 
 void Projectile::calculateVelocity(const sf::Vector2f &coords)

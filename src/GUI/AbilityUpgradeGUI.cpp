@@ -3,12 +3,8 @@
 AbilityUpgradeGUI::AbilityUpgradeGUI(sf::VideoMode &t_vm, Player &t_player)
     : vm(t_vm), player(t_player)
 {
-    this->abilitySprite =
-        new gui::Sprite("assets/textures/abilities_icons.png", calcX(80, vm),
-                        calcY(160, vm), calcScale(8, vm), false);
-    this->abilitySprite->setTextureRect(sf::IntRect(0, 0, 16, 16));
     this->playerStats["COOLDOWN"] = std::make_unique<gui::Text>(
-        "Cooldown: 0s", calcChar(16, vm), calcX(16, vm), calcY(320, vm),
+        "Cooldown: 0s", calcChar(16, vm), calcX(32, vm), calcY(180, vm),
         sf::Color(255, 255, 255, 255), false);
     this->abilityUpgradesTexture.loadFromFile(
         "assets/textures/abilities_upgrades.png");
@@ -19,7 +15,6 @@ AbilityUpgradeGUI::AbilityUpgradeGUI(sf::VideoMode &t_vm, Player &t_player)
 
 AbilityUpgradeGUI::~AbilityUpgradeGUI()
 {
-    delete this->abilitySprite;
     for (auto &pair : abilityUpgrades) {
         delete pair.second.itemSprite;
         delete pair.second.itemFrame;
@@ -91,11 +86,6 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
         sf::IntRect(0, 0, 16, 16));
 }
 
-void AbilityUpgradeGUI::setAbility(const sf::IntRect &intRect)
-{
-    this->abilitySprite->setTextureRect(intRect);
-}
-
 const bool AbilityUpgradeGUI::isPressed(const std::string &t_name,
                                         bool mouseClicked)
 {
@@ -160,6 +150,10 @@ void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
         playerStats[t_name]->setText(
             text + std::to_string(player.getProjectileAttack()));
     }
+    else if (t_name == "PIERCING") {
+        playerStats[t_name]->setText(
+            text + std::to_string(player.getProjectilePiercing()));
+    }
 }
 
 void AbilityUpgradeGUI::update(const std::string &t_name,
@@ -170,7 +164,6 @@ void AbilityUpgradeGUI::update(const std::string &t_name,
 
 void AbilityUpgradeGUI::draw(sf::RenderTarget &target)
 {
-    this->abilitySprite->draw(target);
     for (const auto &stats : playerStats) {
         stats.second->draw(target);
     }

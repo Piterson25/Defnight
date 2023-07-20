@@ -366,7 +366,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
 
     this->abilityUpgradeGUI = new AbilityUpgradeGUI(vm, this->player);
     this->abilityUpgradeGUI->addAbilityUpgrade("LOWER_COOLDOWN", calcX(44, vm),
-                                               calcY(386, vm), 0, "Cooldown",
+                                               calcY(320, vm), 0, "Cooldown",
                                                "-10%", 20);
 
     this->shopGUI = new ShopGUI(vm, this->player);
@@ -518,10 +518,10 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     this->sprites["MINIATURE"]->setTextureRect(intRect);
     this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(
         intRect.left - 16, intRect.top, intRect.width, intRect.height));
-    this->abilityUpgradeGUI->setAbility(
-        this->sprites["ABILITY_ICON"]->getTextureRect());
     this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");
     this->abilityUpgradeGUI->updatePlayerInfo("ATTACK", this->lang["ATTACK"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("PIERCING",
+                                              this->lang["PIERCING"]);
     updatePlayerAttributes();
 }
 
@@ -1009,10 +1009,10 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
                                         &floatingTextSystem, &soundEngine)) {
             player.setArmor(player.getArmor() + 1);
             this->update_Gold();
-            if (player.getArmor() > 10 ||
+            if (player.getArmor() >= 10 ||
                 (player.isIncreasedArmor() &&
-                 ((player.isAbilityActive() && player.getArmor() > 15) ||
-                  (!player.isAbilityActive() && player.getArmor() > 10)))) {
+                 ((player.isAbilityActive() && player.getArmor() >= 15) ||
+                  (!player.isAbilityActive() && player.getArmor() >= 10)))) {
                 shopGUI->deleteItem("ARMOR");
             }
             return true;
@@ -1050,6 +1050,15 @@ PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("ATTACK",
                                                       this->lang["ATTACK"]);
+            return true;
+        }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(
+                     mousePos, mouseClicked, "PIERCING", &floatingTextSystem,
+                     &soundEngine)) {
+            player.setProjectilePiercing(player.getProjectilePiercing() + 1);
+            this->update_Gold();
+            this->abilityUpgradeGUI->updatePlayerInfo("PIERCING",
+                                                      this->lang["PIERCING"]);
             return true;
         }
     }
@@ -1160,9 +1169,16 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
     if (this->sprite_buttons["UPGRADE1"]->isPressed() && !mouseClicked) {
         if (player.getLevel() == 5) {
             this->abilityUpgradeGUI->addPlayerStat(
-                "ATTACK", calcX(16, vm), calcY(344, vm), this->lang["ATTACK"]);
+                "ATTACK", calcX(32, vm), calcY(216, vm), this->lang["ATTACK"]);
             this->abilityUpgradeGUI->addAbilityUpgrade(
-                "ATTACK", calcX(44, vm), calcY(514, vm), 1, "Attack", "+1", 30);
+                "ATTACK", calcX(44, vm), calcY(448, vm), 1,
+                this->lang["ATTACK"], "+1", 30);
+            this->abilityUpgradeGUI->addPlayerStat("PIERCING", calcX(32, vm),
+                                                   calcY(254, vm),
+                                                   this->lang["PIERCING"]);
+            this->abilityUpgradeGUI->addAbilityUpgrade(
+                "PIERCING", calcX(44, vm), calcY(576, vm), 2,
+                this->lang["PIERCING"], "+1", 50);
             this->upgradePlayer("NINJA");
         }
         else if (player.getLevel() == 10) {
@@ -1177,6 +1193,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
         this->upgrading = false;
         this->sprite_buttons["UPGRADE1"]->setTransparent();
         soundEngine.addSound("upgrade");
+        this->update_Gold();
         return true;
     }
 
@@ -1196,6 +1213,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
         this->upgrading = false;
         this->sprite_buttons["UPGRADE2"]->setTransparent();
         soundEngine.addSound("upgrade");
+        this->update_Gold();
         return true;
     }
 
@@ -1206,6 +1224,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
             this->upgrading = false;
             this->sprite_buttons["UPGRADE3"]->setTransparent();
             soundEngine.addSound("upgrade");
+            this->update_Gold();
             return true;
         }
     }

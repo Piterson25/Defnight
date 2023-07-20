@@ -30,7 +30,6 @@ public:
                            uint32_t iconID, const std::string &desc,
                            const std::string &value, uint32_t price);
 
-    void setAbility(const sf::IntRect &intRect);
     const bool isPressed(const std::string &t_name, bool mouseClicked);
     const bool hasBoughtUpgrade(const sf::Vector2i &mousePos, bool mouseClicked,
                                 const std::string &t_name,
@@ -49,7 +48,6 @@ private:
     sf::Texture selectsTexture;
     sf::Texture attributesTexture;
 
-    gui::Sprite *abilitySprite;
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> playerStats;
     std::unordered_map<std::string, BuyItem> abilityUpgrades;
 };
