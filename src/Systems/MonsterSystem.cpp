@@ -200,6 +200,8 @@ void MonsterSystem::spawnMonsters(
     float wave_mod = 1.f + static_cast<uint32_t>(wave / 10.f) * 2.f;
     const float minSpawnDistance = calcX(3.f * this->gridSize, this->vm);
 
+    freePositions.assign(obstaclesBounds.begin(), obstaclesBounds.end());
+
     for (const auto &id : this->monsterIDs) {
         if (freePositions.empty()) {
             break;
