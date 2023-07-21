@@ -463,13 +463,24 @@ void GameState::update(float dt)
             this->playerGUI->update_HP();
         }
 
-        this->playerGUI->updating_XP(dt);
         this->playerGUI->updating_HP(this->soundEngine, dt);
         this->playerGUI->updateSprint(dt);
 
         this->soundEngine.update();
         this->musicEngine.update();
     }
+
+    if (this->player->getPendingXP() > 0) {
+        if (!this->playerGUI->isLeveling() && !this->playerGUI->isUpgrading() &&
+            this->player->levelUp()) {
+            this->player->setLeveling(true);
+            this->playerGUI->update_level(soundEngine);
+            paused = true;
+        }
+        this->playerGUI->update_XP();
+    }
+
+    this->playerGUI->updating_XP(dt);
 
     this->playerGUI->update(this->mousePosView, this->waveCountdown,
                             this->monsterSystem->bossHP(), dt);

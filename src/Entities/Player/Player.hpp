@@ -15,7 +15,7 @@ public:
     const uint32_t getReg() const;
     const uint32_t getLevel() const;
     const uint32_t getMaxXP() const;
-    const uint32_t getLastMaxXP() const;
+    const uint32_t getPendingXP() const;
     const float getSprint() const;
     const uint32_t getMaxSprint() const;
     const uint32_t getCriticalChance() const;
@@ -49,6 +49,7 @@ public:
     void setUpgraded(bool t_upgraded);
     void setRegenerating(bool t_regenerating);
     void setLeveling(bool t_leveling);
+    void setPendingXP(uint32_t t_pendingXP);
     void setSprinting(bool t_sprinting);
     void setAbilityActive(bool t_abilityActive);
     void setAbilityCooldown(bool t_abilityCooldown);
@@ -60,7 +61,7 @@ public:
     void controls(const std::unordered_map<std::string, int> &keybinds,
                   float dt);
     void whooshSound(SoundEngine &soundEngine);
-    const bool hasLeveledUp(uint32_t monsterXP);
+    const bool levelUp();
     const bool isHPRegenerating(float dt);
     const bool isAbilityActivated();
     void abilityCounter(float dt);
@@ -89,7 +90,7 @@ protected:
     uint32_t reg;
     uint32_t level;
     uint32_t maxXP;
-    uint32_t lastMaxXP;
+    uint32_t pendingXP;
     float sprint;
     uint32_t maxSprint;
     uint32_t criticalChance;

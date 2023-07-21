@@ -611,9 +611,8 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
 
 void PlayerGUI::update_XP()
 {
-    this->xp_bar_percent =
-        static_cast<float>(player.getXP() - player.getLastMaxXP()) /
-        static_cast<float>(player.getMaxXP() - player.getLastMaxXP());
+    this->xp_bar_percent = static_cast<float>(player.getXP()) /
+                           static_cast<float>(player.getMaxXP());
     this->texts["XP"]->setText("XP:" + std::to_string(player.getXP()) + "/" +
                                std::to_string(player.getMaxXP()));
     this->texts["XP"]->center(calcX(640, vm));
@@ -624,7 +623,7 @@ void PlayerGUI::updating_XP(float dt)
     const int width = this->sprites["XP_BAR"]->getTextureRect().width;
     const int barrier = static_cast<int>(this->xp_bar_percent * 264.f);
 
-    if (width < barrier && player.isLeveling()) {
+    if (width <= barrier && player.isLeveling()) {
         const int distance = static_cast<int>(width + 1000.f * dt);
         if (distance > barrier) {
             this->sprites["XP_BAR"]->setTextureRect(

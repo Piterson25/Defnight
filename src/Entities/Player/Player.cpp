@@ -44,7 +44,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->reg = 0;
     this->level = 1;
     this->maxXP = 40;
-    this->lastMaxXP = 0;
+    this->pendingXP = 0;
     this->sprint = 100.f;
     this->maxSprint = 100;
     this->criticalChance = 0;
@@ -91,9 +91,9 @@ const uint32_t Player::getMaxXP() const
     return this->maxXP;
 }
 
-const uint32_t Player::getLastMaxXP() const
+const uint32_t Player::getPendingXP() const
 {
-    return this->lastMaxXP;
+    return this->pendingXP;
 }
 
 const float Player::getSprint() const
@@ -256,6 +256,11 @@ void Player::setLeveling(bool t_leveling)
     this->leveling = t_leveling;
 }
 
+void Player::setPendingXP(uint32_t t_pendingXP)
+{
+    this->pendingXP = t_pendingXP;
+}
+
 void Player::setSprinting(bool t_isSprinting)
 {
     this->sprinting = t_isSprinting;
@@ -372,22 +377,24 @@ void Player::whooshSound(SoundEngine &soundEngine)
     }
 }
 
-const bool Player::hasLeveledUp(uint32_t monsterXP)
+const bool Player::levelUp()
 {
-    this->setLeveling(true);
-    this->setXP(this->getXP() + monsterXP);
+    uint32_t newXP = 0;
 
-    bool addedlevel = false;
-
-    while (this->XP >= this->maxXP) {
-        this->level++;
-        this->lastMaxXP = this->maxXP;
-        this->maxXP += this->maxXP + this->level * 10;
-        addedlevel = true;
+    if (this->XP + this->pendingXP < this->maxXP) {
+        newXP = this->pendingXP;
+        this->pendingXP -= newXP;
+        this->setXP(this->getXP() + newXP);
     }
-    if (addedlevel) {
+    else {
+        newXP = this->maxXP - this->XP;
+        this->level++;
+        this->maxXP += this->maxXP + this->level * 10;
+        this->pendingXP -= newXP;
+        this->setXP(this->getXP() + newXP);
         return true;
     }
+
     return false;
 }
 

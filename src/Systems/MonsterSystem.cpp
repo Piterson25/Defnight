@@ -499,11 +499,8 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
     for (auto monster = this->monsters.begin();
          monster != this->monsters.end();) {
         if ((*monster)->hasDeadCountdownExpired()) {
-            if (player.hasLeveledUp((*monster)->getXP())) {
-                playerGUI.update_level(soundEngine);
-                paused = true;
-            }
-            playerGUI.update_XP();
+            player.setPendingXP(player.getPendingXP() + (*monster)->getXP());
+            player.setLeveling(true);
             dropSystem.addDrop("coin",
                                (*monster)->getPosition().x + calcX(16, vm),
                                (*monster)->getPosition().y + calcY(16, vm),
