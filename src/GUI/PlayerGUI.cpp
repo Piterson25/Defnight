@@ -522,6 +522,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     this->abilityUpgradeGUI->updatePlayerInfo("ATTACK", this->lang["ATTACK"]);
     this->abilityUpgradeGUI->updatePlayerInfo("PIERCING",
                                               this->lang["PIERCING"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("AREA", this->lang["AREA"]);
     updatePlayerAttributes();
 }
 
@@ -1060,6 +1061,15 @@ PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
                                                       this->lang["PIERCING"]);
             return true;
         }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(
+                     mousePos, mouseClicked, "AREA", &floatingTextSystem,
+                     &soundEngine)) {
+            player.setProjectileArea(player.getProjectileArea() + 1);
+            this->update_Gold();
+            this->abilityUpgradeGUI->updatePlayerInfo("AREA",
+                                                      this->lang["AREA"]);
+            return true;
+        }
     }
 
     return false;
@@ -1203,6 +1213,12 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
         }
         else if (player.getLevel() == 10) {
             if (player.getName() == "ninja") {
+                this->abilityUpgradeGUI->deleteUpgrade("PIERCING");
+                this->abilityUpgradeGUI->addPlayerStat(
+                    "AREA", calcX(32, vm), calcY(254, vm), this->lang["AREA"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade(
+                    "AREA", calcX(44, vm), calcY(576, vm), 3,
+                    this->lang["AREA"], "+1", 100);
                 this->upgradePlayer("BOMBER");
             }
             else if (player.getName() == "knight") {

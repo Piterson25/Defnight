@@ -10,8 +10,10 @@ public:
 
     const std::vector<sf::FloatRect> getParticlesGlobalBounds() const;
 
+    void clearParticlesGlobalBounds();
+
     void addParticle(const std::string &name, float x, float y,
-                     std::uint32_t attack);
+                     std::uint32_t attack, std::uint32_t area);
 
     void update(float dt);
     void draw(sf::RenderTarget &target);

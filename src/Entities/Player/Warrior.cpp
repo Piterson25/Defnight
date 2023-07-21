@@ -114,6 +114,7 @@ void Warrior::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
     else if (t_name == "BOMBER") {
         intRect = sf::IntRect(80, 0, 16, 16);
         this->setCriticalChance(this->getCriticalChance() + 10);
+        this->setProjectileArea(2);
         this->setName("bomber");
         this->abilityComponent->setAbilityStats(2.f, 2.f, 2.f);
     }

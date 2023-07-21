@@ -10,6 +10,15 @@ ProjectileSystem::~ProjectileSystem()
     this->projectiles.clear();
 }
 
+void ProjectileSystem::addBomb(const sf::Vector2f &t_position,
+                               float difficulty_mod, const sf::Vector2f &coords,
+                               float coordsOffset, Player &player)
+{
+    this->projectiles.emplace_back(
+        std::make_unique<Bomb>("bomb", this->vm, t_position, difficulty_mod,
+                               coords, coordsOffset, player));
+}
+
 void ProjectileSystem::addShuriken(const sf::Vector2f &t_position,
                                    float difficulty_mod,
                                    const sf::Vector2f &coords,
@@ -29,10 +38,6 @@ void ProjectileSystem::addProjectile(const std::string &name, float x, float y,
         this->projectiles.emplace_back(std::make_unique<Stone>(
             name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
     }
-    else if (name == "bomb") {
-        this->projectiles.emplace_back(std::make_unique<Bomb>(
-            name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
-    }
     else if (name == "groundWave") {
         this->projectiles.emplace_back(std::make_unique<GroundWave>(
             name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
@@ -50,9 +55,7 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
         addShuriken(player.getCenter(), 0, coords, 45.f, player);
     }
     else if (player.getName() == "bomber") {
-        addProjectile("bomb", player.getPosition().x + calcX(32, vm),
-                      player.getPosition().y + calcY(32, vm), 0, coords, 0);
-        this->projectiles.back()->setAttack(player.getProjectileAttack());
+        addBomb(player.getCenter(), 0, coords, 0, player);
     }
 }
 
@@ -111,14 +114,16 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
             ((*proj)->hasCollidedWall() || (*proj)->hasCollidedMonster())) {
             particleSystem.addParticle(
                 (*proj)->getName(), (*proj)->getPosition().x,
-                (*proj)->getPosition().y, (*proj)->getAttack());
+                (*proj)->getPosition().y, (*proj)->getAttack(),
+                player.getProjectileArea());
             soundEngine.addSound("explosion");
             proj = this->projectiles.erase(proj);
         }
         else if ((*proj)->hasExploded()) {
             particleSystem.addParticle(
                 (*proj)->getName(), (*proj)->getPosition().x,
-                (*proj)->getPosition().y, (*proj)->getAttack());
+                (*proj)->getPosition().y, (*proj)->getAttack(),
+                player.getProjectileArea());
             soundEngine.addSound("explosion");
             proj = this->projectiles.erase(proj);
         }

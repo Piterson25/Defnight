@@ -1,14 +1,15 @@
 #include "Particle.hpp"
 
 Particle::Particle(sf::VideoMode &vm, const std::string &name, float x, float y,
-                   std::uint32_t attack)
+                   std::uint32_t attack, std::uint32_t area)
     : vm(vm), name(name), attack(attack)
 {
     if (this->name == "bomb") {
         this->texture.loadFromFile("assets/textures/explosion.png");
     }
     this->sprite.setTexture(this->texture);
-    this->sprite.setScale(calcScale(4, vm), calcScale(4, vm));
+    this->sprite.setScale(calcScale(4 * static_cast<float>(area) / 2.f, vm),
+                          calcScale(4 * static_cast<float>(area) / 2.f, vm));
     this->sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
     this->sprite.setPosition(x - this->sprite.getGlobalBounds().width / 2.f,
                              y - this->sprite.getGlobalBounds().height / 2.f);

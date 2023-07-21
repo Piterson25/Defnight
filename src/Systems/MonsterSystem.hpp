@@ -13,7 +13,7 @@ class ProjectileSystem;
 
 class MonsterSystem {
 public:
-    MonsterSystem(sf::VideoMode &vm,
+    MonsterSystem(sf::VideoMode &vm, Player &player,
                   const std::vector<sf::FloatRect> &obstaclesBounds,
                   float gridSize, float difficulty_mod);
     ~MonsterSystem();
@@ -52,6 +52,7 @@ public:
 
 private:
     sf::VideoMode &vm;
+    Player &player;
     std::list<std::unique_ptr<Monster>> monsters;
     std::vector<short> monsterIDs;
     std::list<sf::FloatRect> freePositions;

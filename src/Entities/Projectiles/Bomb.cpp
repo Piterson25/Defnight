@@ -1,13 +1,16 @@
 #include "Bomb.hpp"
 
-Bomb::Bomb(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
-           float difficulty_mod, const sf::Vector2f &coords, float coordsOffset)
-    : Projectile(t_name, t_vm, t_x, t_y, difficulty_mod, coords, coordsOffset)
+Bomb::Bomb(const std::string &t_name, sf::VideoMode &t_vm,
+           const sf::Vector2f &t_position, float difficulty_mod,
+           const sf::Vector2f &coords, float coordsOffset, Player &player)
+    : Projectile(t_name, t_vm, t_position.x, t_position.y, difficulty_mod,
+                 coords, coordsOffset)
 {
     this->sprite.setTextureRect(sf::IntRect(8, 0, 4, 4));
-    this->attack = 7;
+    this->attack = player.getProjectileAttack();
     this->HP = 1;
     this->speed = 3;
+    this->piercing = 1;
 }
 
 Bomb::~Bomb() = default;

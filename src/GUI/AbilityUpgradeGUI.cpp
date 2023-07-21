@@ -39,6 +39,12 @@ void AbilityUpgradeGUI::increasePrice(const std::string &t_name)
         std::to_string(getPrice(t_name)));
 }
 
+void AbilityUpgradeGUI::deleteUpgrade(const std::string &t_name)
+{
+    this->abilityUpgrades.erase(t_name);
+    this->playerStats.erase(t_name);
+}
+
 void AbilityUpgradeGUI::addPlayerStat(const std::string &t_name, float t_x,
                                       float t_y, const std::string &desc)
 {
@@ -97,6 +103,10 @@ const bool AbilityUpgradeGUI::hasBoughtUpgrade(
     const sf::Vector2i &mousePos, bool mouseClicked, const std::string &t_name,
     FloatingTextSystem *floatingTextSystem, SoundEngine *soundEngine)
 {
+    if (this->abilityUpgrades.find(t_name) == this->abilityUpgrades.end()) {
+        return false;
+    }
+
     if (player.getGold() >= getPrice(t_name)) {
         update(t_name, mousePos);
         if (isPressed(t_name, mouseClicked)) {
@@ -136,6 +146,10 @@ void AbilityUpgradeGUI::updateItemFrames()
 void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
                                          const std::string &t_desc)
 {
+    if (this->playerStats.find(t_name) == this->playerStats.end()) {
+        return;
+    }
+
     std::string text = t_desc + ": ";
 
     if (t_name == "COOLDOWN") {
@@ -153,6 +167,10 @@ void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
     else if (t_name == "PIERCING") {
         playerStats[t_name]->setText(
             text + std::to_string(player.getProjectilePiercing()));
+    }
+    else if (t_name == "AREA") {
+        playerStats[t_name]->setText(
+            text + std::to_string(player.getProjectileArea()));
     }
 }
 

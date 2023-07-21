@@ -21,6 +21,7 @@ public:
     const uint32_t getCriticalChance() const;
     const uint32_t getProjectileAttack() const;
     const uint32_t getProjectilePiercing() const;
+    const uint32_t getProjectileArea() const;
     const uint32_t getKills() const;
     const bool isUpgraded() const;
     const bool isIncreasedArmor() const;
@@ -45,6 +46,7 @@ public:
     void setCriticalChance(uint32_t t_criticalChance);
     void setProjectileAttack(uint32_t t_projectileAttack);
     void setProjectilePiercing(uint32_t t_projectilePiercing);
+    void setProjectileArea(uint32_t t_projectileArea);
     void setKills(uint32_t t_kills);
     void setUpgraded(bool t_upgraded);
     void setRegenerating(bool t_regenerating);
@@ -96,6 +98,7 @@ protected:
     uint32_t criticalChance;
     uint32_t projectileAttack;
     uint32_t projectilePiercing;
+    uint32_t projectileArea;
     uint32_t kills;
     bool upgraded;
     bool increasedArmor;

@@ -114,20 +114,20 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
 
     if (difficulty_name == "easy") {
         this->monsterSystem = new MonsterSystem(
-            gameSettings.resolution, this->tileMap->getTilesGlobalBounds(),
-            this->gridSize, 0.75f);
+            gameSettings.resolution, *player,
+            this->tileMap->getTilesGlobalBounds(), this->gridSize, 0.75f);
         this->dropSystem = new DropSystem(gameSettings.resolution, 0.75f);
     }
     else if (difficulty_name == "hard") {
         this->monsterSystem = new MonsterSystem(
-            gameSettings.resolution, this->tileMap->getTilesGlobalBounds(),
-            this->gridSize, 1.25f);
+            gameSettings.resolution, *player,
+            this->tileMap->getTilesGlobalBounds(), this->gridSize, 1.25f);
         this->dropSystem = new DropSystem(gameSettings.resolution, 1.25f);
     }
     else {
         this->monsterSystem = new MonsterSystem(
-            gameSettings.resolution, this->tileMap->getTilesGlobalBounds(),
-            this->gridSize, 1.f);
+            gameSettings.resolution, *player,
+            this->tileMap->getTilesGlobalBounds(), this->gridSize, 1.f);
         this->dropSystem = new DropSystem(gameSettings.resolution, 1.f);
     }
 
@@ -489,6 +489,8 @@ void GameState::update(float dt)
     this->monsterSystem->explosionAttack(
         this->particleSystem->getParticlesGlobalBounds(),
         *this->floatingTextSystem);
+
+    this->particleSystem->clearParticlesGlobalBounds();
 
     this->floatingTextSystem->update(dt);
 

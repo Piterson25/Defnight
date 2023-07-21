@@ -18,6 +18,9 @@ public:
     ProjectileSystem(sf::VideoMode &vm);
     ~ProjectileSystem();
 
+    void addBomb(const sf::Vector2f &t_position, float difficulty_mod,
+                 const sf::Vector2f &coords, float coordsOffset,
+                 Player &player);
     void addShuriken(const sf::Vector2f &t_position, float difficulty_mod,
                      const sf::Vector2f &coords, float coordsOffset,
                      Player &player);

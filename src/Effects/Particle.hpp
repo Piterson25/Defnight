@@ -5,7 +5,7 @@
 class Particle {
 public:
     Particle(sf::VideoMode &vm, const std::string &name, float x, float y,
-             std::uint32_t attack);
+             std::uint32_t attack, std::uint32_t area);
     ~Particle();
 
     const bool hasExploded() const;

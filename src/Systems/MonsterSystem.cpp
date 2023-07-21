@@ -1,9 +1,9 @@
 #include "MonsterSystem.hpp"
 
-MonsterSystem::MonsterSystem(sf::VideoMode &vm,
+MonsterSystem::MonsterSystem(sf::VideoMode &vm, Player &player,
                              const std::vector<sf::FloatRect> &obstaclesBounds,
                              float gridSize, float difficulty_mod)
-    : vm(vm), gridSize(gridSize), difficulty_mod(difficulty_mod)
+    : vm(vm), player(player), gridSize(gridSize), difficulty_mod(difficulty_mod)
 {
     this->bossWave = false;
     freePositions.assign(obstaclesBounds.begin(), obstaclesBounds.end());
@@ -123,7 +123,7 @@ void MonsterSystem::explosionAttack(
             if (monster->getGlobalBounds().intersects(bounds)) {
                 if (!monster->isDead() && !monster->isPunched() &&
                     monster->hasSpawned()) {
-                    const int attack = 7;
+                    const int attack = player.getProjectileAttack();
                     floatingTextSystem.addFloatingText(
                         std::to_string(-attack), calcChar(16, vm),
                         monster->getPosition().x + calcX(32, vm),
