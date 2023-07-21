@@ -106,9 +106,9 @@ const bool Drop::isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
             player.setGold(player.getGold() + this->worth);
             playerGUI.update_Gold();
             floatingTextSystem.addFloatingText(
-                "+" + std::to_string(this->worth), calcChar(16, vm),
+                "gold", "+" + std::to_string(this->worth), calcChar(16, vm),
                 this->sprite.getPosition().x - calcX(16, vm),
-                this->sprite.getPosition().y, sf::Color(255, 246, 76), false);
+                this->sprite.getPosition().y, false);
             soundEngine.addSound("coin");
         }
         else if (player.getHP() < player.getMaxHP()) {
@@ -116,10 +116,9 @@ const bool Drop::isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
             player.setRegenerating(true);
             playerGUI.update_HP();
             floatingTextSystem.addFloatingText(
-                "+" + std::to_string(this->worth), calcChar(16, vm),
+                "red", "+" + std::to_string(this->worth), calcChar(16, vm),
                 this->sprite.getPosition().x - calcX(16, vm),
-                this->sprite.getPosition().y - calcY(16, vm),
-                sf::Color(182, 60, 53), false);
+                this->sprite.getPosition().y - calcY(16, vm), false);
             soundEngine.addSound("heart");
         }
 

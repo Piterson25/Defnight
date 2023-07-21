@@ -113,8 +113,8 @@ void ShopGUI::buy(const std::string &t_name,
 {
     player.setGold(player.getGold() - getPrice(t_name));
     floatingTextSystem->addFloatingText(
-        "-" + std::to_string(getPrice(t_name)), calcChar(16, vm), calcX(20, vm),
-        calcX(96, vm), sf::Color(255, 246, 76), true);
+        "gold", "-" + std::to_string(getPrice(t_name)), calcChar(16, vm),
+        calcX(20, vm), calcX(96, vm), true);
     increasePrice(t_name);
 }
 

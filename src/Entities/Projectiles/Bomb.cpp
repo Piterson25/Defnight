@@ -71,10 +71,9 @@ void Bomb::monsterCollision(Monster &monster, Player &player,
                 player.getCriticalChance()) {
                 const int attack = 2 * this->attack;
                 floatingTextSystem.addFloatingText(
-                    std::to_string(-attack), calcChar(16, vm),
+                    "orange", std::to_string(-attack), calcChar(16, vm),
                     monster.getPosition().x + calcX(32, vm),
-                    monster.getPosition().y + calcY(32, vm),
-                    sf::Color(233, 134, 39), false);
+                    monster.getPosition().y + calcY(32, vm), false);
                 if (static_cast<int>(monster.getHP() - attack) < 0) {
                     monster.setHP(0);
                 }
@@ -85,10 +84,9 @@ void Bomb::monsterCollision(Monster &monster, Player &player,
             else {
                 const int attack = this->attack;
                 floatingTextSystem.addFloatingText(
-                    std::to_string(-attack), calcChar(16, vm),
+                    "white", std::to_string(-attack), calcChar(16, vm),
                     monster.getPosition().x + calcX(32, vm),
-                    monster.getPosition().y + calcY(32, vm),
-                    sf::Color(255, 255, 255), false);
+                    monster.getPosition().y + calcY(32, vm), false);
                 if (static_cast<int>(monster.getHP() - attack) < 0) {
                     monster.setHP(0);
                 }

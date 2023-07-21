@@ -76,10 +76,9 @@ void MonsterSystem::playerAttack(Player &player,
                     player.getCriticalChance()) {
                     const int attack = 2 * player.getAttack();
                     floatingTextSystem.addFloatingText(
-                        std::to_string(-attack), calcChar(16, vm),
+                        "orange", std::to_string(-attack), calcChar(16, vm),
                         monster->getPosition().x + calcX(32, vm),
-                        monster->getPosition().y + calcY(32, vm),
-                        sf::Color(233, 134, 39), false);
+                        monster->getPosition().y + calcY(32, vm), false);
                     if (static_cast<int>(monster->getHP() - attack) < 0) {
                         monster->setHP(0);
                     }
@@ -90,10 +89,9 @@ void MonsterSystem::playerAttack(Player &player,
                 else {
                     const int attack = player.getAttack();
                     floatingTextSystem.addFloatingText(
-                        std::to_string(-attack), calcChar(16, vm),
+                        "white", std::to_string(-attack), calcChar(16, vm),
                         monster->getPosition().x + calcX(32, vm),
-                        monster->getPosition().y + calcY(32, vm),
-                        sf::Color(255, 255, 255), false);
+                        monster->getPosition().y + calcY(32, vm), false);
                     if (static_cast<int>(monster->getHP() - attack) < 0) {
                         monster->setHP(0);
                     }
@@ -125,10 +123,9 @@ void MonsterSystem::explosionAttack(
                     monster->hasSpawned()) {
                     const int attack = player.getProjectileAttack();
                     floatingTextSystem.addFloatingText(
-                        std::to_string(-attack), calcChar(16, vm),
+                        "white", std::to_string(-attack), calcChar(16, vm),
                         monster->getPosition().x + calcX(32, vm),
-                        monster->getPosition().y + calcY(32, vm),
-                        sf::Color(255, 255, 255), false);
+                        monster->getPosition().y + calcY(32, vm), false);
                     if (static_cast<int>(monster->getHP() - attack) < 0) {
                         monster->setHP(0);
                     }
@@ -477,14 +474,14 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
                     }
                     else {
                         floatingTextSystem.addFloatingText(
+                            "flamingo",
                             std::to_string(static_cast<int>(
                                 -round(monster->getAttack() -
                                        (monster->getAttack() *
                                         player.getArmor() * 0.05f)))),
                             calcChar(16, vm),
                             player.getPosition().x + calcX(48, vm),
-                            player.getPosition().y + calcY(32, vm),
-                            sf::Color(228, 92, 95), false);
+                            player.getPosition().y + calcY(32, vm), false);
                     }
 
                     playerGUI.update_HP();

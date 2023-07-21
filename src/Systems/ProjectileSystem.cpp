@@ -147,10 +147,10 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
                     player.punch();
 
                     floatingTextSystem.addFloatingText(
-                        "-" + std::to_string(attack), calcChar(16, vm),
+                        "flamingo", "-" + std::to_string(attack),
+                        calcChar(16, vm),
                         player.getPosition().x + calcX(32, vm),
-                        player.getPosition().y + calcY(32, vm),
-                        sf::Color(228, 92, 95), false);
+                        player.getPosition().y + calcY(32, vm), false);
                     playerGui.update_HP();
                 }
             }

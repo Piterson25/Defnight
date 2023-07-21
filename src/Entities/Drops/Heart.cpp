@@ -45,10 +45,9 @@ const bool Heart::isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
             player.setRegenerating(true);
             playerGUI.update_HP();
             floatingTextSystem.addFloatingText(
-                "+" + std::to_string(this->worth), calcChar(16, vm),
+                "red", "+" + std::to_string(this->worth), calcChar(16, vm),
                 this->sprite.getPosition().x - calcX(16, vm),
-                this->sprite.getPosition().y - calcY(16, vm),
-                sf::Color(182, 60, 53), false);
+                this->sprite.getPosition().y - calcY(16, vm), false);
             soundEngine.addSound("heart");
         }
 
