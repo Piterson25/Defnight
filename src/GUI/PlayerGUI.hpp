@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ShopGUI.hpp"
+#include "UpgradeGUI.hpp"
 
 class PlayerGUI {
 public:
@@ -71,8 +71,9 @@ private:
     Player &player;
     AbilityUpgradeGUI *abilityUpgradeGUI;
     ShopGUI *shopGUI;
+    UpgradeGUI *upgradeGUI;
 
-    enum class SideGUI { SHOP, ABILITY_UPGRADE, NONE };
+    enum class SideGUI { SHOP, ABILITY_UPGRADE, UPGRADE, NONE };
 
     SideGUI sideGUI;
 

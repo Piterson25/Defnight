@@ -196,98 +196,19 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->option2_id = 0;
     this->option2_val = 0;
 
-    this->upgrading = false;
     this->sprites["UPGRADES"] =
         new gui::Sprite("assets/textures/side_gui.png", calcX(1280, vm),
                         calcY(128, vm), calcScale(1, vm), false);
     this->sprites["UPGRADES"]->flipHorizontal();
 
-    this->sprites["UPGRADE1_FRAME"] =
-        new gui::Sprite(this->select_texture, calcX(1008, vm), calcY(210, vm),
-                        calcScale(1, vm), false);
-    this->sprites["UPGRADE1_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
-    this->sprites["UPGRADE2_FRAME"] =
-        new gui::Sprite(this->select_texture, calcX(1008, vm), calcY(380, vm),
-                        calcScale(1, vm), false);
-    this->sprites["UPGRADE2_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
-    this->sprites["UPGRADE3_FRAME"] =
-        new gui::Sprite(this->select_texture, calcX(1008, vm), calcY(550, vm),
-                        calcScale(1, vm), false);
-    this->sprites["UPGRADE3_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
-    this->sprite_buttons["UPGRADE1"] =
-        new gui::ButtonSprite(this->select_texture, calcX(1008, vm),
-                              calcY(210, vm), calcScale(1, vm), false);
-    this->sprite_buttons["UPGRADE1"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
-    this->sprite_buttons["UPGRADE2"] =
-        new gui::ButtonSprite(this->select_texture, calcX(1008, vm),
-                              calcY(380, vm), calcScale(1, vm), false);
-    this->sprite_buttons["UPGRADE2"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
-    this->sprite_buttons["UPGRADE3"] =
-        new gui::ButtonSprite(this->select_texture, calcX(1008, vm),
-                              calcY(550, vm), calcScale(1, vm), false);
-    this->sprite_buttons["UPGRADE3"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
-
-    this->sprites["UPGRADE1"] =
-        new gui::Sprite(this->upgrades_texture, calcX(1020, vm), calcY(222, vm),
-                        calcScale(4, vm), false);
-    this->sprites["UPGRADE1"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
-    this->sprites["UPGRADE2"] =
-        new gui::Sprite(this->upgrades_texture, calcX(1020, vm), calcY(392, vm),
-                        calcScale(4, vm), false);
-    this->sprites["UPGRADE2"]->setTextureRect(sf::IntRect(32, 0, 16, 16));
-    this->sprites["UPGRADE3"] =
-        new gui::Sprite(this->upgrades_texture, calcX(1020, vm), calcY(562, vm),
-                        calcScale(4, vm), false);
-    this->sprites["UPGRADE3"]->setTextureRect(sf::IntRect(48, 0, 16, 16));
-
-    this->texts["UPGRADE1_NAME"] =
-        new gui::Text(this->lang["NINJA"], calcChar(16, vm), calcX(1112, vm),
-                      calcY(226, vm), sf::Color(255, 255, 255), false);
-    this->texts["UPGRADE2_NAME"] =
-        new gui::Text(this->lang["KNIGHT"], calcChar(16, vm), calcX(1112, vm),
-                      calcY(396, vm), sf::Color(255, 255, 255), false);
-    this->texts["UPGRADE3_NAME"] =
-        new gui::Text(this->lang["SCOUT"], calcChar(16, vm), calcX(1112, vm),
-                      calcY(566, vm), sf::Color(255, 255, 255), false);
-
-    this->sprites["UPGRADE1_ABILITY"] =
-        new gui::Sprite(this->abilities_texture, calcX(1112, vm),
-                        calcY(256, vm), calcScale(2, vm), false);
-    this->sprites["UPGRADE1_ABILITY"]->setTextureRect(
-        sf::IntRect(0, 0, 16, 16));
-    this->sprites["UPGRADE2_ABILITY"] =
-        new gui::Sprite(this->abilities_texture, calcX(1112, vm),
-                        calcY(426, vm), calcScale(2, vm), false);
-    this->sprites["UPGRADE2_ABILITY"]->setTextureRect(
-        sf::IntRect(16, 0, 16, 16));
-    this->sprites["UPGRADE3_ABILITY"] =
-        new gui::Sprite(this->abilities_texture, calcX(1112, vm),
-                        calcY(596, vm), calcScale(2, vm), false);
-    this->sprites["UPGRADE3_ABILITY"]->setTextureRect(
-        sf::IntRect(32, 0, 16, 16));
-
-    this->sprites["UPGRADE1_ADD"] =
-        new gui::Sprite(this->attributes_texture, calcX(1184, vm),
-                        calcY(256, vm), calcScale(2, vm), false);
-    this->sprites["UPGRADE1_ADD"]->setTextureRect(sf::IntRect(112, 0, 16, 16));
-    this->sprites["UPGRADE2_ADD"] =
-        new gui::Sprite(this->attributes_texture, calcX(1184, vm),
-                        calcY(426, vm), calcScale(2, vm), false);
-    this->sprites["UPGRADE2_ADD"]->setTextureRect(sf::IntRect(80, 0, 16, 16));
-    this->sprites["UPGRADE3_ADD"] =
-        new gui::Sprite(this->attributes_texture, calcX(1184, vm),
-                        calcY(596, vm), calcScale(2, vm), false);
-    this->sprites["UPGRADE3_ADD"]->setTextureRect(sf::IntRect(32, 0, 16, 16));
-
-    this->texts["UPGRADE1_ADD_VALUE"] =
-        new gui::Text("+1", calcChar(16, vm), calcX(1224, vm), calcY(266, vm),
-                      sf::Color(255, 255, 255), false);
-    this->texts["UPGRADE2_ADD_VALUE"] =
-        new gui::Text("+1", calcChar(16, vm), calcX(1224, vm), calcY(436, vm),
-                      sf::Color(255, 255, 255), false);
-    this->texts["UPGRADE3_ADD_VALUE"] =
-        new gui::Text("+1", calcChar(16, vm), calcX(1224, vm), calcY(606, vm),
-                      sf::Color(255, 255, 255), false);
+    this->upgradeGUI = new UpgradeGUI(vm, this->player);
+    this->upgrading = false;
+    this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1036, vm), calcY(222, vm),
+                                    this->lang["NINJA"], 1, 1, 7, 1);
+    this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1036, vm), calcY(392, vm),
+                                    this->lang["KNIGHT"], 2, 2, 5, 1);
+    this->upgradeGUI->changeUpgrade("UPGRADE3", calcX(1036, vm), calcY(562, vm),
+                                    this->lang["SCOUT"], 3, 3, 2, 1);
 
     this->sprites["ABILITY_FRAME"] =
         new gui::Sprite(this->select_texture, calcX(264, vm), calcY(4, vm),
@@ -570,42 +491,20 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
 
     if (player.getLevel() == 10) {
         if (player.getName() == "ninja") {
-            this->sprites["UPGRADE1"]->setTextureRect(
-                sf::IntRect(64, 0, 16, 16));
-            this->sprites["UPGRADE2"]->setTextureRect(
-                sf::IntRect(80, 0, 16, 16));
-
-            this->texts["UPGRADE1_NAME"]->setText(this->lang["MASTER"]);
-            this->texts["UPGRADE2_NAME"]->setText(this->lang["BOMBER"]);
-
-            this->sprites["UPGRADE1_ABILITY"]->setTextureRect(
-                sf::IntRect(48, 0, 16, 16));
-            this->sprites["UPGRADE2_ABILITY"]->setTextureRect(
-                sf::IntRect(64, 0, 16, 16));
-
-            this->sprites["UPGRADE1_ADD"]->setTextureRect(
-                sf::IntRect(96, 0, 16, 16));
-            this->sprites["UPGRADE2_ADD"]->setTextureRect(
-                sf::IntRect(128, 0, 16, 16));
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1036, vm),
+                                            calcY(222, vm),
+                                            this->lang["MASTER"], 4, 3, 6, 1);
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1036, vm),
+                                            calcY(392, vm),
+                                            this->lang["BOMBER"], 5, 4, 8, 1);
         }
         else if (player.getName() == "knight") {
-            this->sprites["UPGRADE1"]->setTextureRect(
-                sf::IntRect(96, 0, 16, 16));
-            this->sprites["UPGRADE2"]->setTextureRect(
-                sf::IntRect(112, 0, 16, 16));
-
-            this->texts["UPGRADE1_NAME"]->setText(this->lang["CRUSADER"]);
-            this->texts["UPGRADE2_NAME"]->setText(this->lang["PALADIN"]);
-
-            this->sprites["UPGRADE1_ABILITY"]->setTextureRect(
-                sf::IntRect(80, 0, 16, 16));
-            this->sprites["UPGRADE2_ABILITY"]->setTextureRect(
-                sf::IntRect(96, 0, 16, 16));
-
-            this->sprites["UPGRADE1_ADD"]->setTextureRect(
-                sf::IntRect(48, 0, 16, 16));
-            this->sprites["UPGRADE2_ADD"]->setTextureRect(
-                sf::IntRect(96, 0, 16, 16));
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1036, vm),
+                                            calcY(210, vm),
+                                            this->lang["CRUSADER"], 4, 5, 3, 1);
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1036, vm),
+                                            calcY(380, vm),
+                                            this->lang["PALADIN"], 5, 6, 6, 1);
         }
     }
 }
@@ -1174,8 +1073,8 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
                                                bool mouseClicked,
                                                SoundEngine &soundEngine)
 {
-    this->sprite_buttons["UPGRADE1"]->update(mousePos);
-    if (this->sprite_buttons["UPGRADE1"]->isPressed() && !mouseClicked) {
+    if (this->upgradeGUI->hasClickedUpgrade(mousePos, mouseClicked, "UPGRADE1",
+                                            &soundEngine)) {
         if (player.getLevel() == 5) {
             this->abilityUpgradeGUI->addPlayerStat(
                 "ATTACK", calcX(32, vm), calcY(216, vm), this->lang["ATTACK"]);
@@ -1200,14 +1099,11 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
         }
 
         this->upgrading = false;
-        this->sprite_buttons["UPGRADE1"]->setTransparent();
-        soundEngine.addSound("upgrade");
         this->update_Gold();
         return true;
     }
-
-    this->sprite_buttons["UPGRADE2"]->update(mousePos);
-    if (this->sprite_buttons["UPGRADE2"]->isPressed() && !mouseClicked) {
+    else if (this->upgradeGUI->hasClickedUpgrade(mousePos, mouseClicked,
+                                                 "UPGRADE2", &soundEngine)) {
         if (player.getLevel() == 5) {
             this->upgradePlayer("KNIGHT");
         }
@@ -1225,20 +1121,17 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
                 this->upgradePlayer("PALADIN");
             }
         }
+
         this->upgrading = false;
-        this->sprite_buttons["UPGRADE2"]->setTransparent();
-        soundEngine.addSound("upgrade");
         this->update_Gold();
         return true;
     }
 
     if (player.getLevel() == 5) {
-        this->sprite_buttons["UPGRADE3"]->update(mousePos);
-        if (this->sprite_buttons["UPGRADE3"]->isPressed() && !mouseClicked) {
+        if (this->upgradeGUI->hasClickedUpgrade(mousePos, mouseClicked,
+                                                "UPGRADE3", &soundEngine)) {
             this->upgradePlayer("SCOUT");
             this->upgrading = false;
-            this->sprite_buttons["UPGRADE3"]->setTransparent();
-            soundEngine.addSound("upgrade");
             this->update_Gold();
             return true;
         }
@@ -1449,31 +1342,7 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         if (this->upgrading) {
             this->sprites["UPGRADES"]->draw(target);
 
-            this->sprites["UPGRADE1_FRAME"]->draw(target);
-            this->sprites["UPGRADE1"]->draw(target);
-            this->sprite_buttons["UPGRADE1"]->draw(target);
-            this->texts["UPGRADE1_NAME"]->draw(target);
-            this->sprites["UPGRADE1_ABILITY"]->draw(target);
-            this->sprites["UPGRADE1_ADD"]->draw(target);
-            this->texts["UPGRADE1_ADD_VALUE"]->draw(target);
-
-            this->sprites["UPGRADE2_FRAME"]->draw(target);
-            this->sprites["UPGRADE2"]->draw(target);
-            this->sprite_buttons["UPGRADE2"]->draw(target);
-            this->texts["UPGRADE2_NAME"]->draw(target);
-            this->sprites["UPGRADE2_ABILITY"]->draw(target);
-            this->sprites["UPGRADE2_ADD"]->draw(target);
-            this->texts["UPGRADE2_ADD_VALUE"]->draw(target);
-
-            if (player.getLevel() == 5) {
-                this->sprites["UPGRADE3_FRAME"]->draw(target);
-                this->sprites["UPGRADE3"]->draw(target);
-                this->sprite_buttons["UPGRADE3"]->draw(target);
-                this->texts["UPGRADE3_NAME"]->draw(target);
-                this->sprites["UPGRADE3_ABILITY"]->draw(target);
-                this->sprites["UPGRADE3_ADD"]->draw(target);
-                this->texts["UPGRADE3_ADD_VALUE"]->draw(target);
-            }
+            this->upgradeGUI->draw(target);
         }
         if (this->bossWave) {
             this->texts["BOSS"]->draw(target);
