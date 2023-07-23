@@ -62,7 +62,7 @@ void Warrior::doAbility(SoundEngine &soundEngine)
     else if (this->name == "scout") {
         soundEngine.addSound("ability");
     }
-    else if (this->name == "master") {
+    else if (this->name == "sensei") {
         soundEngine.addSound("shuriken");
     }
     else if (this->name == "bomber") {
@@ -100,10 +100,10 @@ void Warrior::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
         this->setName("scout");
         this->abilityComponent->setAbilityStats(10.f, 10.f, 5.f);
     }
-    else if (t_name == "MASTER") {
+    else if (t_name == "SENSEI") {
         intRect = sf::IntRect(64, 0, 16, 16);
         this->setAttackSpeed(this->getAttackSpeed() + 1);
-        this->setName("master");
+        this->setName("sensei");
         this->abilityComponent->setAbilityStats(2.f, 2.f, 2.f);
     }
     else if (t_name == "BOMBER") {

@@ -491,7 +491,7 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
         if (player.getName() == "ninja") {
             this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1036, vm),
                                             calcY(222, vm),
-                                            this->lang["MASTER"], 4, 3, 6, 1);
+                                            this->lang["SENSEI"], 4, 3, 6, 1);
             this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1036, vm),
                                             calcY(392, vm),
                                             this->lang["BOMBER"], 5, 4, 8, 1);
@@ -1098,7 +1098,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
                 this->abilityUpgradeGUI->addAbilityUpgrade(
                     "PIERCING", calcX(44, vm), calcY(576, vm), 2,
                     this->lang["PIERCING"], "+1", 50);
-                this->upgradePlayer("MASTER");
+                this->upgradePlayer("SENSEI");
             }
             else if (player.getName() == "knight") {
                 this->upgradePlayer("CRUSADER");

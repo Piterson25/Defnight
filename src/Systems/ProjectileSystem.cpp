@@ -49,7 +49,7 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
     if (player.getName() == "ninja") {
         addShuriken(player.getCenter(), 0, coords, 0, player);
     }
-    else if (player.getName() == "master") {
+    else if (player.getName() == "sensei") {
         addShuriken(player.getCenter(), 0, coords, 0, player);
         addShuriken(player.getCenter(), 0, coords, -45.f, player);
         addShuriken(player.getCenter(), 0, coords, 45.f, player);

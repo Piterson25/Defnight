@@ -25,7 +25,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->ability_texture.loadFromFile("assets/textures/abilities.png");
     this->ability.setTexture(this->ability_texture);
     this->ability.setScale(calcScale(4, vm), calcScale(4, vm));
-    this->ability.setTextureRect(sf::IntRect(0, 0, 16, 16));
+    this->ability.setTextureRect(sf::IntRect(0, 0, 0, 0));
     this->ability.setPosition(this->sprite.getPosition().x,
                               this->sprite.getPosition().y + calcY(52, vm));
     this->ability.setColor(sf::Color(255, 255, 255, 0));
