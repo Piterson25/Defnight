@@ -131,7 +131,8 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
             proj = this->projectiles.erase(proj);
         }
         else if ((*proj)->hasCollidedPlayer()) {
-            if (!(player.isAbilityActive() && (player.isIncreasedArmor()))) {
+            if (!(player.isAbilityActive() &&
+                  (player.getArmor() + player.getIncreasedArmor()) > 20)) {
                 int attack = static_cast<int>(
                     round((*proj)->getAttack() -
                           ((*proj)->getAttack() * player.getArmor() * 0.05f)));

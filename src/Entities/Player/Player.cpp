@@ -53,7 +53,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->projectileArea = 1;
     this->kills = 0;
     this->upgraded = false;
-    this->increasedArmor = false;
+    this->increasedArmor = 5;
     this->regenerating = false;
     this->regCooldown = 0.f;
     this->leveling = false;
@@ -137,7 +137,7 @@ const bool Player::isUpgraded() const
     return this->upgraded;
 }
 
-const bool Player::isIncreasedArmor() const
+const uint32_t Player::getIncreasedArmor() const
 {
     return this->increasedArmor;
 }
@@ -245,6 +245,11 @@ void Player::setProjectilePiercing(uint32_t t_projectilePiercing)
 void Player::setProjectileArea(uint32_t t_projectileArea)
 {
     this->projectileArea = t_projectileArea;
+}
+
+void Player::setIncreasedArmor(uint32_t t_increasedArmor)
+{
+    this->increasedArmor = t_increasedArmor;
 }
 
 void Player::setKills(uint32_t t_kills)
@@ -500,8 +505,7 @@ void Player::update(float dt)
 void Player::draw(sf::RenderTarget &target)
 {
     target.draw(this->sprite);
-    if (this->isAbilityActive() &&
-        (this->increasedArmor || this->name == "scout")) {
+    if (this->isAbilityActive()) {
         target.draw(this->ability);
     }
 }

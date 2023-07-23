@@ -107,7 +107,7 @@ const bool AbilityUpgradeGUI::hasBoughtUpgrade(
         return false;
     }
 
-    if (player.getGold() >= getPrice(t_name)) {
+    if (!player.isAbilityActive() && player.getGold() >= getPrice(t_name)) {
         update(t_name, mousePos);
         if (isPressed(t_name, mouseClicked)) {
             buy(t_name, floatingTextSystem);
@@ -134,7 +134,8 @@ void AbilityUpgradeGUI::updateItemFrames()
     for (auto &pair : abilityUpgrades) {
         pair.second.itemButton->setTransparent();
 
-        if (player.getGold() >= pair.second.price) {
+        if (!player.isAbilityActive() &&
+            player.getGold() >= pair.second.price) {
             pair.second.itemFrame->setTextureRect(sf::IntRect(264, 0, 88, 88));
         }
         else {
@@ -171,6 +172,10 @@ void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
     else if (t_name == "AREA") {
         playerStats[t_name]->setText(
             text + std::to_string(player.getProjectileArea()));
+    }
+    else if (t_name == "ARMOR") {
+        playerStats[t_name]->setText(
+            text + std::to_string(player.getIncreasedArmor()));
     }
 }
 

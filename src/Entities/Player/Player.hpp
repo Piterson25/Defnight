@@ -24,7 +24,7 @@ public:
     const uint32_t getProjectileArea() const;
     const uint32_t getKills() const;
     const bool isUpgraded() const;
-    const bool isIncreasedArmor() const;
+    const uint32_t getIncreasedArmor() const;
     const bool isRegenerating() const;
     const bool isLeveling() const;
     const bool isSprinting() const;
@@ -47,6 +47,7 @@ public:
     void setProjectileAttack(uint32_t t_projectileAttack);
     void setProjectilePiercing(uint32_t t_projectilePiercing);
     void setProjectileArea(uint32_t t_projectileArea);
+    void setIncreasedArmor(uint32_t t_increasedArmor);
     void setKills(uint32_t t_kills);
     void setUpgraded(bool t_upgraded);
     void setRegenerating(bool t_regenerating);
@@ -101,7 +102,7 @@ protected:
     uint32_t projectileArea;
     uint32_t kills;
     bool upgraded;
-    bool increasedArmor;
+    uint32_t increasedArmor;
     bool regenerating;
     float regCooldown;
     bool leveling;

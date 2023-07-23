@@ -37,18 +37,15 @@ void Warrior::setAbilityTexture()
 void Warrior::endAbility()
 {
     if (this->name == "knight") {
-        this->armor -= 5;
-        this->increasedArmor = false;
+        this->armor -= increasedArmor;
     }
     else if (this->name == "crusader") {
-        this->armor -= 5;
         this->attack -= 5;
-        this->increasedArmor = false;
+        this->armor -= increasedArmor;
     }
     else if (this->name == "paladin") {
-        this->armor -= 5;
         this->reg -= 5;
-        this->increasedArmor = false;
+        this->armor -= increasedArmor;
     }
 }
 
@@ -58,8 +55,8 @@ void Warrior::doAbility(SoundEngine &soundEngine)
         soundEngine.addSound("shuriken");
     }
     else if (this->name == "knight") {
-        this->armor += 5;
-        this->increasedArmor = true;
+        this->increasedArmor = 5;
+        this->armor += increasedArmor;
         soundEngine.addSound("ability");
     }
     else if (this->name == "scout") {
@@ -72,14 +69,12 @@ void Warrior::doAbility(SoundEngine &soundEngine)
         soundEngine.addSound("shuriken");
     }
     else if (this->name == "crusader") {
-        this->increasedArmor = true;
-        this->armor += 5;
+        this->armor += increasedArmor;
         this->attack += 5;
         soundEngine.addSound("ability");
     }
     else if (this->name == "paladin") {
-        this->increasedArmor = true;
-        this->armor += 5;
+        this->armor += increasedArmor;
         this->reg += 5;
         soundEngine.addSound("ability");
     }

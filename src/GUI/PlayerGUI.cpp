@@ -204,11 +204,11 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->upgradeGUI = new UpgradeGUI(vm, this->player);
     this->upgrading = false;
     this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1036, vm), calcY(222, vm),
-                                    this->lang["NINJA"], 1, 1, 7, 1);
+                                    this->lang["NINJA"], 1, 0, 7, 1);
     this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1036, vm), calcY(392, vm),
-                                    this->lang["KNIGHT"], 2, 2, 5, 1);
+                                    this->lang["KNIGHT"], 2, 1, 5, 1);
     this->upgradeGUI->changeUpgrade("UPGRADE3", calcX(1036, vm), calcY(562, vm),
-                                    this->lang["SCOUT"], 3, 3, 2, 1);
+                                    this->lang["SCOUT"], 3, 2, 2, 1);
 
     this->sprites["ABILITY_FRAME"] =
         new gui::Sprite(this->select_texture, calcX(264, vm), calcY(4, vm),
@@ -444,6 +444,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     this->abilityUpgradeGUI->updatePlayerInfo("PIERCING",
                                               this->lang["PIERCING"]);
     this->abilityUpgradeGUI->updatePlayerInfo("AREA", this->lang["AREA"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("ARMOR", this->lang["ARMOR"]);
     updatePlayerAttributes();
 }
 
@@ -460,10 +461,7 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
     }
 
     std::vector<short> id = {3, 4, 5};
-    if (player.getArmor() < 10 ||
-        (player.isIncreasedArmor() &&
-         ((player.isAbilityActive() && player.getArmor() < 15) ||
-          (!player.isAbilityActive() && player.getArmor() < 10)))) {
+    if (player.getArmor() + player.getIncreasedArmor() < 20) {
         id.push_back(1);
     }
     else {
@@ -654,6 +652,7 @@ void PlayerGUI::setAbilityIcon()
     this->sprites["ABILITY_FRAME"]->setTextureRect(sf::IntRect(352, 0, 88, 88));
     this->ability_icon.setSize(sf::Vector2f(calcX(80, vm), calcY(80, vm)));
     this->ability_icon.setPosition(sf::Vector2f(calcX(268, vm), calcY(8, vm)));
+    abilityUpgradeGUI->updateItemFrames();
 }
 
 void PlayerGUI::updateSprint(float dt)
@@ -908,10 +907,7 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
                                         &floatingTextSystem, &soundEngine)) {
             player.setArmor(player.getArmor() + 1);
             this->update_Gold();
-            if (player.getArmor() >= 10 ||
-                (player.isIncreasedArmor() &&
-                 ((player.isAbilityActive() && player.getArmor() >= 15) ||
-                  (!player.isAbilityActive() && player.getArmor() >= 10)))) {
+            if (player.getArmor() + player.getIncreasedArmor() < 20) {
                 shopGUI->deleteItem("ARMOR");
             }
             return true;
@@ -967,6 +963,17 @@ PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("AREA",
                                                       this->lang["AREA"]);
+            return true;
+        }
+        else if (this->player.getArmor() + this->player.getIncreasedArmor() <
+                     20 &&
+                 abilityUpgradeGUI->hasBoughtUpgrade(
+                     mousePos, mouseClicked, "ARMOR", &floatingTextSystem,
+                     &soundEngine)) {
+            player.setIncreasedArmor(player.getIncreasedArmor() + 1);
+            this->update_Gold();
+            this->abilityUpgradeGUI->updatePlayerInfo("ARMOR",
+                                                      this->lang["ARMOR"]);
             return true;
         }
     }
@@ -1081,16 +1088,16 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
             this->abilityUpgradeGUI->addAbilityUpgrade(
                 "ATTACK", calcX(44, vm), calcY(448, vm), 1,
                 this->lang["ATTACK"], "+1", 30);
-            this->abilityUpgradeGUI->addPlayerStat("PIERCING", calcX(32, vm),
-                                                   calcY(254, vm),
-                                                   this->lang["PIERCING"]);
-            this->abilityUpgradeGUI->addAbilityUpgrade(
-                "PIERCING", calcX(44, vm), calcY(576, vm), 2,
-                this->lang["PIERCING"], "+1", 50);
             this->upgradePlayer("NINJA");
         }
         else if (player.getLevel() == 10) {
             if (player.getName() == "ninja") {
+                this->abilityUpgradeGUI->addPlayerStat(
+                    "PIERCING", calcX(32, vm), calcY(254, vm),
+                    this->lang["PIERCING"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade(
+                    "PIERCING", calcX(44, vm), calcY(576, vm), 2,
+                    this->lang["PIERCING"], "+1", 50);
                 this->upgradePlayer("MASTER");
             }
             else if (player.getName() == "knight") {
@@ -1105,11 +1112,15 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
     else if (this->upgradeGUI->hasClickedUpgrade(mousePos, mouseClicked,
                                                  "UPGRADE2", &soundEngine)) {
         if (player.getLevel() == 5) {
+            this->abilityUpgradeGUI->addPlayerStat(
+                "ARMOR", calcX(32, vm), calcY(216, vm), this->lang["ARMOR"]);
+            this->abilityUpgradeGUI->addAbilityUpgrade(
+                "ARMOR", calcX(44, vm), calcY(448, vm), 4, this->lang["ARMOR"],
+                "+1", 30);
             this->upgradePlayer("KNIGHT");
         }
         else if (player.getLevel() == 10) {
             if (player.getName() == "ninja") {
-                this->abilityUpgradeGUI->deleteUpgrade("PIERCING");
                 this->abilityUpgradeGUI->addPlayerStat(
                     "AREA", calcX(32, vm), calcY(254, vm), this->lang["AREA"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade(
