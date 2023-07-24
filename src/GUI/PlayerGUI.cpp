@@ -290,6 +290,15 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
                                                calcY(320, vm), 0, "Cooldown",
                                                "-10%", 20);
 
+    this->sprites["SHOP_ICON"] =
+        new gui::Sprite("assets/textures/shop.png", calcX(44, vm),
+                        calcY(16, vm), calcScale(4, vm), false);
+    this->sprites["SHOP_ICON"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
+    this->sprite_buttons["SHOP"] =
+        new gui::ButtonSprite("assets/textures/shop.png", calcX(44, vm),
+                              calcY(16, vm), calcScale(4, vm), false);
+    this->sprite_buttons["SHOP"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
+
     this->shopGUI = new ShopGUI(vm, this->player);
     this->shopGUI->addShopItem("FULL_HP", calcX(44, vm), calcY(192, vm), 9,
                                "Full HP", "+Full", 30);
@@ -880,6 +889,12 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
                                         SoundEngine &soundEngine,
                                         FloatingTextSystem &floatingTextSystem)
 {
+    this->sprite_buttons["SHOP"]->update(mousePos);
+    if (this->sprite_buttons["SHOP"]->isPressed() && !mouseClicked) {
+        updateIsShopping();
+        return true;
+    }
+
     if (this->isShopping()) {
         if (shopGUI->hasBoughtItem(mousePos, mouseClicked, "FULL_HP",
                                    &floatingTextSystem, &soundEngine)) {
@@ -1301,6 +1316,9 @@ void PlayerGUI::draw(sf::RenderTarget &target)
     this->texts["HP"]->draw(target);
     this->sprites["SPRINT_BAR"]->draw(target);
     this->texts["SPRINT"]->draw(target);
+
+    this->sprites["SHOP_ICON"]->draw(target);
+    this->sprite_buttons["SHOP"]->draw(target);
 
     if (isShopping()) {
         this->sprites["SIDE_GUI"]->draw(target);
