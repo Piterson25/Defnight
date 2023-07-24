@@ -32,11 +32,11 @@ void SettingsState::initGUI()
         this->gameSettings.lang["SETTINGS"], calcChar(32, vm), calcX(640, vm),
         calcY(96, vm), sf::Color(255, 255, 255), true);
     this->sprites["GO_BACK_FRAME"] =
-        new gui::Sprite("assets/textures/select_go_back.png", calcX(1192, vm),
+        new gui::Sprite("assets/textures/select_go_back.png", calcX(32, vm),
                         calcY(24, vm), calcX(4, vm), false);
     this->sprites["GO_BACK_FRAME"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
     this->sprite_buttons["GO_BACK"] = new gui::ButtonSprite(
-        "assets/textures/select_go_back.png", calcX(1192, vm), calcY(24, vm),
+        "assets/textures/select_go_back.png", calcX(32, vm), calcY(24, vm),
         calcX(4, vm), false);
     this->sprite_buttons["GO_BACK"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 
@@ -344,7 +344,8 @@ void SettingsState::update(float dt)
     }
 
     this->text_buttons["LANGUAGE"]->update(this->mousePosWindow);
-    if (this->text_buttons["LANGUAGE"]->isPressed() && !this->isMouseClicked()) {
+    if (this->text_buttons["LANGUAGE"]->isPressed() &&
+        !this->isMouseClicked()) {
         this->setMouseClick(true);
         this->soundEngine.addSound("button");
 

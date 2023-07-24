@@ -46,6 +46,8 @@ namespace gui {
         const sf::Color getFillColor() const;
 
         void move(float x, float y);
+        void setPositionX(float x);
+        void setPositionY(float y);
         void setPosition(const sf::Vector2f &position);
         void setFillColor(const sf::Color &color);
         void setText(const std::string &text);

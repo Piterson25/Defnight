@@ -57,7 +57,7 @@ void Game::init()
     this->fps = 0;
     this->fpsTimer = 0.f;
     this->fpsCounter =
-        new gui::Text("", calcChar(16, vm), calcX(4, vm), calcY(4, vm),
+        new gui::Text("", calcChar(16, vm), calcX(1150, vm), calcY(4, vm),
                       sf::Color(255, 255, 255), false);
 
     this->soundEngine = new SoundEngine(this->gameSettings->soundsVolume);
@@ -104,6 +104,9 @@ void Game::update()
 
         if (this->fpsTimer >= 1.f) {
             this->fpsCounter->setText(std::to_string(this->fps) + " FPS");
+            this->fpsCounter->setPositionX(
+                calcX(1276, this->gameSettings->resolution) -
+                this->fpsCounter->getWidth());
             this->fps = 0;
             this->fpsTimer = 0.f;
         }

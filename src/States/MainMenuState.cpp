@@ -113,11 +113,11 @@ void MainMenuState::initGUI()
     // PAGE 2
 
     this->sprites["GO_BACK_FRAME"] =
-        new gui::Sprite("assets/textures/select_go_back.png", calcX(1192, vm),
+        new gui::Sprite("assets/textures/select_go_back.png", calcX(32, vm),
                         calcY(24, vm), calcX(4, vm), false);
     this->sprites["GO_BACK_FRAME"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
     this->sprite_buttons["GO_BACK"] = new gui::ButtonSprite(
-        "assets/textures/select_go_back.png", calcX(1192, vm), calcY(24, vm),
+        "assets/textures/select_go_back.png", calcX(32, vm), calcY(24, vm),
         calcX(4, vm), false);
     this->sprite_buttons["GO_BACK"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 
@@ -204,7 +204,7 @@ void MainMenuState::initGUI()
     this->sprites["HP_BAR"] =
         new gui::Sprite("assets/textures/bars.png", calcX(860, vm),
                         calcY(526, vm), calcScale(1, vm), true);
-    this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 264, 20));
+    this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 256, 20));
     this->sprites["HP_BAR"]->center(calcX(860, vm));
     this->texts["HP"] =
         new gui::Text("HP:10/10", calcChar(16, vm), calcX(860, vm),
@@ -212,7 +212,7 @@ void MainMenuState::initGUI()
     this->sprites["SPRINT_BAR"] =
         new gui::Sprite("assets/textures/bars.png", calcX(860, vm),
                         calcY(554, vm), calcScale(1, vm), true);
-    this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect(0, 40, 264, 20));
+    this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect(0, 40, 256, 20));
     this->sprites["SPRINT_BAR"]->center(calcX(860, vm));
     this->texts["SPRINT"] =
         new gui::Text("100/100", calcChar(16, vm), calcX(860, vm),

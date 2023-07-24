@@ -128,6 +128,16 @@ namespace gui {
         this->text.move(x, y);
     }
 
+    void Text::setPositionX(float x)
+    {
+        this->text.setPosition(x, this->text.getPosition().y);
+    }
+
+    void Text::setPositionY(float y)
+    {
+        this->text.setPosition(this->text.getPosition().x, y);
+    }
+
     const sf::Color Text::getFillColor() const
     {
         return this->text.getFillColor();
