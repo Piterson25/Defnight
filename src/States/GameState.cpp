@@ -380,13 +380,13 @@ void GameState::update(float dt)
 
         if (this->player->hasSpawned()) {
 
-            this->updateKeysClick("E", sf::Keyboard::E);
+            this->updateKeysClick("Q", sf::Keyboard::Q);
 
-            if (this->isKeyClicked1("E") && !this->isKeyClicked2("E")) {
-                this->setKeysClick("E", true);
+            if (this->isKeyClicked1("Q") && !this->isKeyClicked2("Q")) {
+                this->setKeysClick("Q", true);
                 this->playerGUI->updateIsShopping();
             }
-            this->setKeysClick("E", this->isKeyClicked1("E"));
+            this->setKeysClick("Q", this->isKeyClicked1("Q"));
 
             if (this->playerGUI->hasClickedShopBuy(
                     this->mousePosWindow, this->isMouseClicked(),
@@ -401,13 +401,13 @@ void GameState::update(float dt)
                     this->setMouseClick(true);
                 }
 
-                this->updateKeysClick("B", sf::Keyboard::B);
+                this->updateKeysClick("E", sf::Keyboard::E);
 
-                if (this->isKeyClicked1("B") && !this->isKeyClicked2("B")) {
-                    this->setKeysClick("B", true);
+                if (this->isKeyClicked1("E") && !this->isKeyClicked2("E")) {
+                    this->setKeysClick("E", true);
                     this->playerGUI->updateIsBuyingAbility();
                 }
-                this->setKeysClick("B", this->isKeyClicked1("B"));
+                this->setKeysClick("E", this->isKeyClicked1("E"));
             }
         }
 
