@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UpgradeGUI.hpp"
+#include "StatsGUI.hpp"
 
 class PlayerGUI {
 public:
@@ -15,10 +15,10 @@ public:
     void levelUpPlayer(uint32_t option_id, uint32_t option_val);
     void upgradePlayer(const std::string &name);
     void update_level(SoundEngine &soundEngine);
-    void update_XP();
-    void updating_XP(float dt);
-    void update_HP();
-    void updating_HP(SoundEngine &soundEngine, float dt);
+    void updateXP();
+    void updateHP();
+    void updateSprint();
+    void updatingHP(SoundEngine &soundEngine, float dt);
     void update_Gold();
     void update_ability(float dt);
     void setAbilityIcon();
@@ -41,7 +41,7 @@ public:
     const bool isShopping() const;
     const bool isBuyingAbility() const;
 
-    void updateSprint(float dt);
+    void updatingSprint(float dt);
     void updateIsShopping();
     void updateIsBuyingAbility();
     void updateKills();
@@ -69,9 +69,10 @@ public:
 private:
     sf::VideoMode &vm;
     Player &player;
-    AbilityUpgradeGUI *abilityUpgradeGUI;
+    StatsGUI *statsGUI;
     ShopGUI *shopGUI;
     UpgradeGUI *upgradeGUI;
+    AbilityUpgradeGUI *abilityUpgradeGUI;
 
     enum class SideGUI { SHOP, ABILITY_UPGRADE, UPGRADE, NONE };
 
@@ -85,12 +86,9 @@ private:
     bool bossWave;
     float bossCooldown;
 
-    bool levelShown;
     bool leveling;
     bool upgrading;
     bool escape;
-    float hp_bar_percent;
-    float xp_bar_percent;
     float boss_bar_percent;
     uint32_t option1_id;
     uint32_t option2_id;
@@ -99,8 +97,6 @@ private:
 
     float titleCooldown;
     float waveCountdown;
-
-    sf::RectangleShape ability_icon;
 
     sf::RectangleShape death_background;
     sf::RectangleShape escape_background;

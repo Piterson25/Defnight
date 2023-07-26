@@ -152,7 +152,7 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
                         calcChar(16, vm),
                         player.getPosition().x + calcX(32, vm),
                         player.getPosition().y + calcY(32, vm), false);
-                    playerGui.update_HP();
+                    playerGui.updateHP();
                 }
             }
 

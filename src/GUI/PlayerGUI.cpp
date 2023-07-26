@@ -12,129 +12,8 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->abilities_texture.loadFromFile("assets/textures/abilities_icons.png");
     this->select_texture.loadFromFile("assets/textures/select.png");
 
-    this->sprites["TOP_GUI"] = new gui::Sprite("assets/textures/top_gui.png", 0,
-                                               0, calcScale(1, vm), false);
+    this->statsGUI = new StatsGUI(this->vm, this->player, this->lang);
 
-    this->sprites["PROGRESS_BAR"] =
-        new gui::Sprite("assets/textures/progress_bar.png", calcX(640, vm),
-                        calcY(44, vm), calcScale(1, vm), true);
-    this->sprites["PROGRESS_BAR"]->setColor(sf::Color::Transparent);
-
-    this->sprites["MINIATURE"] =
-        new gui::Sprite(this->upgrades_texture, calcX(156, vm), calcX(16, vm),
-                        calcScale(4, vm), false);
-    this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
-    this->texts["NAME"] =
-        new gui::Text(lang["WARRIOR"], calcChar(16, vm), calcX(188, vm),
-                      calcY(98, vm), sf::Color(255, 255, 255), true);
-
-    this->sprites["GOLD"] = new gui::Sprite(
-        attributes_texture, 0, calcY(88, vm), calcScale(2, vm), false);
-    this->sprites["GOLD"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
-    this->texts["GOLD"] = new gui::Text(
-        std::to_string(player.getGold()), calcChar(16, vm), calcX(36, vm),
-        calcY(98, vm), sf::Color(255, 246, 76), false);
-
-    this->sprites["ARMOR"] =
-        new gui::Sprite(attributes_texture, calcX(376, vm), calcY(16, vm),
-                        calcScale(2, vm), false);
-    this->sprites["ARMOR"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
-    this->texts["ARMOR"] = new gui::Text(
-        std::to_string(player.getArmor()), calcChar(16, vm), calcX(392, vm),
-        calcY(70, vm), sf::Color(192, 192, 192), true);
-
-    this->sprites["REG"] =
-        new gui::Sprite(attributes_texture, calcX(440, vm), calcY(16, vm),
-                        calcScale(2, vm), false);
-    this->sprites["REG"]->setTextureRect(sf::IntRect(32, 0, 16, 16));
-    this->texts["REG"] = new gui::Text(
-        std::to_string(player.getReg()), calcChar(16, vm), calcX(456, vm),
-        calcY(70, vm), sf::Color(182, 60, 53), true);
-
-    this->sprites["ATTACK"] =
-        new gui::Sprite(attributes_texture, calcX(808, vm), calcY(16, vm),
-                        calcScale(2, vm), false);
-    this->sprites["ATTACK"]->setTextureRect(sf::IntRect(80, 0, 16, 16));
-    this->texts["ATTACK"] = new gui::Text(
-        std::to_string(player.getAttack()), calcChar(16, vm), calcX(824, vm),
-        calcY(70, vm), sf::Color(192, 192, 192), true);
-
-    this->sprites["ATTACK_SPEED"] =
-        new gui::Sprite(attributes_texture, calcX(872, vm), calcY(16, vm),
-                        calcScale(2, vm), false);
-    this->sprites["ATTACK_SPEED"]->setTextureRect(sf::IntRect(96, 0, 16, 16));
-    this->texts["ATTACK_SPEED"] = new gui::Text(
-        std::to_string(player.getAttackSpeed()), calcChar(16, vm),
-        calcX(888, vm), calcY(70, vm), sf::Color(192, 192, 192), true);
-
-    this->sprites["SPEED"] =
-        new gui::Sprite(attributes_texture, calcX(936, vm), calcY(16, vm),
-                        calcScale(2, vm), false);
-    this->sprites["SPEED"]->setTextureRect(sf::IntRect(112, 0, 16, 16));
-    this->texts["SPEED"] = new gui::Text(
-        std::to_string(player.getSpeed()), calcChar(16, vm), calcX(952, vm),
-        calcY(70, vm), sf::Color(192, 192, 192), true);
-
-    this->sprites["CRITICAL"] =
-        new gui::Sprite(attributes_texture, calcX(1000, vm), calcY(16, vm),
-                        calcScale(2, vm), false);
-    this->sprites["CRITICAL"]->setTextureRect(sf::IntRect(128, 0, 16, 16));
-    this->texts["CRITICAL"] = new gui::Text(
-        std::to_string(player.getCriticalChance()) + "%", calcChar(16, vm),
-        calcX(1016, vm), calcY(70, vm), sf::Color(192, 192, 192), true);
-
-    this->sprites["XP_BAR"] =
-        new gui::Sprite("assets/textures/bars.png", calcX(512, vm),
-                        calcY(12, vm), calcScale(1, vm), false);
-    this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 0));
-    this->texts["XP"] =
-        new gui::Text("XP:" + std::to_string(player.getXP()) + "/" +
-                          std::to_string(player.getMaxXP()),
-                      calcChar(16, vm), calcX(640, vm), calcY(15, vm),
-                      sf::Color(255, 255, 255), true);
-    this->texts["LEVEL"] = new gui::Text(
-        "Level " + std::to_string(player.getLevel()), calcChar(16, vm),
-        calcX(640, vm), calcY(15, vm), sf::Color(255, 255, 255), true);
-    this->levelShown = true;
-    this->xp_bar_percent = 0.f;
-
-    this->sprites["HP_BAR"] =
-        new gui::Sprite("assets/textures/bars.png", calcX(512, vm),
-                        calcY(52, vm), calcScale(1, vm), false);
-    this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 256, 20));
-    this->texts["HP"] =
-        new gui::Text("HP:" + std::to_string(player.getHP()) + "/" +
-                          std::to_string(player.getMaxHP()),
-                      calcChar(16, vm), calcX(640, vm), calcY(55, vm),
-                      sf::Color(255, 255, 255), true);
-    this->hp_bar_percent = 1.f;
-
-    this->sprites["SPRINT_BAR"] =
-        new gui::Sprite("assets/textures/bars.png", calcX(512, vm),
-                        calcY(92, vm), calcScale(1, vm), false);
-    this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect(0, 40, 256, 20));
-    this->texts["SPRINT"] =
-        new gui::Text(std::to_string(player.getSprint()) + "/" +
-                          std::to_string(player.getMaxSprint()),
-                      calcChar(16, vm), calcX(640, vm), calcY(95, vm),
-                      sf::Color(255, 255, 255), true);
-
-    this->texts["MONSTER_COUNT"] = new gui::Text(
-        this->lang["MONSTER_COUNT"], calcChar(16, vm), calcX(906, vm),
-        calcY(98, vm), sf::Color(130, 139, 152), false);
-    this->texts["MONSTER_COUNT"]->setPosition(
-        sf::Vector2f(calcX(1218, vm) - this->texts["MONSTER_COUNT"]->getWidth(),
-                     calcY(98, vm)));
-
-    this->texts["WAVE_NUMBER"] =
-        new gui::Text(this->lang["WAVE"], calcChar(32, vm), calcX(1060, vm),
-                      calcY(36, vm), sf::Color(228, 92, 95), false);
-    this->texts["WAVE_COUNTDOWN"] =
-        new gui::Text(this->lang["NEXT_WAVE"], calcChar(16, vm), calcX(954, vm),
-                      calcY(98, vm), sf::Color(255, 246, 76), false);
-    this->texts["WAVE_COUNTDOWN"]->setPosition(sf::Vector2f(
-        calcX(1218, vm) - this->texts["WAVE_COUNTDOWN"]->getWidth(),
-        calcY(98, vm)));
     this->titleCooldown = 0.f;
     this->texts["WAVE_NEW_MOBS"] =
         new gui::Text("", calcChar(16, vm), calcX(640, vm), calcY(562, vm),
@@ -210,25 +89,6 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->upgradeGUI->changeUpgrade("UPGRADE3", calcX(1036, vm), calcY(562, vm),
                                     this->lang["SCOUT"], 3, 2, 2, 1);
 
-    this->sprites["ABILITY_FRAME"] =
-        new gui::Sprite(this->select_texture, calcX(256, vm), calcY(4, vm),
-                        calcScale(1, vm), false);
-    this->sprites["ABILITY_FRAME"]->setTextureRect(sf::IntRect(440, 0, 88, 88));
-    this->sprites["ABILITY_ICON"] =
-        new gui::Sprite("assets/textures/abilities_icons.png", calcX(268, vm),
-                        calcY(16, vm), calcScale(4, vm), false);
-    this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
-
-    this->sprite_buttons["ABILITY_UPGRADE"] =
-        new gui::ButtonSprite(this->select_texture, calcX(256, vm),
-                              calcY(4, vm), calcScale(1, vm), false);
-    this->sprite_buttons["ABILITY_UPGRADE"]->setTextureRect(
-        sf::IntRect(0, 0, 88, 88));
-
-    this->ability_icon.setFillColor(sf::Color(128, 128, 128, 128));
-    this->ability_icon.setSize(sf::Vector2f(calcX(80, vm), calcY(80, vm)));
-    this->ability_icon.setPosition(sf::Vector2f(calcX(260, vm), calcY(8, vm)));
-
     this->death_background.setFillColor(sf::Color(182, 60, 53, 192));
     this->death_background.setSize(
         sf::Vector2f(calcX(1280, vm), calcY(592, vm)));
@@ -290,19 +150,6 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
                                                calcY(320, vm), 0, "Cooldown",
                                                "-10%", 20);
 
-    this->sprites["SHOP_FRAME"] =
-        new gui::Sprite(this->select_texture, calcX(32, vm), calcY(4, vm),
-                        calcScale(1, vm), false);
-    this->sprites["SHOP_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
-
-    this->sprites["SHOP_ICON"] =
-        new gui::Sprite("assets/textures/shop.png", calcX(44, vm),
-                        calcY(16, vm), calcScale(4, vm), false);
-    this->sprite_buttons["SHOP"] =
-        new gui::ButtonSprite(this->select_texture, calcX(32, vm), calcY(4, vm),
-                              calcScale(1, vm), false);
-    this->sprite_buttons["SHOP"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
-
     this->shopGUI = new ShopGUI(vm, this->player);
     this->shopGUI->addShopItem("FULL_HP", calcX(44, vm), calcY(192, vm), 9,
                                "Full HP", "+Full", 30);
@@ -336,8 +183,10 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
 
 PlayerGUI::~PlayerGUI()
 {
-    delete this->abilityUpgradeGUI;
+    delete this->statsGUI;
     delete this->shopGUI;
+    delete this->upgradeGUI;
+    delete this->abilityUpgradeGUI;
 }
 
 void PlayerGUI::update_options(uint32_t &option_id, uint32_t &option_val,
@@ -398,60 +247,45 @@ void PlayerGUI::levelUpPlayer(uint32_t option_id, uint32_t option_val)
     switch (option_id) {
         case 1:
             player.setArmor(player.getArmor() + option_val);
-            this->texts["ARMOR"]->setText(std::to_string(player.getArmor()));
-            this->texts["ARMOR"]->center(calcX(392, vm));
+            statsGUI->updateArmor();
             break;
         case 2:
             player.setReg(player.getReg() + option_val);
-            this->texts["REG"]->setText(std::to_string(player.getReg()));
-            this->texts["REG"]->center(calcX(456, vm));
+            statsGUI->updateReg();
             break;
         case 3:
             player.setMaxHP(player.getMaxHP() + option_val);
-            this->update_HP();
+            this->updateHP();
             player.setRegenerating(true);
             break;
         case 4:
             player.setMaxSprint(player.getMaxSprint() + option_val);
-            this->texts["SPRINT"]->setText(
-                std::to_string(static_cast<uint32_t>(player.getSprint())) +
-                "/" + std::to_string(player.getMaxSprint()));
-            this->texts["SPRINT"]->center(calcX(640, vm));
+            statsGUI->updateSprint();
             break;
         case 5:
             player.setAttack(player.getAttack() + option_val);
-            this->texts["ATTACK"]->setText(std::to_string(player.getAttack()));
-            this->texts["ATTACK"]->center(calcX(824, vm));
+            statsGUI->updateAttack();
             break;
         case 6:
             player.setAttackSpeed(player.getAttackSpeed() + option_val);
-            this->texts["ATTACK_SPEED"]->setText(
-                std::to_string(player.getAttackSpeed()));
-            this->texts["ATTACK_SPEED"]->center(calcX(888, vm));
+            statsGUI->updateAttackSpeed();
             break;
         case 7:
             player.setSpeed(player.getSpeed() + option_val);
-            this->texts["SPEED"]->setText(std::to_string(player.getSpeed()));
-            this->texts["SPEED"]->center(calcX(952, vm));
+            statsGUI->updateSpeed();
             break;
         case 8:
             player.setCriticalChance(player.getCriticalChance() + option_val);
-            this->texts["CRITICAL"]->setText(
-                std::to_string(player.getCriticalChance()) + "%");
-            this->texts["CRITICAL"]->center(calcX(1016, vm));
+            statsGUI->updateCritical();
             break;
     }
 }
 
 void PlayerGUI::upgradePlayer(const std::string &name)
 {
-    this->texts["NAME"]->setText(this->lang[name]);
-    this->texts["NAME"]->center(calcX(188, this->vm));
     sf::IntRect intRect = sf::IntRect(0, 0, 16, 16);
     player.upgrade(name, intRect);
-    this->sprites["MINIATURE"]->setTextureRect(intRect);
-    this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(
-        intRect.left - 16, intRect.top, intRect.width, intRect.height));
+    statsGUI->upgradePlayer(this->lang[name], intRect);
     this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");
     this->abilityUpgradeGUI->updatePlayerInfo("ATTACK", this->lang["ATTACK"]);
     this->abilityUpgradeGUI->updatePlayerInfo("PIERCING",
@@ -466,9 +300,7 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
     soundEngine.addSound("levelup");
     this->leveling = true;
     this->sideGUI = SideGUI::NONE;
-    this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 20));
-    this->texts["LEVEL"]->setText("Level " + std::to_string(player.getLevel()));
-    this->texts["LEVEL"]->center(calcX(640, this->vm));
+    this->statsGUI->updateLevel();
     if (player.getLevel() == 5 || player.getLevel() == 10) {
         this->upgrading = true;
     }
@@ -520,126 +352,40 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
     }
 }
 
-void PlayerGUI::update_XP()
+void PlayerGUI::updateXP()
 {
-    this->xp_bar_percent = static_cast<float>(player.getXP()) /
-                           static_cast<float>(player.getMaxXP());
-    this->texts["XP"]->setText("XP:" + std::to_string(player.getXP()) + "/" +
-                               std::to_string(player.getMaxXP()));
-    this->texts["XP"]->center(calcX(640, vm));
+    this->statsGUI->updateXP();
 }
 
-void PlayerGUI::updating_XP(float dt)
+void PlayerGUI::updateHP()
 {
-    const int width = this->sprites["XP_BAR"]->getTextureRect().width;
-    const int barrier = static_cast<int>(this->xp_bar_percent * 256.f);
+    this->statsGUI->updateHP();
 
-    if (width <= barrier && player.isLeveling()) {
-        const int distance = static_cast<int>(width + 1000.f * dt);
-        if (distance > barrier) {
-            this->sprites["XP_BAR"]->setTextureRect(
-                sf::IntRect(0, 0, barrier, 20));
-        }
-        else if (distance > 256) {
-            this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 256, 20));
-        }
-        else {
-            this->sprites["XP_BAR"]->setTextureRect(
-                sf::IntRect(0, 0, distance, 20));
-        }
-    }
-    else {
-        player.setLeveling(false);
-    }
-}
-
-void PlayerGUI::update_HP()
-{
-    if (player.isDead()) {
-        this->hp_bar_percent = 0.f;
-        this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 0, 20));
+    if (this->player.isDead()) {
         this->sideGUI = SideGUI::NONE;
     }
-    else {
-        this->hp_bar_percent =
-            static_cast<float>(player.getHP()) / player.getMaxHP();
-    }
-
-    this->texts["HP"]->setText("HP:" + std::to_string(player.getHP()) + "/" +
-                               std::to_string(player.getMaxHP()));
-    this->texts["HP"]->center(calcX(640, vm));
 }
 
-void PlayerGUI::updating_HP(SoundEngine &soundEngine, float dt)
+void PlayerGUI::updateSprint()
 {
-    if (player.isHPRegenerating(dt) && !player.isDead()) {
-        this->texts["HP"]->setText("HP:" + std::to_string(player.getHP()) +
-                                   "/" + std::to_string(player.getMaxHP()));
-        this->texts["HP"]->center(calcX(640, this->vm));
-        this->hp_bar_percent =
-            static_cast<float>(player.getHP()) / player.getMaxHP();
-        player.setRegenerating(true);
-        if (this->isShopping() && player.getHP() / player.getMaxHP() == 1) {
-            this->shopGUI->disableItem("FULL_HP");
-        }
+    this->statsGUI->updateSprint();
+}
+
+void PlayerGUI::updatingHP(SoundEngine &soundEngine, float dt)
+{
+    this->statsGUI->updatingHP(dt);
+
+    if (this->isShopping() && player.getHP() / player.getMaxHP() == 1) {
+        this->shopGUI->disableItem("FULL_HP");
     }
     else if (player.isDead()) {
-        this->hp_bar_percent = 0.f;
-        this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 0, 20));
-        this->text_buttons["QUIT"]->setPosition(
-            sf::Vector2f(calcX(640, vm), calcY(488, vm)));
-        this->text_buttons["QUIT"]->center(calcX(640, vm));
         soundEngine.addSound("gameover");
-    }
-
-    const int width = this->sprites["HP_BAR"]->getTextureRect().width;
-    const int barrier = static_cast<int>(this->hp_bar_percent * 256.f);
-
-    if (width > barrier) {
-        const int distance = static_cast<int>(width - 1000.f * dt);
-        if (distance < barrier) {
-            this->sprites["HP_BAR"]->setTextureRect(
-                sf::IntRect(0, 20, barrier, 20));
-            this->sprites["PROGRESS_BAR"]->setColor(sf::Color::White);
-        }
-        else if (distance < 0) {
-            this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 0, 20));
-            this->sprites["PROGRESS_BAR"]->setColor(sf::Color::Transparent);
-        }
-        else {
-            this->sprites["HP_BAR"]->setTextureRect(
-                sf::IntRect(0, 20, distance, 20));
-            this->sprites["PROGRESS_BAR"]->setColor(sf::Color::White);
-        }
-    }
-    else if (width < barrier && player.isRegenerating()) {
-        const int distance = static_cast<int>(width + 1000.f * dt);
-        if (distance > barrier) {
-            this->sprites["HP_BAR"]->setTextureRect(
-                sf::IntRect(0, 20, barrier, 20));
-            this->sprites["PROGRESS_BAR"]->setColor(sf::Color::White);
-        }
-        else if (distance > 256) {
-            this->sprites["HP_BAR"]->setTextureRect(
-                sf::IntRect(0, 20, 256, 20));
-            this->sprites["PROGRESS_BAR"]->setColor(sf::Color::Transparent);
-        }
-        else {
-            this->sprites["HP_BAR"]->setTextureRect(
-                sf::IntRect(0, 20, distance, 20));
-            this->sprites["PROGRESS_BAR"]->setColor(sf::Color::White);
-        }
-    }
-    else {
-        player.setRegenerating(false);
-        this->sprites["PROGRESS_BAR"]->setColor(sf::Color::Transparent);
     }
 }
 
 void PlayerGUI::update_Gold()
 {
-    this->texts["GOLD"]->setText(std::to_string(player.getGold()));
-
+    statsGUI->updateGold();
     shopGUI->updateItemFrames();
     abilityUpgradeGUI->updateItemFrames();
 }
@@ -649,66 +395,19 @@ void PlayerGUI::update_ability(float dt)
     if (player.getAbilityCooldown() > 0.f) {
         const float value = player.getAbilityCooldown() /
                             (player.getAbilityTotalMaxTime()) * calcX(80, vm);
-        this->ability_icon.setSize(
-            sf::Vector2f(calcX(80, vm), calcX(80, vm) - value));
-        this->ability_icon.setPosition(
-            sf::Vector2f(calcX(260, vm), calcX(8, vm) + value));
-        if (this->ability_icon.getSize().y <= 0.f) {
-            this->sprites["ABILITY_FRAME"]->setTextureRect(
-                sf::IntRect(440, 0, 88, 88));
-        }
+        this->statsGUI->updateAbilityIcon(value);
     }
 }
 
 void PlayerGUI::setAbilityIcon()
 {
-    this->sprites["ABILITY_FRAME"]->setTextureRect(sf::IntRect(352, 0, 88, 88));
-    this->ability_icon.setSize(sf::Vector2f(calcX(80, vm), calcY(80, vm)));
-    this->ability_icon.setPosition(sf::Vector2f(calcX(260, vm), calcY(8, vm)));
+    statsGUI->setAbilityIcon();
     abilityUpgradeGUI->updateItemFrames();
 }
 
-void PlayerGUI::updateSprint(float dt)
+void PlayerGUI::updatingSprint(float dt)
 {
-    const int bar_width = this->sprites["SPRINT_BAR"]->getTextureRect().width;
-    const int barrier_width = static_cast<int>(
-        player.getSprint() / static_cast<float>(player.getMaxSprint()) * 256.f);
-
-    if (bar_width > barrier_width) {
-        const int new_width = static_cast<int>(bar_width - 1000.f * dt);
-        if (new_width < barrier_width) {
-            this->sprites["SPRINT_BAR"]->setTextureRect(
-                sf::IntRect(0, 40, barrier_width, 20));
-        }
-        else if (new_width < 0) {
-            this->sprites["SPRINT_BAR"]->setTextureRect(
-                sf::IntRect(0, 40, 0, 20));
-        }
-        else {
-            this->sprites["SPRINT_BAR"]->setTextureRect(
-                sf::IntRect(0, 40, new_width, 20));
-        }
-    }
-    else if (bar_width < barrier_width) {
-        const int new_width = static_cast<int>(bar_width + 1000.f * dt);
-        if (new_width > barrier_width) {
-            this->sprites["SPRINT_BAR"]->setTextureRect(
-                sf::IntRect(0, 40, barrier_width, 20));
-        }
-        else if (new_width > 256) {
-            this->sprites["SPRINT_BAR"]->setTextureRect(
-                sf::IntRect(0, 40, 256, 20));
-        }
-        else {
-            this->sprites["SPRINT_BAR"]->setTextureRect(
-                sf::IntRect(0, 40, new_width, 20));
-        }
-    }
-
-    this->texts["SPRINT"]->setText(
-        std::to_string(static_cast<uint32_t>(player.getSprint())) + "/" +
-        std::to_string(player.getMaxSprint()));
-    this->texts["SPRINT"]->center(calcX(640, this->vm));
+    this->statsGUI->updatingSprint(dt);
 }
 
 void PlayerGUI::updateIsShopping()
@@ -744,8 +443,7 @@ void PlayerGUI::updateMonsterCountWave(const std::string &language,
 {
     this->bossWave = bossWave;
 
-    this->texts["WAVE_NUMBER"]->setText(this->lang["WAVE"] +
-                                        std::to_string(wave));
+    this->statsGUI->updateWaveNumber(this->lang["WAVE"] + std::to_string(wave));
 
     this->texts["BIG_WAVE_NUMBER"]->setText(this->lang["WAVE"] +
                                             std::to_string(wave));
@@ -779,8 +477,7 @@ void PlayerGUI::updateMonsterCountWave(const std::string &language,
 
     this->texts["WAVE_NEW_MOBS"]->center(calcX(640, this->vm));
 
-    this->texts["MONSTER_COUNT"]->setText(this->lang["MONSTER_COUNT"] +
-                                          std::to_string(monsterCount));
+    updateMonsterCount(monsterCount);
 
     if (language == "polish") {
         if (monsterCount > 10) {
@@ -825,8 +522,8 @@ void PlayerGUI::updateMonsterCountWave(const std::string &language,
 
 void PlayerGUI::updateMonsterCount(const size_t &monsterCount)
 {
-    this->texts["MONSTER_COUNT"]->setText(this->lang["MONSTER_COUNT"] +
-                                          std::to_string(monsterCount));
+    statsGUI->updateMonsterCount(this->lang["MONSTER_COUNT"] +
+                                 std::to_string(monsterCount));
 }
 
 void PlayerGUI::setIsEscape(bool escape)
@@ -848,20 +545,17 @@ void PlayerGUI::updatePaused(bool &paused)
 
 void PlayerGUI::updateArmor()
 {
-    this->texts["ARMOR"]->setText(std::to_string(player.getArmor()));
-    this->texts["ARMOR"]->center(calcX(392, vm));
+    this->statsGUI->updateArmor();
 }
 
 void PlayerGUI::updateAttack()
 {
-    this->texts["ATTACK"]->setText(std::to_string(player.getAttack()));
-    this->texts["ATTACK"]->center(calcX(824, vm));
+    this->statsGUI->updateAttack();
 }
 
 void PlayerGUI::updateReg()
 {
-    this->texts["REG"]->setText(std::to_string(player.getReg()));
-    this->texts["REG"]->center(calcX(456, vm));
+    this->statsGUI->updateReg();
 }
 
 void PlayerGUI::updateBossHP(float dt)
@@ -893,8 +587,7 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
                                         SoundEngine &soundEngine,
                                         FloatingTextSystem &floatingTextSystem)
 {
-    this->sprite_buttons["SHOP"]->update(mousePos);
-    if (this->sprite_buttons["SHOP"]->isPressed() && !mouseClicked) {
+    if (statsGUI->hasClickedShop(mousePos, mouseClicked)) {
         updateIsShopping();
         return true;
     }
@@ -903,7 +596,7 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
         if (shopGUI->hasBoughtItem(mousePos, mouseClicked, "FULL_HP",
                                    &floatingTextSystem, &soundEngine)) {
             player.setHP(player.getMaxHP());
-            this->update_HP();
+            this->updateHP();
             player.setRegenerating(true);
             this->update_Gold();
             return true;
@@ -911,7 +604,7 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
         else if (shopGUI->hasBoughtItem(mousePos, mouseClicked, "MAX_HP",
                                         &floatingTextSystem, &soundEngine)) {
             player.setMaxHP(player.getMaxHP() + 2);
-            this->update_HP();
+            this->updateHP();
             player.setRegenerating(true);
             this->update_Gold();
             return true;
@@ -941,8 +634,7 @@ PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
                                 SoundEngine &soundEngine,
                                 FloatingTextSystem &floatingTextSystem)
 {
-    this->sprite_buttons["ABILITY_UPGRADE"]->update(mousePos);
-    if (this->sprite_buttons["ABILITY_UPGRADE"]->isPressed() && !mouseClicked) {
+    if (this->statsGUI->hasClickedAbilityUpgrade(mousePos, mouseClicked)) {
         updateIsBuyingAbility();
         return true;
     }
@@ -1186,21 +878,13 @@ const uint8_t PlayerGUI::updateDeathScreenButtons(const sf::Vector2i &mousePos,
 
 void PlayerGUI::updatePlayerAttributes()
 {
-    this->texts["ARMOR"]->setText(std::to_string(player.getArmor()));
-    this->texts["ARMOR"]->center(calcX(392, vm));
-    this->texts["REG"]->setText(std::to_string(player.getReg()));
-    this->texts["REG"]->center(calcX(456, vm));
-    this->texts["ATTACK"]->setText(std::to_string(player.getAttack()));
-    this->texts["ATTACK"]->center(calcX(824, vm));
-    this->texts["ATTACK_SPEED"]->setText(
-        std::to_string(player.getAttackSpeed()));
-    this->texts["ATTACK_SPEED"]->center(calcX(888, vm));
-    this->texts["SPEED"]->setText(std::to_string(player.getSpeed()));
-    this->texts["SPEED"]->center(calcX(952, vm));
-    this->texts["CRITICAL"]->setText(
-        std::to_string(player.getCriticalChance()) + "%");
-    this->texts["CRITICAL"]->center(calcX(1016, vm));
-    this->update_HP();
+    this->statsGUI->updateArmor();
+    this->statsGUI->updateReg();
+    this->statsGUI->updateAttack();
+    this->statsGUI->updateAttackSpeed();
+    this->statsGUI->updateSpeed();
+    this->statsGUI->updateCritical();
+    this->updateHP();
     if (player.getHP() < player.getMaxHP()) {
         player.setRegenerating(true);
     }
@@ -1209,6 +893,8 @@ void PlayerGUI::updatePlayerAttributes()
 void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
                        float bossHP, float dt)
 {
+    this->statsGUI->updatingXP(dt);
+
     this->waveCountdown = waveCountdown;
 
     if (this->bossWave) {
@@ -1246,15 +932,10 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
         }
     }
 
-    this->levelShown = true;
-    if ((mousePosView.y >= calcY(12, vm) && mousePosView.y <= calcY(34, vm)) &&
-        (mousePosView.x >= calcX(512, vm) &&
-         mousePosView.x <= calcX(768, vm))) {
-        this->levelShown = false;
-    }
+    this->statsGUI->update(mousePosView);
 
     if (this->waveCountdown < 10.f) {
-        this->texts["WAVE_COUNTDOWN"]->setText(
+        this->statsGUI->setWaveCountdownText(
             this->lang["NEXT_WAVE"] +
             std::to_string(static_cast<int>(11.f - this->waveCountdown)));
         if (this->waveCountdown > 8.f && this->waveCountdown < 9.f &&
@@ -1283,72 +964,32 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
                 sf::Color(192, 192, 192, sf::Uint8(this->titleCooldown)));
         }
 
-        this->texts["WAVE_COUNTDOWN"]->setText(
+        this->statsGUI->setWaveCountdownText(
             this->lang["NEXT_WAVE"] +
-            std::to_string(10 - static_cast<int>(waveCountdown)));
+            std::to_string(static_cast<int>(10.f - this->waveCountdown)));
     }
 }
 
 void PlayerGUI::draw(sf::RenderTarget &target)
 {
-    this->sprites["TOP_GUI"]->draw(target);
-    this->sprites["PROGRESS_BAR"]->draw(target);
-    this->sprites["MINIATURE"]->draw(target);
-    this->texts["NAME"]->draw(target);
-    this->sprites["GOLD"]->draw(target);
-    this->texts["GOLD"]->draw(target);
-    this->sprites["ATTACK"]->draw(target);
-    this->texts["ATTACK"]->draw(target);
-    this->sprites["ATTACK_SPEED"]->draw(target);
-    this->texts["ATTACK_SPEED"]->draw(target);
-    this->sprites["SPEED"]->draw(target);
-    this->texts["SPEED"]->draw(target);
-    this->sprites["CRITICAL"]->draw(target);
-    this->texts["CRITICAL"]->draw(target);
-    this->sprites["ARMOR"]->draw(target);
-    this->texts["ARMOR"]->draw(target);
-    this->sprites["REG"]->draw(target);
-    this->texts["REG"]->draw(target);
-    this->sprites["XP_BAR"]->draw(target);
-    if (this->levelShown) {
-        this->texts["LEVEL"]->draw(target);
-    }
-    else {
-        this->texts["XP"]->draw(target);
-    }
-    this->sprites["HP_BAR"]->draw(target);
-    this->texts["HP"]->draw(target);
-    this->sprites["SPRINT_BAR"]->draw(target);
-    this->texts["SPRINT"]->draw(target);
-
-    this->sprites["SHOP_FRAME"]->draw(target);
-    this->sprites["SHOP_ICON"]->draw(target);
-    this->sprite_buttons["SHOP"]->draw(target);
-    this->texts["WAVE_NUMBER"]->draw(target);
+    this->statsGUI->draw(target);
 
     if (isShopping()) {
         this->sprites["SIDE_GUI"]->draw(target);
-
         this->shopGUI->draw(target);
     }
 
     if (player.isUpgraded()) {
-        this->sprites["ABILITY_ICON"]->draw(target);
-        if (player.getAbilityCooldown() < player.getAbilityMaxTime()) {
-            target.draw(this->ability_icon);
-        }
-        this->sprites["ABILITY_FRAME"]->draw(target);
-        this->sprite_buttons["ABILITY_UPGRADE"]->draw(target);
+        statsGUI->drawAbility(target);
 
         if (isBuyingAbility() && !isShopping()) {
             this->sprites["SIDE_GUI"]->draw(target);
-
             this->abilityUpgradeGUI->draw(target);
         }
     }
 
     if (this->waveCountdown < 10.f) {
-        this->texts["WAVE_COUNTDOWN"]->draw(target);
+        this->statsGUI->drawWaveCountdown(target);
         if (this->waveCountdown > 8.f) {
             this->texts["BIG_WAVE_NUMBER"]->draw(target);
             this->texts["WAVE_NEW_MOBS"]->draw(target);
@@ -1356,7 +997,7 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         }
     }
     else if (this->waveCountdown >= 10.f) {
-        this->texts["MONSTER_COUNT"]->draw(target);
+        this->statsGUI->drawMonsterCount(target);
 
         if (this->leveling) {
             this->texts["LEVEL_UP"]->draw(target);

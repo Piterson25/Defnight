@@ -43,7 +43,7 @@ const bool Heart::isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
         if (player.getHP() < player.getMaxHP()) {
             player.setHP(player.getHP() + 1);
             player.setRegenerating(true);
-            playerGUI.update_HP();
+            playerGUI.updateHP();
             floatingTextSystem.addFloatingText(
                 "red", "+" + std::to_string(this->worth), calcChar(16, vm),
                 this->sprite.getPosition().x - calcX(16, vm),

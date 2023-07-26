@@ -460,11 +460,11 @@ void GameState::update(float dt)
         if (this->player->isDead()) {
             this->paused = true;
             this->player->setRegenerating(false);
-            this->playerGUI->update_HP();
+            this->playerGUI->updateHP();
         }
 
-        this->playerGUI->updating_HP(this->soundEngine, dt);
-        this->playerGUI->updateSprint(dt);
+        this->playerGUI->updatingHP(this->soundEngine, dt);
+        this->playerGUI->updatingSprint(dt);
 
         this->soundEngine.update();
         this->musicEngine.update();
@@ -477,10 +477,8 @@ void GameState::update(float dt)
             this->playerGUI->update_level(soundEngine);
             paused = true;
         }
-        this->playerGUI->update_XP();
+        this->playerGUI->updateXP();
     }
-
-    this->playerGUI->updating_XP(dt);
 
     this->playerGUI->update(this->mousePosView, this->waveCountdown,
                             this->monsterSystem->bossHP(), dt);

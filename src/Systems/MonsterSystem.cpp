@@ -484,7 +484,7 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
                             player.getPosition().y + calcY(32, vm), false);
                     }
 
-                    playerGUI.update_HP();
+                    playerGUI.updateHP();
                 }
                 monster->animation(dt);
             }

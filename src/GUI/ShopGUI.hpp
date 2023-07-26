@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AbilityUpgradeGUI.hpp"
+#include "UpgradeGUI.hpp"
 
 class ShopGUI {
 public:
