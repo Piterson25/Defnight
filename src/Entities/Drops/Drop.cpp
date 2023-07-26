@@ -1,5 +1,4 @@
 #include "Drop.hpp"
-#include "Functions.hpp"
 
 Drop::Drop(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
            uint32_t t_worth, bool t_vanishing)

@@ -23,7 +23,7 @@ private:
     sf::Clock dtClock;
     float dt;
 
-    gui::Text *fpsCounter;
+    std::unique_ptr<gui::Text> fpsCounter;
     uint32_t fps;
     float fpsTimer;
 

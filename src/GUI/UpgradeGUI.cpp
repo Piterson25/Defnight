@@ -12,15 +12,7 @@ UpgradeGUI::UpgradeGUI(sf::VideoMode &t_vm, Player &t_player)
 
 UpgradeGUI::~UpgradeGUI()
 {
-    for (auto &pair : this->upgrades) {
-        delete pair.second.upgradeSprite;
-        delete pair.second.upgradeFrame;
-        delete pair.second.upgradeButton;
-        delete pair.second.upgradeName;
-        delete pair.second.upgradeAbility;
-        delete pair.second.upgradeAttribute;
-        delete pair.second.upgradeAttributeValue;
-    }
+    this->upgrades.clear();
 }
 
 const bool UpgradeGUI::isPressed(const std::string &t_name, bool mouseClicked)
@@ -34,21 +26,27 @@ void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y,
                                uint32_t attributeValue)
 {
     this->upgrades[t_name] = Upgrade{
-        new gui::Sprite(this->upgradesTexture, t_x, t_y, calcScale(4, vm),
-                        false),
-        new gui::Sprite(this->selectsTexture, t_x - calcX(12, vm),
-                        t_y - calcY(12, vm), calcScale(1, vm), false),
-        new gui::ButtonSprite(this->selectsTexture, t_x - calcX(12, vm),
-                              t_y - calcY(12, vm), calcScale(1, vm), false),
-        new gui::Text(desc, calcChar(16, vm), t_x + calcX(160, vm),
-                      t_y + calcY(4, vm), sf::Color(255, 255, 255), true),
-        new gui::Sprite(this->abilitiesTexture, t_x + calcX(100, vm),
-                        t_y + calcY(28, vm), calcScale(2, vm), false),
-        new gui::Sprite(this->attributesTexture, t_x + calcX(152, vm),
-                        t_y + calcY(28, vm), calcScale(2, vm), false),
-        new gui::Text("+" + std::to_string(attributeValue), calcChar(16, vm),
-                      t_x + calcX(190, vm), t_y + calcY(37, vm),
-                      sf::Color(255, 255, 255), false),
+        std::make_unique<gui::Sprite>(this->upgradesTexture, t_x, t_y,
+                                      calcScale(4, vm), false),
+        std::make_unique<gui::Sprite>(this->selectsTexture, t_x - calcX(12, vm),
+                                      t_y - calcY(12, vm), calcScale(1, vm),
+                                      false),
+        std::make_unique<gui::ButtonSprite>(
+            this->selectsTexture, t_x - calcX(12, vm), t_y - calcY(12, vm),
+            calcScale(1, vm), false),
+        std::make_unique<gui::Text>(desc, calcChar(16, vm),
+                                    t_x + calcX(160, vm), t_y + calcY(4, vm),
+                                    sf::Color(255, 255, 255), true),
+        std::make_unique<gui::Sprite>(this->abilitiesTexture,
+                                      t_x + calcX(100, vm), t_y + calcY(28, vm),
+                                      calcScale(2, vm), false),
+        std::make_unique<gui::Sprite>(this->attributesTexture,
+                                      t_x + calcX(152, vm), t_y + calcY(28, vm),
+                                      calcScale(2, vm), false),
+        std::make_unique<gui::Text>("+" + std::to_string(attributeValue),
+                                    calcChar(16, vm), t_x + calcX(190, vm),
+                                    t_y + calcY(37, vm),
+                                    sf::Color(255, 255, 255), false),
         attributeValue,
     };
 
@@ -103,14 +101,13 @@ void UpgradeGUI::draw(sf::RenderTarget &target)
         if (this->player.getLevel() == 10 && pair.first == "UPGRADE3") {
             continue;
         }
-        Upgrade upgrade = pair.second;
 
-        upgrade.upgradeSprite->draw(target);
-        upgrade.upgradeFrame->draw(target);
-        upgrade.upgradeButton->draw(target);
-        upgrade.upgradeName->draw(target);
-        upgrade.upgradeAbility->draw(target);
-        upgrade.upgradeAttribute->draw(target);
-        upgrade.upgradeAttributeValue->draw(target);
+        pair.second.upgradeSprite->draw(target);
+        pair.second.upgradeFrame->draw(target);
+        pair.second.upgradeButton->draw(target);
+        pair.second.upgradeName->draw(target);
+        pair.second.upgradeAbility->draw(target);
+        pair.second.upgradeAttribute->draw(target);
+        pair.second.upgradeAttributeValue->draw(target);
     }
 }

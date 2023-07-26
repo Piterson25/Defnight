@@ -10,15 +10,7 @@ ShopGUI::ShopGUI(sf::VideoMode &t_vm, Player &t_player)
 
 ShopGUI::~ShopGUI()
 {
-    for (auto &pair : shopItems) {
-        delete pair.second.itemSprite;
-        delete pair.second.itemFrame;
-        delete pair.second.itemButton;
-        delete pair.second.itemDesc;
-        delete pair.second.itemValue;
-        delete pair.second.itemCoin;
-        delete pair.second.itemPrice;
-    }
+    this->shopItems.clear();
 }
 
 const uint32_t ShopGUI::getPrice(const std::string &t_name)
@@ -46,21 +38,26 @@ void ShopGUI::addShopItem(const std::string &t_name, float t_x, float t_y,
     this->shopItems.emplace(
         t_name,
         BuyItem{
-            new gui::Sprite(this->attributesTexture, t_x, t_y, calcScale(4, vm),
-                            false),
-            new gui::Sprite(this->selectsTexture, t_x - calcX(12, vm),
-                            t_y - calcY(12, vm), calcScale(1, vm), false),
-            new gui::ButtonSprite(this->selectsTexture, t_x - calcX(12, vm),
-                                  t_y - calcY(12, vm), calcScale(1, vm), false),
-            new gui::Text(desc, calcChar(16, vm), t_x + calcX(160, vm),
-                          t_y - calcY(2, vm), sf::Color(255, 255, 255), true),
-            new gui::Text(value, calcChar(16, vm), t_x + calcX(160, vm),
-                          t_y + calcY(20, vm), sf::Color(255, 255, 255), true),
-            new gui::Sprite(this->attributesTexture, t_x + calcX(126, vm),
-                            t_y + calcY(38, vm), calcScale(2, vm), false),
-            new gui::Text(std::to_string(price), calcChar(16, vm),
-                          t_x + calcX(160, vm), t_y + calcY(48, vm),
-                          sf::Color(255, 246, 76), false),
+            std::make_unique<gui::Sprite>(this->attributesTexture, t_x, t_y,
+                                          calcScale(4, vm), false),
+            std::make_unique<gui::Sprite>(
+                this->selectsTexture, t_x - calcX(12, vm), t_y - calcY(12, vm),
+                calcScale(1, vm), false),
+            std::make_unique<gui::ButtonSprite>(
+                this->selectsTexture, t_x - calcX(12, vm), t_y - calcY(12, vm),
+                calcScale(1, vm), false),
+            std::make_unique<gui::Text>(
+                desc, calcChar(16, vm), t_x + calcX(160, vm),
+                t_y - calcY(2, vm), sf::Color(255, 255, 255), true),
+            std::make_unique<gui::Text>(
+                value, calcChar(16, vm), t_x + calcX(160, vm),
+                t_y + calcY(20, vm), sf::Color(255, 255, 255), true),
+            std::make_unique<gui::Sprite>(
+                this->attributesTexture, t_x + calcX(126, vm),
+                t_y + calcY(38, vm), calcScale(2, vm), false),
+            std::make_unique<gui::Text>(
+                std::to_string(price), calcChar(16, vm), t_x + calcX(160, vm),
+                t_y + calcY(48, vm), sf::Color(255, 246, 76), false),
             price,
         });
 
@@ -155,14 +152,12 @@ void ShopGUI::update(const std::string &t_name, const sf::Vector2i &mousePos)
 void ShopGUI::draw(sf::RenderTarget &target)
 {
     for (const auto &pair : shopItems) {
-        BuyItem item = pair.second;
-
-        item.itemSprite->draw(target);
-        item.itemFrame->draw(target);
-        item.itemButton->draw(target);
-        item.itemDesc->draw(target);
-        item.itemValue->draw(target);
-        item.itemCoin->draw(target);
-        item.itemPrice->draw(target);
+        pair.second.itemSprite->draw(target);
+        pair.second.itemFrame->draw(target);
+        pair.second.itemButton->draw(target);
+        pair.second.itemDesc->draw(target);
+        pair.second.itemValue->draw(target);
+        pair.second.itemCoin->draw(target);
+        pair.second.itemPrice->draw(target);
     }
 }

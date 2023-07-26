@@ -13,7 +13,6 @@ Game::~Game()
     }
 
     delete this->window;
-    delete this->fpsCounter;
     delete this->gameSettings;
     delete this->soundEngine;
     delete this->musicEngine;
@@ -56,9 +55,9 @@ void Game::init()
 
     this->fps = 0;
     this->fpsTimer = 0.f;
-    this->fpsCounter =
-        new gui::Text("", calcChar(16, vm), calcX(1150, vm), calcY(4, vm),
-                      sf::Color(255, 255, 255), false);
+    this->fpsCounter = std::make_unique<gui::Text>(
+        "", calcChar(16, vm), calcX(1150, vm), calcY(4, vm),
+        sf::Color(255, 255, 255), false);
 
     this->soundEngine = new SoundEngine(this->gameSettings->soundsVolume);
     this->musicEngine = new MusicEngine(this->gameSettings->musicVolume);

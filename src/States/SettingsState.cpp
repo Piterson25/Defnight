@@ -28,14 +28,14 @@ void SettingsState::initGUI()
         }
     }
 
-    this->texts["SETTINGS"] = new gui::Text(
+    this->texts["SETTINGS"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["SETTINGS"], calcChar(32, vm), calcX(640, vm),
         calcY(96, vm), sf::Color(255, 255, 255), true);
-    this->sprites["GO_BACK_FRAME"] =
-        new gui::Sprite("assets/textures/select_go_back.png", calcX(32, vm),
-                        calcY(24, vm), calcX(4, vm), false);
+    this->sprites["GO_BACK_FRAME"] = std::make_unique<gui::Sprite>(
+        "assets/textures/select_go_back.png", calcX(32, vm), calcY(24, vm),
+        calcX(4, vm), false);
     this->sprites["GO_BACK_FRAME"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
-    this->sprite_buttons["GO_BACK"] = new gui::ButtonSprite(
+    this->sprite_buttons["GO_BACK"] = std::make_unique<gui::ButtonSprite>(
         "assets/textures/select_go_back.png", calcX(32, vm), calcY(24, vm),
         calcX(4, vm), false);
     this->sprite_buttons["GO_BACK"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
@@ -43,19 +43,20 @@ void SettingsState::initGUI()
     for (size_t i = 0; i < this->videoModes.size(); ++i) {
         if (this->videoModes[i] == vm) {
             this->id = i;
-            this->text_buttons["RESOLUTION"] = new gui::ButtonText(
-                this->gameSettings.lang["RESOLUTION"] +
-                    std::to_string(this->videoModes[this->id].width) + "x" +
-                    std::to_string(this->videoModes[this->id].height),
-                calcChar(16, vm), calcX(96, vm), calcY(192, vm),
-                sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+            this->text_buttons["RESOLUTION"] =
+                std::make_unique<gui::ButtonText>(
+                    this->gameSettings.lang["RESOLUTION"] +
+                        std::to_string(this->videoModes[this->id].width) + "x" +
+                        std::to_string(this->videoModes[this->id].height),
+                    calcChar(16, vm), calcX(96, vm), calcY(192, vm),
+                    sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
             break;
         }
     }
 
     if (this->gameSettings.fullscreen) {
         this->fullscreen = true;
-        this->text_buttons["FULLSCREEN"] = new gui::ButtonText(
+        this->text_buttons["FULLSCREEN"] = std::make_unique<gui::ButtonText>(
             this->gameSettings.lang["FULLSCREEN"] +
                 this->gameSettings.lang["YES"],
             calcChar(16, vm), calcX(96, vm), calcY(242, vm),
@@ -63,7 +64,7 @@ void SettingsState::initGUI()
     }
     else {
         this->fullscreen = false;
-        this->text_buttons["FULLSCREEN"] = new gui::ButtonText(
+        this->text_buttons["FULLSCREEN"] = std::make_unique<gui::ButtonText>(
             this->gameSettings.lang["FULLSCREEN"] +
                 this->gameSettings.lang["NO"],
             calcChar(16, vm), calcX(96, vm), calcY(242, vm),
@@ -83,19 +84,23 @@ void SettingsState::initGUI()
         if (this->fpsLimits[i] == this->gameSettings.fpsLimit) {
             this->fps_id = i;
             if (this->fpsLimits[i] == 0) {
-                this->text_buttons["FPS_LIMIT"] = new gui::ButtonText(
+                this->text_buttons["FPS_LIMIT"] =
+                    std::make_unique<gui::ButtonText>(
 
-                    this->gameSettings.lang["FPS_LIMIT"] +
-                        this->gameSettings.lang["NO_LIMIT"],
-                    calcChar(16, vm), calcX(96, vm), calcY(292, vm),
-                    sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+                        this->gameSettings.lang["FPS_LIMIT"] +
+                            this->gameSettings.lang["NO_LIMIT"],
+                        calcChar(16, vm), calcX(96, vm), calcY(292, vm),
+                        sf::Color(255, 255, 255), sf::Color(192, 192, 192),
+                        false);
             }
             else {
-                this->text_buttons["FPS_LIMIT"] = new gui::ButtonText(
-                    this->gameSettings.lang["FPS_LIMIT"] +
-                        std::to_string(this->fpsLimits[this->fps_id]),
-                    calcChar(16, vm), calcX(96, vm), calcY(292, vm),
-                    sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
+                this->text_buttons["FPS_LIMIT"] =
+                    std::make_unique<gui::ButtonText>(
+                        this->gameSettings.lang["FPS_LIMIT"] +
+                            std::to_string(this->fpsLimits[this->fps_id]),
+                        calcChar(16, vm), calcX(96, vm), calcY(292, vm),
+                        sf::Color(255, 255, 255), sf::Color(192, 192, 192),
+                        false);
             }
             break;
         }
@@ -110,7 +115,7 @@ void SettingsState::initGUI()
     for (size_t i = 0; i < this->musicVolumes.size(); ++i) {
         if (this->musicVolumes[i] == this->musicVolume) {
             this->musicVolume_id = i;
-            this->text_buttons["MUSIC"] = new gui::ButtonText(
+            this->text_buttons["MUSIC"] = std::make_unique<gui::ButtonText>(
 
                 this->gameSettings.lang["MUSIC"] +
                     std::to_string(this->musicVolumes[this->musicVolume_id]) +
@@ -130,7 +135,7 @@ void SettingsState::initGUI()
     for (size_t i = 0; i < this->soundsVolumes.size(); ++i) {
         if (this->soundsVolumes[i] == this->soundsVolume) {
             this->soundsVolume_id = i;
-            this->text_buttons["SOUNDS"] = new gui::ButtonText(
+            this->text_buttons["SOUNDS"] = std::make_unique<gui::ButtonText>(
 
                 this->gameSettings.lang["SOUNDS"] +
                     std::to_string(this->soundsVolumes[this->soundsVolume_id]) +
@@ -143,7 +148,7 @@ void SettingsState::initGUI()
 
     if (this->gameSettings.language == "english") {
         this->gameSettings.language = "english";
-        this->text_buttons["LANGUAGE"] = new gui::ButtonText(
+        this->text_buttons["LANGUAGE"] = std::make_unique<gui::ButtonText>(
             this->gameSettings.lang["LANGUAGE"] +
                 this->gameSettings.lang["ENGLISH"],
             calcChar(16, vm), calcX(96, vm), calcY(442, vm),
@@ -151,7 +156,7 @@ void SettingsState::initGUI()
     }
     else if (this->gameSettings.language == "polish") {
         this->gameSettings.language = "polish";
-        this->text_buttons["LANGUAGE"] = new gui::ButtonText(
+        this->text_buttons["LANGUAGE"] = std::make_unique<gui::ButtonText>(
             this->gameSettings.lang["LANGUAGE"] +
                 this->gameSettings.lang["POLISH"],
             calcChar(16, vm), calcX(96, vm), calcY(442, vm),
@@ -160,7 +165,7 @@ void SettingsState::initGUI()
 
     if (this->gameSettings.fpsCounterOn) {
         this->fpsCounterOn = true;
-        this->text_buttons["FPS_COUNTER"] = new gui::ButtonText(
+        this->text_buttons["FPS_COUNTER"] = std::make_unique<gui::ButtonText>(
             this->gameSettings.lang["FPS_COUNTER"] +
                 this->gameSettings.lang["ON"],
             calcChar(16, vm), calcX(96, vm), calcY(492, vm),
@@ -168,36 +173,36 @@ void SettingsState::initGUI()
     }
     else {
         this->fpsCounterOn = false;
-        this->text_buttons["FPS_COUNTER"] = new gui::ButtonText(
+        this->text_buttons["FPS_COUNTER"] = std::make_unique<gui::ButtonText>(
             this->gameSettings.lang["FPS_COUNTER"] +
                 this->gameSettings.lang["OFF"],
             calcChar(16, vm), calcX(96, vm), calcY(492, vm),
             sf::Color(255, 255, 255), sf::Color(192, 192, 192), false);
     }
 
-    this->texts["MOVEMENT"] = new gui::Text(
+    this->texts["MOVEMENT"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["MOVEMENT"], calcChar(16, vm), calcX(800, vm),
         calcY(192, vm), sf::Color(255, 255, 255), false);
-    this->texts["LEFT_CLICK"] = new gui::Text(
+    this->texts["LEFT_CLICK"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["LEFT_CLICK"], calcChar(16, vm), calcX(800, vm),
         calcY(242, vm), sf::Color(255, 255, 255), false);
-    this->texts["RIGHT_CLICK"] = new gui::Text(
+    this->texts["RIGHT_CLICK"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["RIGHT_CLICK"], calcChar(16, vm),
         calcX(800, vm), calcY(292, vm), sf::Color(255, 255, 255), false);
-    this->texts["ESCAPE"] = new gui::Text(
+    this->texts["ESCAPE"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["ESCAPE"], calcChar(16, vm), calcX(800, vm),
         calcY(342, vm), sf::Color(255, 255, 255), false);
-    this->texts["SHOP"] = new gui::Text(
+    this->texts["SHOP"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["SHOP"], calcChar(16, vm), calcX(800, vm),
         calcY(392, vm), sf::Color(255, 255, 255), false);
-    this->texts["RUN"] = new gui::Text(
+    this->texts["RUN"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["RUN"], calcChar(16, vm), calcX(800, vm),
         calcY(442, vm), sf::Color(255, 255, 255), false);
-    this->texts["BUY_ABILITY"] = new gui::Text(
+    this->texts["BUY_ABILITY"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["BUY_ABILITY"], calcChar(16, vm),
         calcX(800, vm), calcY(492, vm), sf::Color(255, 255, 255), false);
 
-    this->text_buttons["APPLY"] = new gui::ButtonText(
+    this->text_buttons["APPLY"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["APPLY"], calcChar(32, vm), calcX(1000, vm),
         calcY(592, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
         false);
@@ -208,30 +213,9 @@ void SettingsState::initGUI()
 
 void SettingsState::resetGUI()
 {
-    for (auto it = this->texts.begin(); it != this->texts.end(); ++it) {
-        delete it->second;
-        it->second = nullptr;
-    }
     this->texts.clear();
-
-    for (auto it = this->text_buttons.begin(); it != this->text_buttons.end();
-         ++it) {
-        delete it->second;
-        it->second = nullptr;
-    }
     this->text_buttons.clear();
-
-    for (auto it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-        delete it->second;
-        it->second = nullptr;
-    }
     this->sprites.clear();
-
-    for (auto it = this->sprite_buttons.begin();
-         it != this->sprite_buttons.end(); ++it) {
-        delete it->second;
-        it->second = nullptr;
-    }
     this->sprite_buttons.clear();
 
     initGUI();

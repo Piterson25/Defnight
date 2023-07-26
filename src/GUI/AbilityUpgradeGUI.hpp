@@ -9,13 +9,13 @@ public:
     ~AbilityUpgradeGUI();
 
     struct BuyItem {
-        gui::Sprite *itemSprite;
-        gui::Sprite *itemFrame;
-        gui::ButtonSprite *itemButton;
-        gui::Text *itemDesc;
-        gui::Text *itemValue;
-        gui::Sprite *itemCoin;
-        gui::Text *itemPrice;
+        std::unique_ptr<gui::Sprite> itemSprite;
+        std::unique_ptr<gui::Sprite> itemFrame;
+        std::unique_ptr<gui::ButtonSprite> itemButton;
+        std::unique_ptr<gui::Text> itemDesc;
+        std::unique_ptr<gui::Text> itemValue;
+        std::unique_ptr<gui::Sprite> itemCoin;
+        std::unique_ptr<gui::Text> itemPrice;
         uint32_t price;
     };
 

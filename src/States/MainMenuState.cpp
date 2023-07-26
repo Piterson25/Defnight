@@ -31,9 +31,9 @@ void MainMenuState::initGUI()
 
     this->introCooldown = 0.f;
     this->dimAlpha = 0.f;
-    this->sprites["LOGO"] =
-        new gui::Sprite("assets/textures/icon.png", calcX(640, vm),
-                        calcY(232, vm), calcScale(8, vm), true);
+    this->sprites["LOGO"] = std::make_unique<gui::Sprite>(
+        "assets/textures/icon.png", calcX(640, vm), calcY(232, vm),
+        calcScale(8, vm), true);
     this->sprites["LOGO"]->setColor(sf::Color(255, 255, 255, 0));
 
     // PAGE 1
@@ -73,150 +73,150 @@ void MainMenuState::initGUI()
                                               static_cast<float>(vm.height)));
     this->quitBackground.setFillColor(sf::Color(0, 0, 0, 192));
 
-    this->sprites["TITLE"] =
-        new gui::Sprite("assets/textures/title.png", calcX(640, vm),
-                        calcY(144, vm), calcScale(1, vm), true);
+    this->sprites["TITLE"] = std::make_unique<gui::Sprite>(
+        "assets/textures/title.png", calcX(640, vm), calcY(144, vm),
+        calcScale(1, vm), true);
 
-    this->text_buttons["PLAY"] = new gui::ButtonText(
+    this->text_buttons["PLAY"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["PLAY"], calcChar(32, vm), calcX(640, vm),
         calcY(370, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
         true);
-    this->text_buttons["SETTINGS"] = new gui::ButtonText(
+    this->text_buttons["SETTINGS"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["SETTINGS"], calcChar(32, vm), calcX(640, vm),
         calcY(466, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
         true);
-    this->text_buttons["QUIT"] = new gui::ButtonText(
+    this->text_buttons["QUIT"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["QUIT"], calcChar(32, vm), calcX(640, vm),
         calcY(558, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
         true);
 
-    this->texts["VERSION"] =
-        new gui::Text("v0.2.4", calcChar(16, vm), calcX(1272, vm),
-                      calcY(700, vm), sf::Color(255, 255, 255), false);
+    this->texts["VERSION"] = std::make_unique<gui::Text>(
+        "v0.2.4", calcChar(16, vm), calcX(1272, vm), calcY(700, vm),
+        sf::Color(255, 255, 255), false);
     this->texts["VERSION"]->setPosition(sf::Vector2f(
         calcX(1272, vm) - this->texts["VERSION"]->getWidth(), calcY(700, vm)));
 
     this->quitwindow = false;
 
-    this->texts["ARE_YOU_SURE"] = new gui::Text(
+    this->texts["ARE_YOU_SURE"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["ARE_YOU_SURE"], calcChar(32, vm),
         calcX(640, vm), calcY(250, vm), sf::Color(255, 255, 255), true);
-    this->text_buttons["YES"] = new gui::ButtonText(
+    this->text_buttons["YES"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["YES"], calcChar(32, vm), calcX(488, vm),
         calcY(306, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
         false);
-    this->text_buttons["NO"] = new gui::ButtonText(
+    this->text_buttons["NO"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["NO"], calcChar(32, vm), calcX(704, vm),
         calcY(306, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
         false);
 
     // PAGE 2
 
-    this->sprites["GO_BACK_FRAME"] =
-        new gui::Sprite("assets/textures/select_go_back.png", calcX(32, vm),
-                        calcY(24, vm), calcX(4, vm), false);
+    this->sprites["GO_BACK_FRAME"] = std::make_unique<gui::Sprite>(
+        "assets/textures/select_go_back.png", calcX(32, vm), calcY(24, vm),
+        calcX(4, vm), false);
     this->sprites["GO_BACK_FRAME"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
-    this->sprite_buttons["GO_BACK"] = new gui::ButtonSprite(
+    this->sprite_buttons["GO_BACK"] = std::make_unique<gui::ButtonSprite>(
         "assets/textures/select_go_back.png", calcX(32, vm), calcY(24, vm),
         calcX(4, vm), false);
     this->sprite_buttons["GO_BACK"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 
     this->map_name = "";
-    this->texts["CHOOSE_MAP"] = new gui::Text(
+    this->texts["CHOOSE_MAP"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["CHOOSE_MAP"], calcChar(32, vm), calcX(640, vm),
         calcY(96, vm), sf::Color(255, 255, 255), true);
-    this->sprites["MAP1_FRAME"] =
-        new gui::Sprite("assets/textures/select_map.png", calcX(24, vm),
-                        calcY(248, vm), calcScale(1, vm), false);
+    this->sprites["MAP1_FRAME"] = std::make_unique<gui::Sprite>(
+        "assets/textures/select_map.png", calcX(24, vm), calcY(248, vm),
+        calcScale(1, vm), false);
     this->sprites["MAP1_FRAME"]->setTextureRect(sf::IntRect(304, 0, 304, 304));
-    this->sprite_buttons["MAP1"] =
-        new gui::ButtonSprite("assets/textures/select_map.png", calcX(24, vm),
-                              calcY(248, vm), calcScale(1, vm), false);
+    this->sprite_buttons["MAP1"] = std::make_unique<gui::ButtonSprite>(
+        "assets/textures/select_map.png", calcX(24, vm), calcY(248, vm),
+        calcScale(1, vm), false);
     this->sprite_buttons["MAP1"]->setTextureRect(sf::IntRect(0, 0, 304, 304));
-    this->sprites["MAP1"] =
-        new gui::Sprite("assets/textures/maps/ruins.png", calcX(48, vm),
-                        calcY(272, vm), calcScale(0.5f, vm), false);
-    this->texts["RUINS"] = new gui::Text(
+    this->sprites["MAP1"] = std::make_unique<gui::Sprite>(
+        "assets/textures/maps/ruins.png", calcX(48, vm), calcY(272, vm),
+        calcScale(0.5f, vm), false);
+    this->texts["RUINS"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["RUINS"], calcChar(32, vm), calcX(176, vm),
         calcY(200, vm), sf::Color(255, 255, 255), true);
-    this->sprites["MAP2_FRAME"] =
-        new gui::Sprite("assets/textures/select_map.png", calcX(472, vm),
-                        calcY(248, vm), calcScale(1, vm), false);
+    this->sprites["MAP2_FRAME"] = std::make_unique<gui::Sprite>(
+        "assets/textures/select_map.png", calcX(472, vm), calcY(248, vm),
+        calcScale(1, vm), false);
     this->sprites["MAP2_FRAME"]->setTextureRect(sf::IntRect(304, 0, 304, 304));
-    this->sprite_buttons["MAP2"] =
-        new gui::ButtonSprite("assets/textures/select_map.png", calcX(472, vm),
-                              calcY(248, vm), calcScale(1, vm), false);
+    this->sprite_buttons["MAP2"] = std::make_unique<gui::ButtonSprite>(
+        "assets/textures/select_map.png", calcX(472, vm), calcY(248, vm),
+        calcScale(1, vm), false);
     this->sprite_buttons["MAP2"]->setTextureRect(sf::IntRect(0, 0, 304, 304));
-    this->sprites["MAP2"] =
-        new gui::Sprite("assets/textures/maps/desert.png", calcX(496, vm),
-                        calcY(272, vm), calcScale(0.5f, vm), false);
-    this->texts["DESERT"] = new gui::Text(
+    this->sprites["MAP2"] = std::make_unique<gui::Sprite>(
+        "assets/textures/maps/desert.png", calcX(496, vm), calcY(272, vm),
+        calcScale(0.5f, vm), false);
+    this->texts["DESERT"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["DESERT"], calcChar(32, vm), calcX(624, vm),
         calcY(200, vm), sf::Color(255, 255, 255), true);
-    this->sprites["MAP3_FRAME"] =
-        new gui::Sprite("assets/textures/select_map.png", calcX(920, vm),
-                        calcY(248, vm), calcScale(1, vm), false);
+    this->sprites["MAP3_FRAME"] = std::make_unique<gui::Sprite>(
+        "assets/textures/select_map.png", calcX(920, vm), calcY(248, vm),
+        calcScale(1, vm), false);
     this->sprites["MAP3_FRAME"]->setTextureRect(sf::IntRect(304, 0, 304, 304));
-    this->sprite_buttons["MAP3"] =
-        new gui::ButtonSprite("assets/textures/select_map.png", calcX(920, vm),
-                              calcY(248, vm), calcScale(1, vm), false);
+    this->sprite_buttons["MAP3"] = std::make_unique<gui::ButtonSprite>(
+        "assets/textures/select_map.png", calcX(920, vm), calcY(248, vm),
+        calcScale(1, vm), false);
     this->sprite_buttons["MAP3"]->setTextureRect(sf::IntRect(0, 0, 304, 304));
-    this->sprites["MAP3"] =
-        new gui::Sprite("assets/textures/maps/permafrost.png", calcX(944, vm),
-                        calcY(272, vm), calcScale(0.5f, vm), false);
-    this->texts["PERMAFROST"] = new gui::Text(
+    this->sprites["MAP3"] = std::make_unique<gui::Sprite>(
+        "assets/textures/maps/permafrost.png", calcX(944, vm), calcY(272, vm),
+        calcScale(0.5f, vm), false);
+    this->texts["PERMAFROST"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["PERMAFROST"], calcChar(32, vm),
         calcX(1072, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
 
     // PAGE 3
 
     this->hero_name = "";
-    this->texts["CHOOSE_HERO"] = new gui::Text(
+    this->texts["CHOOSE_HERO"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["CHOOSE_HERO"], calcChar(32, vm),
         calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
-    this->sprites["HERO1_FRAME"] =
-        new gui::Sprite("assets/textures/select.png", calcX(64, vm),
-                        calcY(256, vm), calcScale(2, vm), false);
+    this->sprites["HERO1_FRAME"] = std::make_unique<gui::Sprite>(
+        "assets/textures/select.png", calcX(64, vm), calcY(256, vm),
+        calcScale(2, vm), false);
     this->sprites["HERO1_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
-    this->sprite_buttons["HERO1"] =
-        new gui::ButtonSprite("assets/textures/select.png", calcX(64, vm),
-                              calcY(256, vm), calcScale(2, vm), false);
+    this->sprite_buttons["HERO1"] = std::make_unique<gui::ButtonSprite>(
+        "assets/textures/select.png", calcX(64, vm), calcY(256, vm),
+        calcScale(2, vm), false);
     this->sprite_buttons["HERO1"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
-    this->sprites["HERO1"] =
-        new gui::Sprite("assets/textures/upgrades_icons.png", calcX(88, vm),
-                        calcY(280, vm), calcScale(8, vm), false);
+    this->sprites["HERO1"] = std::make_unique<gui::Sprite>(
+        "assets/textures/upgrades_icons.png", calcX(88, vm), calcY(280, vm),
+        calcScale(8, vm), false);
     this->sprites["HERO1"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
-    this->texts["WARRIOR"] = new gui::Text(
+    this->texts["WARRIOR"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["WARRIOR"], calcChar(32, vm), calcX(150, vm),
         calcY(200, vm), sf::Color(255, 255, 255), true);
 
     this->choosing_hero = false;
 
-    this->text_buttons["CHOOSE"] = new gui::ButtonText(
+    this->text_buttons["CHOOSE"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["CHOOSE"], calcChar(32, vm), calcX(200, vm),
         calcY(570, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
         false);
-    this->sprites["HERO_PREVIEW"] =
-        new gui::Sprite("assets/textures/upgrades_icons.png", calcX(640, vm),
-                        calcY(512, vm), calcScale(8, vm), true);
+    this->sprites["HERO_PREVIEW"] = std::make_unique<gui::Sprite>(
+        "assets/textures/upgrades_icons.png", calcX(640, vm), calcY(512, vm),
+        calcScale(8, vm), true);
     this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
     this->sprites["HERO_PREVIEW"]->center(calcX(640, vm));
-    this->sprites["HP_BAR"] =
-        new gui::Sprite("assets/textures/bars.png", calcX(860, vm),
-                        calcY(526, vm), calcScale(1, vm), true);
+    this->sprites["HP_BAR"] = std::make_unique<gui::Sprite>(
+        "assets/textures/bars.png", calcX(860, vm), calcY(526, vm),
+        calcScale(1, vm), true);
     this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 256, 20));
     this->sprites["HP_BAR"]->center(calcX(860, vm));
-    this->texts["HP"] =
-        new gui::Text("HP:10/10", calcChar(16, vm), calcX(860, vm),
-                      calcY(529, vm), sf::Color(255, 255, 255), true);
-    this->sprites["SPRINT_BAR"] =
-        new gui::Sprite("assets/textures/bars.png", calcX(860, vm),
-                        calcY(554, vm), calcScale(1, vm), true);
+    this->texts["HP"] = std::make_unique<gui::Text>(
+        "HP:10/10", calcChar(16, vm), calcX(860, vm), calcY(529, vm),
+        sf::Color(255, 255, 255), true);
+    this->sprites["SPRINT_BAR"] = std::make_unique<gui::Sprite>(
+        "assets/textures/bars.png", calcX(860, vm), calcY(554, vm),
+        calcScale(1, vm), true);
     this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect(0, 40, 256, 20));
     this->sprites["SPRINT_BAR"]->center(calcX(860, vm));
-    this->texts["SPRINT"] =
-        new gui::Text("100/100", calcChar(16, vm), calcX(860, vm),
-                      calcY(557, vm), sf::Color(255, 255, 255), true);
+    this->texts["SPRINT"] = std::make_unique<gui::Text>(
+        "100/100", calcChar(16, vm), calcX(860, vm), calcY(557, vm),
+        sf::Color(255, 255, 255), true);
 
     this->attributes_texture.loadFromFile(
         "assets/textures/attributes_icons.png");
@@ -240,123 +240,123 @@ void MainMenuState::initGUI()
     }
 
     this->sprites["ARMOR"] =
-        new gui::Sprite(attribute_vec[1], calcX(728, vm), calcY(586, vm),
-                        calcScale(2, vm), false);
-    this->texts["ARMOR"] =
-        new gui::Text("3", calcChar(16, vm), calcX(744, vm), calcY(640, vm),
-                      sf::Color(192, 192, 192), true);
+        std::make_unique<gui::Sprite>(attribute_vec[1], calcX(728, vm),
+                                      calcY(586, vm), calcScale(2, vm), false);
+    this->texts["ARMOR"] = std::make_unique<gui::Text>(
+        "3", calcChar(16, vm), calcX(744, vm), calcY(640, vm),
+        sf::Color(192, 192, 192), true);
     this->sprites["REG"] =
-        new gui::Sprite(attribute_vec[2], calcX(792, vm), calcY(586, vm),
-                        calcScale(2, vm), false);
-    this->texts["REG"] =
-        new gui::Text("1", calcChar(16, vm), calcX(808, vm), calcY(640, vm),
-                      sf::Color(182, 60, 53), true);
+        std::make_unique<gui::Sprite>(attribute_vec[2], calcX(792, vm),
+                                      calcY(586, vm), calcScale(2, vm), false);
+    this->texts["REG"] = std::make_unique<gui::Text>(
+        "1", calcChar(16, vm), calcX(808, vm), calcY(640, vm),
+        sf::Color(182, 60, 53), true);
     this->sprites["ATTACK"] =
-        new gui::Sprite(attribute_vec[5], calcX(856, vm), calcY(586, vm),
-                        calcScale(2, vm), false);
-    this->texts["ATTACK"] =
-        new gui::Text("5", calcChar(16, vm), calcX(872, vm), calcY(640, vm),
-                      sf::Color(192, 192, 192), true);
+        std::make_unique<gui::Sprite>(attribute_vec[5], calcX(856, vm),
+                                      calcY(586, vm), calcScale(2, vm), false);
+    this->texts["ATTACK"] = std::make_unique<gui::Text>(
+        "5", calcChar(16, vm), calcX(872, vm), calcY(640, vm),
+        sf::Color(192, 192, 192), true);
     this->sprites["ATTACK_SPEED"] =
-        new gui::Sprite(attribute_vec[6], calcX(920, vm), calcY(586, vm),
-                        calcScale(2, vm), false);
-    this->texts["ATTACK_SPEED"] =
-        new gui::Text("4", calcChar(16, vm), calcX(936, vm), calcY(640, vm),
-                      sf::Color(192, 192, 192), true);
+        std::make_unique<gui::Sprite>(attribute_vec[6], calcX(920, vm),
+                                      calcY(586, vm), calcScale(2, vm), false);
+    this->texts["ATTACK_SPEED"] = std::make_unique<gui::Text>(
+        "4", calcChar(16, vm), calcX(936, vm), calcY(640, vm),
+        sf::Color(192, 192, 192), true);
     this->sprites["SPEED"] =
-        new gui::Sprite(attribute_vec[7], calcX(984, vm), calcY(586, vm),
-                        calcScale(2, vm), false);
-    this->texts["SPEED"] =
-        new gui::Text("4", calcChar(16, vm), calcX(1000, vm), calcY(640, vm),
-                      sf::Color(192, 192, 192), true);
+        std::make_unique<gui::Sprite>(attribute_vec[7], calcX(984, vm),
+                                      calcY(586, vm), calcScale(2, vm), false);
+    this->texts["SPEED"] = std::make_unique<gui::Text>(
+        "4", calcChar(16, vm), calcX(1000, vm), calcY(640, vm),
+        sf::Color(192, 192, 192), true);
     this->sprites["CRITICAL"] =
-        new gui::Sprite(attribute_vec[8], calcX(1048, vm), calcY(586, vm),
-                        calcScale(2, vm), false);
-    this->texts["CRITICAL"] =
-        new gui::Text("20%", calcChar(16, vm), calcX(1064, vm), calcY(640, vm),
-                      sf::Color(192, 192, 192), true);
+        std::make_unique<gui::Sprite>(attribute_vec[8], calcX(1048, vm),
+                                      calcY(586, vm), calcScale(2, vm), false);
+    this->texts["CRITICAL"] = std::make_unique<gui::Text>(
+        "20%", calcChar(16, vm), calcX(1064, vm), calcY(640, vm),
+        sf::Color(192, 192, 192), true);
 
     this->sprites["ABILITY1"] =
-        new gui::Sprite(abilities_vec[0], calcX(528, vm), calcY(526, vm),
-                        calcScale(2, vm), true);
+        std::make_unique<gui::Sprite>(abilities_vec[0], calcX(528, vm),
+                                      calcY(526, vm), calcScale(2, vm), true);
     this->sprites["ABILITY2"] =
-        new gui::Sprite(abilities_vec[1], calcX(528, vm), calcY(574, vm),
-                        calcScale(2, vm), true);
+        std::make_unique<gui::Sprite>(abilities_vec[1], calcX(528, vm),
+                                      calcY(574, vm), calcScale(2, vm), true);
     this->sprites["ABILITY3"] =
-        new gui::Sprite(abilities_vec[2], calcX(528, vm), calcY(622, vm),
-                        calcScale(2, vm), true);
+        std::make_unique<gui::Sprite>(abilities_vec[2], calcX(528, vm),
+                                      calcY(622, vm), calcScale(2, vm), true);
 
     // PAGE 4
 
     this->difficulty_name = "";
-    this->texts["CHOOSE_DIFFICULTY"] = new gui::Text(
+    this->texts["CHOOSE_DIFFICULTY"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["CHOOSE_DIFFICULTY"], calcChar(32, vm),
         calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
 
-    this->sprites["DIFFICULTY1_FRAME"] =
-        new gui::Sprite("assets/textures/select_difficulty.png", calcX(32, vm),
-                        calcY(184, vm), calcScale(1, vm), false);
+    this->sprites["DIFFICULTY1_FRAME"] = std::make_unique<gui::Sprite>(
+        "assets/textures/select_difficulty.png", calcX(32, vm), calcY(184, vm),
+        calcScale(1, vm), false);
     this->sprites["DIFFICULTY1_FRAME"]->setTextureRect(
         sf::IntRect(384, 0, 384, 504));
-    this->sprite_buttons["DIFFICULTY1"] = new gui::ButtonSprite(
+    this->sprite_buttons["DIFFICULTY1"] = std::make_unique<gui::ButtonSprite>(
         "assets/textures/select_difficulty.png", calcX(32, vm), calcY(184, vm),
         calcScale(1, vm), false);
     this->sprite_buttons["DIFFICULTY1"]->setTextureRect(
         sf::IntRect(0, 0, 384, 504));
-    this->sprites["DIFFICULTY2_FRAME"] =
-        new gui::Sprite("assets/textures/select_difficulty.png", calcX(448, vm),
-                        calcY(184, vm), calcScale(1, vm), false);
+    this->sprites["DIFFICULTY2_FRAME"] = std::make_unique<gui::Sprite>(
+        "assets/textures/select_difficulty.png", calcX(448, vm), calcY(184, vm),
+        calcScale(1, vm), false);
     this->sprites["DIFFICULTY2_FRAME"]->setTextureRect(
         sf::IntRect(384, 0, 384, 504));
-    this->sprite_buttons["DIFFICULTY2"] = new gui::ButtonSprite(
+    this->sprite_buttons["DIFFICULTY2"] = std::make_unique<gui::ButtonSprite>(
         "assets/textures/select_difficulty.png", calcX(448, vm), calcY(184, vm),
         calcScale(1, vm), false);
     this->sprite_buttons["DIFFICULTY2"]->setTextureRect(
         sf::IntRect(0, 0, 384, 504));
-    this->sprites["DIFFICULTY3_FRAME"] =
-        new gui::Sprite("assets/textures/select_difficulty.png", calcX(864, vm),
-                        calcY(184, vm), calcScale(1, vm), false);
+    this->sprites["DIFFICULTY3_FRAME"] = std::make_unique<gui::Sprite>(
+        "assets/textures/select_difficulty.png", calcX(864, vm), calcY(184, vm),
+        calcScale(1, vm), false);
     this->sprites["DIFFICULTY3_FRAME"]->setTextureRect(
         sf::IntRect(384, 0, 384, 504));
-    this->sprite_buttons["DIFFICULTY3"] = new gui::ButtonSprite(
+    this->sprite_buttons["DIFFICULTY3"] = std::make_unique<gui::ButtonSprite>(
         "assets/textures/select_difficulty.png", calcX(864, vm), calcY(184, vm),
         calcScale(1, vm), false);
     this->sprite_buttons["DIFFICULTY3"]->setTextureRect(
         sf::IntRect(0, 0, 384, 504));
 
-    this->sprites["DIFFICULTY1"] =
-        new gui::Sprite("assets/textures/difficulty_icons.png", calcX(168, vm),
-                        calcY(272, vm), calcScale(16, vm), false);
+    this->sprites["DIFFICULTY1"] = std::make_unique<gui::Sprite>(
+        "assets/textures/difficulty_icons.png", calcX(168, vm), calcY(272, vm),
+        calcScale(16, vm), false);
     this->sprites["DIFFICULTY1"]->setTextureRect(sf::IntRect(0, 0, 7, 6));
-    this->sprites["DIFFICULTY2"] =
-        new gui::Sprite("assets/textures/difficulty_icons.png", calcX(584, vm),
-                        calcY(272, vm), calcScale(16, vm), false);
+    this->sprites["DIFFICULTY2"] = std::make_unique<gui::Sprite>(
+        "assets/textures/difficulty_icons.png", calcX(584, vm), calcY(272, vm),
+        calcScale(16, vm), false);
     this->sprites["DIFFICULTY2"]->setTextureRect(sf::IntRect(7, 0, 7, 6));
-    this->sprites["DIFFICULTY3"] =
-        new gui::Sprite("assets/textures/difficulty_icons.png", calcX(1000, vm),
-                        calcY(272, vm), calcScale(16, vm), false);
+    this->sprites["DIFFICULTY3"] = std::make_unique<gui::Sprite>(
+        "assets/textures/difficulty_icons.png", calcX(1000, vm), calcY(272, vm),
+        calcScale(16, vm), false);
     this->sprites["DIFFICULTY3"]->setTextureRect(sf::IntRect(14, 0, 7, 6));
 
-    this->texts["EASY"] = new gui::Text(
+    this->texts["EASY"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["EASY"], calcChar(32, vm), calcX(224, vm),
         calcY(400, vm), sf::Color(255, 255, 255), true);
-    this->texts["NORMAL"] = new gui::Text(
+    this->texts["NORMAL"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["NORMAL"], calcChar(32, vm), calcX(640, vm),
         calcY(400, vm), sf::Color(255, 255, 255), true);
-    this->texts["HARD"] = new gui::Text(
+    this->texts["HARD"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["HARD"], calcChar(32, vm), calcX(1056, vm),
         calcY(400, vm), sf::Color(255, 255, 255), true);
-    this->texts["EASY_DESC"] = new gui::Text(
+    this->texts["EASY_DESC"] = std::make_unique<gui::Text>(
 
         this->gameSettings.lang["MONSTERS_HAVE"] + "\n\n-25% HP\n\n-25% " +
             this->gameSettings.lang["ATTACK"] + "\n\n50% " +
             this->gameSettings.lang["HEART_DROP"],
         calcChar(16, vm), calcX(224, vm), calcY(460, vm),
         sf::Color(182, 60, 53), true);
-    this->texts["NORMAL_DESC"] = new gui::Text(
+    this->texts["NORMAL_DESC"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["NORMAL_DESC"], calcChar(16, vm),
         calcX(640, vm), calcY(460, vm), sf::Color(182, 60, 53), true);
-    this->texts["HARD_DESC"] = new gui::Text(
+    this->texts["HARD_DESC"] = std::make_unique<gui::Text>(
 
         this->gameSettings.lang["MONSTERS_HAVE"] + "\n\n+25% HP\n\n+25% " +
             this->gameSettings.lang["ATTACK"] + "\n\n" +
@@ -367,26 +367,9 @@ void MainMenuState::initGUI()
 
 void MainMenuState::resetGUI()
 {
-    for (auto it = this->texts.begin(); it != this->texts.end(); ++it) {
-        delete it->second;
-    }
     this->texts.clear();
-
-    for (auto it = this->text_buttons.begin(); it != this->text_buttons.end();
-         ++it) {
-        delete it->second;
-    }
     this->text_buttons.clear();
-
-    for (auto it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-        delete it->second;
-    }
     this->sprites.clear();
-
-    for (auto it = this->sprite_buttons.begin();
-         it != this->sprite_buttons.end(); ++it) {
-        delete it->second;
-    }
     this->sprite_buttons.clear();
 
     initGUI();

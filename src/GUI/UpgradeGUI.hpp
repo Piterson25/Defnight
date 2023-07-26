@@ -8,13 +8,13 @@ public:
     ~UpgradeGUI();
 
     struct Upgrade {
-        gui::Sprite *upgradeSprite;
-        gui::Sprite *upgradeFrame;
-        gui::ButtonSprite *upgradeButton;
-        gui::Text *upgradeName;
-        gui::Sprite *upgradeAbility;
-        gui::Sprite *upgradeAttribute;
-        gui::Text *upgradeAttributeValue;
+        std::unique_ptr<gui::Sprite> upgradeSprite;
+        std::unique_ptr<gui::Sprite> upgradeFrame;
+        std::unique_ptr<gui::ButtonSprite> upgradeButton;
+        std::unique_ptr<gui::Text> upgradeName;
+        std::unique_ptr<gui::Sprite> upgradeAbility;
+        std::unique_ptr<gui::Sprite> upgradeAttribute;
+        std::unique_ptr<gui::Text> upgradeAttributeValue;
         uint32_t value;
     };
 

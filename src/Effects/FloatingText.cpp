@@ -1,5 +1,4 @@
 #include "FloatingText.hpp"
-#include "Functions.hpp"
 
 FloatingText::FloatingText(sf::VideoMode &vm, const std::string &text,
                            unsigned charSize, float posX, float posY,

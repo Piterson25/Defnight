@@ -15,69 +15,69 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->statsGUI = new StatsGUI(this->vm, this->player, this->lang);
 
     this->titleCooldown = 0.f;
-    this->texts["WAVE_NEW_MOBS"] =
-        new gui::Text("", calcChar(16, vm), calcX(640, vm), calcY(562, vm),
-                      sf::Color(228, 92, 95), true);
-    this->texts["BIG_WAVE_NUMBER"] =
-        new gui::Text(this->lang["WAVE"], calcChar(64, vm), calcX(640, vm),
-                      calcY(256, vm), sf::Color(255, 255, 255), true);
-    this->texts["MOBS_TO_KILL"] =
-        new gui::Text(this->lang["MONSTER"], calcChar(32, vm), calcX(640, vm),
-                      calcY(512, vm), sf::Color(192, 192, 192), true);
+    this->texts["WAVE_NEW_MOBS"] = std::make_unique<gui::Text>(
+        "", calcChar(16, vm), calcX(640, vm), calcY(562, vm),
+        sf::Color(228, 92, 95), true);
+    this->texts["BIG_WAVE_NUMBER"] = std::make_unique<gui::Text>(
+        this->lang["WAVE"], calcChar(64, vm), calcX(640, vm), calcY(256, vm),
+        sf::Color(255, 255, 255), true);
+    this->texts["MOBS_TO_KILL"] = std::make_unique<gui::Text>(
+        this->lang["MONSTER"], calcChar(32, vm), calcX(640, vm), calcY(512, vm),
+        sf::Color(192, 192, 192), true);
     this->waveCountdown = 0.f;
 
     this->leveling = false;
 
-    this->texts["LEVEL_UP"] =
-        new gui::Text("LEVEL UP!", calcChar(32, vm), calcX(640, vm),
-                      calcY(256, vm), sf::Color(255, 246, 76), true);
-    this->sprites["LEVEL_UP"] =
-        new gui::Sprite("assets/textures/bottom_gui.png", calcX(640, vm),
-                        calcY(476, vm), calcScale(1, vm), true);
+    this->texts["LEVEL_UP"] = std::make_unique<gui::Text>(
+        "LEVEL UP!", calcChar(32, vm), calcX(640, vm), calcY(256, vm),
+        sf::Color(255, 246, 76), true);
+    this->sprites["LEVEL_UP"] = std::make_unique<gui::Sprite>(
+        "assets/textures/bottom_gui.png", calcX(640, vm), calcY(476, vm),
+        calcScale(1, vm), true);
 
     this->sprites["OPTION1_FRAME"] =
-        new gui::Sprite(this->select_texture, calcX(504, vm), calcY(512, vm),
-                        calcScale(1, vm), false);
+        std::make_unique<gui::Sprite>(this->select_texture, calcX(504, vm),
+                                      calcY(512, vm), calcScale(1, vm), false);
     this->sprites["OPTION1_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
     this->sprites["OPTION2_FRAME"] =
-        new gui::Sprite(this->select_texture, calcX(688, vm), calcY(512, vm),
-                        calcScale(1, vm), false);
+        std::make_unique<gui::Sprite>(this->select_texture, calcX(688, vm),
+                                      calcY(512, vm), calcScale(1, vm), false);
     this->sprites["OPTION2_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
-    this->sprite_buttons["OPTION1"] =
-        new gui::ButtonSprite(this->select_texture, calcX(504, vm),
-                              calcY(512, vm), calcScale(1, vm), false);
+    this->sprite_buttons["OPTION1"] = std::make_unique<gui::ButtonSprite>(
+        this->select_texture, calcX(504, vm), calcY(512, vm), calcScale(1, vm),
+        false);
     this->sprite_buttons["OPTION1"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
-    this->sprite_buttons["OPTION2"] =
-        new gui::ButtonSprite(this->select_texture, calcX(688, vm),
-                              calcY(512, vm), calcScale(1, vm), false);
+    this->sprite_buttons["OPTION2"] = std::make_unique<gui::ButtonSprite>(
+        this->select_texture, calcX(688, vm), calcY(512, vm), calcScale(1, vm),
+        false);
     this->sprite_buttons["OPTION2"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
     this->sprites["OPTION1"] =
-        new gui::Sprite(this->attributes_texture, calcX(516, vm),
-                        calcY(524, vm), calcScale(4, vm), false);
+        std::make_unique<gui::Sprite>(this->attributes_texture, calcX(516, vm),
+                                      calcY(524, vm), calcScale(4, vm), false);
     this->sprites["OPTION2"] =
-        new gui::Sprite(this->attributes_texture, calcX(700, vm),
-                        calcY(524, vm), calcScale(4, vm), false);
-    this->texts["OPTION1"] =
-        new gui::Text("", calcChar(16, vm), calcX(548, vm), calcY(612, vm),
-                      sf::Color(255, 255, 255), false);
-    this->texts["OPTION2"] =
-        new gui::Text("", calcChar(16, vm), calcX(732, vm), calcY(612, vm),
-                      sf::Color(255, 255, 255), false);
-    this->texts["OPTION1_VALUE"] =
-        new gui::Text("", calcChar(16, vm), calcX(548, vm), calcY(636, vm),
-                      sf::Color(255, 255, 255), false);
-    this->texts["OPTION2_VALUE"] =
-        new gui::Text("", calcChar(16, vm), calcX(732, vm), calcY(636, vm),
-                      sf::Color(255, 255, 255), false);
+        std::make_unique<gui::Sprite>(this->attributes_texture, calcX(700, vm),
+                                      calcY(524, vm), calcScale(4, vm), false);
+    this->texts["OPTION1"] = std::make_unique<gui::Text>(
+        "", calcChar(16, vm), calcX(548, vm), calcY(612, vm),
+        sf::Color(255, 255, 255), false);
+    this->texts["OPTION2"] = std::make_unique<gui::Text>(
+        "", calcChar(16, vm), calcX(732, vm), calcY(612, vm),
+        sf::Color(255, 255, 255), false);
+    this->texts["OPTION1_VALUE"] = std::make_unique<gui::Text>(
+        "", calcChar(16, vm), calcX(548, vm), calcY(636, vm),
+        sf::Color(255, 255, 255), false);
+    this->texts["OPTION2_VALUE"] = std::make_unique<gui::Text>(
+        "", calcChar(16, vm), calcX(732, vm), calcY(636, vm),
+        sf::Color(255, 255, 255), false);
 
     this->option1_id = 0;
     this->option1_val = 0;
     this->option2_id = 0;
     this->option2_val = 0;
 
-    this->sprites["UPGRADES"] =
-        new gui::Sprite("assets/textures/side_gui.png", calcX(1280, vm),
-                        calcY(128, vm), calcScale(1, vm), false);
+    this->sprites["UPGRADES"] = std::make_unique<gui::Sprite>(
+        "assets/textures/side_gui.png", calcX(1280, vm), calcY(128, vm),
+        calcScale(1, vm), false);
     this->sprites["UPGRADES"]->flipHorizontal();
 
     this->upgradeGUI = new UpgradeGUI(vm, this->player);
@@ -94,41 +94,41 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
         sf::Vector2f(calcX(1280, vm), calcY(592, vm)));
     this->death_background.setPosition(sf::Vector2f(0, calcY(128, vm)));
 
-    this->texts["YOU_DIED"] =
-        new gui::Text(this->lang["YOU_DIED"], calcChar(72, vm), calcX(640, vm),
-                      calcY(224, vm), sf::Color(255, 255, 255), true);
-    this->text_buttons["RESUME"] = new gui::ButtonText(
+    this->texts["YOU_DIED"] = std::make_unique<gui::Text>(
+        this->lang["YOU_DIED"], calcChar(72, vm), calcX(640, vm),
+        calcY(224, vm), sf::Color(255, 255, 255), true);
+    this->text_buttons["RESUME"] = std::make_unique<gui::ButtonText>(
         this->lang["RESUME"], calcChar(32, vm), calcX(640, vm), calcY(296, vm),
         sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
-    this->text_buttons["MAIN_MENU"] = new gui::ButtonText(
+    this->text_buttons["MAIN_MENU"] = std::make_unique<gui::ButtonText>(
         this->lang["MAIN_MENU"], calcChar(32, vm), calcX(640, vm),
         calcY(392, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
         true);
-    this->text_buttons["SETTINGS"] = new gui::ButtonText(
+    this->text_buttons["SETTINGS"] = std::make_unique<gui::ButtonText>(
         this->lang["SETTINGS"], calcChar(32, vm), calcX(640, vm),
         calcY(488, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
         true);
-    this->text_buttons["QUIT"] = new gui::ButtonText(
+    this->text_buttons["QUIT"] = std::make_unique<gui::ButtonText>(
         this->lang["QUIT"], calcChar(32, vm), calcX(640, vm), calcY(584, vm),
         sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
 
-    this->texts["KILLS"] =
-        new gui::Text(this->lang["KILLS"] + std::to_string(player.getKills()),
-                      calcChar(16, vm), calcX(640, vm), calcY(160, vm),
-                      sf::Color(192, 192, 192), true);
+    this->texts["KILLS"] = std::make_unique<gui::Text>(
+        this->lang["KILLS"] + std::to_string(player.getKills()),
+        calcChar(16, vm), calcX(640, vm), calcY(160, vm),
+        sf::Color(192, 192, 192), true);
 
     if (difficulty_name == "easy") {
-        this->texts["DIFFICULTY"] = new gui::Text(
+        this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
             this->lang["DIFFICULTY_LEVEL"] + " " + this->lang["EASY"],
             calcChar(16, vm), calcX(640, vm), calcY(144, vm), gui::RED, true);
     }
     else if (difficulty_name == "normal") {
-        this->texts["DIFFICULTY"] = new gui::Text(
+        this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
             this->lang["DIFFICULTY_LEVEL"] + " " + this->lang["NORMAL"],
             calcChar(16, vm), calcX(640, vm), calcY(144, vm), gui::RED, true);
     }
     else if (difficulty_name == "hard") {
-        this->texts["DIFFICULTY"] = new gui::Text(
+        this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
             this->lang["DIFFICULTY_LEVEL"] + " " + this->lang["HARD"],
             calcChar(16, vm), calcX(640, vm), calcY(144, vm), gui::RED, true);
     }
@@ -139,8 +139,8 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->escape = false;
 
     this->sprites["SIDE_GUI"] =
-        new gui::Sprite("assets/textures/side_gui.png", 0, calcY(128, vm),
-                        calcScale(1, vm), false);
+        std::make_unique<gui::Sprite>("assets/textures/side_gui.png", 0.f,
+                                      calcY(128, vm), calcScale(1, vm), false);
 
     this->abilityUpgradeGUI = new AbilityUpgradeGUI(vm, this->player);
     this->abilityUpgradeGUI->addAbilityUpgrade("LOWER_COOLDOWN", calcX(44, vm),
@@ -162,16 +162,16 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->bossWave = false;
     this->bossCooldown = 0.f;
 
-    this->texts["BOSS"] =
-        new gui::Text("Minotaur", calcChar(16, vm), calcX(640, vm),
-                      calcY(136, vm), sf::Color(113, 43, 59), true);
-    this->sprites["BOSS_BAR"] =
-        new gui::Sprite("assets/textures/bars.png", calcX(376, vm),
-                        calcY(158, vm), calcScale(1, vm), false);
+    this->texts["BOSS"] = std::make_unique<gui::Text>(
+        "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm),
+        sf::Color(113, 43, 59), true);
+    this->sprites["BOSS_BAR"] = std::make_unique<gui::Sprite>(
+        "assets/textures/bars.png", calcX(376, vm), calcY(158, vm),
+        calcScale(1, vm), false);
     this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 60, 528, 20));
-    this->sprites["BOSS_BAR_EMPTY"] =
-        new gui::Sprite("assets/textures/bars.png", calcX(376, vm),
-                        calcY(158, vm), calcScale(1, vm), false);
+    this->sprites["BOSS_BAR_EMPTY"] = std::make_unique<gui::Sprite>(
+        "assets/textures/bars.png", calcX(376, vm), calcY(158, vm),
+        calcScale(1, vm), false);
     this->sprites["BOSS_BAR_EMPTY"]->setTextureRect(
         sf::IntRect(0, 80, 528, 20));
 
@@ -324,11 +324,13 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
     }
 
     update_options(this->option1_id, this->option1_val, id,
-                   this->texts["OPTION1"], this->texts["OPTION1_VALUE"],
-                   this->sprites["OPTION1"], calcX(548, vm));
+                   this->texts["OPTION1"].get(),
+                   this->texts["OPTION1_VALUE"].get(),
+                   this->sprites["OPTION1"].get(), calcX(548, vm));
     update_options(this->option2_id, this->option2_val, id,
-                   this->texts["OPTION2"], this->texts["OPTION2_VALUE"],
-                   this->sprites["OPTION2"], calcX(732, vm));
+                   this->texts["OPTION2"].get(),
+                   this->texts["OPTION2_VALUE"].get(),
+                   this->sprites["OPTION2"].get(), calcX(732, vm));
 
     if (player.getLevel() == 10) {
         if (player.getName() == "ninja") {
