@@ -124,7 +124,7 @@ void AbilityUpgradeGUI::buy(const std::string &t_name,
 {
     player.setGold(player.getGold() - getPrice(t_name));
     floatingTextSystem->addFloatingText(
-        "gold", "-" + std::to_string(getPrice(t_name)), calcChar(16, vm),
+        gui::GOLD, "-" + std::to_string(getPrice(t_name)), calcChar(16, vm),
         calcX(20, vm), calcX(96, vm), true);
     increasePrice(t_name);
 }

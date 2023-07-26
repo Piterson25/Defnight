@@ -76,7 +76,7 @@ void MonsterSystem::playerAttack(Player &player,
                     player.getCriticalChance()) {
                     const int attack = 2 * player.getAttack();
                     floatingTextSystem.addFloatingText(
-                        "orange", std::to_string(-attack), calcChar(16, vm),
+                        gui::ORANGE, std::to_string(-attack), calcChar(16, vm),
                         monster->getPosition().x + calcX(32, vm),
                         monster->getPosition().y + calcY(32, vm), false);
                     if (static_cast<int>(monster->getHP() - attack) < 0) {
@@ -89,7 +89,7 @@ void MonsterSystem::playerAttack(Player &player,
                 else {
                     const int attack = player.getAttack();
                     floatingTextSystem.addFloatingText(
-                        "white", std::to_string(-attack), calcChar(16, vm),
+                        gui::WHITE, std::to_string(-attack), calcChar(16, vm),
                         monster->getPosition().x + calcX(32, vm),
                         monster->getPosition().y + calcY(32, vm), false);
                     if (static_cast<int>(monster->getHP() - attack) < 0) {
@@ -123,7 +123,7 @@ void MonsterSystem::explosionAttack(
                     monster->hasSpawned()) {
                     const int attack = player.getProjectileAttack();
                     floatingTextSystem.addFloatingText(
-                        "white", std::to_string(-attack), calcChar(16, vm),
+                        gui::WHITE, std::to_string(-attack), calcChar(16, vm),
                         monster->getPosition().x + calcX(32, vm),
                         monster->getPosition().y + calcY(32, vm), false);
                     if (static_cast<int>(monster->getHP() - attack) < 0) {
@@ -474,7 +474,7 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
                     }
                     else {
                         floatingTextSystem.addFloatingText(
-                            "flamingo",
+                            gui::FLAMINGO,
                             std::to_string(static_cast<int>(
                                 -round(monster->getAttack() -
                                        (monster->getAttack() *

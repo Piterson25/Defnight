@@ -43,7 +43,7 @@ const bool Coin::isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
         player.setGold(player.getGold() + this->worth);
         playerGUI.update_Gold();
         floatingTextSystem.addFloatingText(
-            "gold", "+" + std::to_string(this->worth), calcChar(16, vm),
+            gui::GOLD, "+" + std::to_string(this->worth), calcChar(16, vm),
             this->sprite.getPosition().x - calcX(16, vm),
             this->sprite.getPosition().y, false);
         soundEngine.addSound("coin");

@@ -4,6 +4,12 @@
 
 namespace gui {
 
+    const sf::Color WHITE = sf::Color(255, 255, 255);
+    const sf::Color GOLD = sf::Color(255, 246, 76);
+    const sf::Color RED = sf::Color(182, 60, 53);
+    const sf::Color ORANGE = sf::Color(233, 134, 39);
+    const sf::Color FLAMINGO = sf::Color(228, 92, 95);
+
     enum button_states { BUTTON_IDLE, BUTTON_HOVER, BUTTON_PRESSED };
 
     void initVM(sf::VideoMode &t_vm);

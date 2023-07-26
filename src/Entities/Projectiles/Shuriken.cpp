@@ -43,7 +43,7 @@ void Shuriken::monsterCollision(Monster &monster, Player &player,
                 player.getCriticalChance()) {
                 const int attack = 2 * this->attack;
                 floatingTextSystem.addFloatingText(
-                    "orange", std::to_string(-attack), calcChar(16, vm),
+                    gui::ORANGE, std::to_string(-attack), calcChar(16, vm),
                     monster.getPosition().x + calcX(32, vm),
                     monster.getPosition().y + calcY(32, vm), false);
                 if (static_cast<int>(monster.getHP() - attack) < 0) {
@@ -56,7 +56,7 @@ void Shuriken::monsterCollision(Monster &monster, Player &player,
             else {
                 const int attack = this->attack;
                 floatingTextSystem.addFloatingText(
-                    "white", std::to_string(-attack), calcChar(16, vm),
+                    gui::WHITE, std::to_string(-attack), calcChar(16, vm),
                     monster.getPosition().x + calcX(32, vm),
                     monster.getPosition().y + calcY(32, vm), false);
                 if (static_cast<int>(monster.getHP() - attack) < 0) {

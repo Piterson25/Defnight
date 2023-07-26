@@ -76,7 +76,7 @@ Monster::hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
 
             if (Lattack > 0) {
                 floatingTextSystem.addFloatingText(
-                    "flamingo", std::to_string(-Lattack), calcChar(16, vm),
+                    gui::FLAMINGO, std::to_string(-Lattack), calcChar(16, vm),
                     player.getPosition().x + calcX(48, vm),
                     player.getPosition().y + calcY(32, vm), false);
                 if (static_cast<int>(player.getHP() - Lattack) < 0) {

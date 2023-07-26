@@ -6,17 +6,15 @@ FloatingText::FloatingText(sf::VideoMode &vm, const std::string &text,
                            const sf::Color &color, bool isgui)
     : gui(isgui)
 {
-    this->text = new gui::Text(text, charSize, posX, posY,
-                               sf::Color(color.r, color.g, color.b, 0), false);
+    this->text = std::make_unique<gui::Text>(
+        text, charSize, posX, posY, sf::Color(color.r, color.g, color.b, 0),
+        false);
 
     this->velocity = sf::Vector2f(0.f, calcY(-32.f, vm));
     this->moveCooldown = 0.f;
 }
 
-FloatingText::~FloatingText()
-{
-    delete this->text;
-}
+FloatingText::~FloatingText() = default;
 
 const bool FloatingText::isOver() const
 {

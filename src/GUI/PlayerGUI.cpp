@@ -120,20 +120,17 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     if (difficulty_name == "easy") {
         this->texts["DIFFICULTY"] = new gui::Text(
             this->lang["DIFFICULTY_LEVEL"] + " " + this->lang["EASY"],
-            calcChar(16, vm), calcX(640, vm), calcY(144, vm),
-            sf::Color(182, 60, 53), true);
+            calcChar(16, vm), calcX(640, vm), calcY(144, vm), gui::RED, true);
     }
     else if (difficulty_name == "normal") {
         this->texts["DIFFICULTY"] = new gui::Text(
             this->lang["DIFFICULTY_LEVEL"] + " " + this->lang["NORMAL"],
-            calcChar(16, vm), calcX(640, vm), calcY(144, vm),
-            sf::Color(182, 60, 53), true);
+            calcChar(16, vm), calcX(640, vm), calcY(144, vm), gui::RED, true);
     }
     else if (difficulty_name == "hard") {
         this->texts["DIFFICULTY"] = new gui::Text(
             this->lang["DIFFICULTY_LEVEL"] + " " + this->lang["HARD"],
-            calcChar(16, vm), calcX(640, vm), calcY(144, vm),
-            sf::Color(182, 60, 53), true);
+            calcChar(16, vm), calcX(640, vm), calcY(144, vm), gui::RED, true);
     }
 
     this->escape_background.setFillColor(sf::Color(0, 0, 0, 192));
@@ -293,6 +290,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     this->abilityUpgradeGUI->updatePlayerInfo("AREA", this->lang["AREA"]);
     this->abilityUpgradeGUI->updatePlayerInfo("ARMOR", this->lang["ARMOR"]);
     updatePlayerAttributes();
+    this->update_Gold();
 }
 
 void PlayerGUI::update_level(SoundEngine &soundEngine)

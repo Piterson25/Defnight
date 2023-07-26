@@ -148,7 +148,7 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
                     player.punch();
 
                     floatingTextSystem.addFloatingText(
-                        "flamingo", "-" + std::to_string(attack),
+                        gui::FLAMINGO, "-" + std::to_string(attack),
                         calcChar(16, vm),
                         player.getPosition().x + calcX(32, vm),
                         player.getPosition().y + calcY(32, vm), false);
