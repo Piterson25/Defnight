@@ -50,6 +50,7 @@ void Game::init()
 
     gui::initVM(this->gameSettings->resolution);
     gui::initFont();
+    gui::initTextures();
 
     const sf::VideoMode vm = this->gameSettings->resolution;
 

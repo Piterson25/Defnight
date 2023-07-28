@@ -76,11 +76,9 @@ private:
     SideGUI sideGUI;
 
     sf::Texture attributesTexture;
-    sf::Texture selectTexture;
 
     struct Option {
         std::unique_ptr<gui::Sprite> optionSprite;
-        std::unique_ptr<gui::Sprite> optionFrame;
         std::unique_ptr<gui::ButtonSprite> optionButton;
         std::unique_ptr<gui::Text> optionDesc;
         std::unique_ptr<gui::Text> optionValue;

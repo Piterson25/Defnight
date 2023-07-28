@@ -8,7 +8,6 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
 {
     this->attributesTexture.loadFromFile(
         "assets/textures/attributes_icons.png");
-    this->selectTexture.loadFromFile("assets/textures/select.png");
 
     this->statsGUI = new StatsGUI(this->vm, this->player, this->lang);
 
@@ -36,9 +35,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->option1 = Option{
         std::make_unique<gui::Sprite>(this->attributesTexture, calcX(516, vm),
                                       calcY(524, vm), calcScale(4, vm), false),
-        std::make_unique<gui::Sprite>(this->selectTexture, calcX(504, vm),
-                                      calcY(512, vm), calcScale(1, vm), false),
-        std::make_unique<gui::ButtonSprite>(this->selectTexture, calcX(504, vm),
+        std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, calcX(504, vm),
                                             calcY(512, vm), calcScale(1, vm),
                                             false),
         std::make_unique<gui::Text>("", calcChar(16, vm), calcX(548, vm),
@@ -51,9 +48,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
     this->option2 = Option{
         std::make_unique<gui::Sprite>(this->attributesTexture, calcX(700, vm),
                                       calcY(524, vm), calcScale(4, vm), false),
-        std::make_unique<gui::Sprite>(this->selectTexture, calcX(688, vm),
-                                      calcY(512, vm), calcScale(1, vm), false),
-        std::make_unique<gui::ButtonSprite>(this->selectTexture, calcX(688, vm),
+        std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, calcX(688, vm),
                                             calcY(512, vm), calcScale(1, vm),
                                             false),
         std::make_unique<gui::Text>("", calcChar(16, vm), calcX(732, vm),
@@ -64,11 +59,6 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
                                     false),
         0,
         0};
-
-    this->option1.optionFrame->setTextureRect(sf::IntRect(88, 0, 88, 88));
-    this->option2.optionFrame->setTextureRect(sf::IntRect(88, 0, 88, 88));
-    this->option1.optionButton->setTextureRect(sf::IntRect(0, 0, 88, 88));
-    this->option2.optionButton->setTextureRect(sf::IntRect(0, 0, 88, 88));
 
     this->sprites["UPGRADES"] = std::make_unique<gui::Sprite>(
         "assets/textures/side_gui.png", calcX(1280, vm), calcY(128, vm),
@@ -759,7 +749,6 @@ const bool PlayerGUI::hasClickedLevelUpButtons(const sf::Vector2i &mousePos,
     if (this->option1.optionButton->isPressed() && !mouseClicked) {
         this->levelUpPlayer(this->option1.id, this->option1.value);
         this->leveling = false;
-        this->option1.optionButton->setTransparent();
         soundEngine.addSound("option");
         return true;
     }
@@ -768,7 +757,6 @@ const bool PlayerGUI::hasClickedLevelUpButtons(const sf::Vector2i &mousePos,
     if (this->option2.optionButton->isPressed() && !mouseClicked) {
         this->levelUpPlayer(this->option2.id, this->option2.value);
         this->leveling = false;
-        this->option2.optionButton->setTransparent();
         soundEngine.addSound("option");
         return true;
     }
@@ -989,12 +977,10 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         if (this->leveling) {
             this->texts["LEVEL_UP"]->draw(target);
             this->sprites["LEVEL_UP"]->draw(target);
-            this->option1.optionFrame->draw(target);
             this->option1.optionSprite->draw(target);
             this->option1.optionButton->draw(target);
             this->option1.optionDesc->draw(target);
             this->option1.optionValue->draw(target);
-            this->option2.optionFrame->draw(target);
             this->option2.optionSprite->draw(target);
             this->option2.optionButton->draw(target);
             this->option2.optionDesc->draw(target);

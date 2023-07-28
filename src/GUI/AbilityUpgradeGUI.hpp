@@ -10,7 +10,6 @@ public:
 
     struct BuyItem {
         std::unique_ptr<gui::Sprite> itemSprite;
-        std::unique_ptr<gui::Sprite> itemFrame;
         std::unique_ptr<gui::ButtonSprite> itemButton;
         std::unique_ptr<gui::Text> itemDesc;
         std::unique_ptr<gui::Text> itemValue;
@@ -47,7 +46,6 @@ private:
     sf::VideoMode &vm;
     Player &player;
     sf::Texture abilityUpgradesTexture;
-    sf::Texture selectsTexture;
     sf::Texture attributesTexture;
 
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> playerStats;

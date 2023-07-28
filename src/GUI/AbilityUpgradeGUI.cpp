@@ -8,7 +8,6 @@ AbilityUpgradeGUI::AbilityUpgradeGUI(sf::VideoMode &t_vm, Player &t_player)
         sf::Color(255, 255, 255, 255), false);
     this->abilityUpgradesTexture.loadFromFile(
         "assets/textures/abilities_upgrades.png");
-    this->selectsTexture.loadFromFile("assets/textures/select.png");
     this->attributesTexture.loadFromFile(
         "assets/textures/attributes_icons.png");
 }
@@ -55,11 +54,8 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
         BuyItem{
             std::make_unique<gui::Sprite>(this->abilityUpgradesTexture, t_x,
                                           t_y, calcScale(4, vm), false),
-            std::make_unique<gui::Sprite>(
-                this->selectsTexture, t_x - calcX(12, vm), t_y - calcY(12, vm),
-                calcScale(1, vm), false),
             std::make_unique<gui::ButtonSprite>(
-                this->selectsTexture, t_x - calcX(12, vm), t_y - calcY(12, vm),
+                gui::RECT_BUTTON, t_x - calcX(12, vm), t_y - calcY(12, vm),
                 calcScale(1, vm), false),
             std::make_unique<gui::Text>(
                 desc, calcChar(16, vm), t_x + calcX(166, vm),
@@ -79,11 +75,7 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
     this->abilityUpgrades[t_name].itemSprite->setTextureRect(
         sf::IntRect(16 * iconID, 0, 16, 16));
 
-    this->abilityUpgrades[t_name].itemFrame->setTextureRect(
-        sf::IntRect(176, 0, 88, 88));
-
-    this->abilityUpgrades[t_name].itemButton->setTextureRect(
-        sf::IntRect(0, 0, 88, 88));
+    this->abilityUpgrades[t_name].itemButton->setColor(gui::RED_BUTTON);
 
     this->abilityUpgrades[t_name].itemCoin->setTextureRect(
         sf::IntRect(0, 0, 16, 16));
@@ -129,14 +121,12 @@ void AbilityUpgradeGUI::buy(const std::string &t_name,
 void AbilityUpgradeGUI::updateItemFrames()
 {
     for (auto &pair : abilityUpgrades) {
-        pair.second.itemButton->setTransparent();
-
         if (!player.isAbilityActive() &&
             player.getGold() >= pair.second.price) {
-            pair.second.itemFrame->setTextureRect(sf::IntRect(264, 0, 88, 88));
+            pair.second.itemButton->setColor(gui::GREEN_BUTTON);
         }
         else {
-            pair.second.itemFrame->setTextureRect(sf::IntRect(176, 0, 88, 88));
+            pair.second.itemButton->setColor(gui::RED_BUTTON);
         }
     }
 }
@@ -190,7 +180,6 @@ void AbilityUpgradeGUI::draw(sf::RenderTarget &target)
     for (const auto &pair : abilityUpgrades) {
 
         pair.second.itemSprite->draw(target);
-        pair.second.itemFrame->draw(target);
         pair.second.itemButton->draw(target);
         pair.second.itemDesc->draw(target);
         pair.second.itemValue->draw(target);

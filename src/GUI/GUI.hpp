@@ -9,11 +9,20 @@ namespace gui {
     const sf::Color RED = sf::Color(182, 60, 53);
     const sf::Color ORANGE = sf::Color(233, 134, 39);
     const sf::Color FLAMINGO = sf::Color(228, 92, 95);
+    const sf::Color GREY = sf::Color(67, 69, 73);
+    const sf::Color RED_BUTTON = sf::Color(130, 33, 29, 128);
+    const sf::Color GREEN_BUTTON = sf::Color(23, 74, 27, 128);
+    const sf::Color GOLD_BUTTON = sf::Color(209, 170, 57);
+    const sf::IntRect RECT_DIFFICULTY = sf::IntRect(0, 0, 384, 504);
+    const sf::IntRect RECT_MAP = sf::IntRect(384, 0, 304, 304);
+    const sf::IntRect RECT_BUTTON = sf::IntRect(384, 304, 88, 88);
+    const sf::IntRect RECT_ARROW = sf::IntRect(384, 392, 16, 10);
 
     enum button_states { BUTTON_IDLE, BUTTON_HOVER, BUTTON_PRESSED };
 
     void initVM(sf::VideoMode &t_vm);
     void initFont();
+    void initTextures();
 
     class ButtonText {
     public:
@@ -67,17 +76,14 @@ namespace gui {
 
     class ButtonSprite {
     public:
-        ButtonSprite(const std::string &texturePath, float posX, float posY,
-                     float scale, bool center);
-        ButtonSprite(const sf::Texture &texture, float posX, float posY,
+        ButtonSprite(const sf::IntRect &intRect, float t_x, float t_y,
                      float scale, bool center);
         ~ButtonSprite();
 
         const bool isPressed() const;
         const sf::IntRect getTextureRect() const;
 
-        void setTransparent();
-        void setTextureRect(const sf::IntRect &intRect);
+        void setColor(const sf::Color &t_color);
         void center(float posX);
 
         void update(const sf::Vector2i &mousePosWindow);
@@ -87,6 +93,7 @@ namespace gui {
         uint16_t buttonState;
         sf::Texture texture;
         sf::Sprite sprite;
+        sf::Color color;
     };
 
     class Sprite {

@@ -3,7 +3,6 @@
 ShopGUI::ShopGUI(sf::VideoMode &t_vm, Player &t_player)
     : vm(t_vm), player(t_player)
 {
-    this->selectsTexture.loadFromFile("assets/textures/select.png");
     this->attributesTexture.loadFromFile(
         "assets/textures/attributes_icons.png");
 }
@@ -40,11 +39,8 @@ void ShopGUI::addShopItem(const std::string &t_name, float t_x, float t_y,
         BuyItem{
             std::make_unique<gui::Sprite>(this->attributesTexture, t_x, t_y,
                                           calcScale(4, vm), false),
-            std::make_unique<gui::Sprite>(
-                this->selectsTexture, t_x - calcX(12, vm), t_y - calcY(12, vm),
-                calcScale(1, vm), false),
             std::make_unique<gui::ButtonSprite>(
-                this->selectsTexture, t_x - calcX(12, vm), t_y - calcY(12, vm),
+                gui::RECT_BUTTON, t_x - calcX(12, vm), t_y - calcY(12, vm),
                 calcScale(1, vm), false),
             std::make_unique<gui::Text>(
                 desc, calcChar(16, vm), t_x + calcX(166, vm),
@@ -64,11 +60,7 @@ void ShopGUI::addShopItem(const std::string &t_name, float t_x, float t_y,
     this->shopItems[t_name].itemSprite->setTextureRect(
         sf::IntRect(16 * iconID, 0, 16, 16));
 
-    this->shopItems[t_name].itemFrame->setTextureRect(
-        sf::IntRect(176, 0, 88, 88));
-
-    this->shopItems[t_name].itemButton->setTextureRect(
-        sf::IntRect(0, 0, 88, 88));
+    this->shopItems[t_name].itemButton->setColor(gui::RED_BUTTON);
 
     this->shopItems[t_name].itemCoin->setTextureRect(sf::IntRect(0, 0, 16, 16));
 }
@@ -101,8 +93,7 @@ const bool ShopGUI::hasBoughtItem(const sf::Vector2i &mousePos,
 
 void ShopGUI::disableItem(const std::string t_name)
 {
-    this->shopItems[t_name].itemFrame->setTextureRect(
-        sf::IntRect(176, 0, 88, 88));
+    this->shopItems[t_name].itemButton->setColor(gui::RED_BUTTON);
 }
 
 void ShopGUI::buy(const std::string &t_name,
@@ -118,27 +109,23 @@ void ShopGUI::buy(const std::string &t_name,
 void ShopGUI::updateItemFrames()
 {
     for (auto &pair : shopItems) {
-        pair.second.itemButton->setTransparent();
 
         if (pair.first == "FULL_HP") {
             if (player.getGold() >= pair.second.price &&
                 player.getHP() < player.getMaxHP()) {
-                pair.second.itemFrame->setTextureRect(
-                    sf::IntRect(264, 0, 88, 88));
+                pair.second.itemButton->setColor(gui::GREEN_BUTTON);
             }
             else {
-                pair.second.itemFrame->setTextureRect(
-                    sf::IntRect(176, 0, 88, 88));
+                pair.second.itemButton->setColor(gui::RED_BUTTON);
+                ;
             }
         }
         else {
             if (player.getGold() >= pair.second.price) {
-                pair.second.itemFrame->setTextureRect(
-                    sf::IntRect(264, 0, 88, 88));
+                pair.second.itemButton->setColor(gui::GREEN_BUTTON);
             }
             else {
-                pair.second.itemFrame->setTextureRect(
-                    sf::IntRect(176, 0, 88, 88));
+                pair.second.itemButton->setColor(gui::RED_BUTTON);
             }
         }
     }
@@ -153,7 +140,6 @@ void ShopGUI::draw(sf::RenderTarget &target)
 {
     for (const auto &pair : shopItems) {
         pair.second.itemSprite->draw(target);
-        pair.second.itemFrame->draw(target);
         pair.second.itemButton->draw(target);
         pair.second.itemDesc->draw(target);
         pair.second.itemValue->draw(target);

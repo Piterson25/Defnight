@@ -112,55 +112,31 @@ void MainMenuState::initGUI()
 
     // PAGE 2
 
-    this->sprites["GO_BACK_FRAME"] = std::make_unique<gui::Sprite>(
-        "assets/textures/select_go_back.png", calcX(32, vm), calcY(24, vm),
-        calcX(4, vm), false);
-    this->sprites["GO_BACK_FRAME"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
     this->sprite_buttons["GO_BACK"] = std::make_unique<gui::ButtonSprite>(
-        "assets/textures/select_go_back.png", calcX(32, vm), calcY(24, vm),
-        calcX(4, vm), false);
-    this->sprite_buttons["GO_BACK"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
+        gui::RECT_ARROW, calcX(32, vm), calcY(24, vm), calcX(4, vm), false);
 
     this->map_name = "";
     this->texts["CHOOSE_MAP"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["CHOOSE_MAP"], calcChar(32, vm), calcX(640, vm),
         calcY(96, vm), sf::Color(255, 255, 255), true);
-    this->sprites["MAP1_FRAME"] = std::make_unique<gui::Sprite>(
-        "assets/textures/select_map.png", calcX(24, vm), calcY(248, vm),
-        calcScale(1, vm), false);
-    this->sprites["MAP1_FRAME"]->setTextureRect(sf::IntRect(304, 0, 304, 304));
     this->sprite_buttons["MAP1"] = std::make_unique<gui::ButtonSprite>(
-        "assets/textures/select_map.png", calcX(24, vm), calcY(248, vm),
-        calcScale(1, vm), false);
-    this->sprite_buttons["MAP1"]->setTextureRect(sf::IntRect(0, 0, 304, 304));
+        gui::RECT_MAP, calcX(24, vm), calcY(248, vm), calcScale(1, vm), false);
     this->sprites["MAP1"] = std::make_unique<gui::Sprite>(
         "assets/textures/maps/ruins.png", calcX(48, vm), calcY(272, vm),
         calcScale(0.5f, vm), false);
     this->texts["RUINS"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["RUINS"], calcChar(32, vm), calcX(176, vm),
         calcY(200, vm), sf::Color(255, 255, 255), true);
-    this->sprites["MAP2_FRAME"] = std::make_unique<gui::Sprite>(
-        "assets/textures/select_map.png", calcX(472, vm), calcY(248, vm),
-        calcScale(1, vm), false);
-    this->sprites["MAP2_FRAME"]->setTextureRect(sf::IntRect(304, 0, 304, 304));
     this->sprite_buttons["MAP2"] = std::make_unique<gui::ButtonSprite>(
-        "assets/textures/select_map.png", calcX(472, vm), calcY(248, vm),
-        calcScale(1, vm), false);
-    this->sprite_buttons["MAP2"]->setTextureRect(sf::IntRect(0, 0, 304, 304));
+        gui::RECT_MAP, calcX(472, vm), calcY(248, vm), calcScale(1, vm), false);
     this->sprites["MAP2"] = std::make_unique<gui::Sprite>(
         "assets/textures/maps/desert.png", calcX(496, vm), calcY(272, vm),
         calcScale(0.5f, vm), false);
     this->texts["DESERT"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["DESERT"], calcChar(32, vm), calcX(624, vm),
         calcY(200, vm), sf::Color(255, 255, 255), true);
-    this->sprites["MAP3_FRAME"] = std::make_unique<gui::Sprite>(
-        "assets/textures/select_map.png", calcX(920, vm), calcY(248, vm),
-        calcScale(1, vm), false);
-    this->sprites["MAP3_FRAME"]->setTextureRect(sf::IntRect(304, 0, 304, 304));
     this->sprite_buttons["MAP3"] = std::make_unique<gui::ButtonSprite>(
-        "assets/textures/select_map.png", calcX(920, vm), calcY(248, vm),
-        calcScale(1, vm), false);
-    this->sprite_buttons["MAP3"]->setTextureRect(sf::IntRect(0, 0, 304, 304));
+        gui::RECT_MAP, calcX(920, vm), calcY(248, vm), calcScale(1, vm), false);
     this->sprites["MAP3"] = std::make_unique<gui::Sprite>(
         "assets/textures/maps/permafrost.png", calcX(944, vm), calcY(272, vm),
         calcScale(0.5f, vm), false);
@@ -174,14 +150,9 @@ void MainMenuState::initGUI()
     this->texts["CHOOSE_HERO"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["CHOOSE_HERO"], calcChar(32, vm),
         calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
-    this->sprites["HERO1_FRAME"] = std::make_unique<gui::Sprite>(
-        "assets/textures/select.png", calcX(64, vm), calcY(256, vm),
-        calcScale(2, vm), false);
-    this->sprites["HERO1_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
     this->sprite_buttons["HERO1"] = std::make_unique<gui::ButtonSprite>(
-        "assets/textures/select.png", calcX(64, vm), calcY(256, vm),
-        calcScale(2, vm), false);
-    this->sprite_buttons["HERO1"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
+        gui::RECT_BUTTON, calcX(64, vm), calcY(256, vm), calcScale(2, vm),
+        false);
     this->sprites["HERO1"] = std::make_unique<gui::Sprite>(
         "assets/textures/upgrades_icons.png", calcX(88, vm), calcY(280, vm),
         calcScale(8, vm), false);
@@ -293,36 +264,15 @@ void MainMenuState::initGUI()
         this->gameSettings.lang["CHOOSE_DIFFICULTY"], calcChar(32, vm),
         calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
 
-    this->sprites["DIFFICULTY1_FRAME"] = std::make_unique<gui::Sprite>(
-        "assets/textures/select_difficulty.png", calcX(32, vm), calcY(184, vm),
-        calcScale(1, vm), false);
-    this->sprites["DIFFICULTY1_FRAME"]->setTextureRect(
-        sf::IntRect(384, 0, 384, 504));
     this->sprite_buttons["DIFFICULTY1"] = std::make_unique<gui::ButtonSprite>(
-        "assets/textures/select_difficulty.png", calcX(32, vm), calcY(184, vm),
-        calcScale(1, vm), false);
-    this->sprite_buttons["DIFFICULTY1"]->setTextureRect(
-        sf::IntRect(0, 0, 384, 504));
-    this->sprites["DIFFICULTY2_FRAME"] = std::make_unique<gui::Sprite>(
-        "assets/textures/select_difficulty.png", calcX(448, vm), calcY(184, vm),
-        calcScale(1, vm), false);
-    this->sprites["DIFFICULTY2_FRAME"]->setTextureRect(
-        sf::IntRect(384, 0, 384, 504));
+        gui::RECT_DIFFICULTY, calcX(32, vm), calcY(184, vm), calcScale(1, vm),
+        false);
     this->sprite_buttons["DIFFICULTY2"] = std::make_unique<gui::ButtonSprite>(
-        "assets/textures/select_difficulty.png", calcX(448, vm), calcY(184, vm),
-        calcScale(1, vm), false);
-    this->sprite_buttons["DIFFICULTY2"]->setTextureRect(
-        sf::IntRect(0, 0, 384, 504));
-    this->sprites["DIFFICULTY3_FRAME"] = std::make_unique<gui::Sprite>(
-        "assets/textures/select_difficulty.png", calcX(864, vm), calcY(184, vm),
-        calcScale(1, vm), false);
-    this->sprites["DIFFICULTY3_FRAME"]->setTextureRect(
-        sf::IntRect(384, 0, 384, 504));
+        gui::RECT_DIFFICULTY, calcX(448, vm), calcY(184, vm), calcScale(1, vm),
+        false);
     this->sprite_buttons["DIFFICULTY3"] = std::make_unique<gui::ButtonSprite>(
-        "assets/textures/select_difficulty.png", calcX(864, vm), calcY(184, vm),
-        calcScale(1, vm), false);
-    this->sprite_buttons["DIFFICULTY3"]->setTextureRect(
-        sf::IntRect(0, 0, 384, 504));
+        gui::RECT_DIFFICULTY, calcX(864, vm), calcY(184, vm), calcScale(1, vm),
+        false);
 
     this->sprites["DIFFICULTY1"] = std::make_unique<gui::Sprite>(
         "assets/textures/difficulty_icons.png", calcX(168, vm), calcY(272, vm),
@@ -505,7 +455,6 @@ void MainMenuState::update(float dt)
                     this->soundEngine.addSound("button");
                     this->map_name = "ruins";
                     this->page = 3;
-                    this->sprite_buttons["MAP1"]->setTransparent();
                 }
 
                 this->sprite_buttons["MAP2"]->update(this->mousePosWindow);
@@ -515,7 +464,6 @@ void MainMenuState::update(float dt)
                     this->soundEngine.addSound("button");
                     this->map_name = "desert";
                     this->page = 3;
-                    this->sprite_buttons["MAP2"]->setTransparent();
                 }
 
                 this->sprite_buttons["MAP3"]->update(this->mousePosWindow);
@@ -525,7 +473,6 @@ void MainMenuState::update(float dt)
                     this->soundEngine.addSound("button");
                     this->map_name = "permafrost";
                     this->page = 3;
-                    this->sprite_buttons["MAP3"]->setTransparent();
                 }
                 break;
             case 3:
@@ -545,7 +492,6 @@ void MainMenuState::update(float dt)
                     this->setMouseClick(true);
                     this->soundEngine.addSound("button");
                     this->choosing_hero = true;
-                    this->sprite_buttons["HERO1"]->setTransparent();
                     this->hero_name = "warrior";
                 }
 
@@ -586,7 +532,6 @@ void MainMenuState::update(float dt)
                         this->soundEngine, this->musicEngine, this->states,
                         this->map_name, this->hero_name,
                         this->difficulty_name));
-                    this->sprite_buttons["DIFFICULTY1"]->setTransparent();
                     this->choosing_hero = false;
                 }
                 else if (this->sprite_buttons["DIFFICULTY2"]->isPressed() &&
@@ -600,7 +545,6 @@ void MainMenuState::update(float dt)
                         this->soundEngine, this->musicEngine, this->states,
                         this->map_name, this->hero_name,
                         this->difficulty_name));
-                    this->sprite_buttons["DIFFICULTY2"]->setTransparent();
                     this->choosing_hero = false;
                 }
                 else if (this->sprite_buttons["DIFFICULTY3"]->isPressed() &&
@@ -614,7 +558,6 @@ void MainMenuState::update(float dt)
                         this->soundEngine, this->musicEngine, this->states,
                         this->map_name, this->hero_name,
                         this->difficulty_name));
-                    this->sprite_buttons["DIFFICULTY3"]->setTransparent();
                     this->choosing_hero = false;
                 }
                 break;
@@ -676,17 +619,13 @@ void MainMenuState::draw(sf::RenderTarget *target)
             }
             break;
         case 2:
-            this->sprites["GO_BACK_FRAME"]->draw(*target);
             this->sprite_buttons["GO_BACK"]->draw(*target);
 
             this->texts["CHOOSE_MAP"]->draw(*target);
-            this->sprites["MAP1_FRAME"]->draw(*target);
             this->sprites["MAP1"]->draw(*target);
             this->sprite_buttons["MAP1"]->draw(*target);
-            this->sprites["MAP2_FRAME"]->draw(*target);
             this->sprites["MAP2"]->draw(*target);
             this->sprite_buttons["MAP2"]->draw(*target);
-            this->sprites["MAP3_FRAME"]->draw(*target);
             this->sprites["MAP3"]->draw(*target);
             this->sprite_buttons["MAP3"]->draw(*target);
 
@@ -695,11 +634,9 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->texts["PERMAFROST"]->draw(*target);
             break;
         case 3:
-            this->sprites["GO_BACK_FRAME"]->draw(*target);
             this->sprite_buttons["GO_BACK"]->draw(*target);
 
             this->texts["CHOOSE_HERO"]->draw(*target);
-            this->sprites["HERO1_FRAME"]->draw(*target);
             this->sprites["HERO1"]->draw(*target);
             this->sprite_buttons["HERO1"]->draw(*target);
 
@@ -733,14 +670,10 @@ void MainMenuState::draw(sf::RenderTarget *target)
             }
             break;
         case 4:
-            this->sprites["GO_BACK_FRAME"]->draw(*target);
             this->sprite_buttons["GO_BACK"]->draw(*target);
 
             this->texts["CHOOSE_DIFFICULTY"]->draw(*target);
 
-            this->sprites["DIFFICULTY1_FRAME"]->draw(*target);
-            this->sprites["DIFFICULTY2_FRAME"]->draw(*target);
-            this->sprites["DIFFICULTY3_FRAME"]->draw(*target);
             this->sprites["DIFFICULTY1"]->draw(*target);
             this->sprites["DIFFICULTY2"]->draw(*target);
             this->sprites["DIFFICULTY3"]->draw(*target);

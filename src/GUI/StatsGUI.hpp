@@ -47,7 +47,6 @@ private:
     sf::Texture attributesTexture;
     sf::Texture upgradesTexture;
     sf::Texture abilitiesTexture;
-    sf::Texture selectTexture;
 
     bool levelShown;
     float hpBarPercent;

@@ -8,7 +8,6 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
         "assets/textures/attributes_icons.png");
     this->upgradesTexture.loadFromFile("assets/textures/upgrades_icons.png");
     this->abilitiesTexture.loadFromFile("assets/textures/abilities_icons.png");
-    this->selectTexture.loadFromFile("assets/textures/select.png");
 
     this->sprites["TOP_GUI"] = std::make_unique<gui::Sprite>(
         "assets/textures/top_gui.png", 0.f, 0.f, calcScale(1, vm), false);
@@ -128,18 +127,11 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
         t_lang["WAVE"], calcChar(32, vm), calcX(1060, vm), calcY(36, vm),
         sf::Color(228, 92, 95), false);
 
-    this->sprites["SHOP_FRAME"] =
-        std::make_unique<gui::Sprite>(this->selectTexture, calcX(32, vm),
-                                      calcY(4, vm), calcScale(1, vm), false);
-    this->sprites["SHOP_FRAME"]->setTextureRect(sf::IntRect(88, 0, 88, 88));
-
     this->sprites["SHOP_ICON"] =
         std::make_unique<gui::Sprite>("assets/textures/shop.png", calcX(44, vm),
                                       calcY(16, vm), calcScale(4, vm), false);
     this->sprite_buttons["SHOP"] = std::make_unique<gui::ButtonSprite>(
-        this->selectTexture, calcX(32, vm), calcY(4, vm), calcScale(1, vm),
-        false);
-    this->sprite_buttons["SHOP"]->setTextureRect(sf::IntRect(0, 0, 88, 88));
+        gui::RECT_BUTTON, calcX(32, vm), calcY(4, vm), calcScale(1, vm), false);
 
     this->texts["WAVE_COUNTDOWN"] = std::make_unique<gui::Text>(
         t_lang["NEXT_WAVE"], calcChar(16, vm), calcX(954, vm), calcY(98, vm),
@@ -148,21 +140,16 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
         calcX(1218, vm) - this->texts["WAVE_COUNTDOWN"]->getWidth(),
         calcY(98, vm)));
 
-    this->sprites["ABILITY_FRAME"] =
-        std::make_unique<gui::Sprite>(this->selectTexture, calcX(256, vm),
-                                      calcY(4, vm), calcScale(1, vm), false);
-    this->sprites["ABILITY_FRAME"]->setTextureRect(sf::IntRect(440, 0, 88, 88));
     this->sprites["ABILITY_ICON"] = std::make_unique<gui::Sprite>(
         "assets/textures/abilities_icons.png", calcX(268, vm), calcY(16, vm),
         calcScale(4, vm), false);
     this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
 
     this->sprite_buttons["ABILITY_UPGRADE"] =
-        std::make_unique<gui::ButtonSprite>(this->selectTexture, calcX(256, vm),
+        std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, calcX(256, vm),
                                             calcY(4, vm), calcScale(1, vm),
                                             false);
-    this->sprite_buttons["ABILITY_UPGRADE"]->setTextureRect(
-        sf::IntRect(0, 0, 88, 88));
+    this->sprite_buttons["ABILITY_UPGRADE"]->setColor(gui::GOLD_BUTTON);
 
     this->abilityIcon.setFillColor(sf::Color(128, 128, 128, 128));
     this->abilityIcon.setSize(sf::Vector2f(calcX(80, vm), calcY(80, vm)));
@@ -402,7 +389,7 @@ void StatsGUI::upgradePlayer(const std::string &t_name,
 
 void StatsGUI::setAbilityIcon()
 {
-    this->sprites["ABILITY_FRAME"]->setTextureRect(sf::IntRect(352, 0, 88, 88));
+    this->sprite_buttons["ABILITY_UPGRADE"]->setColor(gui::GOLD_BUTTON);
     this->abilityIcon.setSize(sf::Vector2f(calcX(80, vm), calcY(80, vm)));
     this->abilityIcon.setPosition(sf::Vector2f(calcX(260, vm), calcY(8, vm)));
 }
@@ -414,8 +401,7 @@ void StatsGUI::updateAbilityIcon(float value)
     this->abilityIcon.setPosition(
         sf::Vector2f(calcX(260, vm), calcX(8, vm) + value));
     if (this->abilityIcon.getSize().y <= 0.f) {
-        this->sprites["ABILITY_FRAME"]->setTextureRect(
-            sf::IntRect(440, 0, 88, 88));
+        this->sprite_buttons["ABILITY_UPGRADE"]->setColor(gui::GOLD);
     }
 }
 
@@ -462,7 +448,6 @@ void StatsGUI::drawAbility(sf::RenderTarget &target)
     if (player.getAbilityCooldown() < player.getAbilityMaxTime()) {
         target.draw(this->abilityIcon);
     }
-    this->sprites["ABILITY_FRAME"]->draw(target);
     this->sprite_buttons["ABILITY_UPGRADE"]->draw(target);
 }
 
@@ -508,7 +493,6 @@ void StatsGUI::draw(sf::RenderTarget &target)
     this->sprites["SPRINT_BAR"]->draw(target);
     this->texts["SPRINT"]->draw(target);
 
-    this->sprites["SHOP_FRAME"]->draw(target);
     this->sprites["SHOP_ICON"]->draw(target);
     this->sprite_buttons["SHOP"]->draw(target);
     this->texts["WAVE_NUMBER"]->draw(target);

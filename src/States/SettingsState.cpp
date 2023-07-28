@@ -31,14 +31,8 @@ void SettingsState::initGUI()
     this->texts["SETTINGS"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["SETTINGS"], calcChar(32, vm), calcX(640, vm),
         calcY(96, vm), sf::Color(255, 255, 255), true);
-    this->sprites["GO_BACK_FRAME"] = std::make_unique<gui::Sprite>(
-        "assets/textures/select_go_back.png", calcX(32, vm), calcY(24, vm),
-        calcX(4, vm), false);
-    this->sprites["GO_BACK_FRAME"]->setTextureRect(sf::IntRect(16, 0, 16, 16));
     this->sprite_buttons["GO_BACK"] = std::make_unique<gui::ButtonSprite>(
-        "assets/textures/select_go_back.png", calcX(32, vm), calcY(24, vm),
-        calcX(4, vm), false);
-    this->sprite_buttons["GO_BACK"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
+        gui::RECT_ARROW, calcX(32, vm), calcY(24, vm), calcX(4, vm), false);
 
     for (size_t i = 0; i < this->videoModes.size(); ++i) {
         if (this->videoModes[i] == vm) {
@@ -403,7 +397,6 @@ void SettingsState::draw(sf::RenderTarget *target)
     }
 
     this->texts["SETTINGS"]->draw(*target);
-    this->sprites["GO_BACK_FRAME"]->draw(*target);
     this->sprite_buttons["GO_BACK"]->draw(*target);
     this->text_buttons["RESOLUTION"]->draw(*target);
     this->text_buttons["FULLSCREEN"]->draw(*target);

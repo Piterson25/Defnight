@@ -9,7 +9,6 @@ public:
 
     struct Upgrade {
         std::unique_ptr<gui::Sprite> upgradeSprite;
-        std::unique_ptr<gui::Sprite> upgradeFrame;
         std::unique_ptr<gui::ButtonSprite> upgradeButton;
         std::unique_ptr<gui::Text> upgradeName;
         std::unique_ptr<gui::Sprite> upgradeAbility;
@@ -37,7 +36,6 @@ private:
     sf::VideoMode &vm;
     Player &player;
 
-    sf::Texture selectsTexture;
     sf::Texture abilitiesTexture;
     sf::Texture attributesTexture;
     sf::Texture upgradesTexture;

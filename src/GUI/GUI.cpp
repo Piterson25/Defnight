@@ -4,6 +4,7 @@ namespace gui {
 
     static sf::Font font;
     static sf::VideoMode vm;
+    static sf::Texture selectsTexture;
 
     void initVM(sf::VideoMode &t_vm)
     {
@@ -14,6 +15,13 @@ namespace gui {
     {
         if (!font.loadFromFile("assets/font/PressStart2P-vaV7.ttf")) {
             throw std::runtime_error("ERROR - COULDN'T FIND FONT");
+        }
+    }
+
+    void initTextures()
+    {
+        if (!selectsTexture.loadFromFile("assets/textures/selects.png")) {
+            throw std::runtime_error("ERROR - COULDN'T FIND SELECTS TEXTURE");
         }
     }
 
@@ -171,31 +179,18 @@ namespace gui {
         target.draw(this->text);
     }
 
-    ButtonSprite::ButtonSprite(const std::string &texturePath, float posX,
-                               float posY, float scale, bool center)
+    ButtonSprite::ButtonSprite(const sf::IntRect &intRect, float t_x, float t_y,
+                               float scale, bool center)
         : buttonState(BUTTON_IDLE)
     {
-        this->texture.loadFromFile(texturePath);
-        this->sprite.setTexture(this->texture);
-        this->sprite.setColor(sf::Color::Transparent);
-        this->sprite.setPosition(posX, posY);
+        this->color = gui::GREY;
+        this->sprite.setTexture(gui::selectsTexture);
+        this->sprite.setColor(this->color);
+        this->sprite.setPosition(t_x, t_y);
         this->sprite.setScale(scale, scale);
+        this->sprite.setTextureRect(intRect);
         if (center) {
-            this->center(posX);
-        }
-    }
-
-    ButtonSprite::ButtonSprite(const sf::Texture &texture, float posX,
-                               float posY, float scale, bool center)
-        : buttonState(BUTTON_IDLE), texture(texture)
-    {
-        this->texture = texture;
-        this->sprite.setTexture(this->texture);
-        this->sprite.setColor(sf::Color::Transparent);
-        this->sprite.setPosition(posX, posY);
-        this->sprite.setScale(scale, scale);
-        if (center) {
-            this->center(posX);
+            this->center(t_x);
         }
     }
 
@@ -211,15 +206,11 @@ namespace gui {
         return this->sprite.getTextureRect();
     }
 
-    void ButtonSprite::setTransparent()
+    void ButtonSprite::setColor(const sf::Color &t_color)
     {
         this->buttonState = BUTTON_IDLE;
-        this->sprite.setColor(sf::Color::Transparent);
-    }
-
-    void ButtonSprite::setTextureRect(const sf::IntRect &intRect)
-    {
-        this->sprite.setTextureRect(intRect);
+        this->color = t_color;
+        this->sprite.setColor(this->color);
     }
 
     void ButtonSprite::center(float posX)
@@ -245,13 +236,13 @@ namespace gui {
 
         switch (this->buttonState) {
             case BUTTON_IDLE:
-                this->sprite.setColor(sf::Color::Transparent);
+                this->sprite.setColor(this->color);
                 break;
             case BUTTON_HOVER:
-                this->sprite.setColor(sf::Color(255, 255, 255));
+                this->sprite.setColor(gui::WHITE);
                 break;
             case BUTTON_PRESSED:
-                this->sprite.setColor(sf::Color(255, 255, 255));
+                this->sprite.setColor(gui::WHITE);
                 break;
         }
     }

@@ -3,7 +3,6 @@
 UpgradeGUI::UpgradeGUI(sf::VideoMode &t_vm, Player &t_player)
     : vm(t_vm), player(t_player)
 {
-    this->selectsTexture.loadFromFile("assets/textures/select.png");
     this->abilitiesTexture.loadFromFile("assets/textures/abilities_icons.png");
     this->attributesTexture.loadFromFile(
         "assets/textures/attributes_icons.png");
@@ -28,11 +27,8 @@ void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y,
     this->upgrades[t_name] = Upgrade{
         std::make_unique<gui::Sprite>(this->upgradesTexture, t_x, t_y,
                                       calcScale(4, vm), false),
-        std::make_unique<gui::Sprite>(this->selectsTexture, t_x - calcX(12, vm),
-                                      t_y - calcY(12, vm), calcScale(1, vm),
-                                      false),
         std::make_unique<gui::ButtonSprite>(
-            this->selectsTexture, t_x - calcX(12, vm), t_y - calcY(12, vm),
+            gui::RECT_BUTTON, t_x - calcX(12, vm), t_y - calcY(12, vm),
             calcScale(1, vm), false),
         std::make_unique<gui::Text>(desc, calcChar(16, vm),
                                     t_x + calcX(160, vm), t_y + calcY(4, vm),
@@ -52,12 +48,6 @@ void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y,
 
     this->upgrades[t_name].upgradeSprite->setTextureRect(
         sf::IntRect(16 * upgradeIconID, 0, 16, 16));
-
-    this->upgrades[t_name].upgradeFrame->setTextureRect(
-        sf::IntRect(88, 0, 88, 88));
-
-    this->upgrades[t_name].upgradeButton->setTextureRect(
-        sf::IntRect(0, 0, 88, 88));
 
     this->upgrades[t_name].upgradeAbility->setTextureRect(
         sf::IntRect(16 * abilityIconID, 0, 16, 16));
@@ -83,7 +73,6 @@ const bool UpgradeGUI::hasClickedUpgrade(const sf::Vector2i &mousePos,
     update(t_name, mousePos);
     if (isPressed(t_name, mouseClicked)) {
         soundEngine->addSound("upgrade");
-        this->upgrades[t_name].upgradeButton->setTransparent();
         return true;
     }
 
@@ -103,7 +92,6 @@ void UpgradeGUI::draw(sf::RenderTarget &target)
         }
 
         pair.second.upgradeSprite->draw(target);
-        pair.second.upgradeFrame->draw(target);
         pair.second.upgradeButton->draw(target);
         pair.second.upgradeName->draw(target);
         pair.second.upgradeAbility->draw(target);
