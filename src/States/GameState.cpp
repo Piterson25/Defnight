@@ -138,6 +138,8 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
     this->sumHP = 15;
     this->waveCountdown = 0.f;
     this->gems = 0;
+
+    this->playerGUI->update_Gold();
 }
 
 GameState::~GameState()

@@ -47,16 +47,16 @@ void ShopGUI::addShopItem(const std::string &t_name, float t_x, float t_y,
                 this->selectsTexture, t_x - calcX(12, vm), t_y - calcY(12, vm),
                 calcScale(1, vm), false),
             std::make_unique<gui::Text>(
-                desc, calcChar(16, vm), t_x + calcX(160, vm),
+                desc, calcChar(16, vm), t_x + calcX(166, vm),
                 t_y - calcY(2, vm), sf::Color(255, 255, 255), true),
             std::make_unique<gui::Text>(
-                value, calcChar(16, vm), t_x + calcX(160, vm),
+                value, calcChar(16, vm), t_x + calcX(166, vm),
                 t_y + calcY(20, vm), sf::Color(255, 255, 255), true),
             std::make_unique<gui::Sprite>(
-                this->attributesTexture, t_x + calcX(126, vm),
+                this->attributesTexture, t_x + calcX(132, vm),
                 t_y + calcY(38, vm), calcScale(2, vm), false),
             std::make_unique<gui::Text>(
-                std::to_string(price), calcChar(16, vm), t_x + calcX(160, vm),
+                std::to_string(price), calcChar(16, vm), t_x + calcX(166, vm),
                 t_y + calcY(48, vm), sf::Color(255, 246, 76), false),
             price,
         });

@@ -9,10 +9,7 @@ public:
               std::unordered_map<std::string, std::string> &lang);
     ~PlayerGUI();
 
-    void update_options(uint32_t &option_id, uint32_t &option_val,
-                        std::vector<short> &id_vector, gui::Text *text,
-                        gui::Text *value, gui::Sprite *sprite, float pos);
-    void levelUpPlayer(uint32_t option_id, uint32_t option_val);
+    void levelUpPlayer(uint32_t optionID, uint32_t optionValue);
     void upgradePlayer(const std::string &name);
     void update_level(SoundEngine &soundEngine);
     void updateXP();
@@ -78,10 +75,23 @@ private:
 
     SideGUI sideGUI;
 
-    sf::Texture attributes_texture;
-    sf::Texture upgrades_texture;
-    sf::Texture abilities_texture;
-    sf::Texture select_texture;
+    sf::Texture attributesTexture;
+    sf::Texture selectTexture;
+
+    struct Option {
+        std::unique_ptr<gui::Sprite> optionSprite;
+        std::unique_ptr<gui::Sprite> optionFrame;
+        std::unique_ptr<gui::ButtonSprite> optionButton;
+        std::unique_ptr<gui::Text> optionDesc;
+        std::unique_ptr<gui::Text> optionValue;
+        uint32_t value;
+        uint32_t id;
+    };
+
+    void updateOption(Option &option, std::vector<short> &id_vector, float pos);
+
+    Option option1;
+    Option option2;
 
     bool bossWave;
     float bossCooldown;
@@ -90,10 +100,6 @@ private:
     bool upgrading;
     bool escape;
     float boss_bar_percent;
-    uint32_t option1_id;
-    uint32_t option2_id;
-    uint32_t option1_val;
-    uint32_t option2_val;
 
     float titleCooldown;
     float waveCountdown;
