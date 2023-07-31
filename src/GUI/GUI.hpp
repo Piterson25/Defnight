@@ -10,9 +10,11 @@ namespace gui {
     const sf::Color ORANGE = sf::Color(233, 134, 39);
     const sf::Color FLAMINGO = sf::Color(228, 92, 95);
     const sf::Color GREY = sf::Color(67, 69, 73);
-    const sf::Color RED_BUTTON = sf::Color(130, 33, 29, 128);
-    const sf::Color GREEN_BUTTON = sf::Color(23, 74, 27, 128);
-    const sf::Color GOLD_BUTTON = sf::Color(209, 170, 57);
+    const sf::Color LIGHT_GREY = sf::Color(192, 192, 192);
+    const sf::Color DARK_RED = sf::Color(94, 7, 17);
+    const sf::Color GREEN = sf::Color(0, 50, 33);
+    const sf::Color YELLOW = sf::Color(255, 177, 8);
+
     const sf::IntRect RECT_DIFFICULTY = sf::IntRect(0, 0, 384, 504);
     const sf::IntRect RECT_MAP = sf::IntRect(384, 0, 304, 304);
     const sf::IntRect RECT_BUTTON = sf::IntRect(384, 304, 88, 88);

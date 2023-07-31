@@ -25,11 +25,6 @@ void ShopGUI::increasePrice(const std::string &t_name)
         std::to_string(getPrice(t_name)));
 }
 
-void ShopGUI::deleteItem(const std::string &t_name)
-{
-    this->shopItems.erase(t_name);
-}
-
 void ShopGUI::addShopItem(const std::string &t_name, float t_x, float t_y,
                           uint32_t iconID, const std::string &desc,
                           const std::string &value, uint32_t price)
@@ -42,6 +37,8 @@ void ShopGUI::addShopItem(const std::string &t_name, float t_x, float t_y,
             std::make_unique<gui::ButtonSprite>(
                 gui::RECT_BUTTON, t_x - calcX(12, vm), t_y - calcY(12, vm),
                 calcScale(1, vm), false),
+            std::make_unique<gui::Sprite>("assets/textures/lock.png", t_x, t_y,
+                                          calcScale(4, vm), false),
             std::make_unique<gui::Text>(
                 desc, calcChar(16, vm), t_x + calcX(166, vm),
                 t_y - calcY(2, vm), sf::Color(255, 255, 255), true),
@@ -55,12 +52,13 @@ void ShopGUI::addShopItem(const std::string &t_name, float t_x, float t_y,
                 std::to_string(price), calcChar(16, vm), t_x + calcX(166, vm),
                 t_y + calcY(48, vm), sf::Color(255, 246, 76), false),
             price,
+            false,
         });
 
     this->shopItems[t_name].itemSprite->setTextureRect(
         sf::IntRect(16 * iconID, 0, 16, 16));
 
-    this->shopItems[t_name].itemButton->setColor(gui::RED_BUTTON);
+    this->shopItems[t_name].itemButton->setColor(gui::DARK_RED);
 
     this->shopItems[t_name].itemCoin->setTextureRect(sf::IntRect(0, 0, 16, 16));
 }
@@ -75,7 +73,8 @@ const bool ShopGUI::hasBoughtItem(const sf::Vector2i &mousePos,
                                   FloatingTextSystem *floatingTextSystem,
                                   SoundEngine *soundEngine)
 {
-    if (this->shopItems.find(t_name) == this->shopItems.end()) {
+    if (this->shopItems.find(t_name) == this->shopItems.end() ||
+        this->shopItems[t_name].locked) {
         return false;
     }
 
@@ -91,9 +90,20 @@ const bool ShopGUI::hasBoughtItem(const sf::Vector2i &mousePos,
     return false;
 }
 
+void ShopGUI::lockItem(const std::string t_name)
+{
+    this->shopItems[t_name].locked = true;
+    this->shopItems[t_name].itemButton->setColor(gui::DARK_RED);
+}
+
+void ShopGUI::unlockItem(const std::string t_name)
+{
+    this->shopItems[t_name].locked = false;
+}
+
 void ShopGUI::disableItem(const std::string t_name)
 {
-    this->shopItems[t_name].itemButton->setColor(gui::RED_BUTTON);
+    this->shopItems[t_name].itemButton->setColor(gui::DARK_RED);
 }
 
 void ShopGUI::buy(const std::string &t_name,
@@ -111,21 +121,20 @@ void ShopGUI::updateItemFrames()
     for (auto &pair : shopItems) {
 
         if (pair.first == "FULL_HP") {
-            if (player.getGold() >= pair.second.price &&
+            if (!pair.second.locked && player.getGold() >= pair.second.price &&
                 player.getHP() < player.getMaxHP()) {
-                pair.second.itemButton->setColor(gui::GREEN_BUTTON);
+                pair.second.itemButton->setColor(gui::GREEN);
             }
             else {
-                pair.second.itemButton->setColor(gui::RED_BUTTON);
-                ;
+                pair.second.itemButton->setColor(gui::DARK_RED);
             }
         }
         else {
-            if (player.getGold() >= pair.second.price) {
-                pair.second.itemButton->setColor(gui::GREEN_BUTTON);
+            if (!pair.second.locked && player.getGold() >= pair.second.price) {
+                pair.second.itemButton->setColor(gui::GREEN);
             }
             else {
-                pair.second.itemButton->setColor(gui::RED_BUTTON);
+                pair.second.itemButton->setColor(gui::DARK_RED);
             }
         }
     }
@@ -140,6 +149,9 @@ void ShopGUI::draw(sf::RenderTarget &target)
 {
     for (const auto &pair : shopItems) {
         pair.second.itemSprite->draw(target);
+        if (pair.second.locked) {
+            pair.second.itemLock->draw(target);
+        }
         pair.second.itemButton->draw(target);
         pair.second.itemDesc->draw(target);
         pair.second.itemValue->draw(target);

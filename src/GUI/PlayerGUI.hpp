@@ -4,7 +4,8 @@
 
 class PlayerGUI {
 public:
-    PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
+    PlayerGUI(sf::VideoMode &vm, Player &player,
+              FloatingTextSystem &floatingTextSystem,
               const std::string &heroName, const std::string &difficulty_name,
               std::unordered_map<std::string, std::string> &lang);
     ~PlayerGUI();
@@ -26,11 +27,10 @@ public:
     void updateReg();
     void updateBossHP(float dt);
     const bool hasClickedShopBuy(const sf::Vector2i &mousePos,
-                                 bool mouseClicked, SoundEngine &soundEngine,
-                                 FloatingTextSystem &floatingTextSystem);
+                                 bool mouseClicked, SoundEngine &soundEngine);
     const bool hasClickedAbilityBuy(const sf::Vector2i &mousePos,
-                                    bool mouseClicked, SoundEngine &soundEngine,
-                                    FloatingTextSystem &floatingTextSystem);
+                                    bool mouseClicked,
+                                    SoundEngine &soundEngine);
 
     const bool isEscape() const;
     const bool isLeveling() const;
@@ -66,6 +66,7 @@ public:
 private:
     sf::VideoMode &vm;
     Player &player;
+    FloatingTextSystem &floatingTextSystem;
     StatsGUI *statsGUI;
     ShopGUI *shopGUI;
     UpgradeGUI *upgradeGUI;

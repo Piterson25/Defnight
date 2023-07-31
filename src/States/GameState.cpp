@@ -91,10 +91,9 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
             this->vertexArray.getBounds().height / 2 - calcY(32, vm));
     }
 
-    this->playerGUI =
-        new PlayerGUI(this->gameSettings.resolution, *this->player,
-                      this->gameSettings.soundsVolume, hero_name,
-                      difficulty_name, this->gameSettings.lang);
+    this->playerGUI = new PlayerGUI(
+        this->gameSettings.resolution, *this->player, *this->floatingTextSystem,
+        hero_name, difficulty_name, this->gameSettings.lang);
 
     this->view.setSize(sf::Vector2f(static_cast<float>(vm.width),
                                     static_cast<float>(vm.height)));
@@ -161,30 +160,9 @@ void GameState::initGUI()
 
 void GameState::resetGUI()
 {
-    for (auto it = this->texts.begin(); it != this->texts.end(); ++it) {
-        delete it->second;
-        it->second = nullptr;
-    }
     this->texts.clear();
-
-    for (auto it = this->text_buttons.begin(); it != this->text_buttons.end();
-         ++it) {
-        delete it->second;
-        it->second = nullptr;
-    }
     this->text_buttons.clear();
-
-    for (auto it = this->sprites.begin(); it != this->sprites.end(); ++it) {
-        delete it->second;
-        it->second = nullptr;
-    }
     this->sprites.clear();
-
-    for (auto it = this->sprite_buttons.begin();
-         it != this->sprite_buttons.end(); ++it) {
-        delete it->second;
-        it->second = nullptr;
-    }
     this->sprite_buttons.clear();
 
     initGUI();
@@ -355,17 +333,20 @@ void GameState::update(float dt)
 
             if (this->mousePosView.y >
                 calcY(128, this->gameSettings.resolution)) {
-                if (!this->playerGUI->isShopping() && this->mouseClick) {
-                    this->player->doAttack();
-                }
-
-                if (this->player->isAbilityActivated()) {
-                    this->player->doAbility(this->soundEngine);
-                    this->projectileSystem->playerAbility(
-                        sf::Vector2f(this->window.mapPixelToCoords(
-                            sf::Mouse::getPosition(this->window), this->view)),
-                        *this->player);
-                    this->playerGUI->setAbilityIcon();
+                if (!this->playerGUI->isShopping() &&
+                    !this->playerGUI->isBuyingAbility()) {
+                    if (mouseClick) {
+                        this->player->doAttack();
+                    }
+                    if (this->player->isAbilityActivated()) {
+                        this->player->doAbility(this->soundEngine);
+                        this->projectileSystem->playerAbility(
+                            sf::Vector2f(this->window.mapPixelToCoords(
+                                sf::Mouse::getPosition(this->window),
+                                this->view)),
+                            *this->player);
+                        this->playerGUI->setAbilityIcon();
+                    }
                 }
             }
             this->player->spawn(dt);
@@ -390,18 +371,13 @@ void GameState::update(float dt)
             }
             this->setKeysClick("Q", this->isKeyClicked1("Q"));
 
-            if (this->playerGUI->hasClickedShopBuy(
-                    this->mousePosWindow, this->isMouseClicked(),
-                    this->soundEngine, *this->floatingTextSystem)) {
+            if (this->playerGUI->hasClickedShopBuy(this->mousePosWindow,
+                                                   this->isMouseClicked(),
+                                                   this->soundEngine)) {
                 this->setMouseClick(true);
             }
 
             if (this->player->isUpgraded()) {
-                if (this->playerGUI->hasClickedAbilityBuy(
-                        this->mousePosWindow, this->isMouseClicked(),
-                        this->soundEngine, *this->floatingTextSystem)) {
-                    this->setMouseClick(true);
-                }
 
                 this->updateKeysClick("E", sf::Keyboard::E);
 
@@ -410,6 +386,12 @@ void GameState::update(float dt)
                     this->playerGUI->updateIsBuyingAbility();
                 }
                 this->setKeysClick("E", this->isKeyClicked1("E"));
+
+                if (this->playerGUI->hasClickedAbilityBuy(
+                        this->mousePosWindow, this->isMouseClicked(),
+                        this->soundEngine)) {
+                    this->setMouseClick(true);
+                }
             }
         }
 

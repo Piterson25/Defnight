@@ -30,10 +30,10 @@ private:
     sf::View view;
     sf::View viewHUD;
 
-    std::unordered_map<std::string, gui::ButtonText *> text_buttons;
-    std::unordered_map<std::string, gui::Text *> texts;
-    std::unordered_map<std::string, gui::ButtonSprite *> sprite_buttons;
-    std::unordered_map<std::string, gui::Sprite *> sprites;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>> text_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>> sprite_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
 
     sf::Sprite background;
     sf::Texture background_texture;

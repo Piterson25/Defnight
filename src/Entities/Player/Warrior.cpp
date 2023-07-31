@@ -40,11 +40,11 @@ void Warrior::endAbility()
         this->armor -= increasedArmor;
     }
     else if (this->name == "crusader") {
-        this->attack -= 5;
+        this->attack -= increasedAttack;
         this->armor -= increasedArmor;
     }
     else if (this->name == "paladin") {
-        this->reg -= 5;
+        this->reg -= increasedReg;
         this->armor -= increasedArmor;
     }
 }
@@ -55,7 +55,6 @@ void Warrior::doAbility(SoundEngine &soundEngine)
         soundEngine.addSound("shuriken");
     }
     else if (this->name == "knight") {
-        this->increasedArmor = 5;
         this->armor += increasedArmor;
         soundEngine.addSound("ability");
     }
@@ -70,12 +69,12 @@ void Warrior::doAbility(SoundEngine &soundEngine)
     }
     else if (this->name == "crusader") {
         this->armor += increasedArmor;
-        this->attack += 5;
+        this->attack += increasedAttack;
         soundEngine.addSound("ability");
     }
     else if (this->name == "paladin") {
         this->armor += increasedArmor;
-        this->reg += 5;
+        this->reg += increasedReg;
         soundEngine.addSound("ability");
     }
 }
@@ -91,6 +90,7 @@ void Warrior::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
     else if (t_name == "KNIGHT") {
         intRect = sf::IntRect(32, 0, 16, 16);
         this->setAttack(this->getAttack() + 1);
+        this->increasedArmor = 5;
         this->setName("knight");
         this->abilityComponent->setAbilityStats(20.f, 20.f, 5.f);
     }
@@ -117,12 +117,14 @@ void Warrior::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
         intRect = sf::IntRect(96, 0, 16, 16);
         this->setMaxHP(this->getMaxHP() + 2);
         this->setName("crusader");
+        this->increasedAttack = 10;
         this->abilityComponent->setAbilityStats(20.f, 20.f, 10.f);
     }
     else if (t_name == "PALADIN") {
         intRect = sf::IntRect(112, 0, 16, 16);
         this->setAttackSpeed(this->getAttackSpeed() + 1);
         this->setName("paladin");
+        this->increasedReg = 5;
         this->abilityComponent->setAbilityStats(20.f, 20.f, 10.f);
     }
 }

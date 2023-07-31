@@ -11,18 +11,18 @@ public:
     struct BuyItem {
         std::unique_ptr<gui::Sprite> itemSprite;
         std::unique_ptr<gui::ButtonSprite> itemButton;
+        std::unique_ptr<gui::Sprite> itemLock;
         std::unique_ptr<gui::Text> itemDesc;
         std::unique_ptr<gui::Text> itemValue;
         std::unique_ptr<gui::Sprite> itemCoin;
         std::unique_ptr<gui::Text> itemPrice;
         uint32_t price;
+        bool locked;
     };
 
     const uint32_t getPrice(const std::string &t_name);
 
     void increasePrice(const std::string &t_name);
-
-    void deleteUpgrade(const std::string &t_name);
 
     void addPlayerStat(const std::string &t_name, float t_x, float t_y,
                        const std::string &desc);
@@ -36,6 +36,9 @@ public:
                                 const std::string &t_name,
                                 FloatingTextSystem *floatingTextSystem,
                                 SoundEngine *soundEngine);
+    void lockUpgrade(const std::string t_name);
+    void unlockUpgrade(const std::string t_name);
+    void disableUpgrade(const std::string t_name);
     void buy(const std::string &t_name, FloatingTextSystem *floatingTextSystem);
     void updateItemFrames();
     void updatePlayerInfo(const std::string &t_name, const std::string &t_desc);

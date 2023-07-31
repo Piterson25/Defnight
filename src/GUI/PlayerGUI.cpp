@@ -1,10 +1,11 @@
 #include "PlayerGUI.hpp"
 
-PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, float soundVolume,
+PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
+                     FloatingTextSystem &floatingTextSystem,
                      const std::string &heroName,
                      const std::string &difficulty_name,
                      std::unordered_map<std::string, std::string> &lang)
-    : vm(vm), lang(lang), player(player)
+    : vm(vm), lang(lang), player(player), floatingTextSystem(floatingTextSystem)
 {
     this->attributesTexture.loadFromFile(
         "assets/textures/attributes_icons.png");
@@ -228,8 +229,8 @@ void PlayerGUI::levelUpPlayer(uint32_t optionID, uint32_t optionValue)
     switch (optionID) {
         case 1:
             player.setArmor(player.getArmor() + optionValue);
-            if (player.getArmor() + player.getIncreasedArmor() >= 20) {
-                shopGUI->deleteItem("ARMOR");
+            if (player.getArmor() >= 10) {
+                shopGUI->lockItem("ARMOR");
             }
             statsGUI->updateArmor();
             break;
@@ -271,11 +272,14 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     player.upgrade(name, intRect);
     statsGUI->upgradePlayer(this->lang[name], intRect);
     this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");
-    this->abilityUpgradeGUI->updatePlayerInfo("ATTACK", this->lang["ATTACK"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("PROJ_ATTACK",
+                                              this->lang["ATTACK"]);
     this->abilityUpgradeGUI->updatePlayerInfo("PIERCING",
                                               this->lang["PIERCING"]);
     this->abilityUpgradeGUI->updatePlayerInfo("AREA", this->lang["AREA"]);
     this->abilityUpgradeGUI->updatePlayerInfo("ARMOR", this->lang["ARMOR"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("ATTACK", this->lang["ATTACK"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("REG", this->lang["REG"]);
     updatePlayerAttributes();
     this->update_Gold();
 }
@@ -291,7 +295,7 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
     }
 
     std::vector<short> id = {3, 4, 5};
-    if (player.getArmor() + player.getIncreasedArmor() < 20) {
+    if (player.getArmor() < 10) {
         id.push_back(1);
     }
     if (player.getReg() < 10) {
@@ -562,8 +566,7 @@ void PlayerGUI::updateBossHP(float dt)
 
 const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
                                         bool mouseClicked,
-                                        SoundEngine &soundEngine,
-                                        FloatingTextSystem &floatingTextSystem)
+                                        SoundEngine &soundEngine)
 {
     if (statsGUI->hasClickedShop(mousePos, mouseClicked)) {
         updateIsShopping();
@@ -571,8 +574,9 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
     }
 
     if (this->isShopping()) {
-        if (shopGUI->hasBoughtItem(mousePos, mouseClicked, "FULL_HP",
-                                   &floatingTextSystem, &soundEngine)) {
+        if (player.getHP() < player.getMaxHP() &&
+            shopGUI->hasBoughtItem(mousePos, mouseClicked, "FULL_HP",
+                                   &this->floatingTextSystem, &soundEngine)) {
             player.setHP(player.getMaxHP());
             this->updateHP();
             player.setRegenerating(true);
@@ -580,7 +584,8 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
             return true;
         }
         else if (shopGUI->hasBoughtItem(mousePos, mouseClicked, "MAX_HP",
-                                        &floatingTextSystem, &soundEngine)) {
+                                        &this->floatingTextSystem,
+                                        &soundEngine)) {
             player.setMaxHP(player.getMaxHP() + 2);
             this->updateHP();
             player.setRegenerating(true);
@@ -588,17 +593,19 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
             return true;
         }
         else if (shopGUI->hasBoughtItem(mousePos, mouseClicked, "ATTACK",
-                                        &floatingTextSystem, &soundEngine)) {
+                                        &this->floatingTextSystem,
+                                        &soundEngine)) {
             player.setAttack(player.getAttack() + 1);
             this->update_Gold();
             return true;
         }
         else if (shopGUI->hasBoughtItem(mousePos, mouseClicked, "ARMOR",
-                                        &floatingTextSystem, &soundEngine)) {
+                                        &this->floatingTextSystem,
+                                        &soundEngine)) {
             player.setArmor(player.getArmor() + 1);
             this->update_Gold();
-            if (player.getArmor() + player.getIncreasedArmor() >= 20) {
-                shopGUI->deleteItem("ARMOR");
+            if (player.getArmor() >= 10) {
+                shopGUI->lockItem("ARMOR");
             }
             return true;
         }
@@ -607,10 +614,9 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
     return false;
 }
 
-const bool
-PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
-                                SoundEngine &soundEngine,
-                                FloatingTextSystem &floatingTextSystem)
+const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
+                                           bool mouseClicked,
+                                           SoundEngine &soundEngine)
 {
     if (this->statsGUI->hasClickedAbilityUpgrade(mousePos, mouseClicked)) {
         updateIsBuyingAbility();
@@ -619,8 +625,8 @@ PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
 
     if (this->isBuyingAbility()) {
         if (abilityUpgradeGUI->hasBoughtUpgrade(
-                mousePos, mouseClicked, "LOWER_COOLDOWN", &floatingTextSystem,
-                &soundEngine)) {
+                mousePos, mouseClicked, "LOWER_COOLDOWN",
+                &this->floatingTextSystem, &soundEngine)) {
             player.setAbilityMaxTimeModifier(
                 player.getAbilityMaxTimeModifier() - 0.1f);
             this->update_Gold();
@@ -628,17 +634,17 @@ PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
             return true;
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "ATTACK", &floatingTextSystem,
-                     &soundEngine)) {
-            player.setAttackIncrease(player.getAttackIncrease() + 1);
+                     mousePos, mouseClicked, "PROJ_ATTACK",
+                     &this->floatingTextSystem, &soundEngine)) {
+            player.setProjectileAttack(player.getProjectileAttack() + 1);
             this->update_Gold();
-            this->abilityUpgradeGUI->updatePlayerInfo("ATTACK",
+            this->abilityUpgradeGUI->updatePlayerInfo("PROJ_ATTACK",
                                                       this->lang["ATTACK"]);
             return true;
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "PIERCING", &floatingTextSystem,
-                     &soundEngine)) {
+                     mousePos, mouseClicked, "PIERCING",
+                     &this->floatingTextSystem, &soundEngine)) {
             player.setProjectilePiercing(player.getProjectilePiercing() + 1);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("PIERCING",
@@ -646,7 +652,7 @@ PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
             return true;
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "AREA", &floatingTextSystem,
+                     mousePos, mouseClicked, "AREA", &this->floatingTextSystem,
                      &soundEngine)) {
             player.setProjectileArea(player.getProjectileArea() + 1);
             this->update_Gold();
@@ -654,15 +660,33 @@ PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos, bool mouseClicked,
                                                       this->lang["AREA"]);
             return true;
         }
-        else if (this->player.getArmor() + this->player.getIncreasedArmor() <
-                     20 &&
-                 abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "ARMOR", &floatingTextSystem,
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(
+                     mousePos, mouseClicked, "ARMOR", &this->floatingTextSystem,
                      &soundEngine)) {
             player.setIncreasedArmor(player.getIncreasedArmor() + 1);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("ARMOR",
                                                       this->lang["ARMOR"]);
+            if (player.getIncreasedArmor() >= 10) {
+                abilityUpgradeGUI->lockUpgrade("ARMOR");
+            }
+            return true;
+        }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(
+                     mousePos, mouseClicked, "ATTACK",
+                     &this->floatingTextSystem, &soundEngine)) {
+            player.setIncreasedAttack(player.getIncreasedAttack() + 1);
+            this->update_Gold();
+            this->abilityUpgradeGUI->updatePlayerInfo("ATTACK",
+                                                      this->lang["ATTACK"]);
+            return true;
+        }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(
+                     mousePos, mouseClicked, "REG", &this->floatingTextSystem,
+                     &soundEngine)) {
+            player.setIncreasedReg(player.getIncreasedReg() + 1);
+            this->update_Gold();
+            this->abilityUpgradeGUI->updatePlayerInfo("REG", this->lang["REG"]);
             return true;
         }
     }
@@ -771,10 +795,11 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
     if (this->upgradeGUI->hasClickedUpgrade(mousePos, mouseClicked, "UPGRADE1",
                                             &soundEngine)) {
         if (player.getLevel() == 5) {
-            this->abilityUpgradeGUI->addPlayerStat(
-                "ATTACK", calcX(32, vm), calcY(212, vm), this->lang["ATTACK"]);
+            this->abilityUpgradeGUI->addPlayerStat("PROJ_ATTACK", calcX(32, vm),
+                                                   calcY(212, vm),
+                                                   this->lang["ATTACK"]);
             this->abilityUpgradeGUI->addAbilityUpgrade(
-                "ATTACK", calcX(44, vm), calcY(460, vm), 1,
+                "PROJ_ATTACK", calcX(44, vm), calcY(460, vm), 1,
                 this->lang["ATTACK"], "+1", 30);
             this->upgradePlayer("NINJA");
         }
@@ -789,6 +814,12 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
                 this->upgradePlayer("SENSEI");
             }
             else if (player.getName() == "knight") {
+                this->abilityUpgradeGUI->addPlayerStat("ATTACK", calcX(32, vm),
+                                                       calcY(250, vm),
+                                                       this->lang["ATTACK"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade(
+                    "ATTACK", calcX(44, vm), calcY(596, vm), 1,
+                    this->lang["ATTACK"], "+1", 50);
                 this->upgradePlayer("CRUSADER");
             }
         }
@@ -817,6 +848,11 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
                 this->upgradePlayer("BOMBER");
             }
             else if (player.getName() == "knight") {
+                this->abilityUpgradeGUI->addPlayerStat(
+                    "REG", calcX(32, vm), calcY(250, vm), this->lang["REG"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade(
+                    "REG", calcX(44, vm), calcY(596, vm), 5, this->lang["REG"],
+                    "+1", 50);
                 this->upgradePlayer("PALADIN");
             }
         }
