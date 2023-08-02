@@ -196,6 +196,11 @@ namespace gui {
 
     ButtonSprite::~ButtonSprite() = default;
 
+    const sf::Color ButtonSprite::getColor() const
+    {
+        return this->color;
+    }
+
     const bool ButtonSprite::isPressed() const
     {
         return (this->buttonState == BUTTON_PRESSED);

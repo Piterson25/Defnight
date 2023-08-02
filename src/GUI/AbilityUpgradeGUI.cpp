@@ -33,10 +33,8 @@ void AbilityUpgradeGUI::increasePrice(const std::string &t_name)
 void AbilityUpgradeGUI::addPlayerStat(const std::string &t_name, float t_x,
                                       float t_y, const std::string &desc)
 {
-    std::cout << t_name << '\n';
-
     this->playerStats[t_name] = std::make_unique<gui::Text>(
-        desc, calcChar(16, vm), t_x, t_y, sf::Color(255, 255, 255, 255), false);
+        desc, calcChar(16, vm), t_x, t_y, gui::WHITE, false);
 }
 
 void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
@@ -45,8 +43,6 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
                                           const std::string &value,
                                           uint32_t price)
 {
-    std::cout << t_name << '\n';
-
     this->abilityUpgrades.emplace(
         t_name,
         BuyItem{
@@ -57,18 +53,18 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
                 calcScale(1, vm), false),
             std::make_unique<gui::Sprite>("assets/textures/lock.png", t_x, t_y,
                                           calcScale(4, vm), false),
-            std::make_unique<gui::Text>(
-                desc, calcChar(16, vm), t_x + calcX(166, vm),
-                t_y - calcY(2, vm), sf::Color(255, 255, 255), true),
-            std::make_unique<gui::Text>(
-                value, calcChar(16, vm), t_x + calcX(166, vm),
-                t_y + calcY(20, vm), sf::Color(255, 255, 255), true),
+            std::make_unique<gui::Text>(desc, calcChar(16, vm),
+                                        t_x + calcX(166, vm),
+                                        t_y - calcY(2, vm), gui::WHITE, true),
+            std::make_unique<gui::Text>(value, calcChar(16, vm),
+                                        t_x + calcX(166, vm),
+                                        t_y + calcY(20, vm), gui::WHITE, true),
             std::make_unique<gui::Sprite>(
                 this->attributesTexture, t_x + calcX(132, vm),
                 t_y + calcY(38, vm), calcScale(2, vm), false),
-            std::make_unique<gui::Text>(
-                std::to_string(price), calcChar(16, vm), t_x + calcX(166, vm),
-                t_y + calcY(48, vm), sf::Color(255, 246, 76), false),
+            std::make_unique<gui::Text>(std::to_string(price), calcChar(16, vm),
+                                        t_x + calcX(166, vm),
+                                        t_y + calcY(48, vm), gui::GOLD, false),
             price,
             false,
         });
@@ -93,8 +89,9 @@ const bool AbilityUpgradeGUI::hasBoughtUpgrade(
     const sf::Vector2i &mousePos, bool mouseClicked, const std::string &t_name,
     FloatingTextSystem *floatingTextSystem, SoundEngine *soundEngine)
 {
-    if (this->abilityUpgrades.find(t_name) == this->abilityUpgrades.end() |
-        this->abilityUpgrades[t_name].locked) {
+    if (this->abilityUpgrades.find(t_name) == this->abilityUpgrades.end() ||
+        this->abilityUpgrades[t_name].locked ||
+        this->abilityUpgrades[t_name].itemButton->getColor() == gui::DARK_RED) {
         return false;
     }
 

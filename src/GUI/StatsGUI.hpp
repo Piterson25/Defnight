@@ -29,7 +29,7 @@ public:
 
     void upgradePlayer(const std::string &t_name, const sf::IntRect &intRect);
     void setAbilityIcon();
-    void updateAbilityIcon(float value);
+    const bool updateAbilityIcon(float value);
     void setWaveCountdownText(const std::string &text);
     const bool hasClickedShop(const sf::Vector2i &mousePos, bool mouseClicked);
     const bool hasClickedAbilityUpgrade(const sf::Vector2i &mousePos,

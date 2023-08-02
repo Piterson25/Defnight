@@ -414,7 +414,7 @@ void StatsGUI::setAbilityIcon()
     this->abilityIcon.setPosition(sf::Vector2f(calcX(260, vm), calcY(8, vm)));
 }
 
-void StatsGUI::updateAbilityIcon(float value)
+const bool StatsGUI::updateAbilityIcon(float value)
 {
     this->abilityIcon.setSize(
         sf::Vector2f(calcX(80, vm), calcX(80, vm) - value));
@@ -422,7 +422,9 @@ void StatsGUI::updateAbilityIcon(float value)
         sf::Vector2f(calcX(260, vm), calcX(8, vm) + value));
     if (this->abilityIcon.getSize().y <= 0.f) {
         this->sprite_buttons["ABILITY_UPGRADE"]->setColor(gui::GOLD);
+        return true;
     }
+    return false;
 }
 
 void StatsGUI::setWaveCountdownText(const std::string &text)

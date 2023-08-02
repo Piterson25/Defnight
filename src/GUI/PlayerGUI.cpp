@@ -268,6 +268,10 @@ void PlayerGUI::levelUpPlayer(uint32_t optionID, uint32_t optionValue)
 
 void PlayerGUI::upgradePlayer(const std::string &name)
 {
+    if (player.isAbilityActive()) {
+        player.endAbility();
+    }
+
     sf::IntRect intRect = sf::IntRect(0, 0, 16, 16);
     player.upgrade(name, intRect);
     statsGUI->upgradePlayer(this->lang[name], intRect);
@@ -377,7 +381,9 @@ void PlayerGUI::update_ability(float dt)
     if (player.getAbilityCooldown() > 0.f) {
         const float value = player.getAbilityCooldown() /
                             (player.getAbilityTotalMaxTime()) * calcX(80, vm);
-        this->statsGUI->updateAbilityIcon(value);
+        if (this->statsGUI->updateAbilityIcon(value)) {
+            abilityUpgradeGUI->updateItemFrames();
+        }
     }
 }
 
@@ -825,7 +831,6 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
         }
 
         this->upgrading = false;
-        this->update_Gold();
         return true;
     }
     else if (this->upgradeGUI->hasClickedUpgrade(mousePos, mouseClicked,
@@ -858,7 +863,6 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
         }
 
         this->upgrading = false;
-        this->update_Gold();
         return true;
     }
 
@@ -867,7 +871,6 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
                                                 "UPGRADE3", &soundEngine)) {
             this->upgradePlayer("SCOUT");
             this->upgrading = false;
-            this->update_Gold();
             return true;
         }
     }

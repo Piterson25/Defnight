@@ -82,6 +82,7 @@ namespace gui {
                      float scale, bool center);
         ~ButtonSprite();
 
+        const sf::Color getColor() const;
         const bool isPressed() const;
         const sf::IntRect getTextureRect() const;
 
