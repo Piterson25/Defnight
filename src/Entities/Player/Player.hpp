@@ -27,6 +27,7 @@ public:
     const uint32_t getIncreasedArmor() const;
     const uint32_t getIncreasedReg() const;
     const uint32_t getIncreasedAttack() const;
+    const float getTimeSlowdown() const;
     const bool isRegenerating() const;
     const bool isLeveling() const;
     const bool isSprinting() const;
@@ -52,6 +53,7 @@ public:
     void setIncreasedArmor(uint32_t t_increasedArmor);
     void setIncreasedReg(uint32_t t_increasedReg);
     void setIncreasedAttack(uint32_t t_increasedAttack);
+    void setTimeSlowdown(float t_timeSlowdown);
     void setKills(uint32_t t_kills);
     void setUpgraded(bool t_upgraded);
     void setRegenerating(bool t_regenerating);
@@ -109,6 +111,7 @@ protected:
     uint32_t increasedArmor;
     uint32_t increasedReg;
     uint32_t increasedAttack;
+    float timeSlowdown;
     bool regenerating;
     float regCooldown;
     bool leveling;

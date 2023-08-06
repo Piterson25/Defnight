@@ -59,7 +59,7 @@ void Warrior::doAbility(SoundEngine &soundEngine)
         soundEngine.addSound("ability");
     }
     else if (this->name == "SCOUT") {
-        soundEngine.addSound("ability");
+        soundEngine.addSound("slowtime");
     }
     else if (this->name == "SENSEI") {
         soundEngine.addSound("shuriken");
@@ -96,29 +96,26 @@ void Warrior::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
     else if (t_name == "SCOUT") {
         intRect = sf::IntRect(48, 0, 16, 16);
         this->setReg(this->getReg() + 1);
-        this->abilityComponent->setAbilityStats(10.f, 10.f, 5.f);
+        this->timeSlowdown = 0.5f;
+        this->abilityComponent->setAbilityStats(20.f, 20.f, 5.f);
     }
     else if (t_name == "SENSEI") {
         intRect = sf::IntRect(64, 0, 16, 16);
         this->setAttackSpeed(this->getAttackSpeed() + 1);
-        this->abilityComponent->setAbilityStats(2.f, 2.f, 2.f);
     }
     else if (t_name == "BOMBER") {
         intRect = sf::IntRect(80, 0, 16, 16);
         this->setCriticalChance(this->getCriticalChance() + 10);
         this->setProjectileArea(2);
-        this->abilityComponent->setAbilityStats(2.f, 2.f, 2.f);
     }
     else if (t_name == "CRUSADER") {
         intRect = sf::IntRect(96, 0, 16, 16);
         this->setMaxHP(this->getMaxHP() + 2);
         this->increasedAttack = 10;
-        this->abilityComponent->setAbilityStats(20.f, 20.f, 10.f);
     }
     else if (t_name == "PALADIN") {
         intRect = sf::IntRect(112, 0, 16, 16);
         this->setAttackSpeed(this->getAttackSpeed() + 1);
         this->increasedReg = 5;
-        this->abilityComponent->setAbilityStats(20.f, 20.f, 10.f);
     }
 }

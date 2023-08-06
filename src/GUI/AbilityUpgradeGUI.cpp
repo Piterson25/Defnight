@@ -224,6 +224,14 @@ void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
         playerStats[t_name]->setText(text +
                                      std::to_string(player.getIncreasedReg()));
     }
+    else if (t_name == "SLOWDOWN") {
+        const float slowdown = player.getTimeSlowdown() * 100.f;
+
+        text += std::format("{:g}", slowdown);
+
+        text += "%";
+        playerStats[t_name]->setText(text);
+    }
 }
 
 void AbilityUpgradeGUI::update(const std::string &t_name,

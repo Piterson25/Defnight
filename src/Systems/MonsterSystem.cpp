@@ -439,6 +439,13 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
                            const std::vector<sf::FloatRect> &obstaclesBounds,
                            bool &paused, float dt)
 {
+    float slowedDt = dt;
+
+    if (player.isAbilityActive() &&
+        (player.getName() == "SCOUT" || player.getName() == "ASSASSIN" ||
+         player.getName() == "KILLER")) {
+        slowedDt -= dt * player.getTimeSlowdown();
+    }
     for (const auto &monster : this->monsters) {
         if (monster->hasSpawned()) {
             if (monster->isDead()) {
@@ -449,17 +456,17 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
             }
             else {
                 monster->calculateAI(obstaclesBounds, player,
-                                     this->monstersPositions(), dt);
+                                     this->monstersPositions(), slowedDt);
                 if (monster->hasVelocity()) {
                     monsterCollision(*monster);
                     monster->obstacleCollision(obstaclesBounds);
                     monster->move();
                 }
-                monster->update(dt);
-                monster->loadAttack(dt);
+                monster->update(slowedDt);
+                monster->loadAttack(slowedDt);
                 auto boss = dynamic_cast<Boss *>(monster.get());
                 if (boss) {
-                    boss->specialAttack(soundEngine, dt);
+                    boss->specialAttack(soundEngine, slowedDt);
                     projectileSystem.bossSpecialAttack(*boss);
                 }
                 if (monster->hasAttackedPlayer(obstaclesBounds, player,
@@ -486,7 +493,7 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
 
                     playerGUI.updateHP();
                 }
-                monster->animation(dt);
+                monster->animation(slowedDt);
             }
         }
         else {

@@ -270,6 +270,8 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     this->abilityUpgradeGUI->updatePlayerInfo("ARMOR", this->lang["ARMOR"]);
     this->abilityUpgradeGUI->updatePlayerInfo("ATTACK", this->lang["ATTACK"]);
     this->abilityUpgradeGUI->updatePlayerInfo("REG", this->lang["REG"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("SLOWDOWN",
+                                              this->lang["SLOWDOWN"]);
     updatePlayerAttributes();
     this->update_Gold();
 }
@@ -681,6 +683,16 @@ const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
             this->abilityUpgradeGUI->updateSegments("REG");
             return true;
         }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(
+                     mousePos, mouseClicked, "SLOWDOWN",
+                     &this->floatingTextSystem, &soundEngine)) {
+            player.setTimeSlowdown(player.getTimeSlowdown() + 0.1f);
+            this->update_Gold();
+            this->abilityUpgradeGUI->updatePlayerInfo("SLOWDOWN",
+                                                      this->lang["SLOWDOWN"]);
+            this->abilityUpgradeGUI->updateSegments("SLOWDOWN");
+            return true;
+        }
     }
 
     return false;
@@ -855,6 +867,12 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
     if (player.getLevel() == 5) {
         if (this->upgradeGUI->hasClickedUpgrade(mousePos, mouseClicked,
                                                 "UPGRADE3", &soundEngine)) {
+            this->abilityUpgradeGUI->addPlayerStat("SLOWDOWN", calcX(32, vm),
+                                                   calcY(212, vm),
+                                                   this->lang["SLOWDOWN"]);
+            this->abilityUpgradeGUI->addAbilityUpgrade(
+                "SLOWDOWN", calcX(44, vm), calcY(460, vm), 6,
+                this->lang["SLOWDOWN"], "+10%", 30, 5, 10);
             this->upgradePlayer("SCOUT");
             this->upgrading = false;
             return true;

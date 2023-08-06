@@ -45,17 +45,24 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->level = 1;
     this->maxXP = 40;
     this->pendingXP = 0;
+    this->maxHP = 10;
+    this->HP = 10;
     this->sprint = 100.f;
     this->maxSprint = 100;
+    this->attack = 1;
+    this->attackSpeed = 1;
+    this->speed = 1;
     this->criticalChance = 0;
     this->projectileAttack = 0;
     this->projectilePiercing = 1;
     this->projectileArea = 1;
     this->kills = 0;
+    this->reach = 1;
     this->upgraded = false;
     this->increasedArmor = 0;
     this->increasedReg = 0;
     this->increasedAttack = 0;
+    this->timeSlowdown = 0.f;
     this->regenerating = false;
     this->regCooldown = 0.f;
     this->leveling = false;
@@ -152,6 +159,11 @@ const uint32_t Player::getIncreasedReg() const
 const uint32_t Player::getIncreasedAttack() const
 {
     return this->increasedAttack;
+}
+
+const float Player::getTimeSlowdown() const
+{
+    return this->timeSlowdown;
 }
 
 const bool Player::isRegenerating() const
@@ -274,6 +286,11 @@ void Player::setIncreasedAttack(uint32_t t_increasedAttack)
     this->increasedAttack = t_increasedAttack;
 }
 
+void Player::setTimeSlowdown(float t_timeSlowdown)
+{
+    this->timeSlowdown = t_timeSlowdown;
+}
+
 void Player::setKills(uint32_t t_kills)
 {
     this->kills = t_kills;
@@ -357,10 +374,6 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds,
     if (sf::Keyboard::isKeyPressed(
             sf::Keyboard::Key(keybinds.at("MOVE_RIGHT")))) {
         this->velocity.x += vel;
-    }
-
-    if (this->name == "SCOUT" && this->isAbilityActive()) {
-        this->velocity *= 1.3f;
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("SPRINT"))) &&
