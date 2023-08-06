@@ -20,17 +20,17 @@ Projectile::Projectile(const std::string &t_name, sf::VideoMode &t_vm,
     this->piercing = 1;
     this->bouncing = false;
 
-    if (this->name == "stone") {
+    if (this->name == "STONE") {
         this->sprite.setTextureRect(sf::IntRect(0, 0, 4, 4));
     }
-    else if (this->name == "shuriken") {
+    else if (this->name == "SHURIKEN") {
         this->sprite.setTextureRect(sf::IntRect(4, 0, 4, 4));
         this->bouncing = true;
     }
-    else if (this->name == "bomb") {
+    else if (this->name == "BOMB") {
         this->sprite.setTextureRect(sf::IntRect(8, 0, 4, 4));
     }
-    else if (this->name == "groundWave") {
+    else if (this->name == "GROUNDWAVE") {
         this->sprite.setTextureRect(sf::IntRect(12, 0, 8, 8));
     }
 
@@ -66,7 +66,7 @@ const uint32_t Projectile::getPiercing() const
 
 const bool Projectile::hasExploded() const
 {
-    if (this->name == "bomb") {
+    if (this->name == "BOMB") {
         return this->timeExisting >= 3.f;
     }
     return false;
@@ -74,7 +74,7 @@ const bool Projectile::hasExploded() const
 
 const bool Projectile::isBomb() const
 {
-    return this->name == "bomb";
+    return this->name == "BOMB";
 }
 
 void Projectile::setPiercing(uint32_t t_piercing)
@@ -189,7 +189,7 @@ void Projectile::update(float dt)
     this->velocity.x = vel * cos((3.1415f / 180.f) * this->angle);
     this->velocity.y = vel * sin((3.1415f / 180.f) * this->angle);
     this->timeExisting += dt;
-    if (this->name == "shuriken") {
+    if (this->name == "SHURIKEN") {
         this->sprite.rotate(90.f / dt);
     }
 }

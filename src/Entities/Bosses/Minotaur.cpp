@@ -5,7 +5,7 @@ Minotaur::Minotaur(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
                    const std::vector<sf::FloatRect> &obstaclesBounds)
     : Boss(t_name, t_vm, t_x, t_y, difficulty_mod, wave_mod, obstaclesBounds)
 {
-    this->name = "minotaur";
+    this->name = "MINOTAUR";
     this->attack = static_cast<uint32_t>(7 * difficulty_mod);
     this->attackSpeed = 2;
     this->HP = static_cast<uint32_t>(69 * difficulty_mod);

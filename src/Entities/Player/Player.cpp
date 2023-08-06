@@ -359,7 +359,7 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds,
         this->velocity.x += vel;
     }
 
-    if (this->name == "scout" && this->isAbilityActive()) {
+    if (this->name == "SCOUT" && this->isAbilityActive()) {
         this->velocity *= 1.3f;
     }
 
@@ -497,7 +497,6 @@ void Player::upgrade(const std::string &t_name, sf::IntRect &intRect)
     this->upgradeAttributes(t_name, intRect);
     this->setTexturePath("assets/textures/player/" + this->getName() + ".png");
     this->setUpgraded(true);
-    this->setAbilityMaxTimeModifier(1.f);
 }
 
 void Player::updateSprint(float dt)

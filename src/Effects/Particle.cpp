@@ -4,7 +4,7 @@ Particle::Particle(sf::VideoMode &vm, const std::string &name, float x, float y,
                    std::uint32_t attack, std::uint32_t area)
     : vm(vm), name(name), attack(attack)
 {
-    if (this->name == "bomb") {
+    if (this->name == "BOMB") {
         this->texture.loadFromFile("assets/textures/explosion.png");
     }
     this->sprite.setTexture(this->texture);

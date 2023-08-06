@@ -294,6 +294,11 @@ namespace gui {
 
     Sprite::~Sprite() = default;
 
+    const sf::Vector2f Sprite::getPosition() const
+    {
+        return this->sprite.getPosition();
+    }
+
     const sf::FloatRect Sprite::getGlobalBounds() const
     {
         return this->sprite.getGlobalBounds();

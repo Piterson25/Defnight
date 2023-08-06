@@ -101,7 +101,7 @@ const bool Drop::isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
         this->move(player.getPosition().x, player.getPosition().y, dt);
     }
     if (distance <= player.getReach() * calcX(16, vm)) {
-        if (this->name == "coin") {
+        if (this->name == "COIN") {
             player.setGold(player.getGold() + this->worth);
             playerGUI.update_Gold();
             floatingTextSystem.addFloatingText(

@@ -16,7 +16,7 @@ UpgradeGUI::~UpgradeGUI()
 
 const bool UpgradeGUI::isPressed(const std::string &t_name, bool mouseClicked)
 {
-    return this->upgrades[t_name].upgradeButton->isPressed() && !mouseClicked;
+    return this->upgrades[t_name].button->isPressed() && !mouseClicked;
 }
 
 void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y,
@@ -46,13 +46,13 @@ void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y,
         attributeValue,
     };
 
-    this->upgrades[t_name].upgradeSprite->setTextureRect(
+    this->upgrades[t_name].sprite->setTextureRect(
         sf::IntRect(16 * upgradeIconID, 0, 16, 16));
 
-    this->upgrades[t_name].upgradeAbility->setTextureRect(
+    this->upgrades[t_name].ability->setTextureRect(
         sf::IntRect(16 * abilityIconID, 0, 16, 16));
 
-    this->upgrades[t_name].upgradeAttribute->setTextureRect(
+    this->upgrades[t_name].attribute->setTextureRect(
         sf::IntRect(16 * attributeIconID, 0, 16, 16));
 }
 
@@ -81,7 +81,7 @@ const bool UpgradeGUI::hasClickedUpgrade(const sf::Vector2i &mousePos,
 
 void UpgradeGUI::update(const std::string &t_name, const sf::Vector2i &mousePos)
 {
-    this->upgrades[t_name].upgradeButton->update(mousePos);
+    this->upgrades[t_name].button->update(mousePos);
 }
 
 void UpgradeGUI::draw(sf::RenderTarget &target)
@@ -91,11 +91,11 @@ void UpgradeGUI::draw(sf::RenderTarget &target)
             continue;
         }
 
-        pair.second.upgradeSprite->draw(target);
-        pair.second.upgradeButton->draw(target);
-        pair.second.upgradeName->draw(target);
-        pair.second.upgradeAbility->draw(target);
-        pair.second.upgradeAttribute->draw(target);
-        pair.second.upgradeAttributeValue->draw(target);
+        pair.second.sprite->draw(target);
+        pair.second.button->draw(target);
+        pair.second.name->draw(target);
+        pair.second.ability->draw(target);
+        pair.second.attribute->draw(target);
+        pair.second.attributeEffect->draw(target);
     }
 }

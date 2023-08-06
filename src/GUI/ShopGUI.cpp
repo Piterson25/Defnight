@@ -21,13 +21,14 @@ void ShopGUI::increasePrice(const std::string &t_name)
 {
     this->shopItems[t_name].price += static_cast<uint32_t>(
         (((1 + sqrtf(5)) / 2.f) - 1) * this->shopItems[t_name].price);
-    this->shopItems[t_name].itemPrice->setText(
+    this->shopItems[t_name].priceText->setText(
         std::to_string(getPrice(t_name)));
 }
 
 void ShopGUI::addShopItem(const std::string &t_name, float t_x, float t_y,
                           uint32_t iconID, const std::string &desc,
-                          const std::string &value, uint32_t price)
+                          const std::string &value, uint32_t price,
+                          uint32_t boughtNumber, uint32_t maxNumber)
 {
     this->shopItems.emplace(
         t_name,
@@ -48,24 +49,62 @@ void ShopGUI::addShopItem(const std::string &t_name, float t_x, float t_y,
             std::make_unique<gui::Sprite>(
                 this->attributesTexture, t_x + calcX(132, vm),
                 t_y + calcY(38, vm), calcScale(2, vm), false),
-            std::make_unique<gui::Text>(
-                std::to_string(price), calcChar(16, vm), t_x + calcX(166, vm),
-                t_y + calcY(48, vm), sf::Color(255, 246, 76), false),
+            std::make_unique<gui::Text>(std::to_string(price), calcChar(16, vm),
+                                        t_x + calcX(166, vm),
+                                        t_y + calcY(48, vm), gui::GOLD, false),
+            std::vector<std::unique_ptr<gui::Sprite>>(),
+            boughtNumber,
+            maxNumber,
             price,
             false,
         });
 
-    this->shopItems[t_name].itemSprite->setTextureRect(
+    this->shopItems[t_name].sprite->setTextureRect(
         sf::IntRect(16 * iconID, 0, 16, 16));
 
-    this->shopItems[t_name].itemButton->setColor(gui::DARK_RED);
+    this->shopItems[t_name].button->setColor(gui::DARK_RED);
 
-    this->shopItems[t_name].itemCoin->setTextureRect(sf::IntRect(0, 0, 16, 16));
+    this->shopItems[t_name].coinSprite->setTextureRect(
+        sf::IntRect(0, 0, 16, 16));
+
+    if (maxNumber > 0) {
+        sf::Texture texture;
+        texture.loadFromFile("assets/textures/progress_segment.png");
+        const sf::Vector2f position =
+            this->shopItems[t_name].sprite->getPosition();
+        for (uint32_t i = 0; i < maxNumber; i++) {
+            this->shopItems[t_name].segments.push_back(
+                std::make_unique<gui::Sprite>(
+                    texture,
+                    position.x + calcX(static_cast<float>(i) * 12.f + 108, vm),
+                    position.y + calcY(74, vm), calcScale(2, vm), false));
+            this->shopItems[t_name].segments[i]->setTextureRect(
+                sf::IntRect(4, 0, 4, 8));
+
+            if (i < boughtNumber) {
+                this->shopItems[t_name].segments[i]->setTextureRect(
+                    sf::IntRect(0, 0, 4, 8));
+            }
+        }
+    }
+}
+
+void ShopGUI::updateSegments(const std::string &t_name)
+{
+    this->shopItems[t_name]
+        .segments[this->shopItems[t_name].boughtNumber]
+        ->setTextureRect(sf::IntRect(0, 0, 4, 8));
+    this->shopItems[t_name].boughtNumber++;
+
+    if (this->shopItems[t_name].boughtNumber ==
+        this->shopItems[t_name].maxNumber) {
+        lockItem(t_name);
+    }
 }
 
 const bool ShopGUI::isPressed(const std::string &t_name, bool mouseClicked)
 {
-    return this->shopItems[t_name].itemButton->isPressed() && !mouseClicked;
+    return this->shopItems[t_name].button->isPressed() && !mouseClicked;
 }
 
 const bool ShopGUI::hasBoughtItem(const sf::Vector2i &mousePos,
@@ -93,7 +132,7 @@ const bool ShopGUI::hasBoughtItem(const sf::Vector2i &mousePos,
 void ShopGUI::lockItem(const std::string t_name)
 {
     this->shopItems[t_name].locked = true;
-    this->shopItems[t_name].itemButton->setColor(gui::DARK_RED);
+    this->shopItems[t_name].button->setColor(gui::DARK_RED);
 }
 
 void ShopGUI::unlockItem(const std::string t_name)
@@ -103,7 +142,7 @@ void ShopGUI::unlockItem(const std::string t_name)
 
 void ShopGUI::disableItem(const std::string t_name)
 {
-    this->shopItems[t_name].itemButton->setColor(gui::DARK_RED);
+    this->shopItems[t_name].button->setColor(gui::DARK_RED);
 }
 
 void ShopGUI::buy(const std::string &t_name,
@@ -123,18 +162,18 @@ void ShopGUI::updateItemFrames()
         if (pair.first == "FULL_HP") {
             if (!pair.second.locked && player.getGold() >= pair.second.price &&
                 player.getHP() < player.getMaxHP()) {
-                pair.second.itemButton->setColor(gui::GREEN);
+                pair.second.button->setColor(gui::GREEN);
             }
             else {
-                pair.second.itemButton->setColor(gui::DARK_RED);
+                pair.second.button->setColor(gui::DARK_RED);
             }
         }
         else {
             if (!pair.second.locked && player.getGold() >= pair.second.price) {
-                pair.second.itemButton->setColor(gui::GREEN);
+                pair.second.button->setColor(gui::GREEN);
             }
             else {
-                pair.second.itemButton->setColor(gui::DARK_RED);
+                pair.second.button->setColor(gui::DARK_RED);
             }
         }
     }
@@ -142,20 +181,23 @@ void ShopGUI::updateItemFrames()
 
 void ShopGUI::update(const std::string &t_name, const sf::Vector2i &mousePos)
 {
-    this->shopItems[t_name].itemButton->update(mousePos);
+    this->shopItems[t_name].button->update(mousePos);
 }
 
 void ShopGUI::draw(sf::RenderTarget &target)
 {
     for (const auto &pair : shopItems) {
-        pair.second.itemSprite->draw(target);
+        pair.second.sprite->draw(target);
         if (pair.second.locked) {
-            pair.second.itemLock->draw(target);
+            pair.second.lockSprite->draw(target);
         }
-        pair.second.itemButton->draw(target);
-        pair.second.itemDesc->draw(target);
-        pair.second.itemValue->draw(target);
-        pair.second.itemCoin->draw(target);
-        pair.second.itemPrice->draw(target);
+        pair.second.button->draw(target);
+        pair.second.desc->draw(target);
+        pair.second.effect->draw(target);
+        pair.second.coinSprite->draw(target);
+        pair.second.priceText->draw(target);
+        for (const auto &segment : pair.second.segments) {
+            segment->draw(target);
+        }
     }
 }

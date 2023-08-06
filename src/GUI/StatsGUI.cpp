@@ -22,8 +22,8 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
                                       calcX(16, vm), calcScale(4, vm), false);
     this->sprites["MINIATURE"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
     this->texts["NAME"] = std::make_unique<gui::Text>(
-        t_lang["WARRIOR"], calcChar(16, vm), calcX(188, vm), calcY(98, vm),
-        gui::WHITE, true);
+        t_lang[player.getName()], calcChar(16, vm), calcX(188, vm),
+        calcY(98, vm), gui::WHITE, true);
 
     this->sprites["GOLD"] = std::make_unique<gui::Sprite>(
         attributesTexture, 0.f, calcY(88, vm), calcScale(2, vm), false);

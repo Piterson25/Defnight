@@ -6,7 +6,7 @@ class PlayerGUI {
 public:
     PlayerGUI(sf::VideoMode &vm, Player &player,
               FloatingTextSystem &floatingTextSystem,
-              const std::string &heroName, const std::string &difficulty_name,
+              const std::string &difficultyName,
               std::unordered_map<std::string, std::string> &lang);
     ~PlayerGUI();
 

@@ -5,7 +5,7 @@ Cyclope::Cyclope(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
                  const std::vector<sf::FloatRect> &obstaclesBounds)
     : Monster(t_name, t_vm, t_x, t_y, difficulty_mod, wave_mod, obstaclesBounds)
 {
-    this->name = "cyclope";
+    this->name = "CYCLOPE";
     this->attack = static_cast<uint32_t>(4 * difficulty_mod);
     this->attackSpeed = 1;
     this->HP = static_cast<uint32_t>(18 * difficulty_mod);

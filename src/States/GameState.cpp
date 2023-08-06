@@ -84,22 +84,20 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
     }
     map.close();
 
-    if (hero_name == "warrior") {
+    if (hero_name == "WARRIOR") {
         this->player = new Warrior(
             hero_name, gameSettings.resolution,
             this->vertexArray.getBounds().width / 2 - calcX(32, vm),
             this->vertexArray.getBounds().height / 2 - calcY(32, vm));
     }
 
-    this->playerGUI = new PlayerGUI(
-        this->gameSettings.resolution, *this->player, *this->floatingTextSystem,
-        hero_name, difficulty_name, this->gameSettings.lang);
+    this->playerGUI = new PlayerGUI(this->gameSettings.resolution,
+                                    *this->player, *this->floatingTextSystem,
+                                    difficulty_name, this->gameSettings.lang);
 
     this->view.setSize(sf::Vector2f(static_cast<float>(vm.width),
                                     static_cast<float>(vm.height)));
-    this->view.setCenter(
-        sf::Vector2f(this->player->getPosition().x + calcX(32, vm),
-                     this->player->getPosition().y + calcY(32, vm)));
+    this->view.setCenter(this->player->getCenter());
 
     this->viewHUD.setSize(sf::Vector2f(static_cast<float>(vm.width),
                                        static_cast<float>(vm.height)));
@@ -111,24 +109,19 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
     this->keysClick["Escape"].first = false;
     this->keysClick["Escape"].second = false;
 
-    if (difficulty_name == "easy") {
-        this->monsterSystem = new MonsterSystem(
-            gameSettings.resolution, *player,
-            this->tileMap->getTilesGlobalBounds(), this->gridSize, 0.75f);
-        this->dropSystem = new DropSystem(gameSettings.resolution, 0.75f);
+    float modifier = 1.f;
+
+    if (difficulty_name == "EASY") {
+        modifier = 0.75f;
     }
-    else if (difficulty_name == "hard") {
-        this->monsterSystem = new MonsterSystem(
-            gameSettings.resolution, *player,
-            this->tileMap->getTilesGlobalBounds(), this->gridSize, 1.25f);
-        this->dropSystem = new DropSystem(gameSettings.resolution, 1.25f);
+    else if (difficulty_name == "HARD") {
+        modifier = 1.25f;
     }
-    else {
-        this->monsterSystem = new MonsterSystem(
-            gameSettings.resolution, *player,
-            this->tileMap->getTilesGlobalBounds(), this->gridSize, 1.f);
-        this->dropSystem = new DropSystem(gameSettings.resolution, 1.f);
-    }
+
+    this->monsterSystem = new MonsterSystem(
+        gameSettings.resolution, *player, this->tileMap->getTilesGlobalBounds(),
+        this->gridSize, modifier);
+    this->dropSystem = new DropSystem(gameSettings.resolution, modifier);
 
     this->projectileSystem = new ProjectileSystem(gameSettings.resolution);
     this->particleSystem = new ParticleSystem(gameSettings.resolution);

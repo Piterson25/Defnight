@@ -2,8 +2,7 @@
 
 PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
                      FloatingTextSystem &floatingTextSystem,
-                     const std::string &heroName,
-                     const std::string &difficulty_name,
+                     const std::string &difficultyName,
                      std::unordered_map<std::string, std::string> &lang)
     : vm(vm), lang(lang), player(player), floatingTextSystem(floatingTextSystem)
 {
@@ -103,21 +102,9 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
         calcChar(16, vm), calcX(640, vm), calcY(160, vm),
         sf::Color(192, 192, 192), true);
 
-    if (difficulty_name == "easy") {
-        this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
-            this->lang["DIFFICULTY_LEVEL"] + " " + this->lang["EASY"],
-            calcChar(16, vm), calcX(640, vm), calcY(144, vm), gui::RED, true);
-    }
-    else if (difficulty_name == "normal") {
-        this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
-            this->lang["DIFFICULTY_LEVEL"] + " " + this->lang["NORMAL"],
-            calcChar(16, vm), calcX(640, vm), calcY(144, vm), gui::RED, true);
-    }
-    else if (difficulty_name == "hard") {
-        this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
-            this->lang["DIFFICULTY_LEVEL"] + " " + this->lang["HARD"],
-            calcChar(16, vm), calcX(640, vm), calcY(144, vm), gui::RED, true);
-    }
+    this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
+        this->lang["DIFFICULTY_LEVEL"] + " " + this->lang[difficultyName],
+        calcChar(16, vm), calcX(640, vm), calcY(144, vm), gui::RED, true);
 
     this->escape_background.setFillColor(sf::Color(0, 0, 0, 192));
     this->escape_background.setSize(
@@ -131,17 +118,18 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
     this->abilityUpgradeGUI = new AbilityUpgradeGUI(vm, this->player);
     this->abilityUpgradeGUI->addAbilityUpgrade("LOWER_COOLDOWN", calcX(44, vm),
                                                calcY(324, vm), 0, "Cooldown",
-                                               "-10%", 20);
+                                               "-10%", 20, 0, 5);
 
     this->shopGUI = new ShopGUI(vm, this->player);
     this->shopGUI->addShopItem("FULL_HP", calcX(44, vm), calcY(188, vm), 9,
-                               "Full HP", "+Full", 30);
+                               "Full HP", "+Full", 30, 0, 0);
     this->shopGUI->addShopItem("MAX_HP", calcX(44, vm), calcY(324, vm), 3,
-                               this->lang["MAX_HP"], "+2", 20);
+                               this->lang["MAX_HP"], "+2", 20, 0, 0);
     this->shopGUI->addShopItem("ATTACK", calcX(44, vm), calcY(460, vm), 5,
-                               this->lang["ATTACK"], "+1", 15);
+                               this->lang["ATTACK"], "+1", 15, 0, 0);
     this->shopGUI->addShopItem("ARMOR", calcX(44, vm), calcY(596, vm), 1,
-                               this->lang["ARMOR"], "+1", 10);
+                               this->lang["ARMOR"], "+1", 20, player.getArmor(),
+                               10);
 
     this->sideGUI = SideGUI::NONE;
 
@@ -229,9 +217,7 @@ void PlayerGUI::levelUpPlayer(uint32_t optionID, uint32_t optionValue)
     switch (optionID) {
         case 1:
             player.setArmor(player.getArmor() + optionValue);
-            if (player.getArmor() >= 10) {
-                shopGUI->lockItem("ARMOR");
-            }
+            shopGUI->updateSegments("ARMOR");
             statsGUI->updateArmor();
             break;
         case 2:
@@ -319,7 +305,7 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
     updateOption(this->option2, id, calcX(732, vm));
 
     if (player.getLevel() == 10) {
-        if (player.getName() == "ninja") {
+        if (player.getName() == "NINJA") {
             this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm),
                                             calcY(222, vm),
                                             this->lang["SENSEI"], 4, 3, 6, 1);
@@ -327,7 +313,7 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
                                             calcY(392, vm),
                                             this->lang["BOMBER"], 5, 4, 8, 1);
         }
-        else if (player.getName() == "knight") {
+        else if (player.getName() == "KNIGHT") {
             this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm),
                                             calcY(210, vm),
                                             this->lang["CRUSADER"], 6, 5, 3, 2);
@@ -609,10 +595,8 @@ const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
                                         &this->floatingTextSystem,
                                         &soundEngine)) {
             player.setArmor(player.getArmor() + 1);
+            shopGUI->updateSegments("ARMOR");
             this->update_Gold();
-            if (player.getArmor() >= 10) {
-                shopGUI->lockItem("ARMOR");
-            }
             return true;
         }
     }
@@ -637,6 +621,7 @@ const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
                 player.getAbilityMaxTimeModifier() - 0.1f);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");
+            this->abilityUpgradeGUI->updateSegments("LOWER_COOLDOWN");
             return true;
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(
@@ -655,6 +640,7 @@ const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("PIERCING",
                                                       this->lang["PIERCING"]);
+            this->abilityUpgradeGUI->updateSegments("PIERCING");
             return true;
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(
@@ -664,6 +650,7 @@ const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("AREA",
                                                       this->lang["AREA"]);
+            this->abilityUpgradeGUI->updateSegments("AREA");
             return true;
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(
@@ -673,9 +660,7 @@ const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("ARMOR",
                                                       this->lang["ARMOR"]);
-            if (player.getIncreasedArmor() >= 10) {
-                abilityUpgradeGUI->lockUpgrade("ARMOR");
-            }
+            this->abilityUpgradeGUI->updateSegments("ARMOR");
             return true;
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(
@@ -693,6 +678,7 @@ const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
             player.setIncreasedReg(player.getIncreasedReg() + 1);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("REG", this->lang["REG"]);
+            this->abilityUpgradeGUI->updateSegments("REG");
             return true;
         }
     }
@@ -806,26 +792,26 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
                                                    this->lang["ATTACK"]);
             this->abilityUpgradeGUI->addAbilityUpgrade(
                 "PROJ_ATTACK", calcX(44, vm), calcY(460, vm), 1,
-                this->lang["ATTACK"], "+1", 30);
+                this->lang["ATTACK"], "+1", 30, 0, 0);
             this->upgradePlayer("NINJA");
         }
         else if (player.getLevel() == 10) {
-            if (player.getName() == "ninja") {
+            if (player.getName() == "NINJA") {
                 this->abilityUpgradeGUI->addPlayerStat(
                     "PIERCING", calcX(32, vm), calcY(250, vm),
                     this->lang["PIERCING"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade(
                     "PIERCING", calcX(44, vm), calcY(596, vm), 2,
-                    this->lang["PIERCING"], "+1", 50);
+                    this->lang["PIERCING"], "+1", 50, 1, 5);
                 this->upgradePlayer("SENSEI");
             }
-            else if (player.getName() == "knight") {
+            else if (player.getName() == "KNIGHT") {
                 this->abilityUpgradeGUI->addPlayerStat("ATTACK", calcX(32, vm),
                                                        calcY(250, vm),
                                                        this->lang["ATTACK"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade(
                     "ATTACK", calcX(44, vm), calcY(596, vm), 1,
-                    this->lang["ATTACK"], "+1", 50);
+                    this->lang["ATTACK"], "+1", 50, 0, 0);
                 this->upgradePlayer("CRUSADER");
             }
         }
@@ -840,24 +826,24 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
                 "ARMOR", calcX(32, vm), calcY(212, vm), this->lang["ARMOR"]);
             this->abilityUpgradeGUI->addAbilityUpgrade(
                 "ARMOR", calcX(44, vm), calcY(460, vm), 4, this->lang["ARMOR"],
-                "+1", 30);
+                "+1", 30, 5, 10);
             this->upgradePlayer("KNIGHT");
         }
         else if (player.getLevel() == 10) {
-            if (player.getName() == "ninja") {
+            if (player.getName() == "NINJA") {
                 this->abilityUpgradeGUI->addPlayerStat(
                     "AREA", calcX(32, vm), calcY(250, vm), this->lang["AREA"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade(
                     "AREA", calcX(44, vm), calcY(596, vm), 3,
-                    this->lang["AREA"], "+1", 100);
+                    this->lang["AREA"], "+1", 100, 2, 5);
                 this->upgradePlayer("BOMBER");
             }
-            else if (player.getName() == "knight") {
+            else if (player.getName() == "KNIGHT") {
                 this->abilityUpgradeGUI->addPlayerStat(
                     "REG", calcX(32, vm), calcY(250, vm), this->lang["REG"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade(
                     "REG", calcX(44, vm), calcY(596, vm), 5, this->lang["REG"],
-                    "+1", 50);
+                    "+1", 50, 5, 10);
                 this->upgradePlayer("PALADIN");
             }
         }

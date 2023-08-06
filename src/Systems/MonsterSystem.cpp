@@ -295,31 +295,31 @@ void MonsterSystem::spawnMonsters(
         switch (id) {
             case 0:
                 this->monsters.emplace_back(std::make_unique<Goblin>(
-                    "goblin", this->vm, calcX(this->gridSize * rx, this->vm),
+                    "GOBLIN", this->vm, calcX(this->gridSize * rx, this->vm),
                     calcY(this->gridSize * ry, this->vm), this->difficulty_mod,
                     wave_mod, obstaclesBounds));
                 break;
             case 1:
                 this->monsters.emplace_back(std::make_unique<Spider>(
-                    "spider", this->vm, calcX(this->gridSize * rx, this->vm),
+                    "SPIDER", this->vm, calcX(this->gridSize * rx, this->vm),
                     calcY(this->gridSize * ry, this->vm), this->difficulty_mod,
                     wave_mod, obstaclesBounds));
                 break;
             case 2:
                 this->monsters.emplace_back(std::make_unique<Orc>(
-                    "orc", this->vm, calcX(this->gridSize * rx, this->vm),
+                    "ORC", this->vm, calcX(this->gridSize * rx, this->vm),
                     calcY(this->gridSize * ry, this->vm), this->difficulty_mod,
                     wave_mod, obstaclesBounds));
                 break;
             case 3:
                 this->monsters.emplace_back(std::make_unique<Cyclope>(
-                    "cyclope", this->vm, calcX(this->gridSize * rx, this->vm),
+                    "CYCLOPE", this->vm, calcX(this->gridSize * rx, this->vm),
                     calcY(this->gridSize * ry, this->vm), this->difficulty_mod,
                     wave_mod, obstaclesBounds));
                 break;
             case 4:
                 this->monsters.emplace_back(std::make_unique<Minotaur>(
-                    "minotaur", this->vm, calcX(this->gridSize * rx, this->vm),
+                    "MINOTAUR", this->vm, calcX(this->gridSize * rx, this->vm),
                     calcY(this->gridSize * ry, this->vm), this->difficulty_mod,
                     wave_mod, obstaclesBounds));
                 break;
@@ -468,7 +468,7 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
                     auto cyclope = dynamic_cast<Cyclope *>(monster.get());
                     if (cyclope) {
                         projectileSystem.addProjectile(
-                            "stone", monster->getPosition().x + calcX(24, vm),
+                            "STONE", monster->getPosition().x + calcX(24, vm),
                             monster->getPosition().y + calcY(36, vm),
                             monster->getDifficultyMod(), player.getCenter(), 0);
                     }
@@ -498,13 +498,13 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
         if ((*monster)->hasDeadCountdownExpired()) {
             player.setPendingXP(player.getPendingXP() + (*monster)->getXP());
             player.setLeveling(true);
-            dropSystem.addDrop("coin",
+            dropSystem.addDrop("COIN",
                                (*monster)->getPosition().x + calcX(16, vm),
                                (*monster)->getPosition().y + calcY(16, vm),
                                (*monster)->getGold());
             if (const uint8_t t = uint8_t(Random::Float() * 4);
                 (this->difficulty_mod == 0.75f && t < 2) || t == 0) {
-                dropSystem.addDrop("heart",
+                dropSystem.addDrop("HEART",
                                    (*monster)->getPosition().x + calcX(16, vm),
                                    (*monster)->getPosition().y, 1);
             }

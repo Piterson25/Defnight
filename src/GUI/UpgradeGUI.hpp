@@ -8,13 +8,13 @@ public:
     ~UpgradeGUI();
 
     struct Upgrade {
-        std::unique_ptr<gui::Sprite> upgradeSprite;
-        std::unique_ptr<gui::ButtonSprite> upgradeButton;
-        std::unique_ptr<gui::Text> upgradeName;
-        std::unique_ptr<gui::Sprite> upgradeAbility;
-        std::unique_ptr<gui::Sprite> upgradeAttribute;
-        std::unique_ptr<gui::Text> upgradeAttributeValue;
-        uint32_t value;
+        std::unique_ptr<gui::Sprite> sprite;
+        std::unique_ptr<gui::ButtonSprite> button;
+        std::unique_ptr<gui::Text> name;
+        std::unique_ptr<gui::Sprite> ability;
+        std::unique_ptr<gui::Sprite> attribute;
+        std::unique_ptr<gui::Text> attributeEffect;
+        uint32_t effect;
     };
 
     const bool isPressed(const std::string &t_name, bool mouseClicked);

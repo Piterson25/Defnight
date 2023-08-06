@@ -109,6 +109,7 @@ namespace gui {
                bool center);
         ~Sprite();
 
+        const sf::Vector2f getPosition() const;
         const sf::FloatRect getGlobalBounds() const;
         const sf::IntRect getTextureRect() const;
 

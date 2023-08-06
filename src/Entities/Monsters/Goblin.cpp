@@ -5,7 +5,7 @@ Goblin::Goblin(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
                const std::vector<sf::FloatRect> &obstaclesBounds)
     : Monster(t_name, t_vm, t_x, t_y, difficulty_mod, wave_mod, obstaclesBounds)
 {
-    this->name = "goblin";
+    this->name = "GOBLIN";
     this->attack = static_cast<uint32_t>(1 * difficulty_mod);
     this->attackSpeed = 2;
     this->HP = static_cast<uint32_t>(3 * difficulty_mod);

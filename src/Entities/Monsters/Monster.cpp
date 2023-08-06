@@ -178,7 +178,7 @@ void Monster::calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds,
 
         this->AI->disableAI();
     }
-    else if (this->name != "minotaur") {
+    else if (this->name != "MINOTAUR") {
         this->AI->update(*this, player, positions, vel);
     }
 

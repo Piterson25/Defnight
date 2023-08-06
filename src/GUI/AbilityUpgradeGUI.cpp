@@ -26,7 +26,7 @@ void AbilityUpgradeGUI::increasePrice(const std::string &t_name)
 {
     this->abilityUpgrades[t_name].price += static_cast<uint32_t>(
         (((1 + sqrtf(5)) / 2.f) - 1) * this->abilityUpgrades[t_name].price);
-    this->abilityUpgrades[t_name].itemPrice->setText(
+    this->abilityUpgrades[t_name].priceText->setText(
         std::to_string(getPrice(t_name)));
 }
 
@@ -41,7 +41,8 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
                                           float t_y, uint32_t iconID,
                                           const std::string &desc,
                                           const std::string &value,
-                                          uint32_t price)
+                                          uint32_t price, uint32_t boughtNumber,
+                                          uint32_t maxNumber)
 {
     this->abilityUpgrades.emplace(
         t_name,
@@ -65,24 +66,60 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
             std::make_unique<gui::Text>(std::to_string(price), calcChar(16, vm),
                                         t_x + calcX(166, vm),
                                         t_y + calcY(48, vm), gui::GOLD, false),
+            std::vector<std::unique_ptr<gui::Sprite>>(),
+            boughtNumber,
+            maxNumber,
             price,
             false,
         });
 
-    this->abilityUpgrades[t_name].itemSprite->setTextureRect(
+    this->abilityUpgrades[t_name].sprite->setTextureRect(
         sf::IntRect(16 * iconID, 0, 16, 16));
 
-    this->abilityUpgrades[t_name].itemButton->setColor(gui::DARK_RED);
+    this->abilityUpgrades[t_name].button->setColor(gui::DARK_RED);
 
-    this->abilityUpgrades[t_name].itemCoin->setTextureRect(
+    this->abilityUpgrades[t_name].coinSprite->setTextureRect(
         sf::IntRect(0, 0, 16, 16));
+
+    if (maxNumber > 0) {
+        sf::Texture texture;
+        texture.loadFromFile("assets/textures/progress_segment.png");
+        const sf::Vector2f position =
+            this->abilityUpgrades[t_name].sprite->getPosition();
+        for (uint32_t i = 0; i < maxNumber; i++) {
+            this->abilityUpgrades[t_name].segments.push_back(
+                std::make_unique<gui::Sprite>(
+                    texture,
+                    position.x + calcX(static_cast<float>(i) * 12.f + 108, vm),
+                    position.y + calcY(74, vm), calcScale(2, vm), false));
+            this->abilityUpgrades[t_name].segments[i]->setTextureRect(
+                sf::IntRect(4, 0, 4, 8));
+
+            if (i < boughtNumber) {
+                this->abilityUpgrades[t_name].segments[i]->setTextureRect(
+                    sf::IntRect(0, 0, 4, 8));
+            }
+        }
+    }
+}
+
+void AbilityUpgradeGUI::updateSegments(const std::string &t_name)
+{
+    this->abilityUpgrades[t_name]
+        .segments[this->abilityUpgrades[t_name].boughtNumber]
+        ->setTextureRect(sf::IntRect(0, 0, 4, 8));
+    this->abilityUpgrades[t_name].boughtNumber++;
+
+    if (this->abilityUpgrades[t_name].boughtNumber ==
+        this->abilityUpgrades[t_name].maxNumber) {
+        lockUpgrade(t_name);
+    }
 }
 
 const bool AbilityUpgradeGUI::isPressed(const std::string &t_name,
                                         bool mouseClicked)
 {
-    return this->abilityUpgrades[t_name].itemButton->isPressed() &&
-           !mouseClicked;
+    return this->abilityUpgrades[t_name].button->isPressed() && !mouseClicked;
 }
 
 const bool AbilityUpgradeGUI::hasBoughtUpgrade(
@@ -91,7 +128,7 @@ const bool AbilityUpgradeGUI::hasBoughtUpgrade(
 {
     if (this->abilityUpgrades.find(t_name) == this->abilityUpgrades.end() ||
         this->abilityUpgrades[t_name].locked ||
-        this->abilityUpgrades[t_name].itemButton->getColor() == gui::DARK_RED) {
+        this->abilityUpgrades[t_name].button->getColor() == gui::DARK_RED) {
         return false;
     }
 
@@ -110,7 +147,7 @@ const bool AbilityUpgradeGUI::hasBoughtUpgrade(
 void AbilityUpgradeGUI::lockUpgrade(const std::string t_name)
 {
     this->abilityUpgrades[t_name].locked = true;
-    this->abilityUpgrades[t_name].itemButton->setColor(gui::DARK_RED);
+    this->abilityUpgrades[t_name].button->setColor(gui::DARK_RED);
 }
 
 void AbilityUpgradeGUI::unlockUpgrade(const std::string t_name)
@@ -120,7 +157,7 @@ void AbilityUpgradeGUI::unlockUpgrade(const std::string t_name)
 
 void AbilityUpgradeGUI::disableUpgrade(const std::string t_name)
 {
-    this->abilityUpgrades[t_name].itemButton->setColor(gui::DARK_RED);
+    this->abilityUpgrades[t_name].button->setColor(gui::DARK_RED);
 }
 
 void AbilityUpgradeGUI::buy(const std::string &t_name,
@@ -138,10 +175,10 @@ void AbilityUpgradeGUI::updateItemFrames()
     for (auto &pair : abilityUpgrades) {
         if (!pair.second.locked && !player.isAbilityActive() &&
             player.getGold() >= pair.second.price) {
-            pair.second.itemButton->setColor(gui::GREEN);
+            pair.second.button->setColor(gui::GREEN);
         }
         else {
-            pair.second.itemButton->setColor(gui::DARK_RED);
+            pair.second.button->setColor(gui::DARK_RED);
         }
     }
 }
@@ -192,7 +229,7 @@ void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
 void AbilityUpgradeGUI::update(const std::string &t_name,
                                const sf::Vector2i &mousePos)
 {
-    this->abilityUpgrades[t_name].itemButton->update(mousePos);
+    this->abilityUpgrades[t_name].button->update(mousePos);
 }
 
 void AbilityUpgradeGUI::draw(sf::RenderTarget &target)
@@ -202,14 +239,17 @@ void AbilityUpgradeGUI::draw(sf::RenderTarget &target)
     }
 
     for (const auto &pair : abilityUpgrades) {
-        pair.second.itemSprite->draw(target);
+        pair.second.sprite->draw(target);
         if (pair.second.locked) {
-            pair.second.itemLock->draw(target);
+            pair.second.lockSprite->draw(target);
         }
-        pair.second.itemButton->draw(target);
-        pair.second.itemDesc->draw(target);
-        pair.second.itemValue->draw(target);
-        pair.second.itemCoin->draw(target);
-        pair.second.itemPrice->draw(target);
+        pair.second.button->draw(target);
+        pair.second.desc->draw(target);
+        pair.second.effect->draw(target);
+        pair.second.coinSprite->draw(target);
+        pair.second.priceText->draw(target);
+        for (const auto &segment : pair.second.segments) {
+            segment->draw(target);
+        }
     }
 }

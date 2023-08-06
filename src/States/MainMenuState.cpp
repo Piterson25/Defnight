@@ -492,7 +492,7 @@ void MainMenuState::update(float dt)
                     this->setMouseClick(true);
                     this->soundEngine.addSound("button");
                     this->choosing_hero = true;
-                    this->hero_name = "warrior";
+                    this->hero_name = "WARRIOR";
                 }
 
                 if (this->choosing_hero) {
@@ -525,7 +525,7 @@ void MainMenuState::update(float dt)
                     !this->isMouseClicked()) {
                     this->setMouseClick(true);
                     this->soundEngine.addSound("button");
-                    this->difficulty_name = "easy";
+                    this->difficulty_name = "EASY";
                     this->page = 1;
                     this->states.push(new GameState(
                         this->gridSize, this->window, this->gameSettings,
@@ -538,7 +538,7 @@ void MainMenuState::update(float dt)
                          !this->isMouseClicked()) {
                     this->setMouseClick(true);
                     this->soundEngine.addSound("button");
-                    this->difficulty_name = "normal";
+                    this->difficulty_name = "NORMAL";
                     this->page = 1;
                     this->states.push(new GameState(
                         this->gridSize, this->window, this->gameSettings,
@@ -551,7 +551,7 @@ void MainMenuState::update(float dt)
                          !this->isMouseClicked()) {
                     this->setMouseClick(true);
                     this->soundEngine.addSound("button");
-                    this->difficulty_name = "hard";
+                    this->difficulty_name = "HARD";
                     this->page = 1;
                     this->states.push(new GameState(
                         this->gridSize, this->window, this->gameSettings,

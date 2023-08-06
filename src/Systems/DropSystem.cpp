@@ -13,11 +13,11 @@ DropSystem::~DropSystem()
 void DropSystem::addDrop(const std::string &name, float posX, float posY,
                          uint32_t worth)
 {
-    if (name == "coin") {
+    if (name == "COIN") {
         this->drops.emplace_back(std::make_unique<Coin>(
             name, this->vm, posX, posY, worth, this->difficulty_mod == 1.25f));
     }
-    else if (name == "heart") {
+    else if (name == "HEART") {
         this->drops.emplace_back(std::make_unique<Heart>(
             name, this->vm, posX, posY, worth, this->difficulty_mod == 1.25f));
     }
