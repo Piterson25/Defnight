@@ -32,6 +32,9 @@ void Warrior::setAbilityTexture()
     else if (this->name == "PALADIN") {
         this->ability.setTextureRect(sf::IntRect(48, 0, 16, 16));
     }
+    else if (this->name == "ASSASSIN") {
+        this->ability.setTextureRect(sf::IntRect(64, 0, 16, 16));
+    }
 }
 
 void Warrior::endAbility()
@@ -46,6 +49,9 @@ void Warrior::endAbility()
     else if (this->name == "PALADIN") {
         this->reg -= increasedReg;
         this->armor -= increasedArmor;
+    }
+    else if (this->name == "ASSASSIN") {
+        this->goldReward -= increasedGold;
     }
 }
 
@@ -76,6 +82,10 @@ void Warrior::doAbility(SoundEngine &soundEngine)
         this->armor += increasedArmor;
         this->reg += increasedReg;
         soundEngine.addSound("ability");
+    }
+    else if (this->name == "ASSASSIN") {
+        this->goldReward += increasedGold;
+        soundEngine.addSound("slowtime");
     }
 }
 
@@ -117,5 +127,10 @@ void Warrior::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
         intRect = sf::IntRect(112, 0, 16, 16);
         this->setAttackSpeed(this->getAttackSpeed() + 1);
         this->increasedReg = 5;
+    }
+    else if (t_name == "ASSASSIN") {
+        intRect = sf::IntRect(128, 0, 16, 16);
+        this->setAttackSpeed(this->getAttackSpeed() + 1);
+        this->increasedGold = 1;
     }
 }

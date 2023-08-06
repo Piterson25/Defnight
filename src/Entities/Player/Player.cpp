@@ -62,6 +62,8 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->increasedArmor = 0;
     this->increasedReg = 0;
     this->increasedAttack = 0;
+    this->increasedGold = 0;
+    this->goldReward = 0;
     this->timeSlowdown = 0.f;
     this->regenerating = false;
     this->regCooldown = 0.f;
@@ -159,6 +161,16 @@ const uint32_t Player::getIncreasedReg() const
 const uint32_t Player::getIncreasedAttack() const
 {
     return this->increasedAttack;
+}
+
+const uint32_t Player::getIncreasedGold() const
+{
+    return this->increasedGold;
+}
+
+const uint32_t Player::getGoldReward() const
+{
+    return this->goldReward;
 }
 
 const float Player::getTimeSlowdown() const
@@ -284,6 +296,11 @@ void Player::setIncreasedReg(uint32_t t_increasedReg)
 void Player::setIncreasedAttack(uint32_t t_increasedAttack)
 {
     this->increasedAttack = t_increasedAttack;
+}
+
+void Player::setIncreasedGold(uint32_t t_increasedGold)
+{
+    this->increasedGold = t_increasedGold;
 }
 
 void Player::setTimeSlowdown(float t_timeSlowdown)

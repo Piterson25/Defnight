@@ -272,6 +272,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     this->abilityUpgradeGUI->updatePlayerInfo("REG", this->lang["REG"]);
     this->abilityUpgradeGUI->updatePlayerInfo("SLOWDOWN",
                                               this->lang["SLOWDOWN"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("GOLD", this->lang["GOLD"]);
     updatePlayerAttributes();
     this->update_Gold();
 }
@@ -322,6 +323,11 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
             this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm),
                                             calcY(380, vm),
                                             this->lang["PALADIN"], 7, 6, 6, 1);
+        }
+        else if (player.getName() == "SCOUT") {
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm),
+                                            calcY(210, vm),
+                                            this->lang["ASSASSIN"], 8, 7, 6, 1);
         }
     }
 }
@@ -693,6 +699,16 @@ const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
             this->abilityUpgradeGUI->updateSegments("SLOWDOWN");
             return true;
         }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(
+                     mousePos, mouseClicked, "GOLD", &this->floatingTextSystem,
+                     &soundEngine)) {
+            player.setIncreasedGold(player.getIncreasedGold() + 1);
+            this->update_Gold();
+            this->abilityUpgradeGUI->updatePlayerInfo("GOLD",
+                                                      this->lang["GOLD"]);
+            this->abilityUpgradeGUI->updateSegments("GOLD");
+            return true;
+        }
     }
 
     return false;
@@ -826,6 +842,17 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
                     this->lang["ATTACK"], "+1", 50, 0, 0);
                 this->upgradePlayer("CRUSADER");
             }
+            else if (player.getLevel() == 10) {
+                if (player.getName() == "SCOUT") {
+                    this->abilityUpgradeGUI->addPlayerStat(
+                        "GOLD", calcX(32, vm), calcY(250, vm),
+                        this->lang["GOLD"]);
+                    this->abilityUpgradeGUI->addAbilityUpgrade(
+                        "GOLD", calcX(44, vm), calcY(596, vm), 7,
+                        this->lang["GOLD"], "+1", 100, 1, 10);
+                    this->upgradePlayer("ASSASSIN");
+                }
+            }
         }
 
         this->upgrading = false;
@@ -863,10 +890,9 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
         this->upgrading = false;
         return true;
     }
-
-    if (player.getLevel() == 5) {
-        if (this->upgradeGUI->hasClickedUpgrade(mousePos, mouseClicked,
-                                                "UPGRADE3", &soundEngine)) {
+    else if (this->upgradeGUI->hasClickedUpgrade(mousePos, mouseClicked,
+                                                 "UPGRADE3", &soundEngine)) {
+        if (player.getLevel() == 5) {
             this->abilityUpgradeGUI->addPlayerStat("SLOWDOWN", calcX(32, vm),
                                                    calcY(212, vm),
                                                    this->lang["SLOWDOWN"]);
@@ -874,10 +900,12 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
                 "SLOWDOWN", calcX(44, vm), calcY(460, vm), 6,
                 this->lang["SLOWDOWN"], "+10%", 30, 5, 10);
             this->upgradePlayer("SCOUT");
-            this->upgrading = false;
-            return true;
         }
+
+        this->upgrading = false;
+        return true;
     }
+
     return false;
 }
 

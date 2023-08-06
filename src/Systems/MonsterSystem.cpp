@@ -508,7 +508,7 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
             dropSystem.addDrop("COIN",
                                (*monster)->getPosition().x + calcX(16, vm),
                                (*monster)->getPosition().y + calcY(16, vm),
-                               (*monster)->getGold());
+                               (*monster)->getGold() + player.getGoldReward());
             if (const uint8_t t = uint8_t(Random::Float() * 4);
                 (this->difficulty_mod == 0.75f && t < 2) || t == 0) {
                 dropSystem.addDrop("HEART",

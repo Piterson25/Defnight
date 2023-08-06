@@ -232,6 +232,10 @@ void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
         text += "%";
         playerStats[t_name]->setText(text);
     }
+    else if (t_name == "GOLD") {
+        playerStats[t_name]->setText(text +
+                                     std::to_string(player.getIncreasedGold()));
+    }
 }
 
 void AbilityUpgradeGUI::update(const std::string &t_name,
