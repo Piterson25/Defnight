@@ -35,6 +35,9 @@ void Warrior::setAbilityTexture()
     else if (this->name == "ASSASSIN") {
         this->ability.setTextureRect(sf::IntRect(64, 0, 16, 16));
     }
+    else if (this->name == "KILLER") {
+        this->ability.setTextureRect(sf::IntRect(80, 0, 16, 16));
+    }
 }
 
 void Warrior::endAbility()
@@ -52,6 +55,9 @@ void Warrior::endAbility()
     }
     else if (this->name == "ASSASSIN") {
         this->goldReward -= increasedGold;
+    }
+    else if (this->name == "KILLER") {
+        this->attackLimit -= increasedTargets;
     }
 }
 
@@ -86,6 +92,10 @@ void Warrior::doAbility(SoundEngine &soundEngine)
     else if (this->name == "ASSASSIN") {
         this->goldReward += increasedGold;
         soundEngine.addSound("slowtime");
+    }
+    else if (this->name == "KILLER") {
+        soundEngine.addSound("slowtime");
+        this->attackLimit += increasedTargets;
     }
 }
 
@@ -132,5 +142,10 @@ void Warrior::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
         intRect = sf::IntRect(128, 0, 16, 16);
         this->setAttackSpeed(this->getAttackSpeed() + 1);
         this->increasedGold = 1;
+    }
+    else if (t_name == "KILLER") {
+        intRect = sf::IntRect(144, 0, 16, 16);
+        this->setCriticalChance(this->getCriticalChance() + 10);
+        this->increasedTargets = 1;
     }
 }

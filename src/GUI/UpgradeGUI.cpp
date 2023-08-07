@@ -22,7 +22,8 @@ const bool UpgradeGUI::isPressed(const std::string &t_name, bool mouseClicked)
 void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y,
                                const std::string &desc, uint32_t upgradeIconID,
                                uint32_t abilityIconID, uint32_t attributeIconID,
-                               uint32_t attributeValue)
+                               uint32_t attributeValue,
+                               const std::string &attributeText)
 {
     this->upgrades[t_name] = Upgrade{
         std::make_unique<gui::Sprite>(this->upgradesTexture, t_x, t_y,
@@ -39,9 +40,8 @@ void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y,
         std::make_unique<gui::Sprite>(this->attributesTexture,
                                       t_x + calcX(152, vm), t_y + calcY(28, vm),
                                       calcScale(2, vm), false),
-        std::make_unique<gui::Text>("+" + std::to_string(attributeValue),
-                                    calcChar(16, vm), t_x + calcX(190, vm),
-                                    t_y + calcY(37, vm),
+        std::make_unique<gui::Text>("+" + attributeText, calcChar(16, vm),
+                                    t_x + calcX(190, vm), t_y + calcY(37, vm),
                                     sf::Color(255, 255, 255), false),
         attributeValue,
     };

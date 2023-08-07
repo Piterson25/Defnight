@@ -28,7 +28,9 @@ public:
     const uint32_t getIncreasedReg() const;
     const uint32_t getIncreasedAttack() const;
     const uint32_t getIncreasedGold() const;
+    const uint32_t getIncreasedTargets() const;
     const uint32_t getGoldReward() const;
+    const uint32_t getAttackLimit() const;
     const float getTimeSlowdown() const;
     const bool isRegenerating() const;
     const bool isLeveling() const;
@@ -56,6 +58,8 @@ public:
     void setIncreasedReg(uint32_t t_increasedReg);
     void setIncreasedAttack(uint32_t t_increasedAttack);
     void setIncreasedGold(uint32_t t_increasedGold);
+    void setIncreasedTargets(uint32_t t_increasedTargets);
+    void setAttackLimit(uint32_t t_attackLimit);
     void setTimeSlowdown(float t_timeSlowdown);
     void setKills(uint32_t t_kills);
     void setUpgraded(bool t_upgraded);
@@ -116,6 +120,8 @@ protected:
     uint32_t increasedAttack;
     uint32_t increasedGold;
     uint32_t goldReward;
+    uint32_t attackLimit;
+    uint32_t increasedTargets;
     float timeSlowdown;
     bool regenerating;
     float regCooldown;

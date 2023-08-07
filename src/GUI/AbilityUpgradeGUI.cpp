@@ -236,6 +236,10 @@ void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
         playerStats[t_name]->setText(text +
                                      std::to_string(player.getIncreasedGold()));
     }
+    else if (t_name == "TARGETS") {
+        playerStats[t_name]->setText(text +
+                                     std::to_string(player.getAttackLimit()));
+    }
 }
 
 void AbilityUpgradeGUI::update(const std::string &t_name,

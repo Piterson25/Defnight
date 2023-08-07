@@ -102,12 +102,26 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
                               FloatingTextSystem &floatingTextSystem,
                               SoundEngine &soundEngine, float dt)
 {
+    float slowedDt = dt;
+
+    if (player.getTimeSlowdown() > 0.f && player.isAbilityActive()) {
+        slowedDt -= dt * player.getTimeSlowdown();
+    }
+
     for (auto proj = this->projectiles.begin();
          proj != this->projectiles.end();) {
-        (*proj)->update(dt);
+        auto stone = dynamic_cast<Stone *>((*proj).get());
+        auto groundWave = dynamic_cast<GroundWave *>((*proj).get());
+        if (stone || groundWave) {
+            (*proj)->update(slowedDt);
+        }
+        else {
+            (*proj)->update(dt);
+        }
+
         (*proj)->wallCollision(obstaclesBounds);
         (*proj)->playerCollision(player);
-        monsterSystem.projectileCollision(**proj, player, floatingTextSystem);
+        monsterSystem.projectileCollision(**proj, floatingTextSystem);
         (*proj)->move();
 
         if ((*proj)->isBomb() &&

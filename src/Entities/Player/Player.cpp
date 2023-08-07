@@ -30,15 +30,6 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
                               this->sprite.getPosition().y + calcY(52, vm));
     this->ability.setColor(sf::Color(255, 255, 255, 0));
 
-    this->attack = 1;
-    this->attackSpeed = 1;
-    this->maxHP = 10;
-    this->HP = 10;
-    this->reg = 1;
-    this->speed = 1;
-    this->reach = 1;
-    this->armor = 1;
-
     this->gold = 0;
     this->armor = 0;
     this->reg = 0;
@@ -63,7 +54,9 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->increasedReg = 0;
     this->increasedAttack = 0;
     this->increasedGold = 0;
+    this->increasedTargets = 0;
     this->goldReward = 0;
+    this->attackLimit = 1;
     this->timeSlowdown = 0.f;
     this->regenerating = false;
     this->regCooldown = 0.f;
@@ -168,9 +161,19 @@ const uint32_t Player::getIncreasedGold() const
     return this->increasedGold;
 }
 
+const uint32_t Player::getIncreasedTargets() const
+{
+    return this->increasedTargets;
+}
+
 const uint32_t Player::getGoldReward() const
 {
     return this->goldReward;
+}
+
+const uint32_t Player::getAttackLimit() const
+{
+    return this->attackLimit;
 }
 
 const float Player::getTimeSlowdown() const
@@ -301,6 +304,16 @@ void Player::setIncreasedAttack(uint32_t t_increasedAttack)
 void Player::setIncreasedGold(uint32_t t_increasedGold)
 {
     this->increasedGold = t_increasedGold;
+}
+
+void Player::setIncreasedTargets(uint32_t t_increasedTargets)
+{
+    this->increasedTargets = t_increasedTargets;
+}
+
+void Player::setAttackLimit(uint32_t t_attackLimit)
+{
+    this->attackLimit = t_attackLimit;
 }
 
 void Player::setTimeSlowdown(float t_timeSlowdown)

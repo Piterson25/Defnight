@@ -393,8 +393,7 @@ void GameState::update(float dt)
 
             if (this->waveCountdown >= 10.f) {
                 this->monsterSystem->spawnMonsters(
-                    *this->player, this->tileMap->getTilesGlobalBounds(),
-                    this->wave);
+                    this->tileMap->getTilesGlobalBounds(), this->wave);
             }
             else if (this->waveCountdown > 8.f &&
                      this->monsterSystem->isMonsterIDsEmpty()) {
@@ -412,11 +411,10 @@ void GameState::update(float dt)
                 this->gems += 5;
             }
             else {
-                this->monsterSystem->playerAttack(*this->player,
-                                                  *this->floatingTextSystem,
+                this->monsterSystem->playerAttack(*this->floatingTextSystem,
                                                   this->soundEngine);
                 this->monsterSystem->update(
-                    *this->player, *this->playerGUI, *this->projectileSystem,
+                    *this->playerGUI, *this->projectileSystem,
                     *this->dropSystem, *this->floatingTextSystem,
                     this->soundEngine, this->tileMap->getTilesGlobalBounds(),
                     this->paused, dt);

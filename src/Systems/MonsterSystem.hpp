@@ -27,23 +27,21 @@ public:
 
     void monsterIDsClear();
 
-    void playerAttack(Player &player, FloatingTextSystem &floatingTextSystem,
+    void playerAttack(FloatingTextSystem &floatingTextSystem,
                       SoundEngine &soundEngine);
     void explosionAttack(const std::vector<sf::FloatRect> &particlesBounds,
                          FloatingTextSystem &floatingTextSystem);
 
-    void projectileCollision(Projectile &proj, Player &player,
+    void projectileCollision(Projectile &proj,
                              FloatingTextSystem &floatingTextSystem);
 
     void monsterCollision(Monster &mob);
-    void spawnMonsters(Player &player,
-                       const std::vector<sf::FloatRect> &obstaclesBounds,
+    void spawnMonsters(const std::vector<sf::FloatRect> &obstaclesBounds,
                        uint32_t wave);
     void prepareWave(uint32_t &wave, uint32_t &sumHP);
 
-    void update(Player &player, PlayerGUI &playerGUI,
-                ProjectileSystem &projectileSystem, DropSystem &dropSystem,
-                FloatingTextSystem &floatingTextSystem,
+    void update(PlayerGUI &playerGUI, ProjectileSystem &projectileSystem,
+                DropSystem &dropSystem, FloatingTextSystem &floatingTextSystem,
                 SoundEngine &soundEngine,
                 const std::vector<sf::FloatRect> &obstaclesBounds, bool &paused,
                 float dt);

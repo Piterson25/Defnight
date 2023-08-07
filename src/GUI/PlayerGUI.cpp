@@ -68,11 +68,11 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
     this->upgradeGUI = new UpgradeGUI(vm, this->player);
     this->upgrading = false;
     this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(222, vm),
-                                    this->lang["NINJA"], 1, 0, 7, 1);
+                                    this->lang["NINJA"], 1, 0, 7, 1, "1");
     this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(392, vm),
-                                    this->lang["KNIGHT"], 2, 1, 5, 1);
+                                    this->lang["KNIGHT"], 2, 1, 5, 1, "1");
     this->upgradeGUI->changeUpgrade("UPGRADE3", calcX(1024, vm), calcY(562, vm),
-                                    this->lang["SCOUT"], 3, 2, 2, 1);
+                                    this->lang["SCOUT"], 3, 2, 2, 1, "1");
 
     this->death_background.setFillColor(sf::Color(182, 60, 53, 192));
     this->death_background.setSize(
@@ -273,6 +273,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     this->abilityUpgradeGUI->updatePlayerInfo("SLOWDOWN",
                                               this->lang["SLOWDOWN"]);
     this->abilityUpgradeGUI->updatePlayerInfo("GOLD", this->lang["GOLD"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("TARGETS", this->lang["TARGETS"]);
     updatePlayerAttributes();
     this->update_Gold();
 }
@@ -309,25 +310,28 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
 
     if (player.getLevel() == 10) {
         if (player.getName() == "NINJA") {
-            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm),
-                                            calcY(222, vm),
-                                            this->lang["SENSEI"], 4, 3, 6, 1);
-            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm),
-                                            calcY(392, vm),
-                                            this->lang["BOMBER"], 5, 4, 8, 1);
+            this->upgradeGUI->changeUpgrade(
+                "UPGRADE1", calcX(1024, vm), calcY(222, vm),
+                this->lang["SENSEI"], 4, 3, 6, 1, "1");
+            this->upgradeGUI->changeUpgrade(
+                "UPGRADE2", calcX(1024, vm), calcY(392, vm),
+                this->lang["BOMBER"], 5, 4, 8, 1, "10%");
         }
         else if (player.getName() == "KNIGHT") {
-            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm),
-                                            calcY(210, vm),
-                                            this->lang["CRUSADER"], 6, 5, 3, 2);
-            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm),
-                                            calcY(380, vm),
-                                            this->lang["PALADIN"], 7, 6, 6, 1);
+            this->upgradeGUI->changeUpgrade(
+                "UPGRADE1", calcX(1024, vm), calcY(210, vm),
+                this->lang["CRUSADER"], 6, 5, 3, 2, "2");
+            this->upgradeGUI->changeUpgrade(
+                "UPGRADE2", calcX(1024, vm), calcY(380, vm),
+                this->lang["PALADIN"], 7, 6, 6, 1, "1");
         }
         else if (player.getName() == "SCOUT") {
-            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm),
-                                            calcY(210, vm),
-                                            this->lang["ASSASSIN"], 8, 7, 6, 1);
+            this->upgradeGUI->changeUpgrade(
+                "UPGRADE1", calcX(1024, vm), calcY(210, vm),
+                this->lang["ASSASSIN"], 8, 7, 6, 1, "1");
+            this->upgradeGUI->changeUpgrade(
+                "UPGRADE2", calcX(1024, vm), calcY(380, vm),
+                this->lang["KILLER"], 9, 8, 8, 1, "10%");
         }
     }
 }
@@ -709,6 +713,16 @@ const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
             this->abilityUpgradeGUI->updateSegments("GOLD");
             return true;
         }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(
+                     mousePos, mouseClicked, "TARGETS",
+                     &this->floatingTextSystem, &soundEngine)) {
+            player.setAttackLimit(player.getAttackLimit() + 1);
+            this->update_Gold();
+            this->abilityUpgradeGUI->updatePlayerInfo("TARGETS",
+                                                      this->lang["TARGETS"]);
+            this->abilityUpgradeGUI->updateSegments("TARGETS");
+            return true;
+        }
     }
 
     return false;
@@ -884,6 +898,15 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
                     "REG", calcX(44, vm), calcY(596, vm), 5, this->lang["REG"],
                     "+1", 50, 5, 10);
                 this->upgradePlayer("PALADIN");
+            }
+            else if (player.getName() == "SCOUT") {
+                this->abilityUpgradeGUI->addPlayerStat("TARGETS", calcX(32, vm),
+                                                       calcY(250, vm),
+                                                       this->lang["TARGETS"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade(
+                    "TARGETS", calcX(44, vm), calcY(596, vm), 8,
+                    this->lang["TARGETS"], "+1", 50, 1, 5);
+                this->upgradePlayer("KILLER");
             }
         }
 

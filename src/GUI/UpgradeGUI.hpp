@@ -22,7 +22,8 @@ public:
     void changeUpgrade(const std::string &t_name, float t_x, float t_y,
                        const std::string &desc, uint32_t upgradeIconID,
                        uint32_t abilityIconID, uint32_t attributeIconID,
-                       uint32_t attributeValue);
+                       uint32_t attributeValue,
+                       const std::string &attributeText);
     void deleteUpgrade(const std::string &t_name);
 
     const bool hasClickedUpgrade(const sf::Vector2i &mousePos,

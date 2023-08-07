@@ -60,14 +60,14 @@ void MonsterSystem::monsterIDsClear()
     this->monsterIDs.clear();
 }
 
-void MonsterSystem::playerAttack(Player &player,
-                                 FloatingTextSystem &floatingTextSystem,
+void MonsterSystem::playerAttack(FloatingTextSystem &floatingTextSystem,
                                  SoundEngine &soundEngine)
 {
+    uint32_t limit = player.getAttackLimit();
     for (const auto &monster : monsters) {
         const float distance = player.attackDistance(*monster, player);
 
-        if (distance <= player.getReach() * calcX(32, vm)) {
+        if (limit > 0 && distance <= player.getReach() * calcX(48, vm)) {
 
             if (!monster->isDead() && !monster->isPunched() &&
                 monster->hasSpawned() && player.isAttacking() &&
@@ -106,7 +106,10 @@ void MonsterSystem::playerAttack(Player &player,
                 }
 
                 monster->punch();
-                break;
+                --limit;
+                if (limit == 0) {
+                    break;
+                }
             }
         }
     }
@@ -140,7 +143,7 @@ void MonsterSystem::explosionAttack(
     }
 }
 
-void MonsterSystem::projectileCollision(Projectile &proj, Player &player,
+void MonsterSystem::projectileCollision(Projectile &proj,
                                         FloatingTextSystem &floatingTextSystem)
 {
     for (const auto &monster : monsters) {
@@ -191,8 +194,7 @@ void MonsterSystem::monsterCollision(Monster &mob)
 }
 
 void MonsterSystem::spawnMonsters(
-    Player &player, const std::vector<sf::FloatRect> &obstaclesBounds,
-    uint32_t wave)
+    const std::vector<sf::FloatRect> &obstaclesBounds, uint32_t wave)
 {
     float wave_mod = 1.f + static_cast<uint32_t>(wave / 10.f) * 2.f;
     const float minSpawnDistance = calcX(3.f * this->gridSize, this->vm);
@@ -431,7 +433,7 @@ void MonsterSystem::prepareWave(uint32_t &wave, uint32_t &sumHP)
     }
 }
 
-void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
+void MonsterSystem::update(PlayerGUI &playerGUI,
                            ProjectileSystem &projectileSystem,
                            DropSystem &dropSystem,
                            FloatingTextSystem &floatingTextSystem,
@@ -441,9 +443,7 @@ void MonsterSystem::update(Player &player, PlayerGUI &playerGUI,
 {
     float slowedDt = dt;
 
-    if (player.isAbilityActive() &&
-        (player.getName() == "SCOUT" || player.getName() == "ASSASSIN" ||
-         player.getName() == "KILLER")) {
+    if (player.getTimeSlowdown() > 0.f && player.isAbilityActive()) {
         slowedDt -= dt * player.getTimeSlowdown();
     }
     for (const auto &monster : this->monsters) {
