@@ -68,11 +68,11 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
     this->upgradeGUI = new UpgradeGUI(vm, this->player);
     this->upgrading = false;
     this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(222, vm),
-                                    this->lang["NINJA"], 1, 0, 7, 1, "1");
+                                    this->lang["NINJA"], 0, 7, 1, "1");
     this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(392, vm),
-                                    this->lang["KNIGHT"], 2, 1, 5, 1, "1");
+                                    this->lang["KNIGHT"], 3, 5, 1, "1");
     this->upgradeGUI->changeUpgrade("UPGRADE3", calcX(1024, vm), calcY(562, vm),
-                                    this->lang["SCOUT"], 3, 2, 2, 1, "1");
+                                    this->lang["SCOUT"], 6, 2, 1, "1");
 
     this->death_background.setFillColor(sf::Color(182, 60, 53, 192));
     this->death_background.setSize(
@@ -310,28 +310,28 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
 
     if (player.getLevel() == 10) {
         if (player.getName() == "NINJA") {
-            this->upgradeGUI->changeUpgrade(
-                "UPGRADE1", calcX(1024, vm), calcY(222, vm),
-                this->lang["SENSEI"], 4, 3, 6, 1, "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm),
+                                            calcY(222, vm),
+                                            this->lang["SENSEI"], 1, 6, 1, "1");
             this->upgradeGUI->changeUpgrade(
                 "UPGRADE2", calcX(1024, vm), calcY(392, vm),
-                this->lang["BOMBER"], 5, 4, 8, 1, "10%");
+                this->lang["BOMBER"], 2, 8, 1, "10%");
         }
         else if (player.getName() == "KNIGHT") {
             this->upgradeGUI->changeUpgrade(
                 "UPGRADE1", calcX(1024, vm), calcY(210, vm),
-                this->lang["CRUSADER"], 6, 5, 3, 2, "2");
+                this->lang["CRUSADER"], 4, 3, 2, "2");
             this->upgradeGUI->changeUpgrade(
                 "UPGRADE2", calcX(1024, vm), calcY(380, vm),
-                this->lang["PALADIN"], 7, 6, 6, 1, "1");
+                this->lang["PALADIN"], 5, 6, 1, "1");
         }
         else if (player.getName() == "SCOUT") {
             this->upgradeGUI->changeUpgrade(
                 "UPGRADE1", calcX(1024, vm), calcY(210, vm),
-                this->lang["ASSASSIN"], 8, 7, 6, 1, "1");
+                this->lang["ASSASSIN"], 7, 6, 1, "1");
             this->upgradeGUI->changeUpgrade(
                 "UPGRADE2", calcX(1024, vm), calcY(380, vm),
-                this->lang["KILLER"], 9, 8, 8, 1, "10%");
+                this->lang["KILLER"], 8, 8, 1, "10%");
         }
     }
 }

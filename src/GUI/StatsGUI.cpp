@@ -407,7 +407,7 @@ void StatsGUI::upgradePlayer(const std::string &t_name,
     this->texts["NAME"]->center(calcX(188, this->vm));
     this->sprites["MINIATURE"]->setTextureRect(intRect);
     this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(
-        intRect.left - 16, intRect.top, intRect.width, intRect.height));
+        intRect.left, intRect.top - 16, intRect.width, intRect.height));
 }
 
 void StatsGUI::setAbilityIcon()

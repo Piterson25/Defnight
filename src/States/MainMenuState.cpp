@@ -164,9 +164,9 @@ void MainMenuState::initGUI()
     this->choosing_hero = false;
 
     this->text_buttons["CHOOSE"] = std::make_unique<gui::ButtonText>(
-        this->gameSettings.lang["CHOOSE"], calcChar(32, vm), calcX(200, vm),
-        calcY(570, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
-        false);
+        this->gameSettings.lang["CHOOSE"], calcChar(32, vm), calcX(240, vm),
+        calcY(564, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
+        true);
     this->sprites["HERO_PREVIEW"] = std::make_unique<gui::Sprite>(
         "assets/textures/upgrades_icons.png", calcX(640, vm), calcY(512, vm),
         calcScale(8, vm), true);
@@ -201,13 +201,13 @@ void MainMenuState::initGUI()
     }
 
     this->abilities_texture.loadFromFile("assets/textures/abilities_icons.png");
-    for (short i = 0; i < 7; ++i) {
-        sf::Sprite upgrade;
-        upgrade.setTexture(this->abilities_texture);
-        sf::IntRect intRect(i * 16, 0, 16, 16);
-        upgrade.setTextureRect(intRect);
-        upgrade.setScale(calcScale(4, vm), calcScale(4, vm));
-        this->abilities_vec.push_back(upgrade);
+    for (int y = 0; y < 3; y++) {
+        for (int x = 0; x < 3; x++) {
+            this->abilties.push_back(std::make_unique<gui::Sprite>(
+                this->abilities_texture, calcX(432.f + 48.f * x, vm),
+                calcY(512.f + 48.f * y, vm), calcScale(2, vm), true,
+                sf::IntRect(x * 16, y * 16, 16, 16)));
+        }
     }
 
     this->sprites["ARMOR"] =
@@ -246,16 +246,6 @@ void MainMenuState::initGUI()
     this->texts["CRITICAL"] = std::make_unique<gui::Text>(
         "20%", calcChar(16, vm), calcX(1064, vm), calcY(640, vm),
         sf::Color(192, 192, 192), true);
-
-    this->sprites["ABILITY1"] =
-        std::make_unique<gui::Sprite>(abilities_vec[0], calcX(528, vm),
-                                      calcY(526, vm), calcScale(2, vm), true);
-    this->sprites["ABILITY2"] =
-        std::make_unique<gui::Sprite>(abilities_vec[1], calcX(528, vm),
-                                      calcY(574, vm), calcScale(2, vm), true);
-    this->sprites["ABILITY3"] =
-        std::make_unique<gui::Sprite>(abilities_vec[2], calcX(528, vm),
-                                      calcY(622, vm), calcScale(2, vm), true);
 
     // PAGE 4
 
@@ -645,9 +635,9 @@ void MainMenuState::draw(sf::RenderTarget *target)
             if (this->choosing_hero) {
                 this->text_buttons["CHOOSE"]->draw(*target);
 
-                this->sprites["ABILITY1"]->draw(*target);
-                this->sprites["ABILITY2"]->draw(*target);
-                this->sprites["ABILITY3"]->draw(*target);
+                for (const auto &ability : abilties) {
+                    ability->draw(*target);
+                }
 
                 this->sprites["HERO_PREVIEW"]->draw(*target);
                 this->sprites["HP_BAR"]->draw(*target);

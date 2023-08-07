@@ -20,9 +20,8 @@ public:
     const bool isPressed(const std::string &t_name, bool mouseClicked);
 
     void changeUpgrade(const std::string &t_name, float t_x, float t_y,
-                       const std::string &desc, uint32_t upgradeIconID,
-                       uint32_t abilityIconID, uint32_t attributeIconID,
-                       uint32_t attributeValue,
+                       const std::string &desc, uint32_t abilityIconID,
+                       uint32_t attributeIconID, uint32_t attributeValue,
                        const std::string &attributeText);
     void deleteUpgrade(const std::string &t_name);
 

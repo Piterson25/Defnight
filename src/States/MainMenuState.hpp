@@ -49,7 +49,8 @@ private:
     std::vector<sf::Sprite> attribute_vec;
 
     sf::Texture abilities_texture;
-    std::vector<sf::Sprite> abilities_vec;
+
+    std::vector<std::unique_ptr<gui::Sprite>> abilties;
 
     std::string map_name;
     std::string hero_name;

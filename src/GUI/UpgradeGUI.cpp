@@ -20,8 +20,8 @@ const bool UpgradeGUI::isPressed(const std::string &t_name, bool mouseClicked)
 }
 
 void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y,
-                               const std::string &desc, uint32_t upgradeIconID,
-                               uint32_t abilityIconID, uint32_t attributeIconID,
+                               const std::string &desc, uint32_t abilityIconID,
+                               uint32_t attributeIconID,
                                uint32_t attributeValue,
                                const std::string &attributeText)
 {
@@ -46,11 +46,14 @@ void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y,
         attributeValue,
     };
 
+    const uint32_t positionX = static_cast<uint32_t>(abilityIconID % 3);
+    const uint32_t positionY = static_cast<uint32_t>(abilityIconID / 3);
+
     this->upgrades[t_name].sprite->setTextureRect(
-        sf::IntRect(16 * upgradeIconID, 0, 16, 16));
+        sf::IntRect(16 * positionX, 16 * positionY + 16, 16, 16));
 
     this->upgrades[t_name].ability->setTextureRect(
-        sf::IntRect(16 * abilityIconID, 0, 16, 16));
+        sf::IntRect(16 * positionX, 16 * positionY, 16, 16));
 
     this->upgrades[t_name].attribute->setTextureRect(
         sf::IntRect(16 * attributeIconID, 0, 16, 16));

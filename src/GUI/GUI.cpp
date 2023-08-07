@@ -281,6 +281,13 @@ namespace gui {
         }
     }
 
+    Sprite::Sprite(const sf::Texture &texture, float posX, float posY,
+                   float scale, bool center, const sf::IntRect &intRect)
+        : Sprite(texture, posX, posY, scale, center)
+    {
+        this->sprite.setTextureRect(intRect);
+    }
+
     Sprite::Sprite(sf::Sprite &sprite, float posX, float posY, float scale,
                    bool center)
         : sprite(sprite)

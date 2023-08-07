@@ -106,6 +106,8 @@ namespace gui {
                float scale, bool center);
         Sprite(const sf::Texture &texture, float posX, float posY, float scale,
                bool center);
+        Sprite(const sf::Texture &texture, float posX, float posY, float scale,
+               bool center, const sf::IntRect &intRect);
         Sprite(sf::Sprite &sprite, float posX, float posY, float scale,
                bool center);
         ~Sprite();
