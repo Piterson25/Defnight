@@ -512,6 +512,17 @@ void PlayerGUI::updateMonsterCount(const size_t &monsterCount)
                                  std::to_string(monsterCount));
 }
 
+const bool PlayerGUI::hasClickedMenu(const sf::Vector2i &mousePos,
+                                     bool mouseClicked, bool &paused)
+{
+    if (statsGUI->hasClickedMenu(mousePos, mouseClicked)) {
+        this->updatePaused(paused);
+        return true;
+    }
+
+    return false;
+}
+
 void PlayerGUI::setIsEscape(bool escape)
 {
     this->escape = escape;
@@ -1108,4 +1119,6 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         this->text_buttons["QUIT"]->draw(target);
         this->text_buttons["SETTINGS"]->draw(target);
     }
+
+    this->statsGUI->drawMenu(target);
 }

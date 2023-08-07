@@ -200,6 +200,18 @@ void GameState::update(float dt)
 {
     this->updateMousePositions(&this->viewHUD);
 
+    if (this->playerGUI->hasClickedMenu(this->mousePosWindow,
+                                        this->isMouseClicked(), this->paused)) {
+        this->setKeysClick("Escape", true);
+        if (this->paused) {
+            this->musicEngine.pauseMusic();
+            this->soundEngine.stopSounds();
+        }
+        else {
+            this->musicEngine.playMusic();
+        }
+    }
+
     if (this->playerGUI->hasClickedButtons(
             this->mousePosWindow, this->isMouseClicked(), this->soundEngine)) {
         this->setMouseClick(true);

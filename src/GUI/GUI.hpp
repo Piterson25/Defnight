@@ -19,6 +19,7 @@ namespace gui {
     const sf::IntRect RECT_MAP = sf::IntRect(384, 0, 304, 304);
     const sf::IntRect RECT_BUTTON = sf::IntRect(384, 304, 88, 88);
     const sf::IntRect RECT_ARROW = sf::IntRect(384, 392, 16, 10);
+    const sf::IntRect RECT_BURGER = sf::IntRect(384, 402, 10, 10);
 
     enum button_states { BUTTON_IDLE, BUTTON_HOVER, BUTTON_PRESSED };
 

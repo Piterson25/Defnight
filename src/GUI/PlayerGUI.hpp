@@ -46,6 +46,8 @@ public:
                                 bool bossWave, const size_t &monsterCount,
                                 SoundEngine &soundEngine);
     void updateMonsterCount(const size_t &monsterCount);
+    const bool hasClickedMenu(const sf::Vector2i &mousePos, bool mouseClicked,
+                              bool &paused);
     const uint8_t updateEscapeButton(const sf::Vector2i &mousePos,
                                      const bool &mouseClicked);
     const bool hasClickedButtons(const sf::Vector2i &mousePos,

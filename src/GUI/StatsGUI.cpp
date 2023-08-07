@@ -12,6 +12,9 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
     this->sprites["TOP_GUI"] = std::make_unique<gui::Sprite>(
         "assets/textures/top_gui.png", 0.f, 0.f, calcScale(1, vm), false);
 
+    this->sprite_buttons["MENU"] = std::make_unique<gui::ButtonSprite>(
+        gui::RECT_BURGER, calcX(4, vm), calcY(4, vm), calcScale(2, vm), false);
+
     this->sprites["PROGRESS_BAR"] = std::make_unique<gui::Sprite>(
         "assets/textures/progress_bar.png", calcX(640, vm), calcY(44, vm),
         calcScale(1, vm), true);
@@ -432,6 +435,17 @@ void StatsGUI::setWaveCountdownText(const std::string &text)
     this->texts["WAVE_COUNTDOWN"]->setText(text);
 }
 
+const bool StatsGUI::hasClickedMenu(const sf::Vector2i &mousePos,
+                                    bool mouseClicked)
+{
+    this->sprite_buttons["MENU"]->update(mousePos);
+    if (this->sprite_buttons["MENU"]->isPressed() && !mouseClicked) {
+        return true;
+    }
+
+    return false;
+}
+
 const bool StatsGUI::hasClickedShop(const sf::Vector2i &mousePos,
                                     bool mouseClicked)
 {
@@ -481,6 +495,11 @@ void StatsGUI::drawWaveCountdown(sf::RenderTarget &target)
 void StatsGUI::drawMonsterCount(sf::RenderTarget &target)
 {
     this->texts["MONSTER_COUNT"]->draw(target);
+}
+
+void StatsGUI::drawMenu(sf::RenderTarget &target)
+{
+    this->sprite_buttons["MENU"]->draw(target);
 }
 
 void StatsGUI::draw(sf::RenderTarget &target)
