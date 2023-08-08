@@ -851,7 +851,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
         else if (player.getLevel() == 10) {
             if (player.getName() == "NINJA") {
                 this->abilityUpgradeGUI->addPlayerStat(
-                    "PIERCING", calcX(32, vm), calcY(250, vm),
+                    "PIERCING", calcX(32, vm), calcY(244, vm),
                     this->lang["PIERCING"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade(
                     "PIERCING", calcX(44, vm), calcY(596, vm), 2,
@@ -860,7 +860,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
             }
             else if (player.getName() == "KNIGHT") {
                 this->abilityUpgradeGUI->addPlayerStat("ATTACK", calcX(32, vm),
-                                                       calcY(250, vm),
+                                                       calcY(244, vm),
                                                        this->lang["ATTACK"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade(
                     "ATTACK", calcX(44, vm), calcY(596, vm), 1,
@@ -870,7 +870,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
             else if (player.getLevel() == 10) {
                 if (player.getName() == "SCOUT") {
                     this->abilityUpgradeGUI->addPlayerStat(
-                        "GOLD", calcX(32, vm), calcY(250, vm),
+                        "GOLD", calcX(32, vm), calcY(244, vm),
                         this->lang["GOLD"]);
                     this->abilityUpgradeGUI->addAbilityUpgrade(
                         "GOLD", calcX(44, vm), calcY(596, vm), 7,
@@ -896,7 +896,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
         else if (player.getLevel() == 10) {
             if (player.getName() == "NINJA") {
                 this->abilityUpgradeGUI->addPlayerStat(
-                    "AREA", calcX(32, vm), calcY(250, vm), this->lang["AREA"]);
+                    "AREA", calcX(32, vm), calcY(244, vm), this->lang["AREA"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade(
                     "AREA", calcX(44, vm), calcY(596, vm), 3,
                     this->lang["AREA"], "+1", 100, 2, 5);
@@ -904,7 +904,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
             }
             else if (player.getName() == "KNIGHT") {
                 this->abilityUpgradeGUI->addPlayerStat(
-                    "REG", calcX(32, vm), calcY(250, vm), this->lang["REG"]);
+                    "REG", calcX(32, vm), calcY(244, vm), this->lang["REG"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade(
                     "REG", calcX(44, vm), calcY(596, vm), 5, this->lang["REG"],
                     "+1", 50, 5, 10);
@@ -912,7 +912,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
             }
             else if (player.getName() == "SCOUT") {
                 this->abilityUpgradeGUI->addPlayerStat("TARGETS", calcX(32, vm),
-                                                       calcY(250, vm),
+                                                       calcY(244, vm),
                                                        this->lang["TARGETS"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade(
                     "TARGETS", calcX(44, vm), calcY(596, vm), 8,
