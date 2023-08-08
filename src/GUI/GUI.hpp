@@ -14,6 +14,8 @@ namespace gui {
     const sf::Color DARK_RED = sf::Color(94, 7, 17);
     const sf::Color GREEN = sf::Color(0, 50, 33);
     const sf::Color YELLOW = sf::Color(255, 177, 8);
+    const sf::Color LIME = sf::Color(127, 189, 57);
+    const sf::Color LIGHT_BLUE = sf::Color(36, 174, 214);
 
     const sf::IntRect RECT_DIFFICULTY = sf::IntRect(0, 0, 384, 504);
     const sf::IntRect RECT_MAP = sf::IntRect(384, 0, 304, 304);

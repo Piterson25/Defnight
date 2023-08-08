@@ -85,9 +85,13 @@ void MainMenuState::initGUI()
         this->gameSettings.lang["SETTINGS"], calcChar(32, vm), calcX(640, vm),
         calcY(466, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
         true);
+    this->text_buttons["CREDITS"] = std::make_unique<gui::ButtonText>(
+        this->gameSettings.lang["CREDITS"], calcChar(32, vm), calcX(640, vm),
+        calcY(558, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
+        true);
     this->text_buttons["QUIT"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["QUIT"], calcChar(32, vm), calcX(640, vm),
-        calcY(558, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
+        calcY(654, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
         true);
 
     this->texts["VERSION"] = std::make_unique<gui::Text>(
@@ -303,6 +307,30 @@ void MainMenuState::initGUI()
             this->gameSettings.lang["TIME_DROP"],
         calcChar(16, vm), calcX(1056, vm), calcY(460, vm),
         sf::Color(182, 60, 53), true);
+
+    // PAGE 5
+
+    this->texts["CREDITS"] = std::make_unique<gui::Text>(
+        this->gameSettings.lang["CREDITS"], calcChar(32, vm), calcX(640, vm),
+        calcY(96, vm), sf::Color(255, 255, 255), true);
+    this->texts["MAIN_CREATOR"] = std::make_unique<gui::Text>(
+        this->gameSettings.lang["MAIN_CREATOR"], calcChar(16, vm),
+        calcX(400, vm), calcY(192, vm), gui::WHITE, false);
+    this->texts["CREATOR_LIST"] = std::make_unique<gui::Text>(
+        "Piterson25", calcChar(16, vm), calcX(722, vm), calcY(192, vm),
+        gui::LIME, false);
+    this->texts["ARTIST"] = std::make_unique<gui::Text>(
+        this->gameSettings.lang["ARTIST"], calcChar(16, vm), calcX(400, vm),
+        calcY(292, vm), gui::WHITE, false);
+    this->texts["ARTIST_LIST"] = std::make_unique<gui::Text>(
+        "Nithorax", calcChar(16, vm), calcX(722, vm), calcY(292, vm), gui::RED,
+        false);
+    this->texts["TESTERS"] = std::make_unique<gui::Text>(
+        this->gameSettings.lang["TESTERS"], calcChar(16, vm), calcX(400, vm),
+        calcY(392, vm), gui::WHITE, false);
+    this->texts["TESTERS_LIST"] = std::make_unique<gui::Text>(
+        "Szmigielko\n\nRaspar\n\nKeku\n\nyouhOrin", calcChar(16, vm),
+        calcX(722, vm), calcY(392, vm), gui::LIGHT_BLUE, false);
 }
 
 void MainMenuState::resetGUI()
@@ -385,6 +413,7 @@ void MainMenuState::update(float dt)
                     this->text_buttons["PLAY"]->update(this->mousePosWindow);
                     this->text_buttons["SETTINGS"]->update(
                         this->mousePosWindow);
+                    this->text_buttons["CREDITS"]->update(this->mousePosWindow);
                     this->text_buttons["QUIT"]->update(this->mousePosWindow);
 
                     if (this->text_buttons["PLAY"]->isPressed() &&
@@ -402,6 +431,12 @@ void MainMenuState::update(float dt)
                             this->gridSize, this->window, this->gameSettings,
                             this->soundEngine, this->musicEngine,
                             this->states));
+                    }
+                    else if (this->text_buttons["CREDITS"]->isPressed() &&
+                             !this->isMouseClicked()) {
+                        this->soundEngine.addSound("button");
+                        this->setMouseClick(true);
+                        this->page = 5;
                     }
                     else if (this->text_buttons["QUIT"]->isPressed() &&
                              !this->isMouseClicked()) {
@@ -551,6 +586,15 @@ void MainMenuState::update(float dt)
                     this->choosing_hero = false;
                 }
                 break;
+            case 5:
+                this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
+                if (this->sprite_buttons["GO_BACK"]->isPressed() &&
+                    !this->isMouseClicked()) {
+                    this->setMouseClick(true);
+                    this->soundEngine.addSound("button");
+                    this->page = 1;
+                }
+                break;
         }
     }
 
@@ -597,6 +641,7 @@ void MainMenuState::draw(sf::RenderTarget *target)
 
             this->text_buttons["PLAY"]->draw(*target);
             this->text_buttons["SETTINGS"]->draw(*target);
+            this->text_buttons["CREDITS"]->draw(*target);
             this->text_buttons["QUIT"]->draw(*target);
 
             this->texts["VERSION"]->draw(*target);
@@ -678,6 +723,16 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->texts["NORMAL_DESC"]->draw(*target);
             this->texts["HARD_DESC"]->draw(*target);
             break;
+
+        case 5:
+            this->sprite_buttons["GO_BACK"]->draw(*target);
+            this->texts["CREDITS"]->draw(*target);
+            this->texts["MAIN_CREATOR"]->draw(*target);
+            this->texts["CREATOR_LIST"]->draw(*target);
+            this->texts["ARTIST"]->draw(*target);
+            this->texts["ARTIST_LIST"]->draw(*target);
+            this->texts["TESTERS"]->draw(*target);
+            this->texts["TESTERS_LIST"]->draw(*target);
     }
 
     target->draw(dimBackground);
