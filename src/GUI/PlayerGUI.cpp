@@ -85,12 +85,12 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
     this->text_buttons["RESUME"] = std::make_unique<gui::ButtonText>(
         this->lang["RESUME"], calcChar(32, vm), calcX(640, vm), calcY(296, vm),
         sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
-    this->text_buttons["MAIN_MENU"] = std::make_unique<gui::ButtonText>(
-        this->lang["MAIN_MENU"], calcChar(32, vm), calcX(640, vm),
-        calcY(392, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
-        true);
     this->text_buttons["SETTINGS"] = std::make_unique<gui::ButtonText>(
         this->lang["SETTINGS"], calcChar(32, vm), calcX(640, vm),
+        calcY(392, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
+        true);
+    this->text_buttons["MAIN_MENU"] = std::make_unique<gui::ButtonText>(
+        this->lang["MAIN_MENU"], calcChar(32, vm), calcX(640, vm),
         calcY(488, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
         true);
     this->text_buttons["QUIT"] = std::make_unique<gui::ButtonText>(
@@ -515,7 +515,7 @@ void PlayerGUI::updateMonsterCount(const size_t &monsterCount)
 const bool PlayerGUI::hasClickedMenu(const sf::Vector2i &mousePos,
                                      bool mouseClicked, bool &paused)
 {
-    if (statsGUI->hasClickedMenu(mousePos, mouseClicked)) {
+    if (!player.isDead() && statsGUI->hasClickedMenu(mousePos, mouseClicked)) {
         this->updatePaused(paused);
         return true;
     }
