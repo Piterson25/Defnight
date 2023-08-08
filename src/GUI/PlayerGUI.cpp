@@ -99,12 +99,12 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
 
     this->texts["KILLS"] = std::make_unique<gui::Text>(
         this->lang["KILLS"] + std::to_string(player.getKills()),
-        calcChar(16, vm), calcX(640, vm), calcY(160, vm),
+        calcChar(16, vm), calcX(640, vm), calcY(186, vm),
         sf::Color(192, 192, 192), true);
 
     this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
         this->lang["DIFFICULTY_LEVEL"] + " " + this->lang[difficultyName],
-        calcChar(16, vm), calcX(640, vm), calcY(144, vm), gui::RED, true);
+        calcChar(16, vm), calcX(640, vm), calcY(186, vm), gui::RED, true);
 
     this->escape_background.setFillColor(sf::Color(0, 0, 0, 192));
     this->escape_background.setSize(
@@ -140,14 +140,14 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
         "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm),
         sf::Color(113, 43, 59), true);
     this->sprites["BOSS_BAR"] = std::make_unique<gui::Sprite>(
-        "assets/textures/bars.png", calcX(376, vm), calcY(158, vm),
-        calcScale(1, vm), false);
-    this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 60, 528, 20));
+        "assets/textures/bars.png", calcX(640, vm), calcY(158, vm),
+        calcScale(1, vm), true);
+    this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 60, 512, 20));
     this->sprites["BOSS_BAR_EMPTY"] = std::make_unique<gui::Sprite>(
-        "assets/textures/bars.png", calcX(376, vm), calcY(158, vm),
-        calcScale(1, vm), false);
+        "assets/textures/bars.png", calcX(640, vm), calcY(158, vm),
+        calcScale(1, vm), true);
     this->sprites["BOSS_BAR_EMPTY"]->setTextureRect(
-        sf::IntRect(0, 80, 528, 20));
+        sf::IntRect(0, 80, 512, 20));
 
     this->boss_bar_percent = 1.f;
 }
@@ -559,7 +559,7 @@ void PlayerGUI::updateBossHP(float dt)
 {
     if (this->bossWave) {
         const int width = this->sprites["BOSS_BAR"]->getTextureRect().width;
-        const int barrier = static_cast<int>(this->boss_bar_percent * 528.f);
+        const int barrier = static_cast<int>(this->boss_bar_percent * 512.f);
 
         if (width > barrier) {
             const int distance = static_cast<int>(width - 1000.f * dt);
@@ -993,7 +993,7 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
             this->sprites["BOSS_BAR_EMPTY"]->setColor(sf::Color(
                 255, 255, 255, static_cast<sf::Uint8>(this->bossCooldown)));
             this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(
-                0, 60, static_cast<int>(this->bossCooldown / 255.f * 528.f),
+                0, 60, static_cast<int>(this->bossCooldown / 255.f * 512.f),
                 20));
 
             this->sprites["BOSS_BAR"]->setColor(sf::Color(
