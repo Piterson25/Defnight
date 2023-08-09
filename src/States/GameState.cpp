@@ -33,7 +33,7 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
     float x = 0.f, y = 0.f, pos = calcX(this->gridSize, vm);
 
     float offsetY = 0.f;
-    if (map_name == "desert") {
+    if (map_name == "desolation") {
         offsetY = 48.f;
     }
     else if (map_name == "permafrost") {

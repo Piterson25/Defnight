@@ -53,7 +53,7 @@ void MainMenuState::initGUI()
         this->map_texture.loadFromFile("assets/textures/maps/ruins.png");
     }
     else if (m == 1) {
-        this->map_texture.loadFromFile("assets/textures/maps/desert.png");
+        this->map_texture.loadFromFile("assets/textures/maps/desolation.png");
     }
     else {
         this->map_texture.loadFromFile("assets/textures/maps/permafrost.png");
@@ -134,10 +134,10 @@ void MainMenuState::initGUI()
     this->sprite_buttons["MAP2"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_MAP, calcX(472, vm), calcY(248, vm), calcScale(1, vm), false);
     this->sprites["MAP2"] = std::make_unique<gui::Sprite>(
-        "assets/textures/maps/desert.png", calcX(496, vm), calcY(272, vm),
+        "assets/textures/maps/desolation.png", calcX(496, vm), calcY(272, vm),
         calcScale(0.5f, vm), false);
-    this->texts["DESERT"] = std::make_unique<gui::Text>(
-        this->gameSettings.lang["DESERT"], calcChar(32, vm), calcX(624, vm),
+    this->texts["DESOLATION"] = std::make_unique<gui::Text>(
+        this->gameSettings.lang["DESOLATION"], calcChar(32, vm), calcX(624, vm),
         calcY(200, vm), sf::Color(255, 255, 255), true);
     this->sprite_buttons["MAP3"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_MAP, calcX(920, vm), calcY(248, vm), calcScale(1, vm), false);
@@ -487,7 +487,7 @@ void MainMenuState::update(float dt)
                     !this->isMouseClicked()) {
                     this->setMouseClick(true);
                     this->soundEngine.addSound("button");
-                    this->map_name = "desert";
+                    this->map_name = "desolation";
                     this->page = 3;
                 }
 
@@ -665,7 +665,7 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->sprite_buttons["MAP3"]->draw(*target);
 
             this->texts["RUINS"]->draw(*target);
-            this->texts["DESERT"]->draw(*target);
+            this->texts["DESOLATION"]->draw(*target);
             this->texts["PERMAFROST"]->draw(*target);
             break;
         case 3:
