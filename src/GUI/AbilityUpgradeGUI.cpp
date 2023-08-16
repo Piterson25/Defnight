@@ -152,18 +152,18 @@ const bool AbilityUpgradeGUI::hasBoughtUpgrade(
     return false;
 }
 
-void AbilityUpgradeGUI::lockUpgrade(const std::string t_name)
+void AbilityUpgradeGUI::lockUpgrade(const std::string &t_name)
 {
     this->abilityUpgrades[t_name].locked = true;
     this->abilityUpgrades[t_name].button->setColor(gui::DARK_RED);
 }
 
-void AbilityUpgradeGUI::unlockUpgrade(const std::string t_name)
+void AbilityUpgradeGUI::unlockUpgrade(const std::string &t_name)
 {
     this->abilityUpgrades[t_name].locked = false;
 }
 
-void AbilityUpgradeGUI::disableUpgrade(const std::string t_name)
+void AbilityUpgradeGUI::disableUpgrade(const std::string &t_name)
 {
     this->abilityUpgrades[t_name].button->setColor(gui::DARK_RED);
 }

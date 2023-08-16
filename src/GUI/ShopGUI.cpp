@@ -139,18 +139,18 @@ const bool ShopGUI::hasBoughtItem(const sf::Vector2i &mousePos,
     return false;
 }
 
-void ShopGUI::lockItem(const std::string t_name)
+void ShopGUI::lockItem(const std::string &t_name)
 {
     this->shopItems[t_name].locked = true;
     this->shopItems[t_name].button->setColor(gui::DARK_RED);
 }
 
-void ShopGUI::unlockItem(const std::string t_name)
+void ShopGUI::unlockItem(const std::string &t_name)
 {
     this->shopItems[t_name].locked = false;
 }
 
-void ShopGUI::disableItem(const std::string t_name)
+void ShopGUI::disableItem(const std::string &t_name)
 {
     this->shopItems[t_name].button->setColor(gui::DARK_RED);
 }

@@ -22,9 +22,9 @@ public:
                              const std::string &t_name,
                              FloatingTextSystem *floatingTextSystem,
                              SoundEngine *soundEngine);
-    void lockItem(const std::string t_name);
-    void unlockItem(const std::string t_name);
-    void disableItem(const std::string t_name);
+    void lockItem(const std::string &t_name);
+    void unlockItem(const std::string &t_name);
+    void disableItem(const std::string &t_name);
     void buy(const std::string &t_name, FloatingTextSystem *floatingTextSystem);
     void updateItemFrames();
     void update(const std::string &t_name, const sf::Vector2i &mousePos);

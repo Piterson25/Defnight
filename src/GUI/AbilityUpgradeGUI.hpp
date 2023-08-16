@@ -41,9 +41,9 @@ public:
                                 const std::string &t_name,
                                 FloatingTextSystem *floatingTextSystem,
                                 SoundEngine *soundEngine);
-    void lockUpgrade(const std::string t_name);
-    void unlockUpgrade(const std::string t_name);
-    void disableUpgrade(const std::string t_name);
+    void lockUpgrade(const std::string &t_name);
+    void unlockUpgrade(const std::string &t_name);
+    void disableUpgrade(const std::string &t_name);
     void buy(const std::string &t_name, FloatingTextSystem *floatingTextSystem);
     void updateItemFrames();
     void updatePlayerInfo(const std::string &t_name, const std::string &t_desc);
