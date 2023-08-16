@@ -23,16 +23,18 @@ public:
     void initGUI();
     void resetGUI();
 
-    void update(float dt);
-    void draw(sf::RenderTarget *target = NULL);
+    void update(float dt) override;
+    void draw(sf::RenderTarget *target = NULL) override;
 
 private:
     sf::View view;
     sf::View viewHUD;
 
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>> text_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
+        text_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>> sprite_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>>
+        sprite_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
 
     sf::Sprite background;

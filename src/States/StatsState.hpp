@@ -10,8 +10,8 @@ public:
                MusicEngine &musicEngine, std::stack<State *> &states);
     ~StatsState();
 
-    void update(float dt);
-    void draw(sf::RenderTarget *target = NULL);
+    void update(float dt) override;
+    void draw(sf::RenderTarget *target = NULL) override;
 
 private:
     std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>

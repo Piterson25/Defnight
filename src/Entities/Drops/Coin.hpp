@@ -8,8 +8,8 @@ public:
          uint32_t t_worth, bool t_vanishing);
     ~Coin();
 
-    void spin(float dt);
+    void spin(float dt) override;
     const bool isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
                                 FloatingTextSystem &floatingTextSystem,
-                                SoundEngine &soundEngine, float dt);
+                                SoundEngine &soundEngine, float dt) override;
 };

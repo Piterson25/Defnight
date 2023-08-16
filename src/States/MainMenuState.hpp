@@ -15,8 +15,8 @@ public:
     void initGUI();
     void resetGUI();
 
-    void update(float dt);
-    void draw(sf::RenderTarget *target = NULL);
+    void update(float dt) override;
+    void draw(sf::RenderTarget *target = NULL) override;
 
 private:
     void fadingEffect(float dt);

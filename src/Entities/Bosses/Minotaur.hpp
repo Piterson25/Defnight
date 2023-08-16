@@ -9,5 +9,5 @@ public:
              const std::vector<sf::FloatRect> &obstaclesBounds);
     ~Minotaur();
 
-    void specialAttack(SoundEngine &soundEngine, float dt);
+    void specialAttack(SoundEngine &soundEngine, float dt) override;
 };

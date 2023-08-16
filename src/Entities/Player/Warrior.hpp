@@ -8,9 +8,10 @@ public:
             float t_y);
     ~Warrior();
 
-    void setAbilityTexture();
-    void endAbility();
-    void doAbility(SoundEngine &soundEngine);
+    void setAbilityTexture() override;
+    void endAbility() override;
+    void doAbility(SoundEngine &soundEngine) override;
 
-    void upgradeAttributes(const std::string &t_name, sf::IntRect &intRect);
+    void upgradeAttributes(const std::string &t_name,
+                           sf::IntRect &intRect) override;
 };
