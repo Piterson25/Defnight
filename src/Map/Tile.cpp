@@ -1,5 +1,4 @@
 #include "Tile.hpp"
-#include "Functions.hpp"
 
 Tile::Tile(const std::string &name, const sf::Vector2f &size, float x, float y)
     : globalBounds(sf::Vector2(x, y), sf::Vector2f(size)), name(name)

@@ -78,25 +78,24 @@ void MainMenuState::initGUI()
         calcScale(1, vm), true);
 
     this->text_buttons["PLAY"] = std::make_unique<gui::ButtonText>(
-        this->gameSettings.lang["PLAY"], calcChar(32, vm), calcX(640, vm),
-        calcY(370, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
-        true);
+        this->gameSettings.lang["PLAY"], calcChar(24, vm), calcX(640, vm),
+        calcY(300, vm), gui::WHITE, sf::Color(192, 192, 192), true);
+    this->text_buttons["STATISTICS"] = std::make_unique<gui::ButtonText>(
+        this->gameSettings.lang["STATISTICS"], calcChar(24, vm), calcX(640, vm),
+        calcY(372, vm), gui::WHITE, sf::Color(192, 192, 192), true);
     this->text_buttons["SETTINGS"] = std::make_unique<gui::ButtonText>(
-        this->gameSettings.lang["SETTINGS"], calcChar(32, vm), calcX(640, vm),
-        calcY(466, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
-        true);
+        this->gameSettings.lang["SETTINGS"], calcChar(24, vm), calcX(640, vm),
+        calcY(444, vm), gui::WHITE, sf::Color(192, 192, 192), true);
     this->text_buttons["CREDITS"] = std::make_unique<gui::ButtonText>(
-        this->gameSettings.lang["CREDITS"], calcChar(32, vm), calcX(640, vm),
-        calcY(558, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
-        true);
+        this->gameSettings.lang["CREDITS"], calcChar(24, vm), calcX(640, vm),
+        calcY(516, vm), gui::WHITE, sf::Color(192, 192, 192), true);
     this->text_buttons["QUIT"] = std::make_unique<gui::ButtonText>(
-        this->gameSettings.lang["QUIT"], calcChar(32, vm), calcX(640, vm),
-        calcY(654, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
-        true);
+        this->gameSettings.lang["QUIT"], calcChar(24, vm), calcX(640, vm),
+        calcY(588, vm), gui::WHITE, sf::Color(192, 192, 192), true);
 
-    this->texts["VERSION"] = std::make_unique<gui::Text>(
-        "v0.2.4", calcChar(16, vm), calcX(1272, vm), calcY(700, vm),
-        sf::Color(255, 255, 255), false);
+    this->texts["VERSION"] =
+        std::make_unique<gui::Text>("v0.2.4", calcChar(16, vm), calcX(1272, vm),
+                                    calcY(700, vm), gui::WHITE, false);
     this->texts["VERSION"]->setPosition(sf::Vector2f(
         calcX(1272, vm) - this->texts["VERSION"]->getWidth(), calcY(700, vm)));
 
@@ -104,15 +103,13 @@ void MainMenuState::initGUI()
 
     this->texts["ARE_YOU_SURE"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["ARE_YOU_SURE"], calcChar(32, vm),
-        calcX(640, vm), calcY(250, vm), sf::Color(255, 255, 255), true);
+        calcX(640, vm), calcY(250, vm), gui::WHITE, true);
     this->text_buttons["YES"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["YES"], calcChar(32, vm), calcX(488, vm),
-        calcY(306, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
-        false);
+        calcY(306, vm), gui::WHITE, sf::Color(192, 192, 192), false);
     this->text_buttons["NO"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["NO"], calcChar(32, vm), calcX(704, vm),
-        calcY(306, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
-        false);
+        calcY(306, vm), gui::WHITE, sf::Color(192, 192, 192), false);
 
     // PAGE 2
 
@@ -122,7 +119,7 @@ void MainMenuState::initGUI()
     this->map_name = "";
     this->texts["CHOOSE_MAP"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["CHOOSE_MAP"], calcChar(32, vm), calcX(640, vm),
-        calcY(96, vm), sf::Color(255, 255, 255), true);
+        calcY(96, vm), gui::WHITE, true);
     this->sprite_buttons["MAP1"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_MAP, calcX(24, vm), calcY(248, vm), calcScale(1, vm), false);
     this->sprites["MAP1"] = std::make_unique<gui::Sprite>(
@@ -130,7 +127,7 @@ void MainMenuState::initGUI()
         calcScale(0.5f, vm), false);
     this->texts["RUINS"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["RUINS"], calcChar(32, vm), calcX(176, vm),
-        calcY(200, vm), sf::Color(255, 255, 255), true);
+        calcY(200, vm), gui::WHITE, true);
     this->sprite_buttons["MAP2"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_MAP, calcX(472, vm), calcY(248, vm), calcScale(1, vm), false);
     this->sprites["MAP2"] = std::make_unique<gui::Sprite>(
@@ -138,7 +135,7 @@ void MainMenuState::initGUI()
         calcScale(0.5f, vm), false);
     this->texts["DESOLATION"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["DESOLATION"], calcChar(32, vm), calcX(624, vm),
-        calcY(200, vm), sf::Color(255, 255, 255), true);
+        calcY(200, vm), gui::WHITE, true);
     this->sprite_buttons["MAP3"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_MAP, calcX(920, vm), calcY(248, vm), calcScale(1, vm), false);
     this->sprites["MAP3"] = std::make_unique<gui::Sprite>(
@@ -146,14 +143,14 @@ void MainMenuState::initGUI()
         calcScale(0.5f, vm), false);
     this->texts["PERMAFROST"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["PERMAFROST"], calcChar(32, vm),
-        calcX(1072, vm), calcY(200, vm), sf::Color(255, 255, 255), true);
+        calcX(1072, vm), calcY(200, vm), gui::WHITE, true);
 
     // PAGE 3
 
     this->hero_name = "";
     this->texts["CHOOSE_HERO"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["CHOOSE_HERO"], calcChar(32, vm),
-        calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
+        calcX(640, vm), calcY(96, vm), gui::WHITE, true);
     this->sprite_buttons["HERO1"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_BUTTON, calcX(64, vm), calcY(256, vm), calcScale(2, vm),
         false);
@@ -163,14 +160,13 @@ void MainMenuState::initGUI()
     this->sprites["HERO1"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
     this->texts["WARRIOR"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["WARRIOR"], calcChar(32, vm), calcX(150, vm),
-        calcY(200, vm), sf::Color(255, 255, 255), true);
+        calcY(200, vm), gui::WHITE, true);
 
     this->choosing_hero = false;
 
     this->text_buttons["CHOOSE"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["CHOOSE"], calcChar(32, vm), calcX(240, vm),
-        calcY(564, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
-        true);
+        calcY(564, vm), gui::WHITE, sf::Color(192, 192, 192), true);
     this->sprites["HERO_PREVIEW"] = std::make_unique<gui::Sprite>(
         "assets/textures/upgrades_icons.png", calcX(640, vm), calcY(512, vm),
         calcScale(8, vm), true);
@@ -183,15 +179,15 @@ void MainMenuState::initGUI()
     this->sprites["HP_BAR"]->center(calcX(860, vm));
     this->texts["HP"] = std::make_unique<gui::Text>(
         "HP:10/10", calcChar(16, vm), calcX(860, vm), calcY(529, vm),
-        sf::Color(255, 255, 255), true);
+        gui::WHITE, true);
     this->sprites["SPRINT_BAR"] = std::make_unique<gui::Sprite>(
         "assets/textures/bars.png", calcX(860, vm), calcY(554, vm),
         calcScale(1, vm), true);
     this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect(0, 40, 256, 20));
     this->sprites["SPRINT_BAR"]->center(calcX(860, vm));
-    this->texts["SPRINT"] = std::make_unique<gui::Text>(
-        "100/100", calcChar(16, vm), calcX(860, vm), calcY(557, vm),
-        sf::Color(255, 255, 255), true);
+    this->texts["SPRINT"] =
+        std::make_unique<gui::Text>("100/100", calcChar(16, vm), calcX(860, vm),
+                                    calcY(557, vm), gui::WHITE, true);
 
     this->attributes_texture.loadFromFile(
         "assets/textures/attributes_icons.png");
@@ -256,7 +252,7 @@ void MainMenuState::initGUI()
     this->difficulty_name = "";
     this->texts["CHOOSE_DIFFICULTY"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["CHOOSE_DIFFICULTY"], calcChar(32, vm),
-        calcX(640, vm), calcY(96, vm), sf::Color(255, 255, 255), true);
+        calcX(640, vm), calcY(96, vm), gui::WHITE, true);
 
     this->sprite_buttons["DIFFICULTY1"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_DIFFICULTY, calcX(32, vm), calcY(184, vm), calcScale(1, vm),
@@ -283,13 +279,13 @@ void MainMenuState::initGUI()
 
     this->texts["EASY"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["EASY"], calcChar(32, vm), calcX(224, vm),
-        calcY(400, vm), sf::Color(255, 255, 255), true);
+        calcY(400, vm), gui::WHITE, true);
     this->texts["NORMAL"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["NORMAL"], calcChar(32, vm), calcX(640, vm),
-        calcY(400, vm), sf::Color(255, 255, 255), true);
+        calcY(400, vm), gui::WHITE, true);
     this->texts["HARD"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["HARD"], calcChar(32, vm), calcX(1056, vm),
-        calcY(400, vm), sf::Color(255, 255, 255), true);
+        calcY(400, vm), gui::WHITE, true);
     this->texts["EASY_DESC"] = std::make_unique<gui::Text>(
 
         this->gameSettings.lang["MONSTERS_HAVE"] + "\n\n-25% HP\n\n-25% " +
@@ -312,7 +308,7 @@ void MainMenuState::initGUI()
 
     this->texts["CREDITS"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["CREDITS"], calcChar(32, vm), calcX(640, vm),
-        calcY(96, vm), sf::Color(255, 255, 255), true);
+        calcY(96, vm), gui::WHITE, true);
     this->texts["MAIN_CREATOR"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["MAIN_CREATOR"], calcChar(16, vm),
         calcX(400, vm), calcY(192, vm), gui::WHITE, false);
@@ -411,6 +407,8 @@ void MainMenuState::update(float dt)
 
                 if (!quitwindow) {
                     this->text_buttons["PLAY"]->update(this->mousePosWindow);
+                    this->text_buttons["STATISTICS"]->update(
+                        this->mousePosWindow);
                     this->text_buttons["SETTINGS"]->update(
                         this->mousePosWindow);
                     this->text_buttons["CREDITS"]->update(this->mousePosWindow);
@@ -428,6 +426,15 @@ void MainMenuState::update(float dt)
                         this->setMouseClick(true);
                         this->soundEngine.addSound("button");
                         this->states.push(new SettingsState(
+                            this->gridSize, this->window, this->gameSettings,
+                            this->soundEngine, this->musicEngine,
+                            this->states));
+                    }
+                    else if (this->text_buttons["STATISTICS"]->isPressed() &&
+                             !this->isMouseClicked()) {
+                        this->setMouseClick(true);
+                        this->soundEngine.addSound("button");
+                        this->states.push(new StatsState(
                             this->gridSize, this->window, this->gameSettings,
                             this->soundEngine, this->musicEngine,
                             this->states));
@@ -640,6 +647,7 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->sprites["TITLE"]->draw(*target);
 
             this->text_buttons["PLAY"]->draw(*target);
+            this->text_buttons["STATISTICS"]->draw(*target);
             this->text_buttons["SETTINGS"]->draw(*target);
             this->text_buttons["CREDITS"]->draw(*target);
             this->text_buttons["QUIT"]->draw(*target);

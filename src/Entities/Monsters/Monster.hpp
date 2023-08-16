@@ -2,7 +2,7 @@
 
 #include "Components/AIComponent.hpp"
 #include "Entities/Player/Player.hpp"
-#include "FloatingTextSystem.hpp"
+#include "Systems/FloatingTextSystem.hpp"
 
 class FloatingTextSystem;
 

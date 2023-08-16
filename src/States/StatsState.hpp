@@ -1,0 +1,23 @@
+#pragma once
+
+#include "GUI/GUI.hpp"
+#include "State.hpp"
+
+class StatsState : public State {
+public:
+    StatsState(float gridSize, sf::RenderWindow &window,
+               GameSettings &gameSettings, SoundEngine &soundEngine,
+               MusicEngine &musicEngine, std::stack<State *> &states);
+    ~StatsState();
+
+    void update(float dt);
+    void draw(sf::RenderTarget *target = NULL);
+
+private:
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
+        text_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>>
+        sprite_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
+};

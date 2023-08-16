@@ -102,7 +102,7 @@ void SettingsState::initGUI()
 
     this->musicVolume = this->gameSettings.musicVolume;
     this->musicVolume_id = 0;
-    for (uint16_t i = 0; i <= 100; i += 10) {
+    for (uint32_t i = 0; i <= 100; i += 10) {
         this->musicVolumes.push_back(i);
     }
 
@@ -122,7 +122,7 @@ void SettingsState::initGUI()
 
     this->soundsVolume = this->gameSettings.soundsVolume;
     this->soundsVolume_id = 0;
-    for (uint16_t i = 0; i <= 100; i += 10) {
+    for (uint32_t i = 0; i <= 100; i += 10) {
         this->soundsVolumes.push_back(i);
     }
 

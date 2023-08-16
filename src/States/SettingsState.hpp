@@ -23,15 +23,15 @@ private:
     size_t id;
     size_t fps_id;
     bool fullscreen;
-    uint16_t fpsLimit;
-    std::vector<uint16_t> fpsLimits;
+    uint32_t fpsLimit;
+    std::vector<uint32_t> fpsLimits;
     bool fpsCounterOn;
     float musicVolume;
     size_t musicVolume_id;
-    std::vector<uint16_t> musicVolumes;
+    std::vector<uint32_t> musicVolumes;
     float soundsVolume;
     size_t soundsVolume_id;
-    std::vector<uint16_t> soundsVolumes;
+    std::vector<uint32_t> soundsVolumes;
     std::string language;
 
     std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
