@@ -136,6 +136,7 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
 
 GameState::~GameState()
 {
+    PlayerStats::saveStats(*this->player, "data/player_stats.dat");
     this->musicEngine.clearMusic();
     delete this->playerGUI;
     delete this->player;

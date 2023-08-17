@@ -2,6 +2,7 @@
 
 #include "Entities/player/Warrior.hpp"
 #include "GUI/PlayerGUI.hpp"
+#include "Game/PlayerStats.hpp"
 #include "Map/TileMap.hpp"
 #include "SettingsState.hpp"
 #include "State.hpp"

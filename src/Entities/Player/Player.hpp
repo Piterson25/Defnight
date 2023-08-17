@@ -10,6 +10,7 @@ public:
            float t_y);
     virtual ~Player();
 
+    const uint32_t getWave() const;
     const uint32_t getGold() const;
     const uint32_t getArmor() const;
     const uint32_t getReg() const;
@@ -45,6 +46,7 @@ public:
     const float getAbilityMaxTimeModifier() const;
     const uint32_t getAttackIncrease() const;
 
+    void setWave(uint32_t t_wave);
     void setGold(uint32_t t_gold);
     void setArmor(uint32_t t_armor);
     void setReg(uint32_t t_reg);
@@ -101,6 +103,7 @@ protected:
 
     std::list<sf::RectangleShape> particles;
 
+    uint32_t wave;
     uint32_t gold;
     uint32_t armor;
     uint32_t reg;

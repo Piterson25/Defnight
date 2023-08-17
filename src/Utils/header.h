@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <format>
 #include <fstream>
+#include <iomanip>
 #include <iostream>
 #include <list>
 #include <math.h>
@@ -23,7 +24,4 @@
 #include <SFML/Window.hpp>
 
 // Crypto++
-#include <cryptopp/aes.h>
-#include <cryptopp/filters.h>
-#include <cryptopp/modes.h>
-#include <cryptopp/osrng.h>
+#include <cryptopp/base64.h>

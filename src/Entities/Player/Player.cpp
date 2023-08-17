@@ -71,6 +71,11 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
 
 Player::~Player() = default;
 
+const uint32_t Player::getWave() const
+{
+    return this->wave;
+}
+
 const uint32_t Player::getGold() const
 {
     return this->gold;
@@ -239,6 +244,11 @@ const float Player::getAbilityTime() const
 const float Player::getAbilityTotalMaxTime() const
 {
     return this->abilityComponent->getAbilityTotalMaxTime();
+}
+
+void Player::setWave(uint32_t t_wave)
+{
+    this->wave = t_wave;
 }
 
 void Player::setGold(uint32_t t_gold)

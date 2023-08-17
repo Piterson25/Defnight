@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GUI/GUI.hpp"
+#include "Game/PlayerStats.hpp"
 #include "State.hpp"
 
 class StatsState : public State {
@@ -14,6 +15,9 @@ public:
     void draw(sf::RenderTarget *target = NULL) override;
 
 private:
+    sf::VideoMode &vm;
+    PlayerStats::PlayerData playerData;
+
     std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
         text_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
