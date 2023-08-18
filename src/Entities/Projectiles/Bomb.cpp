@@ -80,6 +80,8 @@ void Bomb::monsterCollision(Monster &monster, Player &player,
                 else {
                     monster.setHP(monster.getHP() - attack);
                 }
+
+                player.setDamageDealt(player.getDamageDealt() + attack);
             }
             else {
                 const int attack = this->attack;
@@ -93,6 +95,8 @@ void Bomb::monsterCollision(Monster &monster, Player &player,
                 else {
                     monster.setHP(monster.getHP() - attack);
                 }
+
+                player.setDamageDealt(player.getDamageDealt() + attack);
             }
 
             monster.punch();

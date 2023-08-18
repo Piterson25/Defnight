@@ -85,6 +85,8 @@ void MonsterSystem::playerAttack(FloatingTextSystem &floatingTextSystem,
                     else {
                         monster->setHP(monster->getHP() - attack);
                     }
+
+                    player.setDamageDealt(player.getDamageDealt() + attack);
                 }
                 else {
                     const int attack = player.getAttack();
@@ -98,6 +100,8 @@ void MonsterSystem::playerAttack(FloatingTextSystem &floatingTextSystem,
                     else {
                         monster->setHP(monster->getHP() - attack);
                     }
+
+                    player.setDamageDealt(player.getDamageDealt() + attack);
                 }
 
                 if (!player.isSoundPlayed()) {
@@ -135,6 +139,8 @@ void MonsterSystem::explosionAttack(
                     else {
                         monster->setHP(monster->getHP() - attack);
                     }
+
+                    player.setDamageDealt(player.getDamageDealt() + attack);
 
                     monster->punch();
                 }
@@ -345,7 +351,6 @@ void MonsterSystem::spawnMonsters(
 void MonsterSystem::prepareWave(uint32_t &wave, uint32_t &sumHP)
 {
     wave++;
-    this->player.setWave(wave);
     const uint32_t wave_mod = 1 + static_cast<uint32_t>(wave / 10.f);
     if (wave % 10 != 0) {
         sumHP += static_cast<uint32_t>((2 - ((1 + sqrtf(5)) / 2.f)) * sumHP);

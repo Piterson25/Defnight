@@ -86,6 +86,8 @@ Monster::hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
                     player.setHP(player.getHP() - Lattack);
                 }
 
+                player.setDamageTaken(player.getDamageTaken() + Lattack);
+
                 if (!this->soundPlayed) {
                     soundEngine.addSound("punch");
                     this->soundPlayed = true;

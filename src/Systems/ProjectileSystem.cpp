@@ -159,6 +159,8 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
                         player.setHP(player.getHP() - attack);
                     }
 
+                    player.setDamageTaken(player.getDamageTaken() + attack);
+
                     player.punch();
 
                     floatingTextSystem.addFloatingText(

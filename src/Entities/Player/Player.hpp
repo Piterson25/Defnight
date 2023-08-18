@@ -10,7 +10,9 @@ public:
            float t_y);
     virtual ~Player();
 
-    const uint32_t getWave() const;
+    const uint32_t getBoughtItems() const;
+    const uint32_t getDamageDealt() const;
+    const uint32_t getDamageTaken() const;
     const uint32_t getGold() const;
     const uint32_t getArmor() const;
     const uint32_t getReg() const;
@@ -46,7 +48,9 @@ public:
     const float getAbilityMaxTimeModifier() const;
     const uint32_t getAttackIncrease() const;
 
-    void setWave(uint32_t t_wave);
+    void setDamageDealt(uint32_t t_damageDealt);
+    void setDamageTaken(uint32_t t_damageTaken);
+    void setBoughtItems(uint32_t t_boughtItems);
     void setGold(uint32_t t_gold);
     void setArmor(uint32_t t_armor);
     void setReg(uint32_t t_reg);
@@ -103,7 +107,9 @@ protected:
 
     std::list<sf::RectangleShape> particles;
 
-    uint32_t wave;
+    uint32_t damageDealt;
+    uint32_t damageTaken;
+    uint32_t boughtItems;
     uint32_t gold;
     uint32_t armor;
     uint32_t reg;

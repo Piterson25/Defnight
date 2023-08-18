@@ -131,6 +131,7 @@ const bool ShopGUI::hasBoughtItem(const sf::Vector2i &mousePos,
         update(t_name, mousePos);
         if (isPressed(t_name, mouseClicked)) {
             buy(t_name, floatingTextSystem);
+            player.setBoughtItems(player.getBoughtItems() + 1);
             soundEngine->addSound("buy");
             return true;
         }

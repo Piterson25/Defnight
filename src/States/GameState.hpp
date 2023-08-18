@@ -28,6 +28,9 @@ public:
     void draw(sf::RenderTarget *target = NULL) override;
 
 private:
+    void savePlayerData();
+
+    sf::Clock clock;
     sf::View view;
     sf::View viewHUD;
 
@@ -40,6 +43,8 @@ private:
 
     sf::Sprite background;
     sf::Texture background_texture;
+    std::string mapName;
+    std::string difficultyName;
 
     PlayerGUI *playerGUI;
     Player *player;

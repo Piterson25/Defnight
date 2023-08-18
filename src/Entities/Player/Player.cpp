@@ -30,6 +30,9 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
                               this->sprite.getPosition().y + calcY(52, vm));
     this->ability.setColor(sf::Color(255, 255, 255, 0));
 
+    this->damageDealt = 0;
+    this->damageTaken = 0;
+    this->boughtItems = 0;
     this->gold = 0;
     this->armor = 0;
     this->reg = 0;
@@ -71,9 +74,19 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
 
 Player::~Player() = default;
 
-const uint32_t Player::getWave() const
+const uint32_t Player::getBoughtItems() const
 {
-    return this->wave;
+    return this->boughtItems;
+}
+
+const uint32_t Player::getDamageDealt() const
+{
+    return this->damageDealt;
+}
+
+const uint32_t Player::getDamageTaken() const
+{
+    return this->damageTaken;
 }
 
 const uint32_t Player::getGold() const
@@ -221,6 +234,16 @@ const uint32_t Player::getAttackIncrease() const
     return this->abilityComponent->getAttackIncrease();
 }
 
+void Player::setDamageDealt(uint32_t t_damageDealt)
+{
+    this->damageDealt = t_damageDealt;
+}
+
+void Player::setDamageTaken(uint32_t t_damageTaken)
+{
+    this->damageTaken = t_damageTaken;
+}
+
 const bool Player::isSoundPlayed() const
 {
     return this->soundPlayed;
@@ -246,9 +269,9 @@ const float Player::getAbilityTotalMaxTime() const
     return this->abilityComponent->getAbilityTotalMaxTime();
 }
 
-void Player::setWave(uint32_t t_wave)
+void Player::setBoughtItems(uint32_t t_boughtItems)
 {
-    this->wave = t_wave;
+    this->boughtItems = t_boughtItems;
 }
 
 void Player::setGold(uint32_t t_gold)

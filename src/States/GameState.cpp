@@ -20,6 +20,7 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
     this->floatingTextSystem =
         new FloatingTextSystem(this->gameSettings.resolution);
     this->tileMap = new TileMap();
+    this->mapName = map_name;
 
     this->background_texture.loadFromFile("assets/textures/maps/" + map_name +
                                           ".png");
@@ -91,6 +92,7 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
             this->vertexArray.getBounds().height / 2 - calcY(32, vm));
     }
 
+    this->difficultyName = difficulty_name;
     this->playerGUI = new PlayerGUI(this->gameSettings.resolution,
                                     *this->player, *this->floatingTextSystem,
                                     difficulty_name, this->gameSettings.lang);
@@ -136,7 +138,7 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
 
 GameState::~GameState()
 {
-    PlayerStats::saveStats(*this->player, "data/player_stats.dat");
+    this->savePlayerData();
     this->musicEngine.clearMusic();
     delete this->playerGUI;
     delete this->player;
@@ -195,6 +197,29 @@ void GameState::draw(sf::RenderTarget *target)
     this->playerGUI->draw(*target);
 
     this->floatingTextSystem->drawGui(*target);
+}
+
+void GameState::savePlayerData()
+{
+    PlayerStats::PlayerData playerData{
+        wave,
+        player->getXP(),
+        player->getLevel(),
+        player->getKills(),
+        player->getDamageDealt(),
+        player->getDamageTaken(),
+        static_cast<uint32_t>(player->isDead()),
+        player->getGold(),
+        player->getBoughtItems(),
+        static_cast<uint32_t>(clock.getElapsedTime().asSeconds()) / 60,
+        1,
+        static_cast<uint32_t>(this->mapName == "ruins"),
+        static_cast<uint32_t>(this->mapName == "desolation"),
+        static_cast<uint32_t>(this->mapName == "permafrost"),
+        static_cast<uint32_t>(this->difficultyName == "EASY"),
+        static_cast<uint32_t>(this->difficultyName == "NORMAL"),
+        static_cast<uint32_t>(this->difficultyName == "HARD")};
+    PlayerStats::saveStats("data/player_stats.dat", playerData);
 }
 
 void GameState::update(float dt)
