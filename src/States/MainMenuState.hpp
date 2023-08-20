@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GUI/GUI.hpp"
+#include "Game/PlayerStats.hpp"
 #include "GameState.hpp"
 #include "SettingsState.hpp"
 #include "StatsState.hpp"
@@ -20,6 +21,7 @@ public:
 
 private:
     void fadingEffect(float dt);
+    void setPlayerRank();
 
     std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
         text_buttons;
@@ -29,6 +31,9 @@ private:
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
 
     uint16_t page;
+
+    bool loadedPlayerData;
+    PlayerStats::PlayerData playerData;
 
     sf::View mapView;
     sf::Sprite map;

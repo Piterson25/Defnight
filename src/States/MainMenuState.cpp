@@ -9,6 +9,8 @@ MainMenuState::MainMenuState(float gridSize, sf::RenderWindow &window,
     this->initGUI();
     this->musicEngine.addMusic("main_menu.ogg");
     this->musicEngine.addMusic("main_menu2.ogg");
+    this->loadedPlayerData = false;
+    PlayerStats::PlayerData playerData{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 }
 
 MainMenuState::~MainMenuState() = default;
@@ -92,6 +94,19 @@ void MainMenuState::initGUI()
     this->text_buttons["QUIT"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["QUIT"], calcChar(24, vm), calcX(640, vm),
         calcY(588, vm), gui::WHITE, sf::Color(192, 192, 192), true);
+
+    this->texts["TOTAL_XP"] = std::make_unique<gui::Text>(
+        this->gameSettings.lang["TOTAL_XP"] + std::to_string(playerData.xp),
+        calcChar(16, vm), calcX(8, vm), calcY(680, vm), gui::WHITE, false);
+
+    this->texts["RANK"] = std::make_unique<gui::Text>(
+        this->gameSettings.lang["RANK"], calcChar(16, vm), calcX(8, vm),
+        calcY(700, vm), gui::WHITE, false);
+
+    this->texts["PLAYER_RANK"] = std::make_unique<gui::Text>(
+        this->gameSettings.lang["RANK"], calcChar(16, vm),
+        this->texts["RANK"]->getPosition().x + this->texts["RANK"]->getWidth(),
+        calcY(700, vm), gui::WHITE, false);
 
     this->texts["VERSION"] =
         std::make_unique<gui::Text>("v0.2.4", calcChar(16, vm), calcX(1272, vm),
@@ -343,6 +358,14 @@ void MainMenuState::update(float dt)
 {
     this->updateMousePositions();
 
+    if (!this->loadedPlayerData) {
+        this->loadedPlayerData = true;
+        PlayerStats::loadStats("data/player_stats.dat", playerData);
+        this->texts["TOTAL_XP"]->setText(this->gameSettings.lang["TOTAL_XP"] +
+                                         std::to_string(playerData.xp));
+        this->setPlayerRank();
+    }
+
     if (this->page >= 1) {
         if (!this->map.getGlobalBounds().intersects(
                 this->mapView.getViewport())) {
@@ -565,6 +588,7 @@ void MainMenuState::update(float dt)
                         this->map_name, this->hero_name,
                         this->difficulty_name));
                     this->choosing_hero = false;
+                    this->loadedPlayerData = false;
                 }
                 else if (this->sprite_buttons["DIFFICULTY2"]->isPressed() &&
                          !this->isMouseClicked()) {
@@ -578,6 +602,7 @@ void MainMenuState::update(float dt)
                         this->map_name, this->hero_name,
                         this->difficulty_name));
                     this->choosing_hero = false;
+                    this->loadedPlayerData = false;
                 }
                 else if (this->sprite_buttons["DIFFICULTY3"]->isPressed() &&
                          !this->isMouseClicked()) {
@@ -591,6 +616,7 @@ void MainMenuState::update(float dt)
                         this->map_name, this->hero_name,
                         this->difficulty_name));
                     this->choosing_hero = false;
+                    this->loadedPlayerData = false;
                 }
                 break;
             case 5:
@@ -652,6 +678,9 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->text_buttons["CREDITS"]->draw(*target);
             this->text_buttons["QUIT"]->draw(*target);
 
+            this->texts["TOTAL_XP"]->draw(*target);
+            this->texts["RANK"]->draw(*target);
+            this->texts["PLAYER_RANK"]->draw(*target);
             this->texts["VERSION"]->draw(*target);
             if (this->quitwindow) {
                 target->draw(this->quitBackground);
@@ -768,4 +797,48 @@ void MainMenuState::fadingEffect(float dt)
     }
     this->dimBackground.setFillColor(
         sf::Color(0, 0, 0, static_cast<sf::Uint8>(this->dimAlpha * 255.f)));
+}
+
+void MainMenuState::setPlayerRank()
+{
+    if (this->playerData.xp >= 1000000) {
+        this->texts["PLAYER_RANK"]->setText(this->gameSettings.lang["LEGEND"]);
+        this->texts["PLAYER_RANK"]->setFillColor(gui::GOLD);
+    }
+    else if (playerData.xp >= 500000) {
+        texts["PLAYER_RANK"]->setText(this->gameSettings.lang["MASTER"]);
+        texts["PLAYER_RANK"]->setFillColor(gui::DARK_RED);
+    }
+    else if (playerData.xp >= 150000) {
+        texts["PLAYER_RANK"]->setText(this->gameSettings.lang["GENERAL"]);
+        texts["PLAYER_RANK"]->setFillColor(gui::FLAMINGO);
+    }
+    else if (playerData.xp >= 50000) {
+        texts["PLAYER_RANK"]->setText(this->gameSettings.lang["MAJOR"]);
+        texts["PLAYER_RANK"]->setFillColor(gui::GREEN);
+    }
+    else if (playerData.xp >= 15000) {
+        texts["PLAYER_RANK"]->setText(this->gameSettings.lang["VETERAN"]);
+        texts["PLAYER_RANK"]->setFillColor(gui::BROWN);
+    }
+    else if (playerData.xp >= 5000) {
+        texts["PLAYER_RANK"]->setText(this->gameSettings.lang["CAPTAIN"]);
+        texts["PLAYER_RANK"]->setFillColor(gui::BLUE);
+    }
+    else if (playerData.xp >= 2000) {
+        texts["PLAYER_RANK"]->setText(this->gameSettings.lang["SOLDIER"]);
+        texts["PLAYER_RANK"]->setFillColor(gui::PURPLE);
+    }
+    else if (playerData.xp >= 500) {
+        texts["PLAYER_RANK"]->setText(this->gameSettings.lang["AMATEUR"]);
+        texts["PLAYER_RANK"]->setFillColor(gui::LIME);
+    }
+    else if (playerData.xp >= 100) {
+        texts["PLAYER_RANK"]->setText(this->gameSettings.lang["RECRUIT"]);
+        texts["PLAYER_RANK"]->setFillColor(gui::LIGHT_GREY);
+    }
+    else {
+        texts["PLAYER_RANK"]->setText(this->gameSettings.lang["NOVICE"]);
+        texts["PLAYER_RANK"]->setFillColor(gui::WHITE);
+    }
 }

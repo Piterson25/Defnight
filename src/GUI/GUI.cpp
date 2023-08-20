@@ -121,6 +121,11 @@ namespace gui {
 
     Text::~Text() = default;
 
+    const sf::Vector2f &Text::getPosition() const
+    {
+        return this->text.getPosition();
+    }
+
     const std::string Text::getText() const
     {
         return this->text.getString();

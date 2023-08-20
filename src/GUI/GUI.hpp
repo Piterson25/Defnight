@@ -16,6 +16,9 @@ namespace gui {
     const sf::Color YELLOW = sf::Color(255, 177, 8);
     const sf::Color LIME = sf::Color(127, 189, 57);
     const sf::Color LIGHT_BLUE = sf::Color(36, 174, 214);
+    const sf::Color PURPLE = sf::Color(88, 74, 127);
+    const sf::Color BROWN = sf::Color(97, 74, 60);
+    const sf::Color BLUE = sf::Color(0, 64, 81);
 
     const sf::IntRect RECT_DIFFICULTY = sf::IntRect(0, 0, 384, 504);
     const sf::IntRect RECT_MAP = sf::IntRect(384, 0, 304, 304);
@@ -61,6 +64,7 @@ namespace gui {
              const sf::Color &color, bool center);
         ~Text();
 
+        const sf::Vector2f &getPosition() const;
         const std::string getText() const;
         const float getWidth() const;
         const sf::Color getFillColor() const;
