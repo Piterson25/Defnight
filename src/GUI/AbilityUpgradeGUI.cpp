@@ -184,7 +184,7 @@ void AbilityUpgradeGUI::updateItemFrames()
     for (auto &pair : abilityUpgrades) {
         if (!pair.second.locked && !player.isAbilityActive() &&
             player.getGold() >= pair.second.price) {
-            pair.second.button->setColor(gui::GREEN);
+            pair.second.button->setColor(gui::DARK_GREEN);
         }
         else {
             pair.second.button->setColor(gui::DARK_RED);

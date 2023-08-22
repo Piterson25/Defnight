@@ -1,10 +1,11 @@
 #pragma once
 
-#include "GUI/GUI.hpp"
 #include "Game/PlayerStats.hpp"
 #include "GameState.hpp"
 #include "SettingsState.hpp"
 #include "StatsState.hpp"
+
+#define VERSION "v0.2.4"
 
 class MainMenuState : public State {
 public:
@@ -23,12 +24,23 @@ private:
     void fadingEffect(float dt);
     void setPlayerRank();
 
+    struct RankText {
+        std::unique_ptr<gui::Text> rank;
+        std::unique_ptr<gui::Text> xp;
+    };
+
+    sf::VideoMode &vm;
+
+    std::vector<RankText> ranksTexts;
+    PlayerStats::Rank playerRank;
+
     std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
         text_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
     std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>>
         sprite_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
+    std::unordered_map<std::string, std::string> &lang;
 
     uint16_t page;
 

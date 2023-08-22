@@ -42,9 +42,14 @@ namespace gui {
 
     ButtonText::~ButtonText() = default;
 
+    const sf::Vector2f &ButtonText::getPosition() const
+    {
+        return this->text.getPosition();
+    }
+
     const bool ButtonText::isPressed() const
     {
-        return (this->buttonState == BUTTON_PRESSED);
+        return this->buttonState == BUTTON_PRESSED;
     }
 
     const std::string ButtonText::getText() const
@@ -208,7 +213,7 @@ namespace gui {
 
     const bool ButtonSprite::isPressed() const
     {
-        return (this->buttonState == BUTTON_PRESSED);
+        return this->buttonState == BUTTON_PRESSED;
     }
 
     const sf::IntRect ButtonSprite::getTextureRect() const

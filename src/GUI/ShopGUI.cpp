@@ -173,7 +173,7 @@ void ShopGUI::updateItemFrames()
         if (pair.first == "FULL_HP") {
             if (!pair.second.locked && player.getGold() >= pair.second.price &&
                 player.getHP() < player.getMaxHP()) {
-                pair.second.button->setColor(gui::GREEN);
+                pair.second.button->setColor(gui::DARK_GREEN);
             }
             else {
                 pair.second.button->setColor(gui::DARK_RED);
@@ -181,7 +181,7 @@ void ShopGUI::updateItemFrames()
         }
         else {
             if (!pair.second.locked && player.getGold() >= pair.second.price) {
-                pair.second.button->setColor(gui::GREEN);
+                pair.second.button->setColor(gui::DARK_GREEN);
             }
             else {
                 pair.second.button->setColor(gui::DARK_RED);

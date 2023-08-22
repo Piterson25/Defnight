@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utils/Functions.hpp"
+#include "GUI/GUI.hpp"
 
 class PlayerStats {
 public:
@@ -23,6 +23,14 @@ public:
         uint32_t normal;
         uint32_t hard;
     };
+
+    struct Rank {
+        std::string name;
+        uint32_t minXP;
+        sf::Color color;
+    };
+
+    static const std::vector<Rank> ranks;
 
     static void saveStats(const std::string &filename, PlayerData &playerdata);
     static void loadStats(const std::string &filename, PlayerData &playerdata);

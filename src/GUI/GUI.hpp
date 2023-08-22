@@ -12,7 +12,8 @@ namespace gui {
     const sf::Color GREY = sf::Color(67, 69, 73);
     const sf::Color LIGHT_GREY = sf::Color(192, 192, 192);
     const sf::Color DARK_RED = sf::Color(94, 7, 17);
-    const sf::Color GREEN = sf::Color(0, 50, 33);
+    const sf::Color GREEN = sf::Color(23, 74, 27);
+    const sf::Color DARK_GREEN = sf::Color(0, 50, 33);
     const sf::Color YELLOW = sf::Color(255, 177, 8);
     const sf::Color LIME = sf::Color(127, 189, 57);
     const sf::Color LIGHT_BLUE = sf::Color(36, 174, 214);
@@ -39,6 +40,7 @@ namespace gui {
                    const sf::Color &hoverColor, bool center);
         ~ButtonText();
 
+        const sf::Vector2f &getPosition() const;
         const bool isPressed() const;
         const std::string getText() const;
         const float getWidth() const;

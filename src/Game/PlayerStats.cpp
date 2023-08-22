@@ -1,5 +1,12 @@
 #include "PlayerStats.hpp"
 
+const std::vector<PlayerStats::Rank> PlayerStats::ranks = {
+    {"LEGEND", 1000000, gui::GOLD},     {"MASTER", 500000, gui::DARK_RED},
+    {"GENERAL", 150000, gui::FLAMINGO}, {"MAJOR", 50000, gui::GREEN},
+    {"VETERAN", 15000, gui::BROWN},     {"CAPTAIN", 5000, gui::BLUE},
+    {"SOLDIER", 2000, gui::PURPLE},     {"AMATEUR", 500, gui::LIME},
+    {"RECRUIT", 100, gui::LIGHT_GREY},  {"NOVICE", 0, gui::WHITE}};
+
 void PlayerStats::saveStats(const std::string &filename, PlayerData &playerdata)
 {
     PlayerData loadedPlayerData{0, 0, 0, 0, 0, 0, 0, 0, 0,
