@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Audio/MusicEngine.hpp"
 #include "StatsGUI.hpp"
 
 class PlayerGUI {
@@ -44,7 +45,8 @@ public:
     void updateKills();
     void updateMonsterCountWave(const std::string &language, uint32_t wave,
                                 bool bossWave, const size_t &monsterCount,
-                                SoundEngine &soundEngine);
+                                SoundEngine &soundEngine,
+                                MusicEngine &musicEngine);
     void updateMonsterCount(const size_t &monsterCount);
     const bool hasClickedMenu(const sf::Vector2i &mousePos, bool mouseClicked,
                               bool &paused);

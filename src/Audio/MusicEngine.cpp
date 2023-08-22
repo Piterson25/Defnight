@@ -25,6 +25,15 @@ void MusicEngine::playMusic()
     this->music.play();
 }
 
+void MusicEngine::playSelectedMusic(const std::string &name)
+{
+    stopMusic();
+    if (!this->music.openFromFile("assets/music/" + name)) {
+        throw("ERROR - COULDN'T FIND MUSIC");
+    }
+    playMusic();
+}
+
 void MusicEngine::pauseMusic()
 {
     this->music.pause();

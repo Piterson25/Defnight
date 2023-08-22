@@ -425,7 +425,8 @@ void PlayerGUI::updateKills()
 void PlayerGUI::updateMonsterCountWave(const std::string &language,
                                        uint32_t wave, bool bossWave,
                                        const size_t &monsterCount,
-                                       SoundEngine &soundEngine)
+                                       SoundEngine &soundEngine,
+                                       MusicEngine &musicEngine)
 {
     this->bossWave = bossWave;
 
@@ -434,6 +435,10 @@ void PlayerGUI::updateMonsterCountWave(const std::string &language,
     this->texts["BIG_WAVE_NUMBER"]->setText(this->lang["WAVE"] +
                                             std::to_string(wave));
     this->texts["BIG_WAVE_NUMBER"]->center(calcX(640, this->vm));
+
+    if (bossWave) {
+        musicEngine.playSelectedMusic("boss.ogg");
+    }
 
     switch (wave) {
         case 1:

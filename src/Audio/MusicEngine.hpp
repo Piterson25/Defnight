@@ -13,6 +13,7 @@ public:
     void addMusic(const std::string &name);
     void clearMusic();
     void playMusic();
+    void playSelectedMusic(const std::string &name);
     void pauseMusic();
     void stopMusic();
     void update();

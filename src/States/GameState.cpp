@@ -439,7 +439,8 @@ void GameState::update(float dt)
                 this->playerGUI->updateMonsterCountWave(
                     this->gameSettings.language, this->wave,
                     this->monsterSystem->isBossWave(),
-                    this->monsterSystem->monsterIDsSize(), this->soundEngine);
+                    this->monsterSystem->monsterIDsSize(), this->soundEngine,
+                    this->musicEngine);
             }
         }
         else {
