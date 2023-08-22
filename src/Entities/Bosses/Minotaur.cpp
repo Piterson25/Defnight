@@ -8,8 +8,8 @@ Minotaur::Minotaur(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->name = "MINOTAUR";
     this->attack = static_cast<uint32_t>(7 * difficulty_mod);
     this->attackSpeed = 2;
-    this->HP = static_cast<uint32_t>(69 * difficulty_mod);
-    this->maxHP = static_cast<uint32_t>(69 * difficulty_mod);
+    this->HP = static_cast<uint32_t>(100 * difficulty_mod);
+    this->maxHP = static_cast<uint32_t>(100 * difficulty_mod);
     this->speed = 1;
     this->gold = static_cast<uint32_t>(50 * wave_mod);
     this->XP = static_cast<uint32_t>(200 * wave_mod);
