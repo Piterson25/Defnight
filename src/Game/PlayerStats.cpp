@@ -7,7 +7,8 @@ const std::vector<PlayerStats::Rank> PlayerStats::ranks = {
     {"SOLDIER", 2000, gui::PURPLE},     {"AMATEUR", 500, gui::LIME},
     {"RECRUIT", 100, gui::LIGHT_GREY},  {"NOVICE", 0, gui::WHITE}};
 
-void PlayerStats::saveStats(const std::string &filename, PlayerData &playerdata)
+void PlayerStats::saveStats(const std::string &filename,
+                            const PlayerData &playerdata)
 {
     PlayerData loadedPlayerData{0, 0, 0, 0, 0, 0, 0, 0, 0,
                                 0, 0, 0, 0, 0, 0, 0, 0};

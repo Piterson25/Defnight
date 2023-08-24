@@ -212,8 +212,6 @@ void PlayerGUI::updateOption(Option &option, std::vector<short> &id_vector,
 
 void PlayerGUI::levelUpPlayer(uint32_t optionID, uint32_t optionValue)
 {
-    const sf::VideoMode vm = this->vm;
-
     switch (optionID) {
         case 1:
             player.setArmor(player.getArmor() + optionValue);

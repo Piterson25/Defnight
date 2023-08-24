@@ -32,6 +32,7 @@ public:
 
     static const std::vector<Rank> ranks;
 
-    static void saveStats(const std::string &filename, PlayerData &playerdata);
+    static void saveStats(const std::string &filename,
+                          const PlayerData &playerdata);
     static void loadStats(const std::string &filename, PlayerData &playerdata);
 };

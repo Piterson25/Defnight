@@ -12,7 +12,7 @@ StatsState::StatsState(float gridSize, sf::RenderWindow &window,
     this->sprite_buttons["GO_BACK"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_ARROW, calcX(32, vm), calcY(24, vm), calcX(4, vm), false);
 
-    PlayerStats::PlayerData playerData{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    playerData = PlayerStats::PlayerData{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     PlayerStats::loadStats("data/player_stats.dat", playerData);
 
     this->texts["RECORD_WAVE"] = std::make_unique<gui::Text>(

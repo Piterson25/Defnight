@@ -365,7 +365,7 @@ void MonsterSystem::prepareWave(uint32_t &wave, uint32_t &sumHP)
     short t = 0;
     this->bossWave = false;
 
-    if (wave % 1 == 0) {
+    if (wave % 10 == 0) {
         t = 4;
         monstersHP = 0;
         this->bossWave = true;

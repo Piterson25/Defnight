@@ -11,7 +11,7 @@ MainMenuState::MainMenuState(float gridSize, sf::RenderWindow &window,
     this->musicEngine.addMusic("main_menu.ogg");
     this->musicEngine.addMusic("main_menu2.ogg");
     this->loadedPlayerData = false;
-    PlayerStats::PlayerData playerData{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    playerData = PlayerStats::PlayerData{0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 }
 
 MainMenuState::~MainMenuState()
