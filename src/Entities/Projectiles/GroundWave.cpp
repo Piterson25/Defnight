@@ -66,3 +66,18 @@ void GroundWave::monsterCollision(Monster &monster, Player &player,
                                   FloatingTextSystem &floatingTextSystem)
 {
 }
+
+void GroundWave::update(float dt)
+{
+    const float vel = (this->speed * 0.2f + 0.8f) * 16.f *
+                      this->sprite.getGlobalBounds().width * dt;
+
+    this->velocity.x = vel * cos((3.1415f / 180.f) * this->angle);
+    this->velocity.y = vel * sin((3.1415f / 180.f) * this->angle);
+    this->timeExisting += dt;
+}
+
+void GroundWave::draw(sf::RenderTarget &target)
+{
+    target.draw(this->sprite);
+}

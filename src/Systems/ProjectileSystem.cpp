@@ -61,36 +61,99 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
 
 void ProjectileSystem::bossSpecialAttack(Boss &boss)
 {
-    if (boss.isSpecialAttackReady() && boss.getName() == "MINOTAUR") {
+    if (boss.getName() == "MINOTAUR") {
         addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
                       boss.getDifficultyMod(), sf::Vector2f(boss.getUpCenter()),
                       0);
         addProjectile(
             "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
             boss.getDifficultyMod(),
+            sf::Vector2f(boss.getRightCenter().x +
+                             (boss.getRightCenter().x - boss.getUpCenter().x) /
+                                 2,
+                         boss.getUpCenter().y),
+            0);
+        addProjectile(
+            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
+            boss.getDifficultyMod(),
             sf::Vector2f(boss.getRightCenter().x, boss.getUpCenter().y), 0);
+        addProjectile(
+            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
+            boss.getDifficultyMod(),
+            sf::Vector2f(boss.getRightCenter().x,
+                         boss.getRightCenter().y +
+                             (boss.getRightCenter().y - boss.getUpCenter().y) /
+                                 2),
+            0);
         addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
                       boss.getDifficultyMod(),
                       sf::Vector2f(boss.getRightCenter()), 0);
         addProjectile(
             "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
             boss.getDifficultyMod(),
+            sf::Vector2f(
+                boss.getRightCenter().x,
+                boss.getDownCenter().y +
+                    (boss.getDownCenter().y - boss.getRightCenter().y) / 2),
+            0);
+        addProjectile(
+            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
+            boss.getDifficultyMod(),
             sf::Vector2f(boss.getRightCenter().x, boss.getDownCenter().y), 0);
+        addProjectile(
+            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
+            boss.getDifficultyMod(),
+            sf::Vector2f(
+                boss.getRightCenter().x +
+                    (boss.getRightCenter().x - boss.getDownCenter().x) / 2,
+                boss.getDownCenter().y),
+            0);
         addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
                       boss.getDifficultyMod(),
                       sf::Vector2f(boss.getDownCenter()), 0);
         addProjectile(
             "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
             boss.getDifficultyMod(),
+            sf::Vector2f(boss.getLeftCenter().x +
+                             (boss.getLeftCenter().x - boss.getDownCenter().x) /
+                                 2,
+                         boss.getDownCenter().y),
+            0);
+        addProjectile(
+            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
+            boss.getDifficultyMod(),
             sf::Vector2f(boss.getLeftCenter().x, boss.getDownCenter().y), 0);
+        addProjectile(
+            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
+            boss.getDifficultyMod(),
+            sf::Vector2f(boss.getLeftCenter().x,
+                         boss.getDownCenter().y +
+                             (boss.getDownCenter().y - boss.getLeftCenter().y) /
+                                 2),
+            0);
         addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
                       boss.getDifficultyMod(),
                       sf::Vector2f(boss.getLeftCenter()), 0);
         addProjectile(
             "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
             boss.getDifficultyMod(),
+            sf::Vector2f(boss.getLeftCenter().x,
+                         boss.getUpCenter().y +
+                             (boss.getUpCenter().y - boss.getLeftCenter().y) /
+                                 2),
+            0);
+        addProjectile(
+            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
+            boss.getDifficultyMod(),
             sf::Vector2f(boss.getLeftCenter().x, boss.getUpCenter().y), 0);
-        boss.resetSpecialAttack();
+        addProjectile(
+            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
+            boss.getDifficultyMod(),
+            sf::Vector2f(boss.getUpCenter().x +
+                             (boss.getUpCenter().x - boss.getLeftCenter().x) /
+                                 2,
+                         boss.getUpCenter().y),
+            0);
     }
 }
 
@@ -114,14 +177,21 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
         auto groundWave = dynamic_cast<GroundWave *>((*proj).get());
         if (stone || groundWave) {
             (*proj)->update(slowedDt);
+            if ((*proj)->isParticleCooldown(slowedDt)) {
+                particleSystem.addSmallParticle(
+                    (*proj)->getCenter(),
+                    sf::Vector2f(calcX(8, vm), calcY(8, vm)), gui::BROWN);
+            }
         }
         else {
             (*proj)->update(dt);
         }
 
-        (*proj)->wallCollision(obstaclesBounds);
+        if (!groundWave) {
+            (*proj)->wallCollision(obstaclesBounds);
+        }
         (*proj)->playerCollision(player);
-        monsterSystem.projectileCollision(**proj, floatingTextSystem);
+        monsterSystem.projectileCollision(**proj);
         (*proj)->move();
 
         if ((*proj)->isBomb() &&
@@ -141,7 +211,10 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
             soundEngine.addSound("explosion");
             proj = this->projectiles.erase(proj);
         }
-        else if ((*proj)->getHP() == 0) {
+        else if ((*proj)->getHP() == 0 || (*proj)->getPosition().x < 0 ||
+                 (*proj)->getPosition().y < 0 ||
+                 (*proj)->getPosition().x > calcX(32 * 64, vm) ||
+                 (*proj)->getPosition().y > calcY(32 * 64, vm)) {
             proj = this->projectiles.erase(proj);
         }
         else if ((*proj)->hasCollidedPlayer()) {

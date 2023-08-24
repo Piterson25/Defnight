@@ -15,7 +15,10 @@ class MonsterSystem {
 public:
     MonsterSystem(sf::VideoMode &vm, Player &player,
                   const std::vector<sf::FloatRect> &obstaclesBounds,
-                  float gridSize, float difficulty_mod);
+                  float gridSize, float difficulty_mod, PlayerGUI &playerGUI,
+                  ProjectileSystem &projectileSystem, DropSystem &dropSystem,
+                  FloatingTextSystem &floatingTextSystem,
+                  SoundEngine &soundEngine);
     ~MonsterSystem();
 
     const bool isMonsterIDsEmpty() const;
@@ -27,23 +30,17 @@ public:
 
     void monsterIDsClear();
 
-    void playerAttack(FloatingTextSystem &floatingTextSystem,
-                      SoundEngine &soundEngine);
-    void explosionAttack(const std::vector<sf::FloatRect> &particlesBounds,
-                         FloatingTextSystem &floatingTextSystem);
+    void playerAttack();
+    void explosionAttack(const std::vector<sf::FloatRect> &particlesBounds);
 
-    void projectileCollision(Projectile &proj,
-                             FloatingTextSystem &floatingTextSystem);
+    void projectileCollision(Projectile &proj);
 
     void monsterCollision(Monster &mob);
     void spawnMonsters(const std::vector<sf::FloatRect> &obstaclesBounds,
                        uint32_t wave);
     void prepareWave(uint32_t &wave, uint32_t &sumHP);
 
-    void update(PlayerGUI &playerGUI, ProjectileSystem &projectileSystem,
-                DropSystem &dropSystem, FloatingTextSystem &floatingTextSystem,
-                SoundEngine &soundEngine,
-                const std::vector<sf::FloatRect> &obstaclesBounds, bool &paused,
+    void update(const std::vector<sf::FloatRect> &obstaclesBounds, bool &paused,
                 float dt);
     void draw(sf::RenderTarget &target);
     void drawShadow(sf::RenderTarget &target);
@@ -51,6 +48,13 @@ public:
 private:
     sf::VideoMode &vm;
     Player &player;
+
+    PlayerGUI &playerGUIRef;
+    ProjectileSystem &projectileSystemRef;
+    DropSystem &dropSystemRef;
+    FloatingTextSystem &floatingTextSystemRef;
+    SoundEngine &soundEngineRef;
+
     std::list<std::unique_ptr<Monster>> monsters;
     std::vector<short> monsterIDs;
     std::list<sf::FloatRect> freePositions;

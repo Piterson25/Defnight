@@ -12,4 +12,7 @@ public:
     void playerCollision(Player &player) override;
     void monsterCollision(Monster &monster, Player &player,
                           FloatingTextSystem &floatingTextSystem) override;
+
+    void update(float dt) override;
+    void draw(sf::RenderTarget &target);
 };

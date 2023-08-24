@@ -30,6 +30,8 @@ public:
 private:
     void savePlayerData();
 
+    sf::VideoMode &vm;
+
     sf::Clock clock;
     sf::View view;
     sf::View viewHUD;

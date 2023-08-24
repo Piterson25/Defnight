@@ -10,8 +10,10 @@ public:
     virtual ~Boss();
 
     const bool isSpecialAttackReady() const;
+    const bool isSpecialAttackAnimationDone() const;
     void resetSpecialAttack();
     void loadSpecialAttack(float dt);
+    void specialAttackAnimation(float dt);
 
     virtual void specialAttack(SoundEngine &soundEngine, float dt) = 0;
     void update(float dt);
@@ -21,4 +23,5 @@ public:
 protected:
     float specialAttackTimer;
     float specialAttackLimit;
+    bool specialAttackAnimationReady;
 };

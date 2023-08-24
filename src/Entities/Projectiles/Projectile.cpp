@@ -3,7 +3,7 @@
 Projectile::Projectile(const std::string &t_name, sf::VideoMode &t_vm,
                        float t_x, float t_y, float difficulty_mod,
                        const sf::Vector2f &coords, float coordsOffset)
-    : Entity(t_name, t_vm, t_x, t_y)
+    : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f)
 {
 
     this->texture.loadFromFile("assets/textures/projectiles.png");
@@ -75,6 +75,17 @@ const bool Projectile::hasExploded() const
 const bool Projectile::isBomb() const
 {
     return this->name == "BOMB";
+}
+
+const bool Projectile::isParticleCooldown(float dt)
+{
+    this->particleCooldown += dt;
+
+    if (this->particleCooldown > 0.01f) {
+        this->particleCooldown = 0.f;
+        return true;
+    }
+    return false;
 }
 
 void Projectile::setPiercing(uint32_t t_piercing)

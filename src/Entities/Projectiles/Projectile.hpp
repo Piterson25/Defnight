@@ -17,6 +17,7 @@ public:
     const uint32_t getPiercing() const;
     const bool hasExploded() const;
     const bool isBomb() const;
+    const bool isParticleCooldown(float dt);
 
     void setPiercing(uint32_t t_piercing);
     void calculateVelocity(const sf::Vector2f &coords);
@@ -25,9 +26,10 @@ public:
     virtual void playerCollision(Player &player) = 0;
     virtual void monsterCollision(Monster &monster, Player &player,
                                   FloatingTextSystem &floatingTextSystem) = 0;
-    void update(float dt);
+    virtual void update(float dt);
 
 protected:
+    float particleCooldown;
     float timeExisting;
     bool collidedWall;
     bool collidedPlayer;

@@ -18,7 +18,7 @@ namespace gui {
     const sf::Color LIME = sf::Color(127, 189, 57);
     const sf::Color LIGHT_BLUE = sf::Color(36, 174, 214);
     const sf::Color PURPLE = sf::Color(88, 74, 127);
-    const sf::Color BROWN = sf::Color(97, 74, 60);
+    const sf::Color BROWN = sf::Color(120, 76, 73);
     const sf::Color BLUE = sf::Color(0, 64, 81);
 
     const sf::IntRect RECT_DIFFICULTY = sf::IntRect(0, 0, 384, 504);

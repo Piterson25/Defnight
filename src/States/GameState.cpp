@@ -5,10 +5,9 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
                      MusicEngine &musicEngine, std::stack<State *> &states,
                      const std::string &map_name, const std::string &hero_name,
                      const std::string &difficulty_name)
-    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states)
+    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states),
+      vm(gameSettings.resolution)
 {
-    sf::VideoMode vm = this->gameSettings.resolution;
-
     this->musicEngine.clearMusic();
     this->musicEngine.addMusic("battle1.ogg");
     this->musicEngine.addMusic("battle2.ogg");
@@ -17,8 +16,7 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
     this->musicEngine.addMusic("battle5.ogg");
     this->musicEngine.addMusic("battle6.ogg");
 
-    this->floatingTextSystem =
-        new FloatingTextSystem(this->gameSettings.resolution);
+    this->floatingTextSystem = new FloatingTextSystem(this->vm);
     this->tileMap = new TileMap();
     this->mapName = map_name;
 
@@ -87,15 +85,15 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
 
     if (hero_name == "WARRIOR") {
         this->player = new Warrior(
-            hero_name, gameSettings.resolution,
+            hero_name, vm,
             this->vertexArray.getBounds().width / 2 - calcX(32, vm),
             this->vertexArray.getBounds().height / 2 - calcY(32, vm));
     }
 
     this->difficultyName = difficulty_name;
-    this->playerGUI = new PlayerGUI(this->gameSettings.resolution,
-                                    *this->player, *this->floatingTextSystem,
-                                    difficulty_name, this->gameSettings.lang);
+    this->playerGUI =
+        new PlayerGUI(this->vm, *this->player, *this->floatingTextSystem,
+                      difficulty_name, this->gameSettings.lang);
 
     this->view.setSize(sf::Vector2f(static_cast<float>(vm.width),
                                     static_cast<float>(vm.height)));
@@ -120,13 +118,15 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
         modifier = 1.25f;
     }
 
-    this->monsterSystem = new MonsterSystem(
-        gameSettings.resolution, *player, this->tileMap->getTilesGlobalBounds(),
-        this->gridSize, modifier);
-    this->dropSystem = new DropSystem(gameSettings.resolution, modifier);
+    this->dropSystem = new DropSystem(vm, modifier);
 
-    this->projectileSystem = new ProjectileSystem(gameSettings.resolution);
-    this->particleSystem = new ParticleSystem(gameSettings.resolution);
+    this->projectileSystem = new ProjectileSystem(vm);
+    this->particleSystem = new ParticleSystem(vm);
+
+    this->monsterSystem = new MonsterSystem(
+        vm, *player, this->tileMap->getTilesGlobalBounds(), this->gridSize,
+        modifier, *this->playerGUI, *this->projectileSystem, *this->dropSystem,
+        *this->floatingTextSystem, this->soundEngine);
 
     this->wave = 0;
     this->sumHP = 15;
@@ -177,6 +177,8 @@ void GameState::draw(sf::RenderTarget *target)
     this->monsterSystem->drawShadow(*target);
 
     this->player->drawShadow(*target);
+
+    this->particleSystem->drawSmallParticles(*target);
 
     target->draw(this->vertexArray, &this->tiles_texture);
 
@@ -320,19 +322,17 @@ void GameState::update(float dt)
 
                 this->player->update(dt);
 
-                const float _32 = calcX(32, this->gameSettings.resolution);
+                const float _32 = calcX(32, this->vm);
                 const bool osY =
-                    this->player->getPosition().y <=
-                        calcY(200, this->gameSettings.resolution) ||
+                    this->player->getPosition().y <= calcY(200, this->vm) ||
                     this->player->getPosition().y >=
                         this->background.getGlobalBounds().height -
-                            calcY(392, this->gameSettings.resolution);
+                            calcY(392, this->vm);
                 const bool osX =
-                    this->player->getPosition().x <=
-                        calcX(608, this->gameSettings.resolution) ||
+                    this->player->getPosition().x <= calcX(608, this->vm) ||
                     this->player->getPosition().x >=
                         this->background.getGlobalBounds().width -
-                            calcX(672, this->gameSettings.resolution);
+                            calcX(672, this->vm);
 
                 if (osX || osY) {
                     if (osX && osY) {
@@ -362,8 +362,7 @@ void GameState::update(float dt)
             this->player->loadAttack(dt);
             this->player->whooshSound(this->soundEngine);
 
-            if (this->mousePosView.y >
-                calcY(128, this->gameSettings.resolution)) {
+            if (this->mousePosView.y > calcY(128, this->vm)) {
                 if (!this->playerGUI->isShopping() &&
                     !this->playerGUI->isBuyingAbility()) {
                     if (mouseClick) {
@@ -450,13 +449,9 @@ void GameState::update(float dt)
                 this->gems += 5;
             }
             else {
-                this->monsterSystem->playerAttack(*this->floatingTextSystem,
-                                                  this->soundEngine);
+                this->monsterSystem->playerAttack();
                 this->monsterSystem->update(
-                    *this->playerGUI, *this->projectileSystem,
-                    *this->dropSystem, *this->floatingTextSystem,
-                    this->soundEngine, this->tileMap->getTilesGlobalBounds(),
-                    this->paused, dt);
+                    this->tileMap->getTilesGlobalBounds(), this->paused, dt);
                 this->playerGUI->updateBossHP(dt);
             }
         }
@@ -499,8 +494,7 @@ void GameState::update(float dt)
 
     this->particleSystem->update(dt);
     this->monsterSystem->explosionAttack(
-        this->particleSystem->getParticlesGlobalBounds(),
-        *this->floatingTextSystem);
+        this->particleSystem->getParticlesGlobalBounds());
 
     this->particleSystem->clearParticlesGlobalBounds();
 
