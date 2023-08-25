@@ -140,7 +140,7 @@ const bool AbilityUpgradeGUI::hasBoughtUpgrade(
         return false;
     }
 
-    if (!player.isAbilityActive() && player.getGold() >= getPrice(t_name)) {
+    if (player.getGold() >= getPrice(t_name)) {
         update(t_name, mousePos);
         if (isPressed(t_name, mouseClicked)) {
             buy(t_name, floatingTextSystem);
@@ -181,7 +181,7 @@ void AbilityUpgradeGUI::buy(const std::string &t_name,
 
 void AbilityUpgradeGUI::updateItemFrames()
 {
-    for (auto &pair : abilityUpgrades) {
+    for (const auto &pair : abilityUpgrades) {
         if (!pair.second.locked && !player.isAbilityActive() &&
             player.getGold() >= pair.second.price) {
             pair.second.button->setColor(gui::DARK_GREEN);

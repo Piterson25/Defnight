@@ -306,7 +306,10 @@ void GameState::update(float dt)
     }
 
     if (!this->paused) {
-        if (this->player->hasSpawned()) {
+        if (!this->player->hasSpawned()) {
+            this->player->spawn(dt);
+        }
+        else {
             this->player->controls(this->gameSettings.keybinds, dt);
             this->player->updateSprint(dt);
 
@@ -386,12 +389,6 @@ void GameState::update(float dt)
             this->playerGUI->updateAttack();
             this->playerGUI->updateReg();
             this->playerGUI->update_ability(dt);
-        }
-        else {
-            this->player->spawn(dt);
-        }
-
-        if (this->player->hasSpawned()) {
 
             this->updateKeysClick("Q", sf::Keyboard::Q);
 

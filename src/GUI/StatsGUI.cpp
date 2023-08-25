@@ -425,6 +425,7 @@ const bool StatsGUI::updateAbilityIcon(float value)
         sf::Vector2f(calcX(260, vm), calcX(8, vm) + value));
     if (this->abilityIcon.getSize().y <= 0.f) {
         this->sprite_buttons["ABILITY_UPGRADE"]->setColor(gui::GOLD);
+        this->player.setAbilityActive(false);
         return true;
     }
     return false;

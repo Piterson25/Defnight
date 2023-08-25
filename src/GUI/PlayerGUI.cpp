@@ -639,7 +639,7 @@ const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
         return true;
     }
 
-    if (this->isBuyingAbility()) {
+    if (this->isBuyingAbility() && !player.isAbilityActive()) {
         if (abilityUpgradeGUI->hasBoughtUpgrade(
                 mousePos, mouseClicked, "LOWER_COOLDOWN",
                 &this->floatingTextSystem, &soundEngine)) {
