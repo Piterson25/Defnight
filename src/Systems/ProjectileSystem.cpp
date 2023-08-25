@@ -177,7 +177,7 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
         auto groundWave = dynamic_cast<GroundWave *>((*proj).get());
         if (stone || groundWave) {
             (*proj)->update(slowedDt);
-            if ((*proj)->isParticleCooldown(slowedDt)) {
+            if (groundWave && (*proj)->isParticleCooldown(slowedDt)) {
                 particleSystem.addSmallParticle(
                     (*proj)->getCenter(),
                     sf::Vector2f(calcX(8, vm), calcY(8, vm)), gui::BROWN);
