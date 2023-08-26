@@ -31,10 +31,9 @@ public:
     void setAbilityIcon();
     const bool updateAbilityIcon(float value);
     void setWaveCountdownText(const std::string &text);
-    const bool hasClickedMenu(const sf::Vector2i &mousePos, bool mouseClicked);
-    const bool hasClickedShop(const sf::Vector2i &mousePos, bool mouseClicked);
-    const bool hasClickedAbilityUpgrade(const sf::Vector2i &mousePos,
-                                        bool mouseClicked);
+    bool hasClickedMenu(const sf::Vector2i &mousePos);
+    bool hasClickedShop(const sf::Vector2i &mousePos);
+    bool hasClickedAbilityUpgrade(const sf::Vector2i &mousePos);
     void update(const sf::Vector2f &mousePosView);
     void drawAbility(sf::RenderTarget &target);
     void drawWaveCountdown(sf::RenderTarget &target);

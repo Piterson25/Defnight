@@ -17,8 +17,7 @@ public:
                      uint32_t boughtNumber, uint32_t maxNumber);
     void updateSegments(const std::string &t_name);
 
-    const bool isPressed(const std::string &t_name, bool mouseClicked);
-    const bool hasBoughtItem(const sf::Vector2i &mousePos, bool mouseClicked,
+    const bool hasBoughtItem(const sf::Vector2i &mousePos,
                              const std::string &t_name,
                              FloatingTextSystem *floatingTextSystem,
                              SoundEngine *soundEngine);
@@ -27,7 +26,6 @@ public:
     void disableItem(const std::string &t_name);
     void buy(const std::string &t_name, FloatingTextSystem *floatingTextSystem);
     void updateItemFrames();
-    void update(const std::string &t_name, const sf::Vector2i &mousePos);
     void draw(sf::RenderTarget &target);
 
 private:

@@ -124,14 +124,8 @@ void AbilityUpgradeGUI::updateSegments(const std::string &t_name)
     }
 }
 
-const bool AbilityUpgradeGUI::isPressed(const std::string &t_name,
-                                        bool mouseClicked)
-{
-    return this->abilityUpgrades[t_name].button->isPressed() && !mouseClicked;
-}
-
 const bool AbilityUpgradeGUI::hasBoughtUpgrade(
-    const sf::Vector2i &mousePos, bool mouseClicked, const std::string &t_name,
+    const sf::Vector2i &mousePos, const std::string &t_name,
     FloatingTextSystem *floatingTextSystem, SoundEngine *soundEngine)
 {
     if (this->abilityUpgrades.find(t_name) == this->abilityUpgrades.end() ||
@@ -141,8 +135,7 @@ const bool AbilityUpgradeGUI::hasBoughtUpgrade(
     }
 
     if (player.getGold() >= getPrice(t_name)) {
-        update(t_name, mousePos);
-        if (isPressed(t_name, mouseClicked)) {
+        if (this->abilityUpgrades[t_name].button->isPressed(mousePos)) {
             buy(t_name, floatingTextSystem);
             player.setBoughtItems(player.getBoughtItems() + 1);
             soundEngine->addSound("buy");
@@ -249,12 +242,6 @@ void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
         playerStats[t_name]->setText(text +
                                      std::to_string(player.getAttackLimit()));
     }
-}
-
-void AbilityUpgradeGUI::update(const std::string &t_name,
-                               const sf::Vector2i &mousePos)
-{
-    this->abilityUpgrades[t_name].button->update(mousePos);
 }
 
 void AbilityUpgradeGUI::draw(sf::RenderTarget &target)

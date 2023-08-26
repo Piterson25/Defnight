@@ -3,8 +3,7 @@
 StatsState::StatsState(float gridSize, sf::RenderWindow &window,
                        GameSettings &gameSettings, SoundEngine &soundEngine,
                        MusicEngine &musicEngine, std::stack<State *> &states)
-    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states),
-      vm(gameSettings.resolution)
+    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states)
 {
     this->texts["STATISTICS"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["STATISTICS"], calcChar(32, vm), calcX(640, vm),
@@ -107,23 +106,16 @@ void StatsState::update(float dt)
 {
     this->updateMousePositions();
 
-    this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
-    if (this->sprite_buttons["GO_BACK"]->isPressed() &&
-        !this->isMouseClicked()) {
-        this->setMouseClick(true);
+    if (this->sprite_buttons["GO_BACK"]->isPressed(this->mousePosWindow)) {
         this->soundEngine.addSound("button");
         this->endState();
     }
 
-    this->updateMouseClick();
+    GameInputHandler::updateMouseClick();
 
-    this->updateKeysClick("Escape", sf::Keyboard::Escape);
-
-    if (this->isKeyClicked1("Escape") && !this->isKeyClicked2("Escape")) {
-        this->setKeysClick("Escape", true);
+    if (GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Escape)) {
         this->endState();
     }
-    this->setKeysClick("Escape", this->isKeyClicked1("Escape"));
 
     this->musicEngine.update();
 }

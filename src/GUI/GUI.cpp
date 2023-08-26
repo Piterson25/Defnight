@@ -47,9 +47,37 @@ namespace gui {
         return this->text.getPosition();
     }
 
-    const bool ButtonText::isPressed() const
+    bool ButtonText::isPressed(const sf::Vector2i &mousePosWindow)
     {
-        return this->buttonState == BUTTON_PRESSED;
+        this->buttonState = BUTTON_IDLE;
+
+        if (this->text.getGlobalBounds().contains(
+                static_cast<sf::Vector2f>(mousePosWindow))) {
+            this->buttonState = BUTTON_HOVER;
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                this->buttonState = BUTTON_PRESSED;
+            }
+        }
+        switch (this->buttonState) {
+            case BUTTON_IDLE:
+                this->text.setFillColor(this->idleColor);
+                break;
+            case BUTTON_HOVER:
+                this->text.setFillColor(this->hoverColor);
+                break;
+            case BUTTON_PRESSED:
+                this->text.setFillColor(this->hoverColor);
+                break;
+        }
+
+        if (this->buttonState == BUTTON_PRESSED &&
+            !GameInputHandler::isMouseClick()) {
+            GameInputHandler::setMouseClick(true);
+            return true;
+        }
+
+        return false;
     }
 
     const std::string ButtonText::getText() const
@@ -78,32 +106,6 @@ namespace gui {
             static_cast<float>(static_cast<int>(
                 posX - (this->text.getGlobalBounds().width) / 2)),
             this->text.getPosition().y);
-    }
-
-    void ButtonText::update(const sf::Vector2i &mousePosWindow)
-    {
-        this->buttonState = BUTTON_IDLE;
-
-        if (this->text.getGlobalBounds().contains(
-                static_cast<sf::Vector2f>(mousePosWindow))) {
-            this->buttonState = BUTTON_HOVER;
-
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                this->buttonState = BUTTON_PRESSED;
-            }
-        }
-
-        switch (this->buttonState) {
-            case BUTTON_IDLE:
-                this->text.setFillColor(this->idleColor);
-                break;
-            case BUTTON_HOVER:
-                this->text.setFillColor(this->hoverColor);
-                break;
-            case BUTTON_PRESSED:
-                this->text.setFillColor(this->hoverColor);
-                break;
-        }
     }
 
     void ButtonText::draw(sf::RenderTarget &target)
@@ -211,32 +213,7 @@ namespace gui {
         return this->color;
     }
 
-    const bool ButtonSprite::isPressed() const
-    {
-        return this->buttonState == BUTTON_PRESSED;
-    }
-
-    const sf::IntRect ButtonSprite::getTextureRect() const
-    {
-        return this->sprite.getTextureRect();
-    }
-
-    void ButtonSprite::setColor(const sf::Color &t_color)
-    {
-        this->buttonState = BUTTON_IDLE;
-        this->color = t_color;
-        this->sprite.setColor(this->color);
-    }
-
-    void ButtonSprite::center(float posX)
-    {
-        this->sprite.setPosition(
-            static_cast<float>(static_cast<int>(
-                posX - (this->sprite.getGlobalBounds().width) / 2)),
-            this->sprite.getPosition().y);
-    }
-
-    void ButtonSprite::update(const sf::Vector2i &mousePosWindow)
+    bool ButtonSprite::isPressed(const sf::Vector2i &mousePosWindow)
     {
         this->buttonState = BUTTON_IDLE;
 
@@ -260,6 +237,34 @@ namespace gui {
                 this->sprite.setColor(gui::WHITE);
                 break;
         }
+
+        if (this->buttonState == BUTTON_PRESSED &&
+            !GameInputHandler::isMouseClick()) {
+            GameInputHandler::setMouseClick(true);
+            return true;
+        }
+
+        return false;
+    }
+
+    const sf::IntRect ButtonSprite::getTextureRect() const
+    {
+        return this->sprite.getTextureRect();
+    }
+
+    void ButtonSprite::setColor(const sf::Color &t_color)
+    {
+        this->buttonState = BUTTON_IDLE;
+        this->color = t_color;
+        this->sprite.setColor(this->color);
+    }
+
+    void ButtonSprite::center(float posX)
+    {
+        this->sprite.setPosition(
+            static_cast<float>(static_cast<int>(
+                posX - (this->sprite.getGlobalBounds().width) / 2)),
+            this->sprite.getPosition().y);
     }
 
     void ButtonSprite::draw(sf::RenderTarget &target)

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utils/header.h"
+#include "GameInputHandler.hpp"
 
 class GameSettings {
 public:
@@ -20,6 +20,4 @@ public:
     sf::VideoMode resolution;
     std::vector<sf::VideoMode> videoModes;
     std::unordered_map<std::string, std::string> lang;
-    std::unordered_map<std::string, int> keybinds;
-    std::unordered_map<std::string, int> supportedKeys;
 };

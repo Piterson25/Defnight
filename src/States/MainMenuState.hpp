@@ -29,8 +29,6 @@ private:
         std::unique_ptr<gui::Text> xp;
     };
 
-    sf::VideoMode &vm;
-
     std::vector<RankText> ranksTexts;
     PlayerStats::Rank playerRank;
 
@@ -40,7 +38,6 @@ private:
     std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>>
         sprite_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
-    std::unordered_map<std::string, std::string> &lang;
 
     uint16_t page;
 

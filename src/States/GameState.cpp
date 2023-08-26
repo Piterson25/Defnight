@@ -5,8 +5,7 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
                      MusicEngine &musicEngine, std::stack<State *> &states,
                      const std::string &map_name, const std::string &hero_name,
                      const std::string &difficulty_name)
-    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states),
-      vm(gameSettings.resolution)
+    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states)
 {
     this->musicEngine.clearMusic();
     this->musicEngine.addMusic("battle1.ogg");
@@ -105,9 +104,6 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
                                          static_cast<float>(vm.height) / 2.f));
 
     Random::Init();
-
-    this->keysClick["Escape"].first = false;
-    this->keysClick["Escape"].second = false;
 
     float modifier = 1.f;
 
@@ -228,9 +224,7 @@ void GameState::update(float dt)
 {
     this->updateMousePositions(&this->viewHUD);
 
-    if (this->playerGUI->hasClickedMenu(this->mousePosWindow,
-                                        this->isMouseClicked(), this->paused)) {
-        this->setKeysClick("Escape", true);
+    if (this->playerGUI->hasClickedMenu(this->mousePosWindow, this->paused)) {
         if (this->paused) {
             this->musicEngine.pauseMusic();
             this->soundEngine.stopSounds();
@@ -240,22 +234,19 @@ void GameState::update(float dt)
         }
     }
 
-    if (this->playerGUI->hasClickedButtons(
-            this->mousePosWindow, this->isMouseClicked(), this->soundEngine)) {
-        this->setMouseClick(true);
+    if (this->playerGUI->hasClickedButtons(this->mousePosWindow,
+                                           this->soundEngine)) {
         this->unpauseState();
     }
 
     if (this->player->isDead()) {
-        const uint16_t result = this->playerGUI->updateDeathScreenButtons(
-            this->mousePosWindow, this->isMouseClicked());
+        const uint16_t result =
+            this->playerGUI->updateDeathScreenButtons(this->mousePosWindow);
         if (result == 1) {
-            this->setMouseClick(true);
             this->soundEngine.addSound("button");
             this->endState();
         }
         else if (result == 2) {
-            this->setMouseClick(true);
             this->soundEngine.addSound("button");
             this->window.close();
         }
@@ -263,10 +254,7 @@ void GameState::update(float dt)
 
     if (!this->playerGUI->isLeveling() && !this->playerGUI->isUpgrading()) {
 
-        this->updateKeysClick("Escape", sf::Keyboard::Escape);
-
-        if (this->isKeyClicked1("Escape") && !this->isKeyClicked2("Escape")) {
-            this->setKeysClick("Escape", true);
+        if (GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Escape)) {
             this->playerGUI->updatePaused(this->paused);
             if (this->paused) {
                 this->musicEngine.pauseMusic();
@@ -276,13 +264,12 @@ void GameState::update(float dt)
                 this->musicEngine.playMusic();
             }
         }
-        this->setKeysClick("Escape", this->isKeyClicked1("Escape"));
     }
 
     if (this->playerGUI->isEscape() &&
         (!this->playerGUI->isLeveling() && !this->playerGUI->isUpgrading())) {
-        const uint8_t result = this->playerGUI->updateEscapeButton(
-            this->mousePosWindow, this->isMouseClicked());
+        const uint8_t result =
+            this->playerGUI->updateEscapeButton(this->mousePosWindow);
         if (result == 1) {
             this->soundEngine.addSound("button");
             this->endState();
@@ -310,7 +297,7 @@ void GameState::update(float dt)
             this->player->spawn(dt);
         }
         else {
-            this->player->controls(this->gameSettings.keybinds, dt);
+            this->player->controls(GameInputHandler::keybinds, dt);
             this->player->updateSprint(dt);
 
             if (this->player->isPunched()) {
@@ -368,7 +355,7 @@ void GameState::update(float dt)
             if (this->mousePosView.y > calcY(128, this->vm)) {
                 if (!this->playerGUI->isShopping() &&
                     !this->playerGUI->isBuyingAbility()) {
-                    if (mouseClick) {
+                    if (GameInputHandler::isMouseClick()) {
                         this->player->doAttack();
                     }
                     if (this->player->isAbilityActivated()) {
@@ -390,35 +377,20 @@ void GameState::update(float dt)
             this->playerGUI->updateReg();
             this->playerGUI->update_ability(dt);
 
-            this->updateKeysClick("Q", sf::Keyboard::Q);
-
-            if (this->isKeyClicked1("Q") && !this->isKeyClicked2("Q")) {
-                this->setKeysClick("Q", true);
+            if (GameInputHandler::isKeyPressed("Q", sf::Keyboard::Q)) {
                 this->playerGUI->updateIsShopping();
             }
-            this->setKeysClick("Q", this->isKeyClicked1("Q"));
 
-            if (this->playerGUI->hasClickedShopBuy(this->mousePosWindow,
-                                                   this->isMouseClicked(),
-                                                   this->soundEngine)) {
-                this->setMouseClick(true);
-            }
+            playerGUI->updateShopBuy(this->mousePosWindow, this->soundEngine);
 
             if (this->player->isUpgraded()) {
 
-                this->updateKeysClick("E", sf::Keyboard::E);
-
-                if (this->isKeyClicked1("E") && !this->isKeyClicked2("E")) {
-                    this->setKeysClick("E", true);
+                if (GameInputHandler::isKeyPressed("E", sf::Keyboard::E)) {
                     this->playerGUI->updateIsBuyingAbility();
                 }
-                this->setKeysClick("E", this->isKeyClicked1("E"));
 
-                if (this->playerGUI->hasClickedAbilityBuy(
-                        this->mousePosWindow, this->isMouseClicked(),
-                        this->soundEngine)) {
-                    this->setMouseClick(true);
-                }
+                playerGUI->updateAbilityBuy(this->mousePosWindow,
+                                            this->soundEngine);
             }
         }
 
@@ -497,5 +469,5 @@ void GameState::update(float dt)
 
     this->floatingTextSystem->update(dt);
 
-    this->updateMouseClick();
+    GameInputHandler::updateMouseClick();
 }

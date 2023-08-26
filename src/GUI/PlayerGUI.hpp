@@ -27,11 +27,9 @@ public:
     void updateAttack();
     void updateReg();
     void updateBossHP(float dt);
-    const bool hasClickedShopBuy(const sf::Vector2i &mousePos,
-                                 bool mouseClicked, SoundEngine &soundEngine);
-    const bool hasClickedAbilityBuy(const sf::Vector2i &mousePos,
-                                    bool mouseClicked,
-                                    SoundEngine &soundEngine);
+    void updateShopBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
+    void updateAbilityBuy(const sf::Vector2i &mousePos,
+                          SoundEngine &soundEngine);
 
     const bool isEscape() const;
     const bool isLeveling() const;
@@ -48,20 +46,15 @@ public:
                                 SoundEngine &soundEngine,
                                 MusicEngine &musicEngine);
     void updateMonsterCount(const size_t &monsterCount);
-    const bool hasClickedMenu(const sf::Vector2i &mousePos, bool mouseClicked,
-                              bool &paused);
-    const uint8_t updateEscapeButton(const sf::Vector2i &mousePos,
-                                     const bool &mouseClicked);
+    const bool hasClickedMenu(const sf::Vector2i &mousePos, bool &paused);
+    const uint8_t updateEscapeButton(const sf::Vector2i &mousePos);
     const bool hasClickedButtons(const sf::Vector2i &mousePos,
-                                 bool mouseClicked, SoundEngine &soundEngine);
+                                 SoundEngine &soundEngine);
     const bool hasClickedLevelUpButtons(const sf::Vector2i &mousePos,
-                                        bool mouseClicked,
                                         SoundEngine &soundEngine);
     const bool hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
-                                        bool mouseClicked,
                                         SoundEngine &soundEngine);
-    const uint8_t updateDeathScreenButtons(const sf::Vector2i &mousePos,
-                                           bool mouseClicked);
+    const uint8_t updateDeathScreenButtons(const sf::Vector2i &mousePos);
     void updatePlayerAttributes();
     void update(sf::Vector2f &mousePosView, float waveCountdown, float bossHP,
                 float dt);

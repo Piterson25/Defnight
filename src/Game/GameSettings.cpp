@@ -52,27 +52,6 @@ void GameSettings::load()
     }
     ifs.close();
 
-    ifs.open("config/supported_keys.ini");
-    if (ifs.is_open()) {
-        std::string key = "";
-        int key_value = 0;
-
-        while (ifs >> key >> key_value) {
-            this->supportedKeys[key] = key_value;
-        }
-    }
-    ifs.close();
-
-    ifs.open("config/game_keybinds.ini");
-    if (ifs.is_open()) {
-        std::string key = "";
-        std::string key2 = "";
-        while (ifs >> key >> key2) {
-            this->keybinds[key] = this->supportedKeys[key2];
-        }
-    }
-    ifs.close();
-
     if (this->language == "polish") {
         ifs.open("assets/languages/polish.ini");
     }
@@ -88,4 +67,6 @@ void GameSettings::load()
         lang[key] = sf::String::fromUtf8(value.begin(), value.end());
     }
     ifs.close();
+
+    GameInputHandler::loadKeybinds();
 }

@@ -436,37 +436,19 @@ void StatsGUI::setWaveCountdownText(const std::string &text)
     this->texts["WAVE_COUNTDOWN"]->setText(text);
 }
 
-const bool StatsGUI::hasClickedMenu(const sf::Vector2i &mousePos,
-                                    bool mouseClicked)
+bool StatsGUI::hasClickedMenu(const sf::Vector2i &mousePos)
 {
-    this->sprite_buttons["MENU"]->update(mousePos);
-    if (this->sprite_buttons["MENU"]->isPressed() && !mouseClicked) {
-        return true;
-    }
-
-    return false;
+    return this->sprite_buttons["MENU"]->isPressed(mousePos);
 }
 
-const bool StatsGUI::hasClickedShop(const sf::Vector2i &mousePos,
-                                    bool mouseClicked)
+bool StatsGUI::hasClickedShop(const sf::Vector2i &mousePos)
 {
-    this->sprite_buttons["SHOP"]->update(mousePos);
-    if (this->sprite_buttons["SHOP"]->isPressed() && !mouseClicked) {
-        return true;
-    }
-
-    return false;
+    return sprite_buttons["SHOP"]->isPressed(mousePos);
 }
 
-const bool StatsGUI::hasClickedAbilityUpgrade(const sf::Vector2i &mousePos,
-                                              bool mouseClicked)
+bool StatsGUI::hasClickedAbilityUpgrade(const sf::Vector2i &mousePos)
 {
-    this->sprite_buttons["ABILITY_UPGRADE"]->update(mousePos);
-    if (this->sprite_buttons["ABILITY_UPGRADE"]->isPressed() && !mouseClicked) {
-        return true;
-    }
-
-    return false;
+    return sprite_buttons["ABILITY_UPGRADE"]->isPressed(mousePos);
 }
 
 void StatsGUI::update(const sf::Vector2f &mousePosView)

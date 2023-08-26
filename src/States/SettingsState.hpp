@@ -17,6 +17,8 @@ public:
     void draw(sf::RenderTarget *target = NULL) override;
 
 private:
+    uint32_t page;
+
     std::vector<sf::VideoMode> videoModes;
 
     sf::VideoMode mode;

@@ -17,8 +17,6 @@ public:
         uint32_t effect;
     };
 
-    const bool isPressed(const std::string &t_name, bool mouseClicked);
-
     void changeUpgrade(const std::string &t_name, float t_x, float t_y,
                        const std::string &desc, uint32_t abilityIconID,
                        uint32_t attributeIconID, uint32_t attributeValue,
@@ -26,10 +24,8 @@ public:
     void deleteUpgrade(const std::string &t_name);
 
     const bool hasClickedUpgrade(const sf::Vector2i &mousePos,
-                                 bool mouseClicked, const std::string &t_name,
+                                 const std::string &t_name,
                                  SoundEngine *soundEngine);
-
-    void update(const std::string &t_name, const sf::Vector2i &mousePos);
     void draw(sf::RenderTarget &target);
 
 private:

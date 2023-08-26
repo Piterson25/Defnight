@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Utils/Functions.hpp"
+#include "Game/GameInputHandler.hpp"
 
 namespace gui {
 
@@ -40,8 +40,10 @@ namespace gui {
                    const sf::Color &hoverColor, bool center);
         ~ButtonText();
 
+        bool isPressed(const sf::Vector2i &mousePosWindow);
+
         const sf::Vector2f &getPosition() const;
-        const bool isPressed() const;
+
         const std::string getText() const;
         const float getWidth() const;
 
@@ -49,7 +51,6 @@ namespace gui {
         void setText(const std::string &text);
 
         void center(float posX);
-        void update(const sf::Vector2i &mousePosWindow);
         void draw(sf::RenderTarget &target);
 
     private:
@@ -91,14 +92,14 @@ namespace gui {
                      float scale, bool center);
         ~ButtonSprite();
 
+        bool isPressed(const sf::Vector2i &mousePosWindow);
+
         const sf::Color getColor() const;
-        const bool isPressed() const;
         const sf::IntRect getTextureRect() const;
 
         void setColor(const sf::Color &t_color);
         void center(float posX);
 
-        void update(const sf::Vector2i &mousePosWindow);
         void draw(sf::RenderTarget &target);
 
     private:

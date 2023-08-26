@@ -4,8 +4,7 @@ MainMenuState::MainMenuState(float gridSize, sf::RenderWindow &window,
                              GameSettings &gameSettings,
                              SoundEngine &soundEngine, MusicEngine &musicEngine,
                              std::stack<State *> &states)
-    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states),
-      vm(gameSettings.resolution), lang(gameSettings.lang)
+    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states)
 {
     this->initGUI();
     this->musicEngine.addMusic("main_menu.ogg");
@@ -22,8 +21,6 @@ MainMenuState::~MainMenuState()
 void MainMenuState::initGUI()
 {
     this->page = 0;
-    this->keysClick["Escape"].first = false;
-    this->keysClick["Escape"].second = false;
 
     this->fading = false;
     this->appearing = false;
@@ -525,165 +522,121 @@ void MainMenuState::update(float dt)
                 }
                 break;
             case 1:
-
                 if (!quitwindow) {
-                    this->text_buttons["PLAY"]->update(this->mousePosWindow);
-                    this->text_buttons["STATISTICS"]->update(
-                        this->mousePosWindow);
-                    this->text_buttons["SETTINGS"]->update(
-                        this->mousePosWindow);
-                    this->text_buttons["CREDITS"]->update(this->mousePosWindow);
-                    this->text_buttons["QUIT"]->update(this->mousePosWindow);
-                    this->text_buttons["RANK"]->update(this->mousePosWindow);
-
-                    if (this->text_buttons["PLAY"]->isPressed() &&
-                        !this->isMouseClicked()) {
+                    if (this->text_buttons["PLAY"]->isPressed(
+                            this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
-                        this->setMouseClick(true);
                         this->map_name = "";
                         this->page = 2;
                     }
-                    else if (this->text_buttons["SETTINGS"]->isPressed() &&
-                             !this->isMouseClicked()) {
-                        this->setMouseClick(true);
-                        this->soundEngine.addSound("button");
-                        this->states.push(new SettingsState(
-                            this->gridSize, this->window, this->gameSettings,
-                            this->soundEngine, this->musicEngine,
-                            this->states));
-                    }
-                    else if (this->text_buttons["STATISTICS"]->isPressed() &&
-                             !this->isMouseClicked()) {
-                        this->setMouseClick(true);
+                    else if (this->text_buttons["STATISTICS"]->isPressed(
+                                 this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
                         this->states.push(new StatsState(
                             this->gridSize, this->window, this->gameSettings,
                             this->soundEngine, this->musicEngine,
                             this->states));
                     }
-                    else if (this->text_buttons["CREDITS"]->isPressed() &&
-                             !this->isMouseClicked()) {
+                    else if (this->text_buttons["SETTINGS"]->isPressed(
+                                 this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
-                        this->setMouseClick(true);
+                        this->states.push(new SettingsState(
+                            this->gridSize, this->window, this->gameSettings,
+                            this->soundEngine, this->musicEngine,
+                            this->states));
+                    }
+
+                    else if (this->text_buttons["CREDITS"]->isPressed(
+                                 this->mousePosWindow)) {
+                        this->soundEngine.addSound("button");
                         this->page = 5;
                     }
-                    else if (this->text_buttons["QUIT"]->isPressed() &&
-                             !this->isMouseClicked()) {
-                        this->setMouseClick(true);
+                    else if (this->text_buttons["QUIT"]->isPressed(
+                                 this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
                         this->quitwindow = true;
                     }
-                    else if (this->text_buttons["RANK"]->isPressed() &&
-                             !this->isMouseClicked()) {
+                    else if (this->text_buttons["RANK"]->isPressed(
+                                 this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
-                        this->setMouseClick(true);
                         this->page = 6;
                     }
                 }
                 else {
-                    this->text_buttons["YES"]->update(this->mousePosWindow);
-                    this->text_buttons["NO"]->update(this->mousePosWindow);
-
-                    if (this->text_buttons["YES"]->isPressed() &&
-                        !this->isMouseClicked()) {
-                        this->setMouseClick(true);
+                    if (this->text_buttons["YES"]->isPressed(
+                            this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
                         this->endState();
                     }
-                    else if (this->text_buttons["NO"]->isPressed() &&
-                             !this->isMouseClicked()) {
-                        this->setMouseClick(true);
+                    else if (this->text_buttons["NO"]->isPressed(
+                                 this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
                         this->quitwindow = false;
                     }
                 }
                 break;
             case 2:
-                this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
-                if (this->sprite_buttons["GO_BACK"]->isPressed() &&
-                    !this->isMouseClicked()) {
-                    this->setMouseClick(true);
+                if (this->sprite_buttons["GO_BACK"]->isPressed(
+                        this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     --this->page;
                     this->map_name = "";
                 }
 
-                this->sprite_buttons["MAP1"]->update(this->mousePosWindow);
-                if (this->sprite_buttons["MAP1"]->isPressed() &&
-                    !this->isMouseClicked()) {
-                    this->setMouseClick(true);
+                if (this->sprite_buttons["MAP1"]->isPressed(
+                        this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     this->map_name = "ruins";
                     this->page = 3;
                 }
-
-                this->sprite_buttons["MAP2"]->update(this->mousePosWindow);
-                if (this->sprite_buttons["MAP2"]->isPressed() &&
-                    !this->isMouseClicked()) {
-                    this->setMouseClick(true);
+                else if (this->sprite_buttons["MAP2"]->isPressed(
+                             this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     this->map_name = "desolation";
                     this->page = 3;
                 }
-
-                this->sprite_buttons["MAP3"]->update(this->mousePosWindow);
-                if (this->sprite_buttons["MAP3"]->isPressed() &&
-                    !this->isMouseClicked()) {
-                    this->setMouseClick(true);
+                else if (this->sprite_buttons["MAP3"]->isPressed(
+                             this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     this->map_name = "permafrost";
                     this->page = 3;
                 }
                 break;
             case 3:
-                this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
-                if (this->sprite_buttons["GO_BACK"]->isPressed() &&
-                    !this->isMouseClicked()) {
-                    this->setMouseClick(true);
+                if (this->sprite_buttons["GO_BACK"]->isPressed(
+                        this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     --this->page;
                     this->hero_name = "";
                     this->choosing_hero = false;
                 }
 
-                this->sprite_buttons["HERO1"]->update(this->mousePosWindow);
-                if (this->sprite_buttons["HERO1"]->isPressed() &&
-                    !this->isMouseClicked()) {
-                    this->setMouseClick(true);
+                if (this->sprite_buttons["HERO1"]->isPressed(
+                        this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     this->choosing_hero = true;
                     this->hero_name = "WARRIOR";
                 }
 
                 if (this->choosing_hero) {
-                    this->text_buttons["CHOOSE"]->update(this->mousePosWindow);
-                    if (this->text_buttons["CHOOSE"]->isPressed() &&
-                        !this->isMouseClicked()) {
+                    if (this->text_buttons["CHOOSE"]->isPressed(
+                            this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
                         this->page = 4;
                     }
                 }
                 break;
             case 4:
-                this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
-                if (this->sprite_buttons["GO_BACK"]->isPressed() &&
-                    !this->isMouseClicked()) {
-                    this->setMouseClick(true);
+                if (this->sprite_buttons["GO_BACK"]->isPressed(
+                        this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     --this->page;
                     this->difficulty_name = "";
                     this->choosing_hero = false;
                 }
 
-                this->sprite_buttons["DIFFICULTY1"]->update(
-                    this->mousePosWindow);
-                this->sprite_buttons["DIFFICULTY2"]->update(
-                    this->mousePosWindow);
-                this->sprite_buttons["DIFFICULTY3"]->update(
-                    this->mousePosWindow);
-                if (this->sprite_buttons["DIFFICULTY1"]->isPressed() &&
-                    !this->isMouseClicked()) {
-                    this->setMouseClick(true);
+                if (this->sprite_buttons["DIFFICULTY1"]->isPressed(
+                        this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     this->difficulty_name = "EASY";
                     this->page = 1;
@@ -695,9 +648,8 @@ void MainMenuState::update(float dt)
                     this->choosing_hero = false;
                     this->loadedPlayerData = false;
                 }
-                else if (this->sprite_buttons["DIFFICULTY2"]->isPressed() &&
-                         !this->isMouseClicked()) {
-                    this->setMouseClick(true);
+                else if (this->sprite_buttons["DIFFICULTY2"]->isPressed(
+                             this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     this->difficulty_name = "NORMAL";
                     this->page = 1;
@@ -709,9 +661,8 @@ void MainMenuState::update(float dt)
                     this->choosing_hero = false;
                     this->loadedPlayerData = false;
                 }
-                else if (this->sprite_buttons["DIFFICULTY3"]->isPressed() &&
-                         !this->isMouseClicked()) {
-                    this->setMouseClick(true);
+                else if (this->sprite_buttons["DIFFICULTY3"]->isPressed(
+                             this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     this->difficulty_name = "HARD";
                     this->page = 1;
@@ -725,19 +676,15 @@ void MainMenuState::update(float dt)
                 }
                 break;
             case 5:
-                this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
-                if (this->sprite_buttons["GO_BACK"]->isPressed() &&
-                    !this->isMouseClicked()) {
-                    this->setMouseClick(true);
+                if (this->sprite_buttons["GO_BACK"]->isPressed(
+                        this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     this->page = 1;
                 }
                 break;
             case 6:
-                this->sprite_buttons["GO_BACK"]->update(this->mousePosWindow);
-                if (this->sprite_buttons["GO_BACK"]->isPressed() &&
-                    !this->isMouseClicked()) {
-                    this->setMouseClick(true);
+                if (this->sprite_buttons["GO_BACK"]->isPressed(
+                        this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     this->page = 1;
                 }
@@ -745,13 +692,11 @@ void MainMenuState::update(float dt)
         }
     }
 
-    this->updateMouseClick();
+    GameInputHandler::updateMouseClick();
 
     if (!this->quitwindow && this->page > 0) {
-        this->updateKeysClick("Escape", sf::Keyboard::Escape);
 
-        if (this->isKeyClicked1("Escape") && !this->isKeyClicked2("Escape")) {
-            this->setKeysClick("Escape", true);
+        if (GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Escape)) {
             if (this->page == 1) {
                 this->quitwindow = true;
             }
@@ -759,7 +704,6 @@ void MainMenuState::update(float dt)
                 --this->page;
             }
         }
-        this->setKeysClick("Escape", this->isKeyClicked1("Escape"));
     }
 
     if (this->musicEngine.isEmpty()) {

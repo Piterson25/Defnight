@@ -14,11 +14,6 @@ UpgradeGUI::~UpgradeGUI()
     this->upgrades.clear();
 }
 
-const bool UpgradeGUI::isPressed(const std::string &t_name, bool mouseClicked)
-{
-    return this->upgrades[t_name].button->isPressed() && !mouseClicked;
-}
-
 void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y,
                                const std::string &desc, uint32_t abilityIconID,
                                uint32_t attributeIconID,
@@ -65,7 +60,6 @@ void UpgradeGUI::deleteUpgrade(const std::string &t_name)
 }
 
 const bool UpgradeGUI::hasClickedUpgrade(const sf::Vector2i &mousePos,
-                                         bool mouseClicked,
                                          const std::string &t_name,
                                          SoundEngine *soundEngine)
 {
@@ -73,18 +67,12 @@ const bool UpgradeGUI::hasClickedUpgrade(const sf::Vector2i &mousePos,
         return false;
     }
 
-    update(t_name, mousePos);
-    if (isPressed(t_name, mouseClicked)) {
+    if (this->upgrades[t_name].button->isPressed(mousePos)) {
         soundEngine->addSound("upgrade");
         return true;
     }
 
     return false;
-}
-
-void UpgradeGUI::update(const std::string &t_name, const sf::Vector2i &mousePos)
-{
-    this->upgrades[t_name].button->update(mousePos);
 }
 
 void UpgradeGUI::draw(sf::RenderTarget &target)

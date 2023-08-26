@@ -15,7 +15,6 @@ public:
     void draw(sf::RenderTarget *target = NULL) override;
 
 private:
-    sf::VideoMode &vm;
     PlayerStats::PlayerData playerData;
 
     std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>

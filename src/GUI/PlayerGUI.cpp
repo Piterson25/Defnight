@@ -122,11 +122,11 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
 
     this->shopGUI = new ShopGUI(vm, this->player);
     this->shopGUI->addShopItem("FULL_HP", calcX(44, vm), calcY(188, vm), 9,
-                               "Full HP", "+Full", 30, 0, 0);
+                               "Full HP", "+Full", 40, 0, 0);
     this->shopGUI->addShopItem("MAX_HP", calcX(44, vm), calcY(324, vm), 3,
                                this->lang["MAX_HP"], "+2", 20, 0, 0);
     this->shopGUI->addShopItem("ATTACK", calcX(44, vm), calcY(460, vm), 5,
-                               this->lang["ATTACK"], "+1", 15, 0, 0);
+                               this->lang["ATTACK"], "+1", 20, 0, 0);
     this->shopGUI->addShopItem("ARMOR", calcX(44, vm), calcY(596, vm), 1,
                                this->lang["ARMOR"], "+1", 20, player.getArmor(),
                                10);
@@ -515,10 +515,9 @@ void PlayerGUI::updateMonsterCount(const size_t &monsterCount)
                                  std::to_string(monsterCount));
 }
 
-const bool PlayerGUI::hasClickedMenu(const sf::Vector2i &mousePos,
-                                     bool mouseClicked, bool &paused)
+const bool PlayerGUI::hasClickedMenu(const sf::Vector2i &mousePos, bool &paused)
 {
-    if (!player.isDead() && statsGUI->hasClickedMenu(mousePos, mouseClicked)) {
+    if (!player.isDead() && statsGUI->hasClickedMenu(mousePos)) {
         this->updatePaused(paused);
         return true;
     }
@@ -582,164 +581,142 @@ void PlayerGUI::updateBossHP(float dt)
     }
 }
 
-const bool PlayerGUI::hasClickedShopBuy(const sf::Vector2i &mousePos,
-                                        bool mouseClicked,
-                                        SoundEngine &soundEngine)
+void PlayerGUI::updateShopBuy(const sf::Vector2i &mousePos,
+                              SoundEngine &soundEngine)
 {
-    if (statsGUI->hasClickedShop(mousePos, mouseClicked)) {
+    if (statsGUI->hasClickedShop(mousePos)) {
         updateIsShopping();
-        return true;
     }
 
     if (this->isShopping()) {
         if (player.getHP() < player.getMaxHP() &&
-            shopGUI->hasBoughtItem(mousePos, mouseClicked, "FULL_HP",
+            shopGUI->hasBoughtItem(mousePos, "FULL_HP",
                                    &this->floatingTextSystem, &soundEngine)) {
             player.setHP(player.getMaxHP());
             this->updateHP();
             player.setRegenerating(true);
             this->update_Gold();
-            return true;
         }
-        else if (shopGUI->hasBoughtItem(mousePos, mouseClicked, "MAX_HP",
+        else if (shopGUI->hasBoughtItem(mousePos, "MAX_HP",
                                         &this->floatingTextSystem,
                                         &soundEngine)) {
             player.setMaxHP(player.getMaxHP() + 2);
             this->updateHP();
             player.setRegenerating(true);
             this->update_Gold();
-            return true;
         }
-        else if (shopGUI->hasBoughtItem(mousePos, mouseClicked, "ATTACK",
+        else if (shopGUI->hasBoughtItem(mousePos, "ATTACK",
                                         &this->floatingTextSystem,
                                         &soundEngine)) {
             player.setAttack(player.getAttack() + 1);
             this->update_Gold();
-            return true;
         }
-        else if (shopGUI->hasBoughtItem(mousePos, mouseClicked, "ARMOR",
+        else if (shopGUI->hasBoughtItem(mousePos, "ARMOR",
                                         &this->floatingTextSystem,
                                         &soundEngine)) {
             player.setArmor(player.getArmor() + 1);
             shopGUI->updateSegments("ARMOR");
             this->update_Gold();
-            return true;
         }
     }
-
-    return false;
 }
 
-const bool PlayerGUI::hasClickedAbilityBuy(const sf::Vector2i &mousePos,
-                                           bool mouseClicked,
-                                           SoundEngine &soundEngine)
+void PlayerGUI::updateAbilityBuy(const sf::Vector2i &mousePos,
+                                 SoundEngine &soundEngine)
 {
-    if (this->statsGUI->hasClickedAbilityUpgrade(mousePos, mouseClicked)) {
+    if (this->statsGUI->hasClickedAbilityUpgrade(mousePos)) {
         updateIsBuyingAbility();
-        return true;
     }
 
     if (this->isBuyingAbility() && !player.isAbilityActive()) {
-        if (abilityUpgradeGUI->hasBoughtUpgrade(
-                mousePos, mouseClicked, "LOWER_COOLDOWN",
-                &this->floatingTextSystem, &soundEngine)) {
+        if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "LOWER_COOLDOWN",
+                                                &this->floatingTextSystem,
+                                                &soundEngine)) {
             player.setAbilityMaxTimeModifier(
                 player.getAbilityMaxTimeModifier() - 0.1f);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");
             this->abilityUpgradeGUI->updateSegments("LOWER_COOLDOWN");
-            return true;
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "PROJ_ATTACK",
-                     &this->floatingTextSystem, &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "PROJ_ATTACK",
+                                                     &this->floatingTextSystem,
+                                                     &soundEngine)) {
             player.setProjectileAttack(player.getProjectileAttack() + 1);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("PROJ_ATTACK",
                                                       this->lang["ATTACK"]);
-            return true;
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "PIERCING",
-                     &this->floatingTextSystem, &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "PIERCING",
+                                                     &this->floatingTextSystem,
+                                                     &soundEngine)) {
             player.setProjectilePiercing(player.getProjectilePiercing() + 1);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("PIERCING",
                                                       this->lang["PIERCING"]);
             this->abilityUpgradeGUI->updateSegments("PIERCING");
-            return true;
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "AREA", &this->floatingTextSystem,
-                     &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "AREA",
+                                                     &this->floatingTextSystem,
+                                                     &soundEngine)) {
             player.setProjectileArea(player.getProjectileArea() + 1);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("AREA",
                                                       this->lang["AREA"]);
             this->abilityUpgradeGUI->updateSegments("AREA");
-            return true;
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "ARMOR", &this->floatingTextSystem,
-                     &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "ARMOR",
+                                                     &this->floatingTextSystem,
+                                                     &soundEngine)) {
             player.setIncreasedArmor(player.getIncreasedArmor() + 1);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("ARMOR",
                                                       this->lang["ARMOR"]);
             this->abilityUpgradeGUI->updateSegments("ARMOR");
-            return true;
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "ATTACK",
-                     &this->floatingTextSystem, &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "ATTACK",
+                                                     &this->floatingTextSystem,
+                                                     &soundEngine)) {
             player.setIncreasedAttack(player.getIncreasedAttack() + 1);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("ATTACK",
                                                       this->lang["ATTACK"]);
-            return true;
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "REG", &this->floatingTextSystem,
-                     &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "REG",
+                                                     &this->floatingTextSystem,
+                                                     &soundEngine)) {
             player.setIncreasedReg(player.getIncreasedReg() + 1);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("REG", this->lang["REG"]);
             this->abilityUpgradeGUI->updateSegments("REG");
-            return true;
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "SLOWDOWN",
-                     &this->floatingTextSystem, &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "SLOWDOWN",
+                                                     &this->floatingTextSystem,
+                                                     &soundEngine)) {
             player.setTimeSlowdown(player.getTimeSlowdown() + 0.1f);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("SLOWDOWN",
                                                       this->lang["SLOWDOWN"]);
             this->abilityUpgradeGUI->updateSegments("SLOWDOWN");
-            return true;
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "GOLD", &this->floatingTextSystem,
-                     &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "GOLD",
+                                                     &this->floatingTextSystem,
+                                                     &soundEngine)) {
             player.setIncreasedGold(player.getIncreasedGold() + 1);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("GOLD",
                                                       this->lang["GOLD"]);
             this->abilityUpgradeGUI->updateSegments("GOLD");
-            return true;
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(
-                     mousePos, mouseClicked, "TARGETS",
-                     &this->floatingTextSystem, &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "TARGETS",
+                                                     &this->floatingTextSystem,
+                                                     &soundEngine)) {
             player.setAttackLimit(player.getAttackLimit() + 1);
             this->update_Gold();
             this->abilityUpgradeGUI->updatePlayerInfo("TARGETS",
                                                       this->lang["TARGETS"]);
             this->abilityUpgradeGUI->updateSegments("TARGETS");
-            return true;
         }
     }
-
-    return false;
 }
 
 const bool PlayerGUI::isEscape() const
@@ -767,27 +744,19 @@ const bool PlayerGUI::isBuyingAbility() const
     return this->sideGUI == SideGUI::ABILITY_UPGRADE;
 }
 
-const uint8_t PlayerGUI::updateEscapeButton(const sf::Vector2i &mousePos,
-                                            const bool &mouseClicked)
+const uint8_t PlayerGUI::updateEscapeButton(const sf::Vector2i &mousePos)
 {
-    this->text_buttons["RESUME"]->update(mousePos);
-    if (this->text_buttons["RESUME"]->isPressed() && !mouseClicked) {
+    if (this->text_buttons["RESUME"]->isPressed(mousePos)) {
         this->escape = false;
         return 3;
     }
-
-    this->text_buttons["MAIN_MENU"]->update(mousePos);
-    if (this->text_buttons["MAIN_MENU"]->isPressed() && !mouseClicked) {
+    else if (this->text_buttons["MAIN_MENU"]->isPressed(mousePos)) {
         return 1;
     }
-
-    this->text_buttons["QUIT"]->update(mousePos);
-    if (this->text_buttons["QUIT"]->isPressed() && !mouseClicked) {
+    else if (this->text_buttons["QUIT"]->isPressed(mousePos)) {
         return 2;
     }
-
-    this->text_buttons["SETTINGS"]->update(mousePos);
-    if (this->text_buttons["SETTINGS"]->isPressed() && !mouseClicked) {
+    else if (this->text_buttons["SETTINGS"]->isPressed(mousePos)) {
         return 4;
     }
 
@@ -795,38 +764,32 @@ const uint8_t PlayerGUI::updateEscapeButton(const sf::Vector2i &mousePos,
 }
 
 const bool PlayerGUI::hasClickedButtons(const sf::Vector2i &mousePos,
-                                        bool mouseClicked,
                                         SoundEngine &soundEngine)
 {
     if (this->leveling && this->upgrading) {
-        this->hasClickedLevelUpButtons(mousePos, mouseClicked, soundEngine);
-        this->hasClickedUpgradeButtons(mousePos, mouseClicked, soundEngine);
+        this->hasClickedLevelUpButtons(mousePos, soundEngine);
+        this->hasClickedUpgradeButtons(mousePos, soundEngine);
     }
     else if (this->leveling) {
-        return this->hasClickedLevelUpButtons(mousePos, mouseClicked,
-                                              soundEngine);
+        return this->hasClickedLevelUpButtons(mousePos, soundEngine);
     }
     else if (this->upgrading) {
-        return this->hasClickedUpgradeButtons(mousePos, mouseClicked,
-                                              soundEngine);
+        return this->hasClickedUpgradeButtons(mousePos, soundEngine);
     }
     return false;
 }
 
 const bool PlayerGUI::hasClickedLevelUpButtons(const sf::Vector2i &mousePos,
-                                               bool mouseClicked,
                                                SoundEngine &soundEngine)
 {
-    this->option1.optionButton->update(mousePos);
-    if (this->option1.optionButton->isPressed() && !mouseClicked) {
+    if (this->option1.optionButton->isPressed(mousePos)) {
         this->levelUpPlayer(this->option1.id, this->option1.value);
         this->leveling = false;
         soundEngine.addSound("option");
         return true;
     }
 
-    this->option2.optionButton->update(mousePos);
-    if (this->option2.optionButton->isPressed() && !mouseClicked) {
+    if (this->option2.optionButton->isPressed(mousePos)) {
         this->levelUpPlayer(this->option2.id, this->option2.value);
         this->leveling = false;
         soundEngine.addSound("option");
@@ -837,10 +800,9 @@ const bool PlayerGUI::hasClickedLevelUpButtons(const sf::Vector2i &mousePos,
 }
 
 const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
-                                               bool mouseClicked,
                                                SoundEngine &soundEngine)
 {
-    if (this->upgradeGUI->hasClickedUpgrade(mousePos, mouseClicked, "UPGRADE1",
+    if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE1",
                                             &soundEngine)) {
         if (player.getLevel() == 5) {
             this->abilityUpgradeGUI->addPlayerStat("PROJ_ATTACK", calcX(32, vm),
@@ -886,8 +848,8 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
         this->upgrading = false;
         return true;
     }
-    else if (this->upgradeGUI->hasClickedUpgrade(mousePos, mouseClicked,
-                                                 "UPGRADE2", &soundEngine)) {
+    else if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE2",
+                                                 &soundEngine)) {
         if (player.getLevel() == 5) {
             this->abilityUpgradeGUI->addPlayerStat(
                 "ARMOR", calcX(32, vm), calcY(212, vm), this->lang["ARMOR"]);
@@ -927,8 +889,8 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
         this->upgrading = false;
         return true;
     }
-    else if (this->upgradeGUI->hasClickedUpgrade(mousePos, mouseClicked,
-                                                 "UPGRADE3", &soundEngine)) {
+    else if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE3",
+                                                 &soundEngine)) {
         if (player.getLevel() == 5) {
             this->abilityUpgradeGUI->addPlayerStat("SLOWDOWN", calcX(32, vm),
                                                    calcY(212, vm),
@@ -946,16 +908,12 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
     return false;
 }
 
-const uint8_t PlayerGUI::updateDeathScreenButtons(const sf::Vector2i &mousePos,
-                                                  bool mouseClicked)
+const uint8_t PlayerGUI::updateDeathScreenButtons(const sf::Vector2i &mousePos)
 {
-    this->text_buttons["MAIN_MENU"]->update(mousePos);
-    if (this->text_buttons["MAIN_MENU"]->isPressed() && !mouseClicked) {
+    if (this->text_buttons["MAIN_MENU"]->isPressed(mousePos)) {
         return 1;
     }
-
-    this->text_buttons["QUIT"]->update(mousePos);
-    if (this->text_buttons["QUIT"]->isPressed() && !mouseClicked) {
+    else if (this->text_buttons["QUIT"]->isPressed(mousePos)) {
         return 2;
     }
     return 0;

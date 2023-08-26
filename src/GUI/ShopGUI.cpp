@@ -112,13 +112,8 @@ void ShopGUI::updateSegments(const std::string &t_name)
     }
 }
 
-const bool ShopGUI::isPressed(const std::string &t_name, bool mouseClicked)
-{
-    return this->shopItems[t_name].button->isPressed() && !mouseClicked;
-}
-
 const bool ShopGUI::hasBoughtItem(const sf::Vector2i &mousePos,
-                                  bool mouseClicked, const std::string &t_name,
+                                  const std::string &t_name,
                                   FloatingTextSystem *floatingTextSystem,
                                   SoundEngine *soundEngine)
 {
@@ -128,8 +123,7 @@ const bool ShopGUI::hasBoughtItem(const sf::Vector2i &mousePos,
     }
 
     if (player.getGold() >= getPrice(t_name)) {
-        update(t_name, mousePos);
-        if (isPressed(t_name, mouseClicked)) {
+        if (this->shopItems[t_name].button->isPressed(mousePos)) {
             buy(t_name, floatingTextSystem);
             player.setBoughtItems(player.getBoughtItems() + 1);
             soundEngine->addSound("buy");
@@ -188,11 +182,6 @@ void ShopGUI::updateItemFrames()
             }
         }
     }
-}
-
-void ShopGUI::update(const std::string &t_name, const sf::Vector2i &mousePos)
-{
-    this->shopItems[t_name].button->update(mousePos);
 }
 
 void ShopGUI::draw(sf::RenderTarget &target)

@@ -3,14 +3,12 @@
 State::State(float gridSize, sf::RenderWindow &window,
              GameSettings &gameSettings, SoundEngine &soundEngine,
              MusicEngine &musicEngine, std::stack<State *> &states)
-    : gridSize(gridSize), window(window), gameSettings(gameSettings),
-      soundEngine(soundEngine), musicEngine(musicEngine), states(states)
+    : vm(gameSettings.resolution), lang(gameSettings.lang), gridSize(gridSize),
+      window(window), gameSettings(gameSettings), soundEngine(soundEngine),
+      musicEngine(musicEngine), states(states)
 {
     this->quit = false;
     this->paused = false;
-    this->mouseClick = false;
-    this->keytime = 0.f;
-    this->keytimeMax = 10.f;
     this->reseted = false;
 }
 
@@ -24,21 +22,6 @@ const bool State::isReseted() const
 const bool State::isQuitted() const
 {
     return this->quit;
-}
-
-const bool State::isMouseClicked() const
-{
-    return this->mouseClick;
-}
-
-const bool State::isKeyClicked1(const std::string &keyName)
-{
-    return this->keysClick[keyName].first;
-}
-
-const bool State::isKeyClicked2(const std::string &keyName)
-{
-    return this->keysClick[keyName].second;
 }
 
 void State::endState()
@@ -56,16 +39,6 @@ void State::unpauseState()
     this->paused = false;
 }
 
-void State::setMouseClick(bool click)
-{
-    this->mouseClick = click;
-}
-
-void State::setKeysClick(const std::string &keyName, bool click)
-{
-    this->keysClick[keyName].second = click;
-}
-
 void State::updateMousePositions(sf::View *view)
 {
     this->mousePosScreen = sf::Mouse::getPosition();
@@ -79,30 +52,4 @@ void State::updateMousePositions(sf::View *view)
         this->window.mapPixelToCoords(sf::Mouse::getPosition(this->window));
 
     this->window.setView(this->window.getDefaultView());
-}
-
-void State::updateMouseClick()
-{
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-        this->mouseClick = true;
-    }
-    else {
-        this->mouseClick = false;
-    }
-}
-
-void State::updateKeysClick(const std::string &keyName, sf::Keyboard::Key key)
-{
-    this->keysClick[keyName].first = false;
-
-    if (sf::Keyboard::isKeyPressed(key)) {
-        this->keysClick[keyName].first = true;
-    }
-}
-
-void State::updateKeytime(float dt)
-{
-    if (this->keytime < this->keytimeMax) {
-        this->keytime += 100.f * dt;
-    }
 }
