@@ -9,6 +9,7 @@ public:
 
     void addSound(const std::string &name);
     void playSounds();
+    void setVolume(float t_volume);
     void stopSounds();
 
     void update();

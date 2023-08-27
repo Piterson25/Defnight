@@ -10,6 +10,38 @@ public:
                   MusicEngine &musicEngine, std::stack<State *> &states);
     ~SettingsState();
 
+    struct Setting {
+        std::unique_ptr<gui::ButtonSprite> leftArrow;
+        std::unique_ptr<gui::ButtonSprite> rightArrow;
+        std::unique_ptr<gui::Text> desc;
+        std::unique_ptr<gui::Text> change;
+
+        void draw(sf::RenderTarget &target)
+        {
+            desc->draw(target);
+            leftArrow->draw(target);
+            change->draw(target);
+            rightArrow->draw(target);
+        }
+    };
+
+    struct Keybind {
+        std::unique_ptr<gui::Text> desc;
+        std::unique_ptr<gui::Text> key;
+
+        void draw(sf::RenderTarget &target)
+        {
+            desc->draw(target);
+            key->draw(target);
+        }
+    };
+
+    void addSetting(const std::string &t_name, float t_x, float t_y,
+                    const std::string &desc, const std::string &change);
+
+    void addKeybind(const std::string &t_name, float t_x, float t_y,
+                    const std::string &desc, const std::string &key);
+
     void initGUI();
     void resetGUI();
 
@@ -18,21 +50,23 @@ public:
 
 private:
     uint32_t page;
+    std::unordered_map<std::string, Setting> settings;
+    std::unordered_map<std::string, Keybind> keybindsTexts;
 
     std::vector<sf::VideoMode> videoModes;
 
     sf::VideoMode mode;
-    size_t id;
-    size_t fps_id;
+    int id;
+    int fps_id;
     bool fullscreen;
     uint32_t fpsLimit;
     std::vector<uint32_t> fpsLimits;
     bool fpsCounterOn;
     float musicVolume;
-    size_t musicVolume_id;
+    int musicVolume_id;
     std::vector<uint32_t> musicVolumes;
     float soundsVolume;
-    size_t soundsVolume_id;
+    int soundsVolume_id;
     std::vector<uint32_t> soundsVolumes;
     std::string language;
 

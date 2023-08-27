@@ -26,6 +26,7 @@ namespace gui {
     const sf::IntRect RECT_BUTTON = sf::IntRect(384, 304, 88, 88);
     const sf::IntRect RECT_ARROW = sf::IntRect(384, 392, 16, 10);
     const sf::IntRect RECT_BURGER = sf::IntRect(384, 402, 10, 10);
+    const sf::IntRect RECT_SMALL_ARROW = sf::IntRect(394, 400, 8, 14);
 
     enum button_states { BUTTON_IDLE, BUTTON_HOVER, BUTTON_PRESSED };
 
@@ -93,6 +94,8 @@ namespace gui {
         ~ButtonSprite();
 
         bool isPressed(const sf::Vector2i &mousePosWindow);
+
+        void flipHorizontal();
 
         const sf::Color getColor() const;
         const sf::IntRect getTextureRect() const;

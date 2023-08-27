@@ -15,6 +15,7 @@ public:
     void playMusic();
     void playSelectedMusic(const std::string &name);
     void pauseMusic();
+    void setVolume(float t_volume);
     void stopMusic();
     void update();
 

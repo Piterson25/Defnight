@@ -247,6 +247,12 @@ namespace gui {
         return false;
     }
 
+    void ButtonSprite::flipHorizontal()
+    {
+        this->sprite.setScale(-this->sprite.getScale().x,
+                              this->sprite.getScale().y);
+    }
+
     const sf::IntRect ButtonSprite::getTextureRect() const
     {
         return this->sprite.getTextureRect();

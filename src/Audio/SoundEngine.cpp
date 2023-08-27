@@ -24,6 +24,11 @@ void SoundEngine::playSounds()
     }
 }
 
+void SoundEngine::setVolume(float t_volume)
+{
+    this->volume = t_volume;
+}
+
 void SoundEngine::stopSounds()
 {
     for (const auto &s : this->sounds) {

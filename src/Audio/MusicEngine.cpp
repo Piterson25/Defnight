@@ -39,6 +39,12 @@ void MusicEngine::pauseMusic()
     this->music.pause();
 }
 
+void MusicEngine::setVolume(float t_volume)
+{
+    this->volume = t_volume;
+    this->music.setVolume(this->volume);
+}
+
 void MusicEngine::stopMusic()
 {
     this->music.stop();
