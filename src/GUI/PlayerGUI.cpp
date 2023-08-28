@@ -12,22 +12,22 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
     this->statsGUI = new StatsGUI(this->vm, this->player, this->lang);
 
     this->titleCooldown = 0.f;
-    this->texts["WAVE_NEW_MOBS"] = std::make_unique<gui::Text>(
-        "", calcChar(16, vm), calcX(640, vm), calcY(562, vm),
-        sf::Color(228, 92, 95), true);
+    this->texts["WAVE_NEW_MOBS"] =
+        std::make_unique<gui::Text>("", calcChar(16, vm), calcX(640, vm),
+                                    calcY(562, vm), gui::FLAMINGO, true);
     this->texts["BIG_WAVE_NUMBER"] = std::make_unique<gui::Text>(
         this->lang["WAVE"], calcChar(64, vm), calcX(640, vm), calcY(256, vm),
-        sf::Color(255, 255, 255), true);
+        gui::WHITE, true);
     this->texts["MOBS_TO_KILL"] = std::make_unique<gui::Text>(
         this->lang["MONSTER"], calcChar(32, vm), calcX(640, vm), calcY(512, vm),
-        sf::Color(192, 192, 192), true);
+        gui::LIGHT_GREY, true);
     this->waveCountdown = 0.f;
 
     this->leveling = false;
 
     this->texts["LEVEL_UP"] = std::make_unique<gui::Text>(
         "LEVEL UP!", calcChar(32, vm), calcX(640, vm), calcY(256, vm),
-        sf::Color(255, 246, 76), true);
+        gui::GOLD, true);
     this->sprites["LEVEL_UP"] = std::make_unique<gui::Sprite>(
         "assets/textures/bottom_gui.png", calcX(640, vm), calcY(460, vm),
         calcScale(1, vm), true);
@@ -52,11 +52,9 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
                                             calcY(512, vm), calcScale(1, vm),
                                             false),
         std::make_unique<gui::Text>("", calcChar(16, vm), calcX(732, vm),
-                                    calcY(608, vm), sf::Color(255, 255, 255),
-                                    false),
+                                    calcY(608, vm), gui::WHITE, false),
         std::make_unique<gui::Text>("", calcChar(16, vm), calcX(732, vm),
-                                    calcY(630, vm), sf::Color(255, 255, 255),
-                                    false),
+                                    calcY(630, vm), gui::WHITE, false),
         0,
         0};
 
@@ -74,33 +72,32 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
     this->upgradeGUI->changeUpgrade("UPGRADE3", calcX(1024, vm), calcY(562, vm),
                                     this->lang["SCOUT"], 6, 2, 1, "1");
 
-    this->death_background.setFillColor(sf::Color(182, 60, 53, 192));
+    this->death_background.setFillColor(
+        sf::Color(gui::RED.r, gui::RED.g, gui::RED.b, 192));
     this->death_background.setSize(
         sf::Vector2f(calcX(1280, vm), calcY(592, vm)));
     this->death_background.setPosition(sf::Vector2f(0, calcY(128, vm)));
 
     this->texts["YOU_DIED"] = std::make_unique<gui::Text>(
         this->lang["YOU_DIED"], calcChar(72, vm), calcX(640, vm),
-        calcY(224, vm), sf::Color(255, 255, 255), true);
+        calcY(224, vm), gui::WHITE, true);
     this->text_buttons["RESUME"] = std::make_unique<gui::ButtonText>(
         this->lang["RESUME"], calcChar(32, vm), calcX(640, vm), calcY(296, vm),
-        sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
+        gui::WHITE, gui::LIGHT_GREY, true);
     this->text_buttons["SETTINGS"] = std::make_unique<gui::ButtonText>(
         this->lang["SETTINGS"], calcChar(32, vm), calcX(640, vm),
-        calcY(392, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
-        true);
+        calcY(392, vm), gui::WHITE, gui::LIGHT_GREY, true);
     this->text_buttons["MAIN_MENU"] = std::make_unique<gui::ButtonText>(
         this->lang["MAIN_MENU"], calcChar(32, vm), calcX(640, vm),
-        calcY(488, vm), sf::Color(255, 255, 255), sf::Color(192, 192, 192),
-        true);
+        calcY(488, vm), gui::WHITE, gui::LIGHT_GREY, true);
     this->text_buttons["QUIT"] = std::make_unique<gui::ButtonText>(
         this->lang["QUIT"], calcChar(32, vm), calcX(640, vm), calcY(584, vm),
-        sf::Color(255, 255, 255), sf::Color(192, 192, 192), true);
+        gui::WHITE, gui::LIGHT_GREY, true);
 
     this->texts["KILLS"] = std::make_unique<gui::Text>(
         this->lang["KILLS"] + std::to_string(player.getKills()),
-        calcChar(16, vm), calcX(640, vm), calcY(186, vm),
-        sf::Color(192, 192, 192), true);
+        calcChar(16, vm), calcX(640, vm), calcY(186, vm), gui::LIGHT_GREY,
+        true);
 
     this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
         this->lang["DIFFICULTY_LEVEL"] + " " + this->lang[difficultyName],
@@ -137,8 +134,8 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
     this->bossCooldown = 0.f;
 
     this->texts["BOSS"] = std::make_unique<gui::Text>(
-        "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm),
-        sf::Color(113, 43, 59), true);
+        "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm), gui::PINK,
+        true);
     this->sprites["BOSS_BAR"] = std::make_unique<gui::Sprite>(
         "assets/textures/bars.png", calcX(640, vm), calcY(158, vm),
         calcScale(1, vm), true);
@@ -949,16 +946,16 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
                 this->bossCooldown = 255.f;
             }
 
-            this->texts["BOSS"]->setFillColor(sf::Color(
-                113, 43, 59, static_cast<sf::Uint8>(this->bossCooldown)));
-            this->sprites["BOSS_BAR_EMPTY"]->setColor(sf::Color(
-                255, 255, 255, static_cast<sf::Uint8>(this->bossCooldown)));
+            this->texts["BOSS"]->setAlphaColor(
+                static_cast<sf::Uint8>(this->bossCooldown));
+            this->sprites["BOSS_BAR_EMPTY"]->setAlphaColor(
+                static_cast<sf::Uint8>(this->bossCooldown));
             this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(
                 0, 60, static_cast<int>(this->bossCooldown / 255.f * 512.f),
                 20));
 
-            this->sprites["BOSS_BAR"]->setColor(sf::Color(
-                255, 255, 255, static_cast<sf::Uint8>(this->bossCooldown)));
+            this->sprites["BOSS_BAR"]->setAlphaColor(
+                static_cast<sf::Uint8>(this->bossCooldown));
         }
         else if (this->boss_bar_percent == 0.f && this->bossCooldown > 0.f) {
             this->bossCooldown -= dt * 255.f;
@@ -966,12 +963,12 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
                 this->bossCooldown = 0.f;
             }
 
-            this->texts["BOSS"]->setFillColor(sf::Color(
-                113, 43, 59, static_cast<sf::Uint8>(this->bossCooldown)));
-            this->sprites["BOSS_BAR_EMPTY"]->setColor(sf::Color(
-                255, 255, 255, static_cast<sf::Uint8>(this->bossCooldown)));
-            this->sprites["BOSS_BAR"]->setColor(sf::Color(
-                255, 255, 255, static_cast<sf::Uint8>(this->bossCooldown)));
+            this->texts["BOSS"]->setAlphaColor(
+                static_cast<sf::Uint8>(this->bossCooldown));
+            this->sprites["BOSS_BAR_EMPTY"]->setAlphaColor(
+                static_cast<sf::Uint8>(this->bossCooldown));
+            this->sprites["BOSS_BAR"]->setAlphaColor(
+                static_cast<sf::Uint8>(this->bossCooldown));
         }
     }
 
@@ -987,24 +984,24 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
             if (this->titleCooldown > 255.f) {
                 this->titleCooldown = 255.f;
             }
-            this->texts["BIG_WAVE_NUMBER"]->setFillColor(
-                sf::Color(255, 255, 255, sf::Uint8(this->titleCooldown)));
-            this->texts["WAVE_NEW_MOBS"]->setFillColor(
-                sf::Color(228, 92, 95, sf::Uint8(this->titleCooldown)));
-            this->texts["MOBS_TO_KILL"]->setFillColor(
-                sf::Color(192, 192, 192, sf::Uint8(this->titleCooldown)));
+            this->texts["BIG_WAVE_NUMBER"]->setAlphaColor(
+                static_cast<sf::Uint8>(this->titleCooldown));
+            this->texts["WAVE_NEW_MOBS"]->setAlphaColor(
+                static_cast<sf::Uint8>(this->titleCooldown));
+            this->texts["MOBS_TO_KILL"]->setAlphaColor(
+                static_cast<sf::Uint8>(this->titleCooldown));
         }
         else if (this->waveCountdown > 9.f && this->titleCooldown > 0.f) {
             this->titleCooldown -= dt * 1000.f;
             if (this->titleCooldown < 0.f) {
                 this->titleCooldown = 0.f;
             }
-            this->texts["BIG_WAVE_NUMBER"]->setFillColor(
-                sf::Color(255, 255, 255, sf::Uint8(this->titleCooldown)));
-            this->texts["WAVE_NEW_MOBS"]->setFillColor(
-                sf::Color(228, 92, 95, sf::Uint8(this->titleCooldown)));
-            this->texts["MOBS_TO_KILL"]->setFillColor(
-                sf::Color(192, 192, 192, sf::Uint8(this->titleCooldown)));
+            this->texts["BIG_WAVE_NUMBER"]->setAlphaColor(
+                static_cast<sf::Uint8>(this->titleCooldown));
+            this->texts["WAVE_NEW_MOBS"]->setAlphaColor(
+                static_cast<sf::Uint8>(this->titleCooldown));
+            this->texts["MOBS_TO_KILL"]->setAlphaColor(
+                static_cast<sf::Uint8>(this->titleCooldown));
         }
 
         this->statsGUI->setWaveCountdownText(

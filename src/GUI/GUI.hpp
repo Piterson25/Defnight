@@ -20,6 +20,7 @@ namespace gui {
     const sf::Color PURPLE = sf::Color(88, 74, 127);
     const sf::Color BROWN = sf::Color(120, 76, 73);
     const sf::Color BLUE = sf::Color(0, 64, 81);
+    const sf::Color PINK = sf::Color(113, 43, 59);
 
     const sf::IntRect RECT_DIFFICULTY = sf::IntRect(0, 0, 384, 504);
     const sf::IntRect RECT_MAP = sf::IntRect(384, 0, 304, 304);
@@ -74,6 +75,7 @@ namespace gui {
         const sf::Color getFillColor() const;
 
         void move(float x, float y);
+        void setAlphaColor(sf::Uint8 alpha);
         void setPositionX(float x);
         void setPositionY(float y);
         void setPosition(const sf::Vector2f &position);
@@ -128,6 +130,7 @@ namespace gui {
         const sf::FloatRect getGlobalBounds() const;
         const sf::IntRect getTextureRect() const;
 
+        void setAlphaColor(sf::Uint8 alpha);
         void setColor(const sf::Color &color);
         void setTextureRect(const sf::IntRect &intRect);
 

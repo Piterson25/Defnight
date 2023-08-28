@@ -235,8 +235,7 @@ void MainMenuState::initGUI()
         std::make_unique<gui::Sprite>(attribute_vec[2], calcX(792, vm),
                                       calcY(586, vm), calcScale(2, vm), false);
     this->texts["REG"] = std::make_unique<gui::Text>(
-        "1", calcChar(16, vm), calcX(808, vm), calcY(640, vm),
-        sf::Color(182, 60, 53), true);
+        "1", calcChar(16, vm), calcX(808, vm), calcY(640, vm), gui::RED, true);
     this->sprites["ATTACK"] =
         std::make_unique<gui::Sprite>(attribute_vec[5], calcX(856, vm),
                                       calcY(586, vm), calcScale(2, vm), false);
@@ -305,17 +304,15 @@ void MainMenuState::initGUI()
 
         this->lang["MONSTERS_HAVE"] + "\n\n-25% HP\n\n-25% " +
             this->lang["ATTACK"] + "\n\n50% " + this->lang["HEART_DROP"],
-        calcChar(16, vm), calcX(224, vm), calcY(460, vm),
-        sf::Color(182, 60, 53), true);
+        calcChar(16, vm), calcX(224, vm), calcY(460, vm), gui::RED, true);
     this->texts["NORMAL_DESC"] = std::make_unique<gui::Text>(
         this->lang["NORMAL_DESC"], calcChar(16, vm), calcX(640, vm),
-        calcY(460, vm), sf::Color(182, 60, 53), true);
+        calcY(460, vm), gui::RED, true);
     this->texts["HARD_DESC"] = std::make_unique<gui::Text>(
 
         this->lang["MONSTERS_HAVE"] + "\n\n+25% HP\n\n+25% " +
             this->lang["ATTACK"] + "\n\n" + this->lang["TIME_DROP"],
-        calcChar(16, vm), calcX(1056, vm), calcY(460, vm),
-        sf::Color(182, 60, 53), true);
+        calcChar(16, vm), calcX(1056, vm), calcY(460, vm), gui::RED, true);
 
     // PAGE 5
 

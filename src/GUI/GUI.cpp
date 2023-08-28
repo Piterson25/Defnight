@@ -148,6 +148,13 @@ namespace gui {
         this->text.move(x, y);
     }
 
+    void Text::setAlphaColor(sf::Uint8 alpha)
+    {
+        this->text.setFillColor(sf::Color(this->text.getFillColor().r,
+                                          this->text.getFillColor().g,
+                                          this->text.getFillColor().b, alpha));
+    }
+
     void Text::setPositionX(float x)
     {
         this->text.setPosition(x, this->text.getPosition().y);
@@ -335,6 +342,13 @@ namespace gui {
     const sf::IntRect Sprite::getTextureRect() const
     {
         return this->sprite.getTextureRect();
+    }
+
+    void Sprite::setAlphaColor(sf::Uint8 alpha)
+    {
+        this->sprite.setColor(sf::Color(this->sprite.getColor().r,
+                                        this->sprite.getColor().g,
+                                        this->sprite.getColor().b, alpha));
     }
 
     void Sprite::setColor(const sf::Color &color)
