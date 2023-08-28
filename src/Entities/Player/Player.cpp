@@ -2,7 +2,7 @@
 
 Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
                float t_y)
-    : Entity(t_name, t_vm, t_x, t_y)
+    : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f)
 {
     this->texture.loadFromFile("assets/textures/player/" + t_name + ".png");
     this->sprite.setTexture(this->texture);
@@ -234,6 +234,17 @@ const uint32_t Player::getAttackIncrease() const
     return this->abilityComponent->getAttackIncrease();
 }
 
+const bool Player::isParticleCooldown(float dt)
+{
+    this->particleCooldown += dt;
+
+    if (this->particleCooldown > 0.1f) {
+        this->particleCooldown = 0.f;
+        return true;
+    }
+    return false;
+}
+
 void Player::setDamageDealt(uint32_t t_damageDealt)
 {
     this->damageDealt = t_damageDealt;
@@ -447,16 +458,6 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds,
             this->sprinting = true;
             const float minusSprint = dt * 10.f;
 
-            if (static_cast<uint32_t>(this->sprint - minusSprint) <
-                static_cast<uint32_t>(this->sprint)) {
-                sf::RectangleShape particle;
-                particle.setPosition(this->getDownCenter());
-                particle.setFillColor(sf::Color::White);
-                particle.setSize(sf::Vector2f(calcX(8, vm), calcY(8, vm)));
-                particle.rotate(Random::Float() * 360.f - 90.f);
-                this->particles.push_back(particle);
-            }
-
             if (this->sprint - minusSprint > 0.f) {
                 this->sprint -= minusSprint;
             }
@@ -575,21 +576,6 @@ void Player::upgrade(const std::string &t_name, sf::IntRect &intRect)
     this->setUpgraded(true);
 }
 
-void Player::updateSprint(float dt)
-{
-    for (auto particle = this->particles.begin();
-         particle != this->particles.end();) {
-        if (particle->getFillColor().a <= 0) {
-            particle = this->particles.erase(particle);
-        }
-        else {
-            particle->setFillColor(
-                sf::Color(255, 255, 255, particle->getFillColor().a - 1));
-            particle++;
-        }
-    }
-}
-
 void Player::update(float dt)
 {
     this->shadow.setPosition(this->getDownCenter().x -
@@ -609,8 +595,5 @@ void Player::draw(sf::RenderTarget &target)
 
 void Player::drawShadow(sf::RenderTarget &target)
 {
-    for (auto &particle : this->particles) {
-        target.draw(particle);
-    }
     target.draw(this->shadow);
 }

@@ -47,6 +47,7 @@ public:
     const float getAbilityMaxTime() const;
     const float getAbilityMaxTimeModifier() const;
     const uint32_t getAttackIncrease() const;
+    const bool isParticleCooldown(float dt);
 
     void setDamageDealt(uint32_t t_damageDealt);
     void setDamageTaken(uint32_t t_damageTaken);
@@ -94,7 +95,6 @@ public:
     void upgrade(const std::string &t_name, sf::IntRect &intRect);
     virtual void upgradeAttributes(const std::string &t_name,
                                    sf::IntRect &intRect) = 0;
-    void updateSprint(float dt);
     void update(float dt);
     void draw(sf::RenderTarget &target);
     void drawShadow(sf::RenderTarget &target);
@@ -104,8 +104,6 @@ protected:
     sf::Texture shadow_texture;
     sf::Sprite ability;
     sf::Texture ability_texture;
-
-    std::list<sf::RectangleShape> particles;
 
     uint32_t damageDealt;
     uint32_t damageTaken;
@@ -138,6 +136,7 @@ protected:
     bool sprinting;
     bool spawned;
     float spawnCountdown;
+    float particleCooldown;
 
     std::unique_ptr<AbilityComponent> abilityComponent;
 

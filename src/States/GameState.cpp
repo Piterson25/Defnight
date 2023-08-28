@@ -233,7 +233,12 @@ void GameState::update(float dt)
         }
         else {
             this->player->controls(GameInputHandler::keybinds, dt);
-            this->player->updateSprint(dt);
+            if (this->player->isSprinting() &&
+                this->player->isParticleCooldown(dt)) {
+                this->particleSystem->addSmallParticle(
+                    this->player->getDownCenter(),
+                    sf::Vector2f(calcX(8, vm), calcY(8, vm)), gui::WHITE);
+            }
 
             if (this->player->isPunched()) {
                 this->player->smashed(dt);
