@@ -3,9 +3,10 @@
 GameState::GameState(float gridSize, sf::RenderWindow &window,
                      GameSettings &gameSettings, SoundEngine &soundEngine,
                      MusicEngine &musicEngine, std::stack<State *> &states,
-                     const std::string &map_name, const std::string &hero_name,
-                     const std::string &difficulty_name)
-    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states)
+                     const std::string &mapName, const std::string &playerName,
+                     const std::string &difficultyName)
+    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states),
+      mapName(mapName), difficultyName(difficultyName)
 {
     this->musicEngine.clearMusic();
     this->musicEngine.addMusic("battle1.ogg");
@@ -16,83 +17,17 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
     this->musicEngine.addMusic("battle6.ogg");
 
     this->floatingTextSystem = new FloatingTextSystem(this->vm);
-    this->tileMap = new TileMap();
-    this->mapName = map_name;
+    this->tileMap = new TileMap(vm, mapName);
 
-    this->background_texture.loadFromFile("assets/textures/maps/" + map_name +
-                                          ".png");
-    this->background.setTexture(this->background_texture);
-    this->background.setScale(calcScale(4, vm), calcScale(4, vm));
-
-    this->tiles_texture.loadFromFile("assets/textures/tiles.png");
-    this->vertexArray.setPrimitiveType(sf::Quads);
-    this->vertexArray.resize(static_cast<size_t>(calcX(64 * 64 * 4, vm)));
-    std::ifstream map("assets/maps/" + map_name + ".txt");
-    float x = 0.f, y = 0.f, pos = calcX(this->gridSize, vm);
-
-    float offsetY = 0.f;
-    if (map_name == "desolation") {
-        offsetY = 48.f;
-    }
-    else if (map_name == "permafrost") {
-        offsetY = 96.f;
-    }
-    size_t t = 0;
-    const sf::Vector2f tile = sf::Vector2f(calcX(64, vm), calcY(64, vm));
-    if (map.is_open()) {
-        std::string temp;
-        while (std::getline(map, temp)) {
-            for (size_t i = 0; i < temp.size(); ++i) {
-                if (temp[i] == '#') {
-                    this->tileMap->addTile("wall", tile, x, y);
-                    sf::Vertex *quad = &this->vertexArray[t * 4];
-
-                    quad[0].position = sf::Vector2f(x, y);
-                    quad[1].position = sf::Vector2f(x + calcX(64, vm), y);
-                    quad[2].position =
-                        sf::Vector2f(x + calcX(64, vm), y + calcY(64, vm));
-                    quad[3].position = sf::Vector2f(x, y + calcY(64, vm));
-
-                    quad[0].texCoords = sf::Vector2f(48, 16 + offsetY);
-                    quad[1].texCoords = sf::Vector2f(64, 16 + offsetY);
-                    quad[2].texCoords = sf::Vector2f(64, 32 + offsetY);
-                    quad[3].texCoords = sf::Vector2f(48, 32 + offsetY);
-                }
-                else if (temp[i] == '@') {
-                    this->tileMap->addTile("wall", tile, x, y);
-                    sf::Vertex *quad = &this->vertexArray[t * 4];
-
-                    quad[0].position = sf::Vector2f(x, y);
-                    quad[1].position = sf::Vector2f(x + calcX(64, vm), y);
-                    quad[2].position =
-                        sf::Vector2f(x + calcX(64, vm), y + calcY(64, vm));
-                    quad[3].position = sf::Vector2f(x, y + calcY(64, vm));
-
-                    quad[0].texCoords = sf::Vector2f(64, 16 + offsetY);
-                    quad[1].texCoords = sf::Vector2f(80, 16 + offsetY);
-                    quad[2].texCoords = sf::Vector2f(80, 32 + offsetY);
-                    quad[3].texCoords = sf::Vector2f(64, 32 + offsetY);
-                }
-                x += pos;
-                t++;
-            }
-            x = 0.f;
-            y += pos;
-        }
-    }
-    map.close();
-
-    if (hero_name == "WARRIOR") {
+    if (playerName == "WARRIOR") {
         this->player = new Warrior(
-            hero_name, vm,
-            this->vertexArray.getBounds().width / 2 - calcX(32, vm),
-            this->vertexArray.getBounds().height / 2 - calcY(32, vm));
+            playerName, vm, this->tileMap->getMapSize().x / 2 - calcX(32, vm),
+            this->tileMap->getMapSize().y / 2 - calcY(32, vm));
     }
 
-    this->difficultyName = difficulty_name;
     this->playerGUI =
         new PlayerGUI(this->vm, *this->player, *this->floatingTextSystem,
-                      difficulty_name, this->gameSettings.lang);
+                      difficultyName, this->gameSettings.lang);
 
     this->view.setSize(sf::Vector2f(static_cast<float>(vm.width),
                                     static_cast<float>(vm.height)));
@@ -107,10 +42,10 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
 
     float modifier = 1.f;
 
-    if (difficulty_name == "EASY") {
+    if (difficultyName == "EASY") {
         modifier = 0.75f;
     }
-    else if (difficulty_name == "HARD") {
+    else if (difficultyName == "HARD") {
         modifier = 1.25f;
     }
 
@@ -168,7 +103,7 @@ void GameState::draw(sf::RenderTarget *target)
 
     target->setView(this->view);
 
-    target->draw(this->background);
+    this->tileMap->drawMap(*target);
 
     this->monsterSystem->drawShadow(*target);
 
@@ -176,7 +111,7 @@ void GameState::draw(sf::RenderTarget *target)
 
     this->particleSystem->drawSmallParticles(*target);
 
-    target->draw(this->vertexArray, &this->tiles_texture);
+    this->tileMap->drawObstacles(*target);
 
     this->projectileSystem->draw(*target);
 
@@ -316,13 +251,11 @@ void GameState::update(float dt)
                 const bool osY =
                     this->player->getPosition().y <= calcY(200, this->vm) ||
                     this->player->getPosition().y >=
-                        this->background.getGlobalBounds().height -
-                            calcY(392, this->vm);
+                        this->tileMap->getMapSize().y - calcY(392, this->vm);
                 const bool osX =
                     this->player->getPosition().x <= calcX(608, this->vm) ||
                     this->player->getPosition().x >=
-                        this->background.getGlobalBounds().width -
-                            calcX(672, this->vm);
+                        this->tileMap->getMapSize().x - calcX(672, this->vm);
 
                 if (osX || osY) {
                     if (osX && osY) {
@@ -427,7 +360,7 @@ void GameState::update(float dt)
 
         this->projectileSystem->update(
             *this->player, *this->playerGUI, *this->particleSystem,
-            *this->monsterSystem, this->background.getGlobalBounds(),
+            *this->monsterSystem, this->tileMap->getBounds(),
             this->tileMap->getTilesGlobalBounds(), *this->floatingTextSystem,
             this->soundEngine, dt);
 

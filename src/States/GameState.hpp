@@ -17,8 +17,8 @@ public:
     GameState(float gridSize, sf::RenderWindow &window,
               GameSettings &gameSettings, SoundEngine &soundEngine,
               MusicEngine &musicEngine, std::stack<State *> &states,
-              const std::string &map_name, const std::string &hero_name,
-              const std::string &difficulty_name);
+              const std::string &mapName, const std::string &playerName,
+              const std::string &difficultyName);
     ~GameState();
 
     void initGUI();
@@ -41,8 +41,6 @@ private:
         sprite_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
 
-    sf::Sprite background;
-    sf::Texture background_texture;
     std::string mapName;
     std::string difficultyName;
 
@@ -52,8 +50,6 @@ private:
     ProjectileSystem *projectileSystem;
     FloatingTextSystem *floatingTextSystem;
     DropSystem *dropSystem;
-    sf::Texture tiles_texture;
-    sf::VertexArray vertexArray;
     TileMap *tileMap;
     ParticleSystem *particleSystem;
 

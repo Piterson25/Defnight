@@ -212,10 +212,7 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
             soundEngine.addSound("explosion");
             proj = this->projectiles.erase(proj);
         }
-        else if ((*proj)->getHP() == 0 || (*proj)->getPosition().x < 0 ||
-                 (*proj)->getPosition().y < 0 ||
-                 (*proj)->getPosition().x > calcX(32 * 64, vm) ||
-                 (*proj)->getPosition().y > calcY(32 * 64, vm)) {
+        else if ((*proj)->getHP() == 0) {
             proj = this->projectiles.erase(proj);
         }
         else if ((*proj)->hasCollidedPlayer()) {
