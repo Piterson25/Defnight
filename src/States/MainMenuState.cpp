@@ -882,34 +882,55 @@ void MainMenuState::setPlayerRank()
     for (auto it = PlayerStats::ranks.begin(); it != PlayerStats::ranks.end();
          ++it) {
         if (this->playerData.xp >= it->minXP) {
-            const float percent = ((playerData.xp - it->minXP) * 100.f /
-                                   (std::prev(it)->minXP - it->minXP));
+            if (it != PlayerStats::ranks.begin()) {
+                const float percent = ((playerData.xp - it->minXP) * 100.f /
+                                       (std::prev(it)->minXP - it->minXP));
 
-            this->texts["PERCENT"]->setText(
-                std::to_string(static_cast<int>(percent)) + "%");
-            this->texts["PERCENT"]->center(calcX(960, vm));
-            this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(
-                0, 0, static_cast<int>(percent * 256.f / 100.f), 20));
-            this->texts["NEXT_RANK_XP"]->setText(
-                std::to_string(std::prev(it)->minXP));
-            this->texts["NEXT_RANK_XP"]->center(calcX(1096, vm));
-            this->texts["NEXT_PLAYER_RANK"]->setText(
-                this->lang[std::prev(it)->name]);
-            this->texts["NEXT_PLAYER_RANK"]->setFillColor(std::prev(it)->color);
+                this->texts["PERCENT"]->setText(
+                    std::to_string(static_cast<int>(percent)) + "%");
+                this->texts["PERCENT"]->center(calcX(960, vm));
+                this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(
+                    0, 0, static_cast<int>(percent * 256.f / 100.f), 20));
+                this->texts["NEXT_RANK_XP"]->setText(
+                    std::to_string(std::prev(it)->minXP));
+                this->texts["NEXT_RANK_XP"]->center(calcX(1096, vm));
+                this->texts["NEXT_PLAYER_RANK"]->setText(
+                    this->lang[std::prev(it)->name]);
+                this->texts["NEXT_PLAYER_RANK"]->setFillColor(
+                    std::prev(it)->color);
 
-            this->texts["NEXT_RANK"]->setPositionX(
-                calcX(960, vm) - (this->texts["NEXT_RANK"]->getWidth() +
-                                  this->texts["NEXT_PLAYER_RANK"]->getWidth()) /
-                                     2);
+                this->texts["NEXT_RANK"]->setPositionX(
+                    calcX(960, vm) -
+                    (this->texts["NEXT_RANK"]->getWidth() +
+                     this->texts["NEXT_PLAYER_RANK"]->getWidth()) /
+                        2);
 
-            this->texts["NEXT_PLAYER_RANK"]->setPositionX(
-                this->texts["NEXT_RANK"]->getPosition().x +
-                this->texts["NEXT_RANK"]->getWidth());
+                this->texts["NEXT_PLAYER_RANK"]->setPositionX(
+                    this->texts["NEXT_RANK"]->getPosition().x +
+                    this->texts["NEXT_RANK"]->getWidth());
 
-            this->texts["CURRENT_RANK_XP"]->setText(std::to_string(it->minXP));
-            this->texts["CURRENT_RANK_XP"]->center(calcX(824, vm));
+                this->texts["CURRENT_RANK_XP"]->setText(
+                    std::to_string(it->minXP));
+                this->texts["CURRENT_RANK_XP"]->center(calcX(824, vm));
 
-            this->playerRank = *it;
+                this->playerRank = *it;
+            }
+            else {
+                const float percent = 100.f;
+
+                this->texts["PERCENT"]->setText(
+                    std::to_string(static_cast<int>(percent)) + "%");
+                this->texts["PERCENT"]->center(calcX(960, vm));
+                this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(
+                    0, 0, static_cast<int>(percent * 256.f / 100.f), 20));
+                this->texts["NEXT_RANK"]->setText("");
+                this->texts["NEXT_RANK_XP"]->setText("");
+                this->texts["NEXT_PLAYER_RANK"]->setText("");
+                this->texts["CURRENT_RANK_XP"]->setText("");
+
+                this->playerRank = *it;
+            }
+
             break;
         }
     }
