@@ -6,7 +6,7 @@ namespace gui {
     static sf::VideoMode vm;
     static sf::Texture selectsTexture;
 
-    void initVM(sf::VideoMode &t_vm)
+    void initVM(const sf::VideoMode &t_vm)
     {
         vm = t_vm;
     }

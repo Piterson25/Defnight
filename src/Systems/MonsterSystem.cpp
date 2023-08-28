@@ -55,10 +55,10 @@ const std::vector<sf::Vector2f> MonsterSystem::monstersPositions() const
 const float MonsterSystem::bossHP() const
 {
     for (const auto &monster : monsters) {
-        auto boss = dynamic_cast<Boss *const>(monster.get());
+        const Boss *const boss = dynamic_cast<const Boss *>(monster.get());
         if (boss) {
-            return static_cast<float>(static_cast<float>(monster->getHP()) /
-                                      static_cast<float>(monster->getMaxHP()));
+            return static_cast<float>(monster->getHP()) /
+                   static_cast<float>(monster->getMaxHP());
         }
     }
     return 0.f;

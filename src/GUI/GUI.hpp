@@ -31,7 +31,7 @@ namespace gui {
 
     enum button_states { BUTTON_IDLE, BUTTON_HOVER, BUTTON_PRESSED };
 
-    void initVM(sf::VideoMode &t_vm);
+    void initVM(const sf::VideoMode &t_vm);
     void initFont();
     void initTextures();
 

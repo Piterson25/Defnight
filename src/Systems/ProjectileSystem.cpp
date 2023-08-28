@@ -173,8 +173,9 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
 
     for (auto proj = this->projectiles.begin();
          proj != this->projectiles.end();) {
-        auto stone = dynamic_cast<Stone *>((*proj).get());
-        auto groundWave = dynamic_cast<GroundWave *>((*proj).get());
+        const Stone *const stone = dynamic_cast<const Stone *>((*proj).get());
+        const GroundWave *const groundWave =
+            dynamic_cast<const GroundWave *>((*proj).get());
         if (stone || groundWave) {
             (*proj)->update(slowedDt);
             if (groundWave && (*proj)->isParticleCooldown(slowedDt)) {

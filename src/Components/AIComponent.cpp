@@ -153,7 +153,7 @@ void AIComponent::AStarAlg()
 void AIComponent::processNextNode(Node *currentNode,
                                   std::vector<Node *> &nodesToTest)
 {
-    auto GetDist = [](Node *P1, Node *P2) {
+    auto GetDist = [](const Node *P1, const Node *P2) {
         return vectorDistance(float(P1->x), float(P1->y), float(P2->x),
                               float(P2->y));
     };
