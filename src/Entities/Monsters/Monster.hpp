@@ -37,7 +37,7 @@ public:
     void spawn(float dt);
     virtual void update(float dt);
     void draw(sf::RenderTarget &target);
-    void drawShadow(sf::RenderTarget &target);
+    virtual void drawShadow(sf::RenderTarget &target);
 
 protected:
     virtual const bool

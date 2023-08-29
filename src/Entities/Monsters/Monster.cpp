@@ -107,15 +107,10 @@ const bool
 Monster::hasLineOfSight(const std::vector<sf::FloatRect> &obstaclesBounds,
                         const sf::Vector2f &a_p1, const sf::Vector2f &a_p2)
 {
-    for (const auto &obstacle : obstaclesBounds) {
-        if (vectorDistance(this->sprite.getPosition(),
-                           sf::Vector2f(obstacle.left, obstacle.top)) <=
-                20.f * calcX(32, vm) &&
-            isPointVisible(obstacle, a_p1, a_p2)) {
-            return true;
-        }
-    }
-    return false;
+    return std::any_of(obstaclesBounds.begin(), obstaclesBounds.end(),
+                       [&](const sf::FloatRect &obstacle) {
+                           return isPointVisible(obstacle, a_p1, a_p2);
+                       });
 }
 
 void Monster::spawn(float dt)

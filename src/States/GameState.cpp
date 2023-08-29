@@ -252,7 +252,6 @@ void GameState::update(float dt)
 
                 this->player->update(dt);
 
-                const float _32 = calcX(32, this->vm);
                 const bool osY =
                     this->player->getPosition().y <= calcY(200, this->vm) ||
                     this->player->getPosition().y >=
@@ -262,28 +261,19 @@ void GameState::update(float dt)
                     this->player->getPosition().x >=
                         this->tileMap->getMapSize().x - calcX(672, this->vm);
 
-                if (osX || osY) {
-                    if (osX && osY) {
-                        this->view.setCenter(
-                            sf::Vector2f(this->view.getCenter().x,
-                                         this->view.getCenter().y));
-                    }
-                    else {
-                        if (osX) {
-                            this->view.setCenter(sf::Vector2f(
-                                this->view.getCenter().x,
-                                this->player->getPosition().y + _32));
-                        }
-                        else if (osY) {
-                            this->view.setCenter(sf::Vector2f(
-                                this->player->getPosition().x + _32,
-                                view.getCenter().y));
-                        }
-                    }
+                if (osX && osY) {
+                    this->view.setCenter(this->view.getCenter());
+                }
+                else if (osX) {
+                    this->view.setCenter(sf::Vector2f(
+                        this->view.getCenter().x, this->player->getCenter().y));
+                }
+                else if (osY) {
+                    this->view.setCenter(sf::Vector2f(
+                        this->player->getCenter().x, view.getCenter().y));
                 }
                 else {
-                    this->view.setCenter(this->player->getPosition().x + _32,
-                                         this->player->getPosition().y + _32);
+                    this->view.setCenter(this->player->getCenter());
                 }
             }
 
