@@ -450,7 +450,7 @@ void PlayerGUI::updateMonsterCountWave(const std::string &language,
             break;
         case 7:
             this->texts["WAVE_NEW_MOBS"]->setText(this->lang["NEW_TYPE"] +
-                                                  this->lang["CYCLOPE"]);
+                                                  this->lang["CYCLOPS"]);
             break;
         case 10:
             this->texts["WAVE_NEW_MOBS"]->setText(this->lang["NEW_TYPE"] +

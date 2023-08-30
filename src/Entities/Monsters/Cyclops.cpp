@@ -1,11 +1,11 @@
-#include "Cyclope.hpp"
+#include "Cyclops.hpp"
 
-Cyclope::Cyclope(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
+Cyclops::Cyclops(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
                  float t_y, float difficulty_mod, float wave_mod,
                  const std::vector<sf::FloatRect> &obstaclesBounds)
     : Monster(t_name, t_vm, t_x, t_y, difficulty_mod, wave_mod, obstaclesBounds)
 {
-    this->name = "CYCLOPE";
+    this->name = "CYCLOPS";
     this->attack = static_cast<uint32_t>(4 * difficulty_mod);
     this->attackSpeed = 1;
     this->HP = static_cast<uint32_t>(18 * difficulty_mod);
@@ -15,10 +15,10 @@ Cyclope::Cyclope(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->XP = static_cast<uint32_t>(26 * wave_mod);
 }
 
-Cyclope::~Cyclope() = default;
+Cyclops::~Cyclops() = default;
 
 const bool
-Cyclope::hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
+Cyclops::hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
                            Player &player, SoundEngine &soundEngine,
                            FloatingTextSystem &floatingTextSystem)
 {
@@ -41,7 +41,7 @@ Cyclope::hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
 }
 
 const bool
-Cyclope::canAttackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
+Cyclops::canAttackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
                          Player &player)
 {
     const float distance = this->attackDistance(player, *this);

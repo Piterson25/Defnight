@@ -326,8 +326,8 @@ void MonsterSystem::spawnMonsters(
                     wave_mod, obstaclesBounds));
                 break;
             case 3:
-                this->monsters.emplace_back(std::make_unique<Cyclope>(
-                    "CYCLOPE", this->vm, calcX(this->gridSize * rx, this->vm),
+                this->monsters.emplace_back(std::make_unique<Cyclops>(
+                    "CYCLOPS", this->vm, calcX(this->gridSize * rx, this->vm),
                     calcY(this->gridSize * ry, this->vm), this->difficulty_mod,
                     wave_mod, obstaclesBounds));
                 break;
@@ -489,9 +489,9 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds,
             if (monster->hasAttackedPlayer(obstaclesBounds, player,
                                            soundEngineRef,
                                            floatingTextSystemRef)) {
-                const Cyclope *cyclope =
-                    dynamic_cast<const Cyclope *>(monster.get());
-                if (cyclope) {
+                const Cyclops *cyclops =
+                    dynamic_cast<const Cyclops *>(monster.get());
+                if (cyclops) {
                     projectileSystemRef.addProjectile(
                         "STONE", monster->getPosition().x + calcX(24, vm),
                         monster->getPosition().y + calcY(36, vm),

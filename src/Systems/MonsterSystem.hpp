@@ -2,7 +2,7 @@
 
 #include "DropSystem.hpp"
 #include "Entities/Bosses/Minotaur.hpp"
-#include "Entities/Monsters/Cyclope.hpp"
+#include "Entities/Monsters/Cyclops.hpp"
 #include "Entities/Monsters/Goblin.hpp"
 #include "Entities/Monsters/Orc.hpp"
 #include "Entities/Monsters/Spider.hpp"
