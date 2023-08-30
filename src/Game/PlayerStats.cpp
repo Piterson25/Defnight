@@ -10,7 +10,7 @@ const std::vector<PlayerStats::Rank> PlayerStats::ranks = {
 void PlayerStats::saveStats(const std::string &filename,
                             const PlayerData &playerdata)
 {
-    PlayerData loadedPlayerData{0, 0, 0, 0, 0, 0, 0, 0, 0,
+    PlayerData loadedPlayerData{0, 0, 1, 0, 0, 0, 0, 0, 0,
                                 0, 0, 0, 0, 0, 0, 0, 0};
     loadStats("data/player_stats.dat", loadedPlayerData);
 
