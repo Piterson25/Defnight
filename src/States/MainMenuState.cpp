@@ -334,9 +334,12 @@ void MainMenuState::initGUI()
     this->texts["TESTERS"] = std::make_unique<gui::Text>(
         this->lang["TESTERS"], calcChar(16, vm), calcX(400, vm), calcY(392, vm),
         gui::WHITE, false);
+    this->text_buttons["SZMIGIELKO"] = std::make_unique<gui::ButtonText>(
+        "Szmigielko", calcChar(16, vm), calcX(722, vm), calcY(392, vm),
+        gui::LIGHT_BLUE, gui::WHITE, false);
     this->texts["TESTERS_LIST"] = std::make_unique<gui::Text>(
-        "Szmigielko\n\nRaspar\n\nKeku\n\nyouhOrin", calcChar(16, vm),
-        calcX(722, vm), calcY(392, vm), gui::LIGHT_BLUE, false);
+        "Raspar\n\nKeku\n\nyouhOrin", calcChar(16, vm), calcX(722, vm),
+        calcY(424, vm), gui::LIGHT_BLUE, false);
 
     // PAGE 6
 
@@ -678,6 +681,10 @@ void MainMenuState::update(float dt)
                     this->soundEngine.addSound("button");
                     this->page = 1;
                 }
+                else if (this->text_buttons["SZMIGIELKO"]->isPressed(
+                             this->mousePosWindow)) {
+                    this->soundEngine.addSound("hi_hi");
+                }
                 break;
             case 6:
                 if (this->sprite_buttons["GO_BACK"]->isPressed(
@@ -823,6 +830,7 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->texts["ARTIST"]->draw(*target);
             this->texts["ARTIST_LIST"]->draw(*target);
             this->texts["TESTERS"]->draw(*target);
+            this->text_buttons["SZMIGIELKO"]->draw(*target);
             this->texts["TESTERS_LIST"]->draw(*target);
             break;
         case 6:
