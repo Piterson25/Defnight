@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Entities/player/Warrior.hpp"
+#include "Entities/Player/Warrior.hpp"
 #include "GUI/PlayerGUI.hpp"
 #include "Game/PlayerStats.hpp"
 #include "Map/TileMap.hpp"
