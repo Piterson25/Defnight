@@ -16,5 +16,7 @@ const float vectorDistance(const sf::Vector2f &vec1, const sf::Vector2f &vec2);
 void center(sf::Text &text, float x);
 void center(sf::Sprite &sprite, float x);
 
+std::string toLowerCase(std::string str);
+
 const bool isPointVisible(const sf::FloatRect &rect, const sf::Vector2f &a_p1,
                  const sf::Vector2f &a_p2);

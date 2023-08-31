@@ -7,7 +7,8 @@ Monster::Monster(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
       spawned(false), spawnCountdown(0.f), deadCountdown(0.f),
       soundPlayed(false)
 {
-    this->texture.loadFromFile("assets/textures/monsters/" + t_name + ".png");
+    this->texture.loadFromFile("assets/textures/monsters/" +
+                               toLowerCase(t_name) + ".png");
     this->sprite.setTexture(this->texture);
     this->entitySize =
         static_cast<uint32_t>(this->sprite.getGlobalBounds().width / 128);

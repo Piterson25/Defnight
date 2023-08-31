@@ -4,7 +4,8 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
                float t_y)
     : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f)
 {
-    this->texture.loadFromFile("assets/textures/player/" + t_name + ".png");
+    this->texture.loadFromFile("assets/textures/player/" + toLowerCase(t_name) +
+                               ".png");
     this->sprite.setTexture(this->texture);
     this->entitySize =
         static_cast<uint32_t>(this->sprite.getGlobalBounds().width / 128);
@@ -572,7 +573,8 @@ void Player::upgrade(const std::string &t_name, sf::IntRect &intRect)
 {
     this->setAbilityActive(false);
     this->upgradeAttributes(t_name, intRect);
-    this->setTexturePath("assets/textures/player/" + this->getName() + ".png");
+    this->setTexturePath("assets/textures/player/" +
+                         toLowerCase(this->getName()) + ".png");
     this->setUpgraded(true);
 }
 
