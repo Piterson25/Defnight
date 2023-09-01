@@ -1,0 +1,9 @@
+BasedOnStyle: LLVM
+IndentWidth: '4'
+AccessModifierOffset: '-4'
+BreakBeforeBraces: Stroustrup
+IndentCaseLabels: true
+NamespaceIndentation: All
+AllowShortFunctionsOnASingleLine: None
+ColumnLimit: '80'
+InsertBraces: true

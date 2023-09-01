@@ -1,0 +1,5 @@
+Checks: "clang-diagnostic-*,clang-analyzer-*,cppcoreguidelines-*,"
+AnalyzeTemporaryDtors: false
+CheckOptions:
+  - key: cppcoreguidelines-avoid-magic-numbers.IgnoredNumbers
+    value: "1"
