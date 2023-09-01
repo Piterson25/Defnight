@@ -4,13 +4,13 @@
 🎮 2D RPG PvE game made in C++ SFML.
 
 <p align="center">
-    <img src="https://github.com/Piterson25/Defnight/blob/v0.2.4/assets/textures/title.png">
+    <img src="https://github.com/Piterson25/Defnight/blob/main/assets/textures/title.png">
 </p>
 
 #
-| ![screenshot1.png](https://github.com/Piterson25/Defnight/blob/v0.2.4/screenshots/screenshot1.png) | ![screenshot2.png](https://github.com/Piterson25/Defnight/blob/v0.2.4/screenshots/screenshot2.png) |
+| ![screenshot1.png](https://github.com/Piterson25/Defnight/blob/main/screenshots/screenshot1.png) | ![screenshot2.png](https://github.com/Piterson25/Defnight/blob/main/screenshots/screenshot2.png) |
 | ---------------------------- | ---------------------------- |
-| ![screenshot3.png](https://github.com/Piterson25/Defnight/blob/v0.2.4/screenshots/screenshot3.png) | ![screenshot4.png](https://github.com/Piterson25/Defnight/blob/v0.2.4/screenshots/screenshot4.png) |
+| ![screenshot3.png](https://github.com/Piterson25/Defnight/blob/main/screenshots/screenshot3.png) | ![screenshot4.png](https://github.com/Piterson25/Defnight/blob/main/screenshots/screenshot4.png) |
 
 Defnight is a simple single-player mob arena game, with a pixel art style. Your objective is to survive for as long as you can. Before the start of the game, you can choose a map, character, and difficulty (more characters coming in the future). The game is split into waves of monsters, with different types of monsters and difficulties. Every 10th wave is a boss fight. When you reach a new level, you can choose which attribute to level up. At levels 5 and 10, you can upgrade to a new class with abilities. Gold you've collected can be spent in the shop or upgrading abilities.
 
@@ -55,4 +55,4 @@ Your history of waves and monsters killed is collected and stored in encrypted `
 In settings you can change window properties, fps limit, audio volume and language (English/Polish).
 
 ## License
-Defnight is licensed under the GPL License. See [LICENSE](https://github.com/Piterson25/Defnight/blob/v0.2.4/LICENSE.md) for more information.
+Defnight is licensed under the GPL License. See [LICENSE](https://github.com/Piterson25/Defnight/blob/main/LICENSE.md) for more information.
