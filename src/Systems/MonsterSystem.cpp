@@ -370,7 +370,7 @@ void MonsterSystem::prepareWave(uint32_t &wave, uint32_t &sumHP)
         monstersHP = 0;
         this->bossWave = true;
     }
-    else if (wave == 7) {
+    else if (wave == 8) {
         t = 3;
         if (monstersHP >= 30 * wave_mod) {
             monstersHP -= 30 * wave_mod;
@@ -402,7 +402,7 @@ void MonsterSystem::prepareWave(uint32_t &wave, uint32_t &sumHP)
             t = 4;
             this->bossWave = true;
         }
-        else if (monstersHP >= 30 * wave_mod && wave >= 7) {
+        else if (monstersHP >= 30 * wave_mod && wave >= 8) {
             t = static_cast<short>(Random::Float() * 4.f);
         }
         else if (monstersHP >= 12 * wave_mod && wave >= 5) {
