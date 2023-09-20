@@ -11,7 +11,7 @@ Spider::Spider(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->HP = static_cast<uint32_t>(7 * difficulty_mod);
     this->maxHP = static_cast<uint32_t>(7 * difficulty_mod);
     this->speed = 3;
-    this->gold = static_cast<uint32_t>(2 * wave_mod);
+    this->gold = 2;
     this->XP = static_cast<uint32_t>(10 * wave_mod);
 }
 

@@ -9,8 +9,6 @@ public:
 
     const uint32_t getPrice(const std::string &t_name);
 
-    void increasePrice(const std::string &t_name);
-
     void addShopItem(const std::string &t_name, float t_x, float t_y,
                      uint32_t iconID, const std::string &desc,
                      const std::string &value, uint32_t price,

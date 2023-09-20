@@ -25,8 +25,6 @@ public:
 
     const uint32_t getPrice(const std::string &t_name);
 
-    void increasePrice(const std::string &t_name);
-
     void addPlayerStat(const std::string &t_name, float t_x, float t_y,
                        const std::string &desc);
 

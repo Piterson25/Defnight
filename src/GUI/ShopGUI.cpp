@@ -17,14 +17,6 @@ const uint32_t ShopGUI::getPrice(const std::string &t_name)
     return this->shopItems[t_name].price;
 }
 
-void ShopGUI::increasePrice(const std::string &t_name)
-{
-    this->shopItems[t_name].price += static_cast<uint32_t>(
-        (((1 + sqrtf(5)) / 2.f) - 1) * this->shopItems[t_name].price);
-    this->shopItems[t_name].priceText->setText(
-        std::to_string(getPrice(t_name)));
-}
-
 void ShopGUI::addShopItem(const std::string &t_name, float t_x, float t_y,
                           uint32_t iconID, const std::string &desc,
                           const std::string &value, uint32_t price,
@@ -157,7 +149,6 @@ void ShopGUI::buy(const std::string &t_name,
     floatingTextSystem->addFloatingText(
         gui::GOLD, "-" + std::to_string(getPrice(t_name)), calcChar(16, vm),
         calcX(20, vm), calcX(96, vm), true);
-    increasePrice(t_name);
 }
 
 void ShopGUI::updateItemFrames()

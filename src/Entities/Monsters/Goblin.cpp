@@ -11,7 +11,7 @@ Goblin::Goblin(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->HP = static_cast<uint32_t>(3 * difficulty_mod);
     this->maxHP = static_cast<uint32_t>(3 * difficulty_mod);
     this->speed = 2;
-    this->gold = static_cast<uint32_t>(1 * wave_mod);
+    this->gold = 1;
     this->XP = static_cast<uint32_t>(5 * wave_mod);
 }
 

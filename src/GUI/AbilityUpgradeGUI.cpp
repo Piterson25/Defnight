@@ -22,14 +22,6 @@ const uint32_t AbilityUpgradeGUI::getPrice(const std::string &t_name)
     return this->abilityUpgrades[t_name].price;
 }
 
-void AbilityUpgradeGUI::increasePrice(const std::string &t_name)
-{
-    this->abilityUpgrades[t_name].price += static_cast<uint32_t>(
-        (((1 + sqrtf(5)) / 2.f) - 1) * this->abilityUpgrades[t_name].price);
-    this->abilityUpgrades[t_name].priceText->setText(
-        std::to_string(getPrice(t_name)));
-}
-
 void AbilityUpgradeGUI::addPlayerStat(const std::string &t_name, float t_x,
                                       float t_y, const std::string &desc)
 {
@@ -169,7 +161,6 @@ void AbilityUpgradeGUI::buy(const std::string &t_name,
     floatingTextSystem->addFloatingText(
         gui::GOLD, "-" + std::to_string(getPrice(t_name)), calcChar(16, vm),
         calcX(20, vm), calcX(96, vm), true);
-    increasePrice(t_name);
 }
 
 void AbilityUpgradeGUI::updateItemFrames()

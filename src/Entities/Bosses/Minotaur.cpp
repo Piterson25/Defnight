@@ -11,7 +11,7 @@ Minotaur::Minotaur(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->HP = static_cast<uint32_t>(100 * difficulty_mod);
     this->maxHP = static_cast<uint32_t>(100 * difficulty_mod);
     this->speed = 1;
-    this->gold = static_cast<uint32_t>(50 * wave_mod);
+    this->gold = 50;
     this->XP = static_cast<uint32_t>(200 * wave_mod);
 
     this->specialAttackLimit = 5.f;
