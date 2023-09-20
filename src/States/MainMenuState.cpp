@@ -288,8 +288,9 @@ void MainMenuState::initGUI()
     this->sprites["DIFFICULTY2"]->setTextureRect(sf::IntRect(7, 0, 7, 6));
     this->sprites["DIFFICULTY3"] = std::make_unique<gui::Sprite>(
         "assets/textures/difficulty_icons.png", calcX(1000, vm), calcY(272, vm),
-        calcScale(16, vm), false);
-    this->sprites["DIFFICULTY3"]->setTextureRect(sf::IntRect(14, 0, 7, 6));
+        calcScale(8, vm), false);
+    this->sprites["DIFFICULTY3"]->setTextureRect(sf::IntRect(14, 0, 13, 12));
+    this->sprites["DIFFICULTY3"]->center(calcX(1056, vm));
 
     this->texts["EASY"] = std::make_unique<gui::Text>(
         this->lang["EASY"], calcChar(32, vm), calcX(224, vm), calcY(400, vm),
