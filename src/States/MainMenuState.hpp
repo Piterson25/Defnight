@@ -5,7 +5,7 @@
 #include "SettingsState.hpp"
 #include "StatsState.hpp"
 
-#define VERSION "v0.2.4"
+#define VERSION "v0.2.5"
 
 class MainMenuState : public State {
 public:
