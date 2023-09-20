@@ -505,7 +505,7 @@ const bool Player::levelUp()
     else {
         newXP = this->maxXP - this->XP;
         this->level++;
-        this->maxXP += this->maxXP + this->level * 10;
+        this->maxXP += (sqrtf(5) - 1) * this->maxXP;
         this->pendingXP -= newXP;
         this->setXP(this->getXP() + newXP);
         return true;
