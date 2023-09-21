@@ -104,6 +104,8 @@ protected:
     sf::Texture shadow_texture;
     sf::Sprite ability;
     sf::Texture ability_texture;
+    sf::Sprite glow;
+    sf::Texture glow_texture;
 
     uint32_t damageDealt;
     uint32_t damageTaken;

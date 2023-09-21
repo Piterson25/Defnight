@@ -23,6 +23,13 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
                              this->getDownCenter().y);
     this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
+    this->glow_texture.loadFromFile("assets/textures/player_glow.png");
+    this->glow.setTexture(this->glow_texture);
+    this->glow.setScale(calcScale(4, vm), calcScale(4, vm));
+    this->glow.setPosition(this->getPosition().x,
+                           this->getPosition().y + calcY(8, vm));
+    this->glow.setColor(sf::Color(255, 255, 255, 128));
+
     this->ability_texture.loadFromFile("assets/textures/abilities.png");
     this->ability.setTexture(this->ability_texture);
     this->ability.setScale(calcScale(4, vm), calcScale(4, vm));
@@ -584,6 +591,8 @@ void Player::update(float dt)
                                  this->shadow.getTextureRect().width / 2 *
                                      this->shadow.getScale().x,
                              this->getDownCenter().y);
+    this->glow.setPosition(this->getPosition().x,
+                           this->getPosition().y + calcY(8, vm));
     this->ability.setPosition(this->sprite.getPosition());
 }
 
@@ -598,4 +607,5 @@ void Player::draw(sf::RenderTarget &target)
 void Player::drawShadow(sf::RenderTarget &target)
 {
     target.draw(this->shadow);
+    target.draw(this->glow);
 }
