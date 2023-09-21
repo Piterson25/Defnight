@@ -95,13 +95,13 @@ namespace gui {
                    float posY, const sf::Color &color, bool center);
         ~ShadowText();
 
-        void move(float x, float y);
-        void setAlphaColor(sf::Uint8 alpha);
-        void setPositionX(float x);
-        void setPosition(const sf::Vector2f &position);
-        void setText(const std::string &text);
-        void center(float posX);
-        void draw(sf::RenderTarget &target);
+        void move(float x, float y) override;
+        void setAlphaColor(sf::Uint8 alpha) override;
+        void setPositionX(float x) override;
+        void setPosition(const sf::Vector2f &position) override;
+        void setText(const std::string &text) override;
+        void center(float posX) override;
+        void draw(sf::RenderTarget &target) override;
 
     private:
         sf::Text shadowText;
