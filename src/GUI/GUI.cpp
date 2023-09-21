@@ -38,6 +38,14 @@ namespace gui {
         if (center) {
             this->center(posX);
         }
+
+        this->shadowText.setFont(font);
+        this->shadowText.setString(text);
+        this->shadowText.setCharacterSize(charSize);
+        this->shadowText.setFillColor(sf::Color(67, 69, 73, 192));
+        this->shadowText.setPosition(
+            this->text.getPosition().x + this->text.getCharacterSize() / 8,
+            this->text.getPosition().y + this->text.getCharacterSize() / 8);
     }
 
     ButtonText::~ButtonText() = default;
@@ -93,11 +101,15 @@ namespace gui {
     void ButtonText::setPosition(const sf::Vector2f &position)
     {
         this->text.setPosition(position);
+        this->shadowText.setPosition(
+            this->text.getPosition().x + this->text.getCharacterSize() / 8,
+            this->text.getPosition().y + this->text.getCharacterSize() / 8);
     }
 
     void ButtonText::setText(const std::string &text)
     {
         this->text.setString(text);
+        this->shadowText.setString(text);
     }
 
     void ButtonText::center(float posX)
@@ -106,10 +118,14 @@ namespace gui {
             static_cast<float>(static_cast<int>(
                 posX - (this->text.getGlobalBounds().width) / 2)),
             this->text.getPosition().y);
+        this->shadowText.setPosition(
+            this->text.getPosition().x + this->text.getCharacterSize() / 8,
+            this->text.getPosition().y + this->text.getCharacterSize() / 8);
     }
 
     void ButtonText::draw(sf::RenderTarget &target)
     {
+        target.draw(this->shadowText);
         target.draw(this->text);
     }
 
@@ -160,11 +176,6 @@ namespace gui {
         this->text.setPosition(x, this->text.getPosition().y);
     }
 
-    void Text::setPositionY(float y)
-    {
-        this->text.setPosition(this->text.getPosition().x, y);
-    }
-
     const sf::Color Text::getFillColor() const
     {
         return this->text.getFillColor();
@@ -195,6 +206,76 @@ namespace gui {
 
     void Text::draw(sf::RenderTarget &target)
     {
+        target.draw(this->text);
+    }
+
+    ShadowText::ShadowText(const std::string &text, unsigned charSize,
+                           float posX, float posY, const sf::Color &color,
+                           bool center)
+        : Text(text, charSize, posX, posY, color, center)
+    {
+        this->shadowText.setFont(font);
+        this->shadowText.setString(text);
+        this->shadowText.setCharacterSize(charSize);
+        this->shadowText.setFillColor(sf::Color(67, 69, 73, 192));
+        this->shadowText.setPosition(
+            this->text.getPosition().x + this->text.getCharacterSize() / 8,
+            this->text.getPosition().y + this->text.getCharacterSize() / 8);
+    }
+
+    ShadowText::~ShadowText() = default;
+
+    void ShadowText::move(float x, float y)
+    {
+        this->shadowText.move(x, y);
+        this->text.move(x, y);
+    }
+
+    void ShadowText::setAlphaColor(sf::Uint8 alpha)
+    {
+        this->text.setFillColor(sf::Color(this->text.getFillColor().r,
+                                          this->text.getFillColor().g,
+                                          this->text.getFillColor().b, alpha));
+        this->shadowText.setFillColor(sf::Color(67, 69, 73, alpha / 2));
+    }
+
+    void ShadowText::setPositionX(float x)
+    {
+        this->text.setPosition(x, this->text.getPosition().y);
+        this->shadowText.setPosition(
+            this->text.getPosition().x + this->text.getCharacterSize() / 8,
+            this->text.getPosition().y + this->text.getCharacterSize() / 8);
+    }
+
+    void ShadowText::setPosition(const sf::Vector2f &position)
+    {
+        this->text.setPosition(position);
+        this->shadowText.setPosition(
+            position.x + this->text.getCharacterSize() / 8,
+            position.y + this->text.getCharacterSize() / 8);
+    }
+
+    void ShadowText::setText(const std::string &text)
+    {
+        this->shadowText.setString(text);
+        this->text.setString(text);
+    }
+
+    void ShadowText::center(float posX)
+    {
+        this->text.setPosition(
+            static_cast<float>(static_cast<int>(
+                posX - (this->text.getGlobalBounds().width) / 2)),
+            this->text.getPosition().y);
+
+        this->shadowText.setPosition(
+            this->text.getPosition().x + this->text.getCharacterSize() / 8,
+            this->text.getPosition().y + this->text.getCharacterSize() / 8);
+    }
+
+    void ShadowText::draw(sf::RenderTarget &target)
+    {
+        target.draw(this->shadowText);
         target.draw(this->text);
     }
 

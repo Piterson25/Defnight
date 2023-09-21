@@ -5,8 +5,8 @@ FloatingText::FloatingText(sf::VideoMode &vm, const std::string &text,
                            const sf::Color &color, bool isgui)
     : gui(isgui)
 {
-    this->text =
-        std::make_unique<gui::Text>(text, charSize, posX, posY, color, false);
+    this->text = std::make_unique<gui::ShadowText>(text, charSize, posX, posY,
+                                                   color, false);
 
     this->text->setAlphaColor(static_cast<sf::Uint8>(0));
 

@@ -13,19 +13,19 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
 
     this->titleCooldown = 0.f;
     this->texts["WAVE_NEW_MOBS"] =
-        std::make_unique<gui::Text>("", calcChar(16, vm), calcX(640, vm),
-                                    calcY(562, vm), gui::FLAMINGO, true);
-    this->texts["BIG_WAVE_NUMBER"] = std::make_unique<gui::Text>(
+        std::make_unique<gui::ShadowText>("", calcChar(16, vm), calcX(640, vm),
+                                          calcY(562, vm), gui::FLAMINGO, true);
+    this->texts["BIG_WAVE_NUMBER"] = std::make_unique<gui::ShadowText>(
         this->lang["WAVE"], calcChar(64, vm), calcX(640, vm), calcY(256, vm),
         gui::WHITE, true);
-    this->texts["MOBS_TO_KILL"] = std::make_unique<gui::Text>(
+    this->texts["MOBS_TO_KILL"] = std::make_unique<gui::ShadowText>(
         this->lang["MONSTER"], calcChar(32, vm), calcX(640, vm), calcY(512, vm),
         gui::LIGHT_GREY, true);
     this->waveCountdown = 0.f;
 
     this->leveling = false;
 
-    this->texts["LEVEL_UP"] = std::make_unique<gui::Text>(
+    this->texts["LEVEL_UP"] = std::make_unique<gui::ShadowText>(
         "LEVEL UP!", calcChar(32, vm), calcX(640, vm), calcY(256, vm),
         gui::GOLD, true);
     this->sprites["LEVEL_UP"] = std::make_unique<gui::Sprite>(
@@ -78,7 +78,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
         sf::Vector2f(calcX(1280, vm), calcY(592, vm)));
     this->death_background.setPosition(sf::Vector2f(0, calcY(128, vm)));
 
-    this->texts["YOU_DIED"] = std::make_unique<gui::Text>(
+    this->texts["YOU_DIED"] = std::make_unique<gui::ShadowText>(
         this->lang["YOU_DIED"], calcChar(72, vm), calcX(640, vm),
         calcY(224, vm), gui::WHITE, true);
     this->text_buttons["RESUME"] = std::make_unique<gui::ButtonText>(
@@ -94,12 +94,12 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
         this->lang["QUIT"], calcChar(32, vm), calcX(640, vm), calcY(584, vm),
         gui::WHITE, gui::LIGHT_GREY, true);
 
-    this->texts["KILLS"] = std::make_unique<gui::Text>(
+    this->texts["KILLS"] = std::make_unique<gui::ShadowText>(
         this->lang["KILLS"] + std::to_string(player.getKills()),
         calcChar(16, vm), calcX(640, vm), calcY(186, vm), gui::LIGHT_GREY,
         true);
 
-    this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
+    this->texts["DIFFICULTY"] = std::make_unique<gui::ShadowText>(
         this->lang["DIFFICULTY_LEVEL"] + " " + this->lang[difficultyName],
         calcChar(16, vm), calcX(640, vm), calcY(186, vm), gui::RED, true);
 
@@ -133,7 +133,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
     this->bossWave = false;
     this->bossCooldown = 0.f;
 
-    this->texts["BOSS"] = std::make_unique<gui::Text>(
+    this->texts["BOSS"] = std::make_unique<gui::ShadowText>(
         "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm), gui::PINK,
         true);
     this->sprites["BOSS_BAR"] = std::make_unique<gui::Sprite>(

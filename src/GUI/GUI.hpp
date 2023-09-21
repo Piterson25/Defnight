@@ -58,6 +58,7 @@ namespace gui {
     private:
         uint32_t buttonState;
         sf::Text text;
+        sf::Text shadowText;
 
         sf::Color idleColor;
         sf::Color hoverColor;
@@ -74,19 +75,36 @@ namespace gui {
         const float getWidth() const;
         const sf::Color getFillColor() const;
 
+        virtual void move(float x, float y);
+        virtual void setAlphaColor(sf::Uint8 alpha);
+        virtual void setPositionX(float x);
+        virtual void setPosition(const sf::Vector2f &position);
+        void setFillColor(const sf::Color &color);
+        virtual void setText(const std::string &text);
+
+        virtual void center(float posX);
+        virtual void draw(sf::RenderTarget &target);
+
+    protected:
+        sf::Text text;
+    };
+
+    class ShadowText : public Text {
+    public:
+        ShadowText(const std::string &text, unsigned charSize, float posX,
+                   float posY, const sf::Color &color, bool center);
+        ~ShadowText();
+
         void move(float x, float y);
         void setAlphaColor(sf::Uint8 alpha);
         void setPositionX(float x);
-        void setPositionY(float y);
         void setPosition(const sf::Vector2f &position);
-        void setFillColor(const sf::Color &color);
         void setText(const std::string &text);
-
         void center(float posX);
         void draw(sf::RenderTarget &target);
 
     private:
-        sf::Text text;
+        sf::Text shadowText;
     };
 
     class ButtonSprite {
