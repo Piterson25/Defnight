@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.16)
-project(Defnight VERSION 0.2.4)
+project(Defnight VERSION 0.2.5)
 
 add_subdirectory(external/SFML)
 add_subdirectory(external/cryptopp)
