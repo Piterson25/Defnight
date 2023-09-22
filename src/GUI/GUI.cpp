@@ -437,6 +437,11 @@ namespace gui {
         this->sprite.setColor(color);
     }
 
+    void Sprite::setPosition(const sf::Vector2f &position)
+    {
+        this->sprite.setPosition(position);
+    }
+
     void Sprite::setTextureRect(const sf::IntRect &intRect)
     {
         this->sprite.setTextureRect(intRect);

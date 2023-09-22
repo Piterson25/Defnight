@@ -348,6 +348,16 @@ void MainMenuState::initGUI()
         this->lang["RANKS"], calcChar(32, vm), calcX(640, vm), calcY(96, vm),
         gui::WHITE, true);
 
+    this->sprites["LEFT_ARROW"] = std::make_unique<gui::Sprite>(
+        "assets/textures/selects.png", calcX(192, vm), calcY(192, vm),
+        calcScale(2, vm), false);
+    this->sprites["LEFT_ARROW"]->setTextureRect(gui::RECT_SMALL_ARROW);
+    this->sprites["LEFT_ARROW"]->flipHorizontal();
+    this->sprites["RIGHT_ARROW"] = std::make_unique<gui::Sprite>(
+        "assets/textures/selects.png", calcX(592, vm), calcY(192, vm),
+        calcScale(2, vm), false);
+    this->sprites["RIGHT_ARROW"]->setTextureRect(gui::RECT_SMALL_ARROW);
+
     int positionY = 192;
 
     for (int i = PlayerStats::ranks.size() - 1; i >= 0; i--) {
@@ -837,6 +847,8 @@ void MainMenuState::draw(sf::RenderTarget *target)
         case 6:
             this->sprite_buttons["GO_BACK"]->draw(*target);
             this->texts["RANKS"]->draw(*target);
+            this->sprites["LEFT_ARROW"]->draw(*target);
+            this->sprites["RIGHT_ARROW"]->draw(*target);
             this->texts["PLAYER_XP"]->draw(*target);
             this->texts["CURRENT_RANK"]->draw(*target);
             this->texts["CURRENT_PLAYER_RANK"]->draw(*target);
@@ -960,4 +972,17 @@ void MainMenuState::setPlayerRank()
     this->texts["CURRENT_PLAYER_RANK"]->setPositionX(
         this->texts["CURRENT_RANK"]->getPosition().x +
         this->texts["CURRENT_RANK"]->getWidth());
+
+    for (const auto &rank : ranksTexts) {
+        if (rank.rank->getText() == this->lang[this->playerRank.name]) {
+            this->sprites["LEFT_ARROW"]->setPosition(
+                sf::Vector2f(rank.rank->getPosition().x - calcX(32, vm),
+                             rank.rank->getPosition().y - calcY(8, vm)));
+            this->sprites["RIGHT_ARROW"]->setPosition(sf::Vector2f(
+                rank.xp->getPosition().x + rank.xp->getWidth() + calcX(32, vm),
+                rank.xp->getPosition().y - calcY(8, vm)));
+
+            break;
+        }
+    }
 }

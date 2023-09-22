@@ -150,6 +150,7 @@ namespace gui {
 
         void setAlphaColor(sf::Uint8 alpha);
         void setColor(const sf::Color &color);
+        void setPosition(const sf::Vector2f &position);
         void setTextureRect(const sf::IntRect &intRect);
 
         void flipHorizontal();
