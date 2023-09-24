@@ -45,7 +45,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->armor = 0;
     this->reg = 0;
     this->level = 1;
-    this->maxXP = 40;
+    this->maxXP = 50;
     this->pendingXP = 0;
     this->maxHP = 10;
     this->HP = 10;
