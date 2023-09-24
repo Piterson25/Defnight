@@ -31,7 +31,7 @@ public:
     void addAbilityUpgrade(const std::string &t_name, float t_x, float t_y,
                            uint32_t iconID, const std::string &desc,
                            const std::string &value, uint32_t price,
-                           uint32_t boughtNumber, uint32_t maxNumber);
+                           uint32_t boughtNumber);
     void updateSegments(const std::string &t_name);
 
     const bool hasBoughtUpgrade(const sf::Vector2i &mousePos,

@@ -33,14 +33,10 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
                                           float t_y, uint32_t iconID,
                                           const std::string &desc,
                                           const std::string &value,
-                                          uint32_t price, uint32_t boughtNumber,
-                                          uint32_t maxNumber)
+                                          uint32_t price, uint32_t boughtNumber)
 {
-    float offsetY = 0.f;
-
-    if (maxNumber > 0) {
-        offsetY = 12.f;
-    }
+    const float offsetY = 12.f;
+    const uint32_t segmentsNumber = 10;
 
     this->abilityUpgrades.emplace(
         t_name,
@@ -67,7 +63,7 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
                 t_y + calcY(48, vm) - calcY(offsetY, vm), gui::GOLD, false),
             std::vector<std::unique_ptr<gui::Sprite>>(),
             boughtNumber,
-            maxNumber,
+            segmentsNumber,
             price,
             false,
         });
@@ -80,25 +76,23 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
     this->abilityUpgrades[t_name].coinSprite->setTextureRect(
         sf::IntRect(0, 0, 16, 16));
 
-    if (maxNumber > 0) {
-        sf::Texture texture;
-        texture.loadFromFile("assets/textures/progress_segment.png");
-        const sf::Vector2f position =
-            this->abilityUpgrades[t_name].sprite->getPosition();
-        for (uint32_t i = 0; i < maxNumber; i++) {
-            this->abilityUpgrades[t_name].segments.push_back(
-                std::make_unique<gui::Sprite>(
-                    texture,
-                    position.x + calcX(static_cast<float>(i) * 12.f + 108, vm),
-                    position.y + calcY(74, vm) - calcY(offsetY, vm),
-                    calcScale(2, vm), false));
-            this->abilityUpgrades[t_name].segments[i]->setTextureRect(
-                sf::IntRect(4, 0, 4, 8));
+    sf::Texture texture;
+    texture.loadFromFile("assets/textures/progress_segment.png");
+    const sf::Vector2f position =
+        this->abilityUpgrades[t_name].sprite->getPosition();
+    for (uint32_t i = 0; i < segmentsNumber; i++) {
+        this->abilityUpgrades[t_name].segments.push_back(
+            std::make_unique<gui::Sprite>(
+                texture,
+                position.x + calcX(static_cast<float>(i) * 12.f + 108, vm),
+                position.y + calcY(74, vm) - calcY(offsetY, vm),
+                calcScale(2, vm), false));
+        this->abilityUpgrades[t_name].segments[i]->setTextureRect(
+            sf::IntRect(4, 0, 4, 8));
 
-            if (i < boughtNumber) {
-                this->abilityUpgrades[t_name].segments[i]->setTextureRect(
-                    sf::IntRect(0, 0, 4, 8));
-            }
+        if (i < boughtNumber) {
+            this->abilityUpgrades[t_name].segments[i]->setTextureRect(
+                sf::IntRect(0, 0, 4, 8));
         }
     }
 }
