@@ -80,8 +80,15 @@ void MonsterSystem::playerAttack()
             if (!monster->isDead() && !monster->isPunched() &&
                 monster->hasSpawned() && player.isAttacking() &&
                 player.getFrame() == 80) {
+
+                uint32_t sprintCritical = 0;
+
+                if (player.isSprinting()) {
+                    sprintCritical = 10;
+                }
+
                 if ((static_cast<uint32_t>(Random::Float() * 100.f) + 1) <=
-                    player.getCriticalChance()) {
+                    player.getCriticalChance() + sprintCritical) {
                     const int attack = 2 * player.getAttack();
                     floatingTextSystemRef.addFloatingText(
                         gui::ORANGE, std::to_string(-attack), calcChar(16, vm),
