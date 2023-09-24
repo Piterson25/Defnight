@@ -21,22 +21,22 @@ Warrior::~Warrior() = default;
 void Warrior::setAbilityTexture()
 {
     if (this->name == "KNIGHT") {
-        this->ability.setTextureRect(sf::IntRect(0, 0, 16, 16));
+        this->ability.setTextureRect(sf::IntRect(0, 16, 16, 16));
     }
     else if (this->name == "SCOUT") {
-        this->ability.setTextureRect(sf::IntRect(16, 0, 16, 16));
+        this->ability.setTextureRect(sf::IntRect(0, 32, 16, 16));
     }
     else if (this->name == "CRUSADER") {
-        this->ability.setTextureRect(sf::IntRect(32, 0, 16, 16));
+        this->ability.setTextureRect(sf::IntRect(16, 16, 16, 16));
     }
     else if (this->name == "PALADIN") {
-        this->ability.setTextureRect(sf::IntRect(48, 0, 16, 16));
+        this->ability.setTextureRect(sf::IntRect(32, 16, 16, 16));
     }
     else if (this->name == "ASSASSIN") {
-        this->ability.setTextureRect(sf::IntRect(64, 0, 16, 16));
+        this->ability.setTextureRect(sf::IntRect(16, 32, 16, 16));
     }
     else if (this->name == "KILLER") {
-        this->ability.setTextureRect(sf::IntRect(80, 0, 16, 16));
+        this->ability.setTextureRect(sf::IntRect(32, 32, 16, 16));
     }
 }
 
