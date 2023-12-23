@@ -4,7 +4,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
                      FloatingTextSystem &floatingTextSystem,
                      const std::string &difficultyName,
                      std::unordered_map<std::string, std::string> &lang)
-    : vm(vm), lang(lang), player(player), floatingTextSystem(floatingTextSystem)
+    : vm(vm), player(player), floatingTextSystem(floatingTextSystem), lang(lang)
 {
     this->attributesTexture.loadFromFile(
         "assets/textures/attributes_icons.png");
@@ -253,7 +253,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
         player.endAbility();
     }
 
-    sf::IntRect intRect = sf::IntRect(0, 0, 16, 16);
+    auto intRect = sf::IntRect(0, 0, 16, 16);
     player.upgrade(name, intRect);
     statsGUI->upgradePlayer(this->lang[name], intRect);
     this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");

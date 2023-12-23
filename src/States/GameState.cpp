@@ -55,9 +55,9 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
     this->particleSystem = new ParticleSystem(vm);
 
     this->monsterSystem = new MonsterSystem(
-        vm, *player, this->tileMap->getTilesGlobalBounds(), this->gridSize,
-        modifier, *this->playerGUI, *this->projectileSystem, *this->dropSystem,
-        *this->floatingTextSystem, this->soundEngine);
+        vm, *player, this->gridSize, modifier, *this->playerGUI,
+        *this->projectileSystem, *this->dropSystem, *this->floatingTextSystem,
+        this->soundEngine, this->tileMap->getTilesGlobalBounds());
 
     this->wave = 0;
     this->sumHP = 15;

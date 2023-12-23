@@ -13,12 +13,12 @@ class ProjectileSystem;
 
 class MonsterSystem {
 public:
-    MonsterSystem(sf::VideoMode &vm, Player &player,
-                  const std::vector<sf::FloatRect> &obstaclesBounds,
-                  float gridSize, float difficulty_mod, PlayerGUI &playerGUI,
+    MonsterSystem(sf::VideoMode &vm, Player &player, float gridSize,
+                  float difficulty_mod, PlayerGUI &playerGUI,
                   ProjectileSystem &projectileSystem, DropSystem &dropSystem,
                   FloatingTextSystem &floatingTextSystem,
-                  SoundEngine &soundEngine);
+                  SoundEngine &soundEngine,
+                  const std::vector<sf::FloatRect> &obstaclesBounds);
     ~MonsterSystem();
 
     const bool isMonsterIDsEmpty() const;

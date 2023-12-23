@@ -173,8 +173,8 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
 
     for (auto proj = this->projectiles.begin();
          proj != this->projectiles.end();) {
-        const Stone *const stone = dynamic_cast<const Stone *>((*proj).get());
-        const GroundWave *const groundWave =
+        const auto *const stone = dynamic_cast<const Stone *>((*proj).get());
+        const auto *const groundWave =
             dynamic_cast<const GroundWave *>((*proj).get());
         if (stone || groundWave) {
             (*proj)->update(slowedDt);

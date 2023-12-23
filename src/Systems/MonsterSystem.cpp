@@ -1,13 +1,12 @@
 #include "MonsterSystem.hpp"
 
-MonsterSystem::MonsterSystem(sf::VideoMode &vm, Player &player,
-                             const std::vector<sf::FloatRect> &obstaclesBounds,
-                             float gridSize, float difficulty_mod,
-                             PlayerGUI &playerGUI,
+MonsterSystem::MonsterSystem(sf::VideoMode &vm, Player &player, float gridSize,
+                             float difficulty_mod, PlayerGUI &playerGUI,
                              ProjectileSystem &projectileSystem,
                              DropSystem &dropSystem,
                              FloatingTextSystem &floatingTextSystem,
-                             SoundEngine &soundEngine)
+                             SoundEngine &soundEngine,
+                             const std::vector<sf::FloatRect> &obstaclesBounds)
     : vm(vm), player(player), gridSize(gridSize),
       difficulty_mod(difficulty_mod), playerGUIRef(playerGUI),
       projectileSystemRef(projectileSystem), dropSystemRef(dropSystem),
@@ -55,7 +54,7 @@ const std::vector<sf::Vector2f> MonsterSystem::monstersPositions() const
 const float MonsterSystem::bossHP() const
 {
     for (const auto &monster : monsters) {
-        const Boss *const boss = dynamic_cast<const Boss *>(monster.get());
+        const auto *boss = dynamic_cast<const Boss *>(monster.get());
         if (boss) {
             return static_cast<float>(monster->getHP()) /
                    static_cast<float>(monster->getMaxHP());
@@ -496,7 +495,7 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds,
             if (monster->hasAttackedPlayer(obstaclesBounds, player,
                                            soundEngineRef,
                                            floatingTextSystemRef)) {
-                const Cyclops *cyclops =
+                const auto *cyclops =
                     dynamic_cast<const Cyclops *>(monster.get());
                 if (cyclops) {
                     projectileSystemRef.addProjectile(

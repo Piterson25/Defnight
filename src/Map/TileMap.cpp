@@ -19,7 +19,7 @@ TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName) : vm(t_vm)
         offsetY = 96.f;
     }
 
-    const sf::Vector2f tile = sf::Vector2f(calcX(64, vm), calcY(64, vm));
+    const auto tile = sf::Vector2f(calcX(64, vm), calcY(64, vm));
     if (map.is_open()) {
         float x = 0.f, y = 0.f;
         const float pos = calcX(64, vm);
