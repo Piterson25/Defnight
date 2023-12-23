@@ -392,9 +392,15 @@ namespace gui {
 
     Sprite::Sprite(const sf::Texture &texture, float posX, float posY,
                    float scale, bool center, const sf::IntRect &intRect)
-        : Sprite(texture, posX, posY, scale, center)
+        : texture(texture)
     {
+        this->sprite.setTexture(this->texture);
+        this->sprite.setPosition(posX, posY);
+        this->sprite.setScale(scale, scale);
         this->sprite.setTextureRect(intRect);
+        if (center) {
+            this->center(posX);
+        }
     }
 
     Sprite::Sprite(sf::Sprite &sprite, float posX, float posY, float scale,

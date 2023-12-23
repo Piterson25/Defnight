@@ -29,6 +29,7 @@ private:
         std::unique_ptr<gui::Text> xp;
     };
 
+    sf::Texture framesTexture;
     std::vector<RankText> ranksTexts;
     PlayerStats::Rank playerRank;
 

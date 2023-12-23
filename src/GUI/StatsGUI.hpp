@@ -42,17 +42,50 @@ public:
     void draw(sf::RenderTarget &target);
 
 private:
+    struct Bar {
+        std::unique_ptr<gui::Sprite> frame;
+        std::unique_ptr<gui::Sprite> bar;
+        std::unique_ptr<gui::Text> text;
+        std::unique_ptr<gui::Text> hoverText;
+        float percent;
+        bool isHovering;
+
+        void update(const sf::Vector2f &mousePosView)
+        {
+            if ((frame->getGlobalBounds().contains(mousePosView))) {
+                isHovering = true;
+            }
+            else {
+                isHovering = false;
+            }
+        }
+
+        void draw(sf::RenderTarget &target)
+        {
+            frame->draw(target);
+            bar->draw(target);
+            if (!isHovering) {
+                text->draw(target);
+            }
+            else {
+                hoverText->draw(target);
+            }
+        }
+    };
+
     sf::VideoMode &vm;
     Player &player;
 
+    sf::Texture framesTexture;
     sf::Texture attributesTexture;
+    sf::Texture barsTexture;
     sf::Texture upgradesTexture;
     sf::Texture abilitiesTexture;
 
-    bool levelShown;
-    float hpBarPercent;
-    float xpBarPercent;
-    sf::RectangleShape abilityIcon;
+    sf::RectangleShape abilityCooldown;
+    Bar XPBar;
+    Bar HPBar;
+    Bar SprintBar;
 
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;

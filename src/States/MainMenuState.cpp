@@ -24,6 +24,7 @@ void MainMenuState::initGUI()
 
     this->fading = false;
     this->appearing = false;
+    this->framesTexture.loadFromFile("assets/textures/frames.png");
     this->dimBackground.setSize(sf::Vector2f(static_cast<float>(vm.width),
                                              static_cast<float>(vm.height)));
     this->dimBackground.setFillColor(sf::Color(0, 0, 0, 0));
@@ -430,9 +431,9 @@ void MainMenuState::initGUI()
         "assets/textures/bars.png", calcX(832, vm), calcY(344, vm),
         calcScale(1, vm), false);
     this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 0));
-    this->sprites["PROGRESS_BAR"] = std::make_unique<gui::Sprite>(
-        "assets/textures/progress_bar.png", calcX(960, vm), calcY(336, vm),
-        calcScale(1, vm), true);
+    this->sprites["XP_FRAME"] = std::make_unique<gui::Sprite>(
+        framesTexture, calcX(960, vm), calcY(336, vm), calcScale(1, vm), true,
+        sf::IntRect(88, 0, 272, 36));
     this->texts["PERCENT"] =
         std::make_unique<gui::Text>("0%", calcChar(16, vm), calcX(960, vm),
                                     calcY(347, vm), gui::WHITE, true);
@@ -854,7 +855,7 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->texts["CURRENT_PLAYER_RANK"]->draw(*target);
             this->texts["NEXT_RANK"]->draw(*target);
             this->texts["NEXT_PLAYER_RANK"]->draw(*target);
-            this->sprites["PROGRESS_BAR"]->draw(*target);
+            this->sprites["XP_FRAME"]->draw(*target);
             this->sprites["XP_BAR"]->draw(*target);
             this->texts["PERCENT"]->draw(*target);
             this->texts["CURRENT_RANK_XP"]->draw(*target);
