@@ -14,8 +14,8 @@ public:
                   MusicEngine &musicEngine, std::stack<State *> &states);
     ~MainMenuState();
 
-    void initGUI();
-    void resetGUI();
+    void initGUI() override;
+    void resetGUI() override;
 
     void update(float dt) override;
     void draw(sf::RenderTarget *target = NULL) override;

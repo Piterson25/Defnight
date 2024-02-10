@@ -15,13 +15,15 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
         "assets/textures/top_gui.png", 0.f, 0.f, calcScale(1, vm), false);
 
     this->sprite_buttons["MENU"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_BURGER, calcX(4, vm), calcY(4, vm), calcScale(2, vm), false);
+        gui::RECT_BURGER, calcX(4, vm), calcY(4, vm), calcScale(2, vm),
+        gui::GREY, gui::WHITE, false);
 
     this->sprites["SHOP_ICON"] =
         std::make_unique<gui::Sprite>("assets/textures/shop.png", calcX(44, vm),
                                       calcY(16, vm), calcScale(4, vm), false);
     this->sprite_buttons["SHOP"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_BUTTON, calcX(32, vm), calcY(4, vm), calcScale(1, vm), false);
+        gui::RECT_BUTTON, calcX(32, vm), calcY(4, vm), calcScale(1, vm),
+        gui::GREY, gui::WHITE, false);
 
     this->sprites["GOLD"] = std::make_unique<gui::Sprite>(
         attributesTexture, 0.f, calcY(88, vm), calcScale(2, vm), false,
@@ -45,7 +47,7 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
         false, sf::IntRect(0, 0, 16, 16));
     this->sprite_buttons["ABILITY"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_BUTTON, calcX(256, vm), calcY(4, vm), calcScale(1, vm),
-        false);
+        gui::GREY, gui::WHITE, false);
     this->sprite_buttons["ABILITY"]->setColor(gui::GOLD);
     this->abilityCooldown.setFillColor(sf::Color(128, 128, 128, 128));
     this->abilityCooldown.setSize(sf::Vector2f(calcX(80, vm), calcY(80, vm)));

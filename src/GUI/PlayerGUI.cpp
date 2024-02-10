@@ -37,7 +37,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
                                       calcY(524, vm), calcScale(4, vm), false),
         std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, calcX(504, vm),
                                             calcY(512, vm), calcScale(1, vm),
-                                            false),
+                                            gui::GREY, gui::WHITE, false),
         std::make_unique<gui::Text>("", calcChar(16, vm), calcX(548, vm),
                                     calcY(608, vm), gui::WHITE, false),
         std::make_unique<gui::Text>("", calcChar(16, vm), calcX(548, vm),
@@ -50,7 +50,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
                                       calcY(524, vm), calcScale(4, vm), false),
         std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, calcX(688, vm),
                                             calcY(512, vm), calcScale(1, vm),
-                                            false),
+                                            gui::GREY, gui::WHITE, false),
         std::make_unique<gui::Text>("", calcChar(16, vm), calcX(732, vm),
                                     calcY(608, vm), gui::WHITE, false),
         std::make_unique<gui::Text>("", calcChar(16, vm), calcX(732, vm),
@@ -99,7 +99,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
         calcChar(16, vm), calcX(640, vm), calcY(186, vm), gui::LIGHT_GREY,
         true);
 
-    this->texts["DIFFICULTY"] = std::make_unique<gui::ShadowText>(
+    this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
         this->lang["DIFFICULTY_LEVEL"] + " " + this->lang[difficultyName],
         calcChar(16, vm), calcX(640, vm), calcY(186, vm), gui::RED, true);
 
@@ -133,7 +133,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
     this->bossWave = false;
     this->bossCooldown = 0.f;
 
-    this->texts["BOSS"] = std::make_unique<gui::ShadowText>(
+    this->texts["BOSS"] = std::make_unique<gui::Text>(
         "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm), gui::PINK,
         true);
     this->sprites["BOSS_BAR"] = std::make_unique<gui::Sprite>(

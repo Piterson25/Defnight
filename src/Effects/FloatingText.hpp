@@ -16,7 +16,7 @@ public:
 
 private:
     sf::Vector2f velocity;
-    std::unique_ptr<gui::Text> text;
+    std::unique_ptr<gui::ShadowText> text;
     bool gui;
 
     float moveCooldown;

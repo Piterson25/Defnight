@@ -7,7 +7,9 @@ public:
     Game();
     ~Game();
 
-    void init();
+    void createWindow();
+    void setIcon();
+    void initGUI();
     void checkEvents();
     void close();
     void draw();
@@ -17,7 +19,6 @@ public:
 private:
     sf::RenderWindow *window;
     GameSettings *gameSettings;
-    sf::Font font;
     sf::Event sfEvent;
 
     sf::Clock dtClock;

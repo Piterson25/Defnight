@@ -5,14 +5,21 @@ StatsState::StatsState(float gridSize, sf::RenderWindow &window,
                        MusicEngine &musicEngine, std::stack<State *> &states)
     : State(gridSize, window, gameSettings, soundEngine, musicEngine, states)
 {
+    playerData = PlayerStats::PlayerData{0, 0, 1, 0, 0, 0, 0, 0, 0, 0};
+    PlayerStats::loadStats("data/player_stats.dat", playerData);
+    initGUI();
+}
+
+StatsState::~StatsState() = default;
+
+void StatsState::initGUI()
+{
     this->texts["STATISTICS"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["STATISTICS"], calcChar(32, vm), calcX(640, vm),
         calcY(96, vm), sf::Color(255, 255, 255), true);
     this->sprite_buttons["GO_BACK"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_ARROW, calcX(32, vm), calcY(24, vm), calcX(4, vm), false);
-
-    playerData = PlayerStats::PlayerData{0, 0, 1, 0, 0, 0, 0, 0, 0, 0};
-    PlayerStats::loadStats("data/player_stats.dat", playerData);
+        gui::RECT_ARROW, calcX(32, vm), calcY(24, vm), calcX(4, vm), gui::GREY,
+        gui::WHITE, false);
 
     this->texts["RECORD_WAVE"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["RECORD_WAVE"] +
@@ -100,7 +107,9 @@ StatsState::StatsState(float gridSize, sf::RenderWindow &window,
         calcChar(16, vm), calcX(800, vm), calcY(642, vm), gui::WHITE, false);
 }
 
-StatsState::~StatsState() = default;
+void StatsState::resetGUI()
+{
+}
 
 void StatsState::update(float dt)
 {

@@ -20,6 +20,7 @@ MainMenuState::~MainMenuState()
 
 void MainMenuState::initGUI()
 {
+    this->vm = this->gameSettings.resolution;
     this->page = 0;
 
     this->fading = false;
@@ -130,14 +131,16 @@ void MainMenuState::initGUI()
     // PAGE 2
 
     this->sprite_buttons["GO_BACK"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_ARROW, calcX(32, vm), calcY(24, vm), calcX(4, vm), false);
+        gui::RECT_ARROW, calcX(32, vm), calcY(24, vm), calcX(4, vm), gui::GREY,
+        gui::WHITE, false);
 
     this->map_name = "";
     this->texts["CHOOSE_MAP"] = std::make_unique<gui::Text>(
         this->lang["CHOOSE_MAP"], calcChar(32, vm), calcX(640, vm),
         calcY(96, vm), gui::WHITE, true);
     this->sprite_buttons["MAP1"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_MAP, calcX(24, vm), calcY(248, vm), calcScale(1, vm), false);
+        gui::RECT_MAP, calcX(24, vm), calcY(248, vm), calcScale(1, vm),
+        gui::GREY, gui::WHITE, false);
     this->sprites["MAP1"] = std::make_unique<gui::Sprite>(
         "assets/textures/maps/ruins.png", calcX(48, vm), calcY(272, vm),
         calcScale(0.5f, vm), false);
@@ -145,7 +148,8 @@ void MainMenuState::initGUI()
         this->lang["RUINS"], calcChar(32, vm), calcX(176, vm), calcY(200, vm),
         gui::WHITE, true);
     this->sprite_buttons["MAP2"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_MAP, calcX(472, vm), calcY(248, vm), calcScale(1, vm), false);
+        gui::RECT_MAP, calcX(472, vm), calcY(248, vm), calcScale(1, vm),
+        gui::GREY, gui::WHITE, false);
     this->sprites["MAP2"] = std::make_unique<gui::Sprite>(
         "assets/textures/maps/desolation.png", calcX(496, vm), calcY(272, vm),
         calcScale(0.5f, vm), false);
@@ -153,7 +157,8 @@ void MainMenuState::initGUI()
         this->lang["DESOLATION"], calcChar(32, vm), calcX(624, vm),
         calcY(200, vm), gui::WHITE, true);
     this->sprite_buttons["MAP3"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_MAP, calcX(920, vm), calcY(248, vm), calcScale(1, vm), false);
+        gui::RECT_MAP, calcX(920, vm), calcY(248, vm), calcScale(1, vm),
+        gui::GREY, gui::WHITE, false);
     this->sprites["MAP3"] = std::make_unique<gui::Sprite>(
         "assets/textures/maps/permafrost.png", calcX(944, vm), calcY(272, vm),
         calcScale(0.5f, vm), false);
@@ -169,7 +174,7 @@ void MainMenuState::initGUI()
         calcY(96, vm), gui::WHITE, true);
     this->sprite_buttons["HERO1"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_BUTTON, calcX(64, vm), calcY(256, vm), calcScale(2, vm),
-        false);
+        gui::GREY, gui::WHITE, false);
     this->sprites["HERO1"] = std::make_unique<gui::Sprite>(
         "assets/textures/upgrades_icons.png", calcX(88, vm), calcY(280, vm),
         calcScale(8, vm), false);
@@ -271,13 +276,13 @@ void MainMenuState::initGUI()
 
     this->sprite_buttons["DIFFICULTY1"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_DIFFICULTY, calcX(32, vm), calcY(184, vm), calcScale(1, vm),
-        false);
+        gui::GREY, gui::WHITE, false);
     this->sprite_buttons["DIFFICULTY2"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_DIFFICULTY, calcX(448, vm), calcY(184, vm), calcScale(1, vm),
-        false);
+        gui::GREY, gui::WHITE, false);
     this->sprite_buttons["DIFFICULTY3"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_DIFFICULTY, calcX(864, vm), calcY(184, vm), calcScale(1, vm),
-        false);
+        gui::GREY, gui::WHITE, false);
 
     this->sprites["DIFFICULTY1"] = std::make_unique<gui::Sprite>(
         "assets/textures/difficulty_icons.png", calcX(168, vm), calcY(272, vm),

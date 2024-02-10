@@ -7,6 +7,31 @@ SettingsState::SettingsState(float gridSize, sf::RenderWindow &window,
     : State(gridSize, window, gameSettings, soundEngine, musicEngine, states)
 {
     this->page = 0;
+    this->id = 0;
+
+    for (int i = sf::VideoMode::getFullscreenModes().size() - 1; i >= 0; --i) {
+        const auto &v = sf::VideoMode::getFullscreenModes()[i];
+        if (static_cast<float>(v.width) / v.height == 16.f / 9.f) {
+            this->videoModes.push_back(v);
+        }
+    }
+
+    this->fps_id = 0;
+    this->fpsLimits.push_back(0);
+    this->fpsLimits.push_back(240);
+    this->fpsLimits.push_back(120);
+    this->fpsLimits.push_back(60);
+
+    this->musicVolume_id = 0;
+    for (uint32_t i = 0; i <= 100; i += 10) {
+        this->musicVolumes.push_back(i);
+    }
+
+    this->soundsVolume_id = 0;
+    for (uint32_t i = 0; i <= 100; i += 10) {
+        this->soundsVolumes.push_back(i);
+    }
+
     this->initGUI();
 }
 
@@ -19,12 +44,12 @@ void SettingsState::addSetting(const std::string &t_name, float t_x, float t_y,
     this->settings.emplace(
         t_name,
         Setting{
-            std::make_unique<gui::ButtonSprite>(gui::RECT_SMALL_ARROW,
-                                                t_x + calcX(384, vm), t_y,
-                                                calcScale(4, vm), false),
-            std::make_unique<gui::ButtonSprite>(gui::RECT_SMALL_ARROW,
-                                                t_x + calcX(896, vm), t_y,
-                                                calcScale(4, vm), false),
+            std::make_unique<gui::ButtonSprite>(
+                gui::RECT_SMALL_ARROW, t_x + calcX(384, vm), t_y,
+                calcScale(4, vm), gui::GREY, gui::WHITE, false),
+            std::make_unique<gui::ButtonSprite>(
+                gui::RECT_SMALL_ARROW, t_x + calcX(896, vm), t_y,
+                calcScale(4, vm), gui::GREY, gui::WHITE, false),
             std::make_unique<gui::Text>(desc, calcChar(24, vm), t_x,
                                         t_y + calcY(16, vm), gui::WHITE, false),
             std::make_unique<gui::Text>(change, calcChar(24, vm),
@@ -51,11 +76,14 @@ void SettingsState::addKeybind(const std::string &t_name, float t_x, float t_y,
 
 void SettingsState::initGUI()
 {
+    this->vm = gameSettings.resolution;
+
     this->texts["SETTINGS"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["SETTINGS"], calcChar(32, vm), calcX(640, vm),
         calcY(96, vm), gui::WHITE, true);
     this->sprite_buttons["GO_BACK"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_ARROW, calcX(32, vm), calcY(24, vm), calcX(4, vm), false);
+        gui::RECT_ARROW, calcX(32, vm), calcY(24, vm), calcX(4, vm), gui::GREY,
+        gui::WHITE, false);
 
     this->text_buttons["GENERAL_SETTINGS"] = std::make_unique<gui::ButtonText>(
         this->gameSettings.lang["GENERAL_SETTINGS"], calcChar(24, vm),
@@ -70,15 +98,6 @@ void SettingsState::initGUI()
         calcY(444, vm), gui::WHITE, gui::LIGHT_GREY, true);
 
     this->mode = vm;
-
-    this->id = 0;
-
-    for (int i = sf::VideoMode::getFullscreenModes().size() - 1; i >= 0; --i) {
-        const auto &v = sf::VideoMode::getFullscreenModes()[i];
-        if (static_cast<float>(v.width) / v.height == 16.f / 9.f) {
-            this->videoModes.push_back(v);
-        }
-    }
 
     for (size_t i = 0; i < this->videoModes.size(); ++i) {
         if (this->videoModes[i] == vm) {
@@ -103,13 +122,6 @@ void SettingsState::initGUI()
     }
 
     this->fpsLimit = this->gameSettings.fpsLimit;
-
-    this->fpsLimits.push_back(0);
-    this->fpsLimits.push_back(240);
-    this->fpsLimits.push_back(120);
-    this->fpsLimits.push_back(60);
-
-    this->fps_id = 0;
 
     for (size_t i = 0; i < this->fpsLimits.size(); ++i) {
         if (this->fpsLimits[i] == this->gameSettings.fpsLimit) {
@@ -150,10 +162,6 @@ void SettingsState::initGUI()
     }
 
     this->musicVolume = this->gameSettings.musicVolume;
-    this->musicVolume_id = 0;
-    for (uint32_t i = 0; i <= 100; i += 10) {
-        this->musicVolumes.push_back(i);
-    }
 
     for (size_t i = 0; i < this->musicVolumes.size(); ++i) {
         if (this->musicVolumes[i] == this->musicVolume) {
@@ -166,10 +174,6 @@ void SettingsState::initGUI()
     }
 
     this->soundsVolume = this->gameSettings.soundsVolume;
-    this->soundsVolume_id = 0;
-    for (uint32_t i = 0; i <= 100; i += 10) {
-        this->soundsVolumes.push_back(i);
-    }
 
     for (size_t i = 0; i < this->soundsVolumes.size(); ++i) {
         if (this->soundsVolumes[i] == this->soundsVolume) {
@@ -203,12 +207,17 @@ void SettingsState::initGUI()
 
 void SettingsState::resetGUI()
 {
-    this->texts.clear();
-    this->text_buttons.clear();
-    this->sprites.clear();
-    this->sprite_buttons.clear();
+    vm = gameSettings.resolution;
 
-    initGUI();
+    std::cout << vm.width << vm.height;
+
+    this->texts["SETTINGS"]->setPosition(calcX(640, vm), calcY(96, vm));
+    this->sprite_buttons["GO_BACK"]->setPosition(calcX(32, vm), calcY(24, vm));
+
+    this->text_buttons["GENERAL_SETTINGS"]->setPosition(calcX(640, vm),
+                                                        calcY(300, vm));
+    this->text_buttons["AUDIO"]->setPosition(calcX(640, vm), calcY(372, vm));
+    this->text_buttons["KEYBINDS"]->setPosition(calcX(640, vm), calcY(444, vm));
 }
 
 void SettingsState::update(float dt)

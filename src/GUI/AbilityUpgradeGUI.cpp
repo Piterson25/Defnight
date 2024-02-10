@@ -45,7 +45,7 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
                                           t_y, calcScale(4, vm), false),
             std::make_unique<gui::ButtonSprite>(
                 gui::RECT_BUTTON, t_x - calcX(12, vm), t_y - calcY(12, vm),
-                calcScale(1, vm), false),
+                calcScale(1, vm), gui::GREY, gui::WHITE, false),
             std::make_unique<gui::Sprite>("assets/textures/lock.png", t_x, t_y,
                                           calcScale(4, vm), false),
             std::make_unique<gui::Text>(

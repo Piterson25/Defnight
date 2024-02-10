@@ -2,8 +2,8 @@
 
 namespace gui {
 
-    static sf::Font font;
     static sf::VideoMode vm;
+    static sf::Font font;
     static sf::Texture selectsTexture;
 
     void initVM(const sf::VideoMode &t_vm)
@@ -25,120 +25,17 @@ namespace gui {
         }
     }
 
-    ButtonText::ButtonText(const std::string &text, unsigned charSize,
-                           float posX, float posY, const sf::Color &idleColor,
-                           const sf::Color &hoverColor, bool center)
-        : buttonState(BUTTON_IDLE), idleColor(idleColor), hoverColor(hoverColor)
-    {
-        this->text.setFont(font);
-        this->text.setString(text);
-        this->text.setCharacterSize(charSize);
-        this->text.setFillColor(idleColor);
-        this->text.setPosition(posX, posY);
-        if (center) {
-            this->center(posX);
-        }
-
-        this->shadowText.setFont(font);
-        this->shadowText.setString(text);
-        this->shadowText.setCharacterSize(charSize);
-        this->shadowText.setFillColor(sf::Color(67, 69, 73, 192));
-        this->shadowText.setPosition(
-            this->text.getPosition().x + this->text.getCharacterSize() / 8,
-            this->text.getPosition().y + this->text.getCharacterSize() / 8);
-    }
-
-    ButtonText::~ButtonText() = default;
-
-    const sf::Vector2f &ButtonText::getPosition() const
-    {
-        return this->text.getPosition();
-    }
-
-    bool ButtonText::isPressed(const sf::Vector2i &mousePosWindow)
-    {
-        this->buttonState = BUTTON_IDLE;
-
-        if (this->text.getGlobalBounds().contains(
-                static_cast<sf::Vector2f>(mousePosWindow))) {
-            this->buttonState = BUTTON_HOVER;
-
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                this->buttonState = BUTTON_PRESSED;
-            }
-        }
-        switch (this->buttonState) {
-            case BUTTON_IDLE:
-                this->text.setFillColor(this->idleColor);
-                break;
-            case BUTTON_HOVER:
-                this->text.setFillColor(this->hoverColor);
-                break;
-            case BUTTON_PRESSED:
-                this->text.setFillColor(this->hoverColor);
-                break;
-        }
-
-        if (this->buttonState == BUTTON_PRESSED &&
-            !GameInputHandler::isMouseClick()) {
-            GameInputHandler::setMouseClick(true);
-            return true;
-        }
-
-        return false;
-    }
-
-    const std::string ButtonText::getText() const
-    {
-        return this->text.getString();
-    }
-
-    const float ButtonText::getWidth() const
-    {
-        return this->text.getGlobalBounds().width;
-    }
-
-    void ButtonText::setPosition(const sf::Vector2f &position)
-    {
-        this->text.setPosition(position);
-        this->shadowText.setPosition(
-            this->text.getPosition().x + this->text.getCharacterSize() / 8,
-            this->text.getPosition().y + this->text.getCharacterSize() / 8);
-    }
-
-    void ButtonText::setText(const std::string &text)
-    {
-        this->text.setString(text);
-        this->shadowText.setString(text);
-    }
-
-    void ButtonText::center(float posX)
-    {
-        this->text.setPosition(
-            static_cast<float>(static_cast<int>(
-                posX - (this->text.getGlobalBounds().width) / 2)),
-            this->text.getPosition().y);
-        this->shadowText.setPosition(
-            this->text.getPosition().x + this->text.getCharacterSize() / 8,
-            this->text.getPosition().y + this->text.getCharacterSize() / 8);
-    }
-
-    void ButtonText::draw(sf::RenderTarget &target)
-    {
-        target.draw(this->shadowText);
-        target.draw(this->text);
-    }
-
-    Text::Text(const std::string &text, unsigned charSize, float posX,
-               float posY, const sf::Color &color, bool center)
+    Text::Text(const std::string &text, unsigned charSize, float x, float y,
+               const sf::Color &color, bool center)
     {
         this->text.setFont(font);
         this->text.setString(text);
         this->text.setCharacterSize(charSize);
         this->text.setFillColor(color);
-        this->text.setPosition(posX, posY);
-        if (center) {
-            this->center(posX);
+        this->text.setPosition(x, y);
+        this->centered = center;
+        if (centered) {
+            this->center(x);
         }
     }
 
@@ -186,6 +83,11 @@ namespace gui {
         this->text.setPosition(position);
     }
 
+    void Text::setPosition(float x, float y)
+    {
+        this->text.setPosition(sf::Vector2f(x, y));
+    }
+
     void Text::setFillColor(const sf::Color &color)
     {
         this->text.setFillColor(color);
@@ -196,11 +98,11 @@ namespace gui {
         this->text.setString(text);
     }
 
-    void Text::center(float posX)
+    void Text::center(float x)
     {
         this->text.setPosition(
-            static_cast<float>(static_cast<int>(
-                posX - (this->text.getGlobalBounds().width) / 2)),
+            static_cast<float>(
+                static_cast<int>(x - (this->text.getGlobalBounds().width) / 2)),
             this->text.getPosition().y);
     }
 
@@ -209,15 +111,14 @@ namespace gui {
         target.draw(this->text);
     }
 
-    ShadowText::ShadowText(const std::string &text, unsigned charSize,
-                           float posX, float posY, const sf::Color &color,
-                           bool center)
-        : Text(text, charSize, posX, posY, color, center)
+    ShadowText::ShadowText(const std::string &text, unsigned charSize, float x,
+                           float y, const sf::Color &color, bool center)
+        : Text(text, charSize, x, y, color, center)
     {
         this->shadowText.setFont(font);
         this->shadowText.setString(text);
         this->shadowText.setCharacterSize(charSize);
-        this->shadowText.setFillColor(sf::Color(67, 69, 73, 192));
+        this->shadowText.setFillColor(sf::Color(GREY.r, GREY.b, GREY.b, 192));
         this->shadowText.setPosition(
             this->text.getPosition().x + this->text.getCharacterSize() / 8,
             this->text.getPosition().y + this->text.getCharacterSize() / 8);
@@ -227,8 +128,8 @@ namespace gui {
 
     void ShadowText::move(float x, float y)
     {
-        this->shadowText.move(x, y);
         this->text.move(x, y);
+        this->shadowText.move(x, y);
     }
 
     void ShadowText::setAlphaColor(sf::Uint8 alpha)
@@ -236,23 +137,24 @@ namespace gui {
         this->text.setFillColor(sf::Color(this->text.getFillColor().r,
                                           this->text.getFillColor().g,
                                           this->text.getFillColor().b, alpha));
-        this->shadowText.setFillColor(sf::Color(67, 69, 73, alpha / 2));
+        this->shadowText.setFillColor(
+            sf::Color(this->shadowText.getFillColor().r,
+                      this->shadowText.getFillColor().g,
+                      this->shadowText.getFillColor().b, alpha / 2));
     }
 
     void ShadowText::setPositionX(float x)
     {
         this->text.setPosition(x, this->text.getPosition().y);
-        this->shadowText.setPosition(
-            this->text.getPosition().x + this->text.getCharacterSize() / 8,
-            this->text.getPosition().y + this->text.getCharacterSize() / 8);
+        this->shadowText.setPosition(x, this->shadowText.getPosition().y);
     }
 
     void ShadowText::setPosition(const sf::Vector2f &position)
     {
-        this->text.setPosition(position);
+        this->text.setPosition(sf::Vector2f(position));
         this->shadowText.setPosition(
-            position.x + this->text.getCharacterSize() / 8,
-            position.y + this->text.getCharacterSize() / 8);
+            this->text.getPosition().x + this->text.getCharacterSize() / 8,
+            this->text.getPosition().y + this->text.getCharacterSize() / 8);
     }
 
     void ShadowText::setText(const std::string &text)
@@ -261,13 +163,12 @@ namespace gui {
         this->text.setString(text);
     }
 
-    void ShadowText::center(float posX)
+    void ShadowText::center(float x)
     {
         this->text.setPosition(
-            static_cast<float>(static_cast<int>(
-                posX - (this->text.getGlobalBounds().width) / 2)),
+            static_cast<float>(
+                static_cast<int>(x - (this->text.getGlobalBounds().width) / 2)),
             this->text.getPosition().y);
-
         this->shadowText.setPosition(
             this->text.getPosition().x + this->text.getCharacterSize() / 8,
             this->text.getPosition().y + this->text.getCharacterSize() / 8);
@@ -279,54 +180,43 @@ namespace gui {
         target.draw(this->text);
     }
 
-    ButtonSprite::ButtonSprite(const sf::IntRect &intRect, float t_x, float t_y,
-                               float scale, bool center)
-        : buttonState(BUTTON_IDLE)
+    ButtonText::ButtonText(const std::string &text, unsigned charSize, float x,
+                           float y, const sf::Color &idleColor,
+                           const sf::Color &hoverColor, bool center)
+        : Text(text, charSize, x, y, idleColor, center),
+          buttonState(ButtonState::BUTTON_IDLE), idleColor(idleColor),
+          hoverColor(hoverColor)
     {
-        this->color = gui::GREY;
-        this->sprite.setTexture(gui::selectsTexture);
-        this->sprite.setColor(this->color);
-        this->sprite.setPosition(t_x, t_y);
-        this->sprite.setScale(scale, scale);
-        this->sprite.setTextureRect(intRect);
-        if (center) {
-            this->center(t_x);
-        }
     }
 
-    ButtonSprite::~ButtonSprite() = default;
+    ButtonText::~ButtonText() = default;
 
-    const sf::Color ButtonSprite::getColor() const
+    bool ButtonText::isPressed(const sf::Vector2i &mousePosWindow)
     {
-        return this->color;
-    }
+        this->buttonState = ButtonState::BUTTON_IDLE;
 
-    bool ButtonSprite::isPressed(const sf::Vector2i &mousePosWindow)
-    {
-        this->buttonState = BUTTON_IDLE;
-
-        if (this->sprite.getGlobalBounds().contains(
+        if (this->text.getGlobalBounds().contains(
                 static_cast<sf::Vector2f>(mousePosWindow))) {
-            this->buttonState = BUTTON_HOVER;
+            this->buttonState = ButtonState::BUTTON_HOVER;
 
             if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-                this->buttonState = BUTTON_PRESSED;
+                this->buttonState = ButtonState::BUTTON_PRESSED;
             }
         }
 
         switch (this->buttonState) {
-            case BUTTON_IDLE:
-                this->sprite.setColor(this->color);
+            case ButtonState::BUTTON_IDLE:
+                this->text.setFillColor(this->idleColor);
                 break;
-            case BUTTON_HOVER:
-                this->sprite.setColor(gui::WHITE);
+            case ButtonState::BUTTON_HOVER:
+                this->text.setFillColor(this->hoverColor);
                 break;
-            case BUTTON_PRESSED:
-                this->sprite.setColor(gui::WHITE);
+            case ButtonState::BUTTON_PRESSED:
+                this->text.setFillColor(this->hoverColor);
                 break;
         }
 
-        if (this->buttonState == BUTTON_PRESSED &&
+        if (this->buttonState == ButtonState::BUTTON_PRESSED &&
             !GameInputHandler::isMouseClick()) {
             GameInputHandler::setMouseClick(true);
             return true;
@@ -335,82 +225,55 @@ namespace gui {
         return false;
     }
 
-    void ButtonSprite::flipHorizontal()
-    {
-        this->sprite.setScale(-this->sprite.getScale().x,
-                              this->sprite.getScale().y);
-    }
-
-    const sf::IntRect ButtonSprite::getTextureRect() const
-    {
-        return this->sprite.getTextureRect();
-    }
-
-    void ButtonSprite::setColor(const sf::Color &t_color)
-    {
-        this->buttonState = BUTTON_IDLE;
-        this->color = t_color;
-        this->sprite.setColor(this->color);
-    }
-
-    void ButtonSprite::center(float posX)
-    {
-        this->sprite.setPosition(
-            static_cast<float>(static_cast<int>(
-                posX - (this->sprite.getGlobalBounds().width) / 2)),
-            this->sprite.getPosition().y);
-    }
-
-    void ButtonSprite::draw(sf::RenderTarget &target)
-    {
-        target.draw(this->sprite);
-    }
-
-    Sprite::Sprite(const std::string &texturePath, float posX, float posY,
+    Sprite::Sprite(const std::string &texturePath, float x, float y,
                    float scale, bool center)
     {
         this->texture.loadFromFile(texturePath);
         this->sprite.setTexture(this->texture);
-        this->sprite.setPosition(posX, posY);
+        this->sprite.setPosition(x, y);
         this->sprite.setScale(scale, scale);
+        this->centered = center;
         if (center) {
-            this->center(posX);
+            this->center(x);
         }
     }
 
-    Sprite::Sprite(const sf::Texture &texture, float posX, float posY,
-                   float scale, bool center)
+    Sprite::Sprite(const sf::Texture &texture, float x, float y, float scale,
+                   bool center)
         : texture(texture)
     {
         this->sprite.setTexture(this->texture);
-        this->sprite.setPosition(posX, posY);
+        this->sprite.setPosition(x, y);
         this->sprite.setScale(scale, scale);
+        this->centered = center;
         if (center) {
-            this->center(posX);
+            this->center(x);
         }
     }
 
-    Sprite::Sprite(const sf::Texture &texture, float posX, float posY,
-                   float scale, bool center, const sf::IntRect &intRect)
+    Sprite::Sprite(const sf::Texture &texture, float x, float y, float scale,
+                   bool center, const sf::IntRect &intRect)
         : texture(texture)
     {
         this->sprite.setTexture(this->texture);
-        this->sprite.setPosition(posX, posY);
+        this->sprite.setPosition(x, y);
         this->sprite.setScale(scale, scale);
         this->sprite.setTextureRect(intRect);
+        this->centered = center;
         if (center) {
-            this->center(posX);
+            this->center(x);
         }
     }
 
-    Sprite::Sprite(sf::Sprite &sprite, float posX, float posY, float scale,
+    Sprite::Sprite(sf::Sprite &sprite, float x, float y, float scale,
                    bool center)
         : sprite(sprite)
     {
-        this->sprite.setPosition(posX, posY);
+        this->sprite.setPosition(x, y);
         this->sprite.setScale(scale, scale);
+        this->centered = center;
         if (center) {
-            this->center(posX);
+            this->center(x);
         }
     }
 
@@ -448,6 +311,11 @@ namespace gui {
         this->sprite.setPosition(position);
     }
 
+    void Sprite::setPosition(float x, float y)
+    {
+        this->sprite.setPosition(sf::Vector2f(x, y));
+    }
+
     void Sprite::setTextureRect(const sf::IntRect &intRect)
     {
         this->sprite.setTextureRect(intRect);
@@ -459,17 +327,67 @@ namespace gui {
                               this->sprite.getScale().y);
     }
 
-    void Sprite::center(float posX)
+    void Sprite::center(float x)
     {
         this->sprite.setPosition(
             static_cast<float>(static_cast<int>(
-                posX - (this->sprite.getGlobalBounds().width) / 2)),
+                x - (this->sprite.getGlobalBounds().width) / 2)),
             this->sprite.getPosition().y);
     }
 
     void Sprite::draw(sf::RenderTarget &target)
     {
         target.draw(this->sprite);
+    }
+
+    ButtonSprite::ButtonSprite(const sf::IntRect &intRect, float x, float y,
+                               float scale, const sf::Color &idleColor,
+                               const sf::Color &hoverColor, bool center)
+        : Sprite(selectsTexture, x, y, scale, center, intRect),
+          buttonState(ButtonState::BUTTON_IDLE), idleColor(idleColor),
+          hoverColor(hoverColor)
+    {
+    }
+
+    ButtonSprite::~ButtonSprite() = default;
+
+    const sf::Color ButtonSprite::getColor() const
+    {
+        return this->idleColor;
+    }
+
+    bool ButtonSprite::isPressed(const sf::Vector2i &mousePosWindow)
+    {
+        this->buttonState = ButtonState::BUTTON_IDLE;
+
+        if (this->sprite.getGlobalBounds().contains(
+                static_cast<sf::Vector2f>(mousePosWindow))) {
+            this->buttonState = ButtonState::BUTTON_HOVER;
+
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                this->buttonState = ButtonState::BUTTON_PRESSED;
+            }
+        }
+
+        switch (this->buttonState) {
+            case ButtonState::BUTTON_IDLE:
+                this->sprite.setColor(this->idleColor);
+                break;
+            case ButtonState::BUTTON_HOVER:
+                this->sprite.setColor(this->hoverColor);
+                break;
+            case ButtonState::BUTTON_PRESSED:
+                this->sprite.setColor(this->hoverColor);
+                break;
+        }
+
+        if (this->buttonState == ButtonState::BUTTON_PRESSED &&
+            !GameInputHandler::isMouseClick()) {
+            GameInputHandler::setMouseClick(true);
+            return true;
+        }
+
+        return false;
     }
 
 } // namespace gui
