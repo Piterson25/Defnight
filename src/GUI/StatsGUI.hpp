@@ -48,6 +48,7 @@ private:
         std::unique_ptr<gui::Text> text;
         std::unique_ptr<gui::Text> hoverText;
         float percent;
+        float timeCooldown;
         bool isHovering;
 
         void update(const sf::Vector2f &mousePosView)

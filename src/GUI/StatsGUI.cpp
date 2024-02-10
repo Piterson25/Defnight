@@ -47,7 +47,7 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
         false, sf::IntRect(0, 0, 16, 16));
     this->sprite_buttons["ABILITY"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_BUTTON, calcX(256, vm), calcY(4, vm), calcScale(1, vm),
-        gui::GREY, gui::WHITE, false);
+        gui::YELLOW, gui::WHITE, false);
     this->sprite_buttons["ABILITY"]->setColor(gui::GOLD);
     this->abilityCooldown.setFillColor(sf::Color(128, 128, 128, 128));
     this->abilityCooldown.setSize(sf::Vector2f(calcX(80, vm), calcY(80, vm)));
@@ -83,6 +83,7 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
                                     calcChar(16, vm), calcX(640, vm),
                                     calcY(15, vm), gui::WHITE, true),
         0.f,
+        0.f,
         false};
 
     HPBar = Bar{
@@ -99,6 +100,7 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
         std::make_unique<gui::Text>("Full", calcChar(16, vm), calcX(640, vm),
                                     calcY(55, vm), gui::WHITE, true),
         1.f,
+        0.f,
         false};
 
     SprintBar = Bar{
@@ -115,6 +117,7 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
         std::make_unique<gui::Text>("Full", calcChar(16, vm), calcX(640, vm),
                                     calcY(95, vm), gui::WHITE, true),
         1.f,
+        0.f,
         false};
 
     this->sprites["ATTACK"] = std::make_unique<gui::Sprite>(
@@ -283,6 +286,10 @@ void StatsGUI::updateHP()
     HPBar.text->setText("HP:" + std::to_string(player.getHP()) + "/" +
                         std::to_string(player.getMaxHP()));
     HPBar.text->center(calcX(640, vm));
+    if (HPBar.percent == 1.f) {
+        HPBar.hoverText->setText("Full");
+        HPBar.hoverText->center(calcX(640, vm));
+    }
 }
 
 void StatsGUI::updatingHP(float dt)
@@ -293,10 +300,37 @@ void StatsGUI::updatingHP(float dt)
         HPBar.text->center(calcX(640, this->vm));
         HPBar.percent = static_cast<float>(player.getHP()) / player.getMaxHP();
         player.setRegenerating(true);
+
+        if (HPBar.percent == 1.f) {
+            HPBar.hoverText->setText("Full");
+            HPBar.hoverText->center(calcX(640, vm));
+        }
     }
     else if (player.isDead()) {
         HPBar.percent = 0.f;
         HPBar.bar->setTextureRect(sf::IntRect(0, 20, 0, 20));
+    }
+
+    if (HPBar.isHovering && HPBar.percent < 1.f) {
+
+        if (HPBar.timeCooldown < 0.1f) {
+            HPBar.timeCooldown += dt;
+        }
+
+        if (HPBar.timeCooldown >= 0.1f) {
+            HPBar.timeCooldown = 0.f;
+            const uint32_t HPtoFull = player.getMaxHP() - player.getHP();
+            const float step = (player.getReg() * 0.2f + 0.8f) / 4.f;
+            float totalTimeCooldown = (1.f - player.getRegCooldown()) / step;
+            if (HPtoFull > 1) {
+                totalTimeCooldown += (HPtoFull - 1) / step;
+            }
+
+            const float rounded = std::round(totalTimeCooldown * 10.0f) / 10.0f;
+
+            HPBar.hoverText->setText(std::format("{:.1f}", rounded) + 's');
+            HPBar.hoverText->center(calcX(640, vm));
+        }
     }
 
     const int width = HPBar.bar->getTextureRect().width;
@@ -341,6 +375,37 @@ void StatsGUI::updateSprint()
 
 void StatsGUI::updatingSprint(float dt)
 {
+    SprintBar.percent =
+        static_cast<float>(player.getSprint()) / player.getMaxSprint();
+
+    if (SprintBar.isHovering) {
+
+        if (SprintBar.percent < 1.f) {
+            if (SprintBar.timeCooldown < 0.1f) {
+                SprintBar.timeCooldown += dt;
+            }
+
+            if (SprintBar.timeCooldown >= 0.1f) {
+                SprintBar.timeCooldown = 0.f;
+                const uint32_t SprintToFull =
+                    player.getMaxSprint() - player.getSprint();
+                const float step = player.getMaxSprint() / 40.f;
+                const float totalTimeCooldown = SprintToFull / step;
+
+                const float rounded =
+                    std::round(totalTimeCooldown * 10.0f) / 10.0f;
+
+                SprintBar.hoverText->setText(std::format("{:.1f}", rounded) +
+                                             's');
+                SprintBar.hoverText->center(calcX(640, vm));
+            }
+        }
+        else {
+            SprintBar.hoverText->setText("Full");
+            SprintBar.hoverText->center(calcX(640, vm));
+        }
+    }
+
     const int bar_width = SprintBar.bar->getTextureRect().width;
     const int barrier_width = static_cast<int>(
         player.getSprint() / static_cast<float>(player.getMaxSprint()) * 256.f);

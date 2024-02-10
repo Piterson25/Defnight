@@ -34,6 +34,7 @@ public:
     const uint32_t getIncreasedTargets() const;
     const uint32_t getGoldReward() const;
     const uint32_t getAttackLimit() const;
+    const float getRegCooldown() const;
     const float getTimeSlowdown() const;
     const bool isRegenerating() const;
     const bool isLeveling() const;

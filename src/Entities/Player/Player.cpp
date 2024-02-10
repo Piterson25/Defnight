@@ -200,6 +200,11 @@ const uint32_t Player::getAttackLimit() const
     return this->attackLimit;
 }
 
+const float Player::getRegCooldown() const
+{
+    return this->regCooldown;
+}
+
 const float Player::getTimeSlowdown() const
 {
     return this->timeSlowdown;
