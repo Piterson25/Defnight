@@ -347,6 +347,7 @@ namespace gui {
           buttonState(ButtonState::BUTTON_IDLE), idleColor(idleColor),
           hoverColor(hoverColor)
     {
+        this->sprite.setColor(idleColor);
     }
 
     ButtonSprite::~ButtonSprite() = default;

@@ -116,10 +116,10 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
                                         std::to_string(player.getMaxSprint()),
                                     calcChar(16, vm), calcX(640, vm),
                                     calcY(95, vm), gui::WHITE, true),
-        std::make_unique<gui::Text>(std::to_string(player.getSprint()) + "/" +
-                                        std::to_string(player.getMaxSprint()),
-                                    calcChar(16, vm), calcX(640, vm),
-                                    calcY(95, vm), gui::WHITE, true),
+        std::make_unique<gui::Text>(
+            std::to_string(static_cast<uint32_t>(player.getSprint())) + "/" +
+                std::to_string(player.getMaxSprint()),
+            calcChar(16, vm), calcX(640, vm), calcY(95, vm), gui::WHITE, true),
         1.f,
         0.f,
         false};
