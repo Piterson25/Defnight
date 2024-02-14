@@ -97,7 +97,9 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
                                         "/" + std::to_string(player.getMaxHP()),
                                     calcChar(16, vm), calcX(640, vm),
                                     calcY(55, vm), gui::WHITE, true),
-        std::make_unique<gui::Text>("Full", calcChar(16, vm), calcX(640, vm),
+        std::make_unique<gui::Text>("HP:" + std::to_string(player.getHP()) +
+                                        "/" + std::to_string(player.getMaxHP()),
+                                    calcChar(16, vm), calcX(640, vm),
                                     calcY(55, vm), gui::WHITE, true),
         1.f,
         0.f,
@@ -114,7 +116,9 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
                                         std::to_string(player.getMaxSprint()),
                                     calcChar(16, vm), calcX(640, vm),
                                     calcY(95, vm), gui::WHITE, true),
-        std::make_unique<gui::Text>("Full", calcChar(16, vm), calcX(640, vm),
+        std::make_unique<gui::Text>(std::to_string(player.getSprint()) + "/" +
+                                        std::to_string(player.getMaxSprint()),
+                                    calcChar(16, vm), calcX(640, vm),
                                     calcY(95, vm), gui::WHITE, true),
         1.f,
         0.f,
@@ -286,10 +290,6 @@ void StatsGUI::updateHP()
     HPBar.text->setText("HP:" + std::to_string(player.getHP()) + "/" +
                         std::to_string(player.getMaxHP()));
     HPBar.text->center(calcX(640, vm));
-    if (HPBar.percent == 1.f) {
-        HPBar.hoverText->setText("Full");
-        HPBar.hoverText->center(calcX(640, vm));
-    }
 }
 
 void StatsGUI::updatingHP(float dt)
@@ -300,35 +300,38 @@ void StatsGUI::updatingHP(float dt)
         HPBar.text->center(calcX(640, this->vm));
         HPBar.percent = static_cast<float>(player.getHP()) / player.getMaxHP();
         player.setRegenerating(true);
-
-        if (HPBar.percent == 1.f) {
-            HPBar.hoverText->setText("Full");
-            HPBar.hoverText->center(calcX(640, vm));
-        }
     }
     else if (player.isDead()) {
         HPBar.percent = 0.f;
         HPBar.bar->setTextureRect(sf::IntRect(0, 20, 0, 20));
     }
 
-    if (HPBar.isHovering && HPBar.percent < 1.f) {
-
-        if (HPBar.timeCooldown < 0.1f) {
-            HPBar.timeCooldown += dt;
-        }
-
-        if (HPBar.timeCooldown >= 0.1f) {
-            HPBar.timeCooldown = 0.f;
-            const uint32_t HPtoFull = player.getMaxHP() - player.getHP();
-            const float step = (player.getReg() * 0.2f + 0.8f) / 4.f;
-            float totalTimeCooldown = (1.f - player.getRegCooldown()) / step;
-            if (HPtoFull > 1) {
-                totalTimeCooldown += (HPtoFull - 1) / step;
+    if (HPBar.isHovering) {
+        if (HPBar.percent < 1.f) {
+            if (HPBar.timeCooldown < 0.1f) {
+                HPBar.timeCooldown += dt;
             }
 
-            const float rounded = std::round(totalTimeCooldown * 10.0f) / 10.0f;
+            if (HPBar.timeCooldown >= 0.1f) {
+                HPBar.timeCooldown = 0.f;
+                const uint32_t HPtoFull = player.getMaxHP() - player.getHP();
+                const float step = (player.getReg() * 0.2f + 0.8f) / 4.f;
+                float totalTimeCooldown =
+                    (1.f - player.getRegCooldown()) / step;
+                if (HPtoFull > 1) {
+                    totalTimeCooldown += (HPtoFull - 1) / step;
+                }
 
-            HPBar.hoverText->setText(std::format("{:.1f}", rounded) + 's');
+                const float rounded =
+                    std::round(totalTimeCooldown * 10.0f) / 10.0f;
+
+                HPBar.hoverText->setText(std::format("{:.1f}", rounded) + 's');
+                HPBar.hoverText->center(calcX(640, vm));
+            }
+        }
+        else {
+            HPBar.hoverText->setText("HP:" + std::to_string(player.getHP()) +
+                                     "/" + std::to_string(player.getMaxHP()));
             HPBar.hoverText->center(calcX(640, vm));
         }
     }
@@ -376,10 +379,9 @@ void StatsGUI::updateSprint()
 void StatsGUI::updatingSprint(float dt)
 {
     SprintBar.percent =
-        static_cast<float>(player.getSprint()) / player.getMaxSprint();
+        player.getSprint() / static_cast<float>(player.getMaxSprint());
 
     if (SprintBar.isHovering) {
-
         if (SprintBar.percent < 1.f) {
             if (SprintBar.timeCooldown < 0.1f) {
                 SprintBar.timeCooldown += dt;
@@ -401,7 +403,9 @@ void StatsGUI::updatingSprint(float dt)
             }
         }
         else {
-            SprintBar.hoverText->setText("Full");
+            SprintBar.hoverText->setText(
+                std::to_string(static_cast<uint32_t>(player.getSprint())) +
+                "/" + std::to_string(player.getMaxSprint()));
             SprintBar.hoverText->center(calcX(640, vm));
         }
     }
