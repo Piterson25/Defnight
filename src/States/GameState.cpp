@@ -27,7 +27,7 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
 
     this->playerGUI =
         new PlayerGUI(this->vm, *this->player, *this->floatingTextSystem,
-                      difficultyName, this->gameSettings.lang);
+                      mapName, difficultyName, this->gameSettings.lang);
 
     this->view.setSize(sf::Vector2f(static_cast<float>(vm.width),
                                     static_cast<float>(vm.height)));

@@ -69,12 +69,6 @@ void center(sf::Sprite &sprite, float x)
                        sprite.getPosition().y);
 }
 
-std::string toLowerCase(std::string str)
-{
-    std::transform(str.begin(), str.end(), str.begin(), tolower);
-    return str;
-}
-
 const bool isPointVisible(const sf::FloatRect &rect, const sf::Vector2f &a_p1,
                           const sf::Vector2f &a_p2)
 {

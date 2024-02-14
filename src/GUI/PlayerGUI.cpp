@@ -2,6 +2,7 @@
 
 PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
                      FloatingTextSystem &floatingTextSystem,
+                     const std::string &mapName,
                      const std::string &difficultyName,
                      std::unordered_map<std::string, std::string> &lang)
     : vm(vm), player(player), floatingTextSystem(floatingTextSystem), lang(lang)
@@ -99,9 +100,18 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
         calcChar(16, vm), calcX(640, vm), calcY(186, vm), gui::LIGHT_GREY,
         true);
 
+    this->texts["MAP_NAME"] = std::make_unique<gui::Text>(
+        this->lang[toUpperCase(mapName)], calcChar(16, vm), calcX(1272, vm),
+        calcY(676, vm), gui::WHITE, false);
+    this->texts["MAP_NAME"]->setPosition(sf::Vector2f(
+        calcX(1272, vm) - this->texts["MAP_NAME"]->getWidth(), calcY(676, vm)));
+
     this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
         this->lang["DIFFICULTY_LEVEL"] + " " + this->lang[difficultyName],
-        calcChar(16, vm), calcX(640, vm), calcY(186, vm), gui::RED, true);
+        calcChar(16, vm), calcX(1272, vm), calcY(700, vm), gui::RED, false);
+    this->texts["DIFFICULTY"]->setPosition(
+        sf::Vector2f(calcX(1272, vm) - this->texts["DIFFICULTY"]->getWidth(),
+                     calcY(700, vm)));
 
     this->escape_background.setFillColor(sf::Color(0, 0, 0, 192));
     this->escape_background.setSize(
@@ -1073,6 +1083,7 @@ void PlayerGUI::draw(sf::RenderTarget &target)
     }
     else if (this->escape) {
         target.draw(this->escape_background);
+        this->texts["MAP_NAME"]->draw(target);
         this->texts["DIFFICULTY"]->draw(target);
         this->text_buttons["RESUME"]->draw(target);
         this->text_buttons["MAIN_MENU"]->draw(target);
