@@ -193,22 +193,28 @@ void MainMenuState::initGUI()
         calcScale(8, vm), true);
     this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
     this->sprites["HERO_PREVIEW"]->center(calcX(640, vm));
+    this->sprites["HP_FRAME"] = std::make_unique<gui::Sprite>(
+        framesTexture, calcX(860, vm), calcY(498, vm), calcScale(1, vm), true,
+        sf::IntRect(88, 0, 272, 36));
     this->sprites["HP_BAR"] = std::make_unique<gui::Sprite>(
-        "assets/textures/bars.png", calcX(860, vm), calcY(526, vm),
+        "assets/textures/bars.png", calcX(860, vm), calcY(506, vm),
         calcScale(1, vm), true);
     this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 256, 20));
     this->sprites["HP_BAR"]->center(calcX(860, vm));
     this->texts["HP"] = std::make_unique<gui::Text>(
-        "HP:10/10", calcChar(16, vm), calcX(860, vm), calcY(529, vm),
+        "HP:10/10", calcChar(16, vm), calcX(860, vm), calcY(509, vm),
         gui::WHITE, true);
+    this->sprites["SPRINT_FRAME"] = std::make_unique<gui::Sprite>(
+        framesTexture, calcX(860, vm), calcY(538, vm), calcScale(1, vm), true,
+        sf::IntRect(88, 0, 272, 36));
     this->sprites["SPRINT_BAR"] = std::make_unique<gui::Sprite>(
-        "assets/textures/bars.png", calcX(860, vm), calcY(554, vm),
+        "assets/textures/bars.png", calcX(860, vm), calcY(546, vm),
         calcScale(1, vm), true);
     this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect(0, 40, 256, 20));
     this->sprites["SPRINT_BAR"]->center(calcX(860, vm));
     this->texts["SPRINT"] =
         std::make_unique<gui::Text>("100/100", calcChar(16, vm), calcX(860, vm),
-                                    calcY(557, vm), gui::WHITE, true);
+                                    calcY(549, vm), gui::WHITE, true);
 
     this->attributes_texture.loadFromFile(
         "assets/textures/attributes_icons.png");
@@ -801,8 +807,10 @@ void MainMenuState::draw(sf::RenderTarget *target)
                 }
 
                 this->sprites["HERO_PREVIEW"]->draw(*target);
+                this->sprites["HP_FRAME"]->draw(*target);
                 this->sprites["HP_BAR"]->draw(*target);
                 this->texts["HP"]->draw(*target);
+                this->sprites["SPRINT_FRAME"]->draw(*target);
                 this->sprites["SPRINT_BAR"]->draw(*target);
                 this->texts["SPRINT"]->draw(*target);
 
