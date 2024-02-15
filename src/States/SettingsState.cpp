@@ -45,10 +45,10 @@ void SettingsState::addSetting(const std::string &t_name, float t_x, float t_y,
         t_name,
         Setting{
             std::make_unique<gui::ButtonSprite>(
-                gui::RECT_SMALL_ARROW, t_x + calcX(384, vm), t_y,
+                gui::RECT_SMALL_ARROW, t_x + calcX(416, vm), t_y,
                 calcScale(4, vm), gui::GREY, gui::WHITE, false),
             std::make_unique<gui::ButtonSprite>(
-                gui::RECT_SMALL_ARROW, t_x + calcX(896, vm), t_y,
+                gui::RECT_SMALL_ARROW, t_x + calcX(864, vm), t_y,
                 calcScale(4, vm), gui::GREY, gui::WHITE, false),
             std::make_unique<gui::Text>(desc, calcChar(24, vm), t_x,
                                         t_y + calcY(16, vm), gui::WHITE, false),
@@ -456,6 +456,10 @@ void SettingsState::update(float dt)
                     this->settings["MUSIC"].desc->getPosition().x +
                     calcX(640, vm));
                 this->musicVolume = this->musicVolumes[this->musicVolume_id];
+
+                this->musicEngine.setVolume(this->musicVolume);
+                this->gameSettings.musicVolume = this->musicVolume;
+                this->gameSettings.save();
             }
             else if (this->settings["MUSIC"].rightArrow->isPressed(
                          this->mousePosWindow)) {
@@ -473,6 +477,10 @@ void SettingsState::update(float dt)
                     this->settings["MUSIC"].desc->getPosition().x +
                     calcX(640, vm));
                 this->musicVolume = this->musicVolumes[this->musicVolume_id];
+
+                this->musicEngine.setVolume(this->musicVolume);
+                this->gameSettings.musicVolume = this->musicVolume;
+                this->gameSettings.save();
             }
 
             if (this->settings["SOUNDS"].leftArrow->isPressed(
@@ -491,6 +499,10 @@ void SettingsState::update(float dt)
                     this->settings["SOUNDS"].desc->getPosition().x +
                     calcX(640, vm));
                 this->soundsVolume = this->soundsVolumes[this->soundsVolume_id];
+
+                this->soundEngine.setVolume(this->soundsVolume);
+                this->gameSettings.soundsVolume = this->soundsVolume;
+                this->gameSettings.save();
             }
             else if (this->settings["SOUNDS"].rightArrow->isPressed(
                          this->mousePosWindow)) {
@@ -508,21 +520,12 @@ void SettingsState::update(float dt)
                     this->settings["SOUNDS"].desc->getPosition().x +
                     calcX(640, vm));
                 this->soundsVolume = this->soundsVolumes[this->soundsVolume_id];
+
+                this->soundEngine.setVolume(this->soundsVolume);
+                this->gameSettings.soundsVolume = this->soundsVolume;
+                this->gameSettings.save();
             }
 
-            if (this->text_buttons["APPLY"]->isPressed(this->mousePosWindow)) {
-                this->soundEngine.addSound("button");
-                this->gameSettings.resolution = this->mode;
-                this->gameSettings.fullscreen = this->fullscreen;
-                this->gameSettings.fpsLimit = this->fpsLimit;
-                this->gameSettings.language = this->gameSettings.language;
-                this->gameSettings.musicVolume = this->musicVolume;
-                this->gameSettings.soundsVolume = this->soundsVolume;
-                this->gameSettings.fpsCounterOn = this->fpsCounterOn;
-                this->gameSettings.save();
-                this->musicEngine.setVolume(this->musicVolume);
-                this->soundEngine.setVolume(this->soundsVolume);
-            }
             break;
     }
 
@@ -567,7 +570,6 @@ void SettingsState::draw(sf::RenderTarget *target)
         case 2:
             this->settings["MUSIC"].draw(*target);
             this->settings["SOUNDS"].draw(*target);
-            this->text_buttons["APPLY"]->draw(*target);
             break;
         case 3:
             this->keybindsTexts["MOVEMENT"].draw(*target);
