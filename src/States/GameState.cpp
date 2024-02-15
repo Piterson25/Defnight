@@ -325,6 +325,10 @@ void GameState::update(float dt)
         if (this->waveCountdown < 10.f) {
             this->waveCountdown += dt;
 
+            if (this->playerGUI->hasClickedShip(mousePosWindow, paused)) {
+                this->waveCountdown = 8.f;
+            }
+
             if (this->waveCountdown >= 10.f) {
                 this->monsterSystem->spawnMonsters(
                     this->tileMap->getTilesGlobalBounds(), this->wave);

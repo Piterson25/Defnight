@@ -532,6 +532,15 @@ const bool PlayerGUI::hasClickedMenu(const sf::Vector2i &mousePos, bool &paused)
     return false;
 }
 
+const bool PlayerGUI::hasClickedShip(const sf::Vector2i &mousePos, bool &paused)
+{
+    if (this->waveCountdown < 8.f && this->statsGUI->hasClickedSkip(mousePos)) {
+        this->waveCountdown = 8.f;
+        return true;
+    }
+    return false;
+}
+
 void PlayerGUI::setIsEscape(bool escape)
 {
     this->escape = escape;
@@ -987,6 +996,7 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
     this->statsGUI->update(mousePosView);
 
     if (this->waveCountdown < 10.f) {
+
         this->statsGUI->setWaveCountdownText(
             this->lang["NEXT_WAVE"] +
             std::to_string(static_cast<int>(11.f - this->waveCountdown)));
@@ -1041,6 +1051,10 @@ void PlayerGUI::draw(sf::RenderTarget &target)
 
     if (this->waveCountdown < 10.f) {
         this->statsGUI->drawWaveCountdown(target);
+        if (this->waveCountdown < 7.f) {
+            this->statsGUI->drawSkip(target);
+        }
+
         if (this->waveCountdown > 8.f) {
             this->texts["BIG_WAVE_NUMBER"]->draw(target);
             this->texts["WAVE_NEW_MOBS"]->draw(target);

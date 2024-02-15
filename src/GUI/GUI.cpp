@@ -187,6 +187,7 @@ namespace gui {
           buttonState(ButtonState::BUTTON_IDLE), idleColor(idleColor),
           hoverColor(hoverColor)
     {
+        this->setFillColor(idleColor);
     }
 
     ButtonText::~ButtonText() = default;
@@ -212,7 +213,7 @@ namespace gui {
                 this->text.setFillColor(this->hoverColor);
                 break;
             case ButtonState::BUTTON_PRESSED:
-                this->text.setFillColor(this->hoverColor);
+                this->text.setFillColor(this->idleColor);
                 break;
         }
 
