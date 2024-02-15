@@ -476,7 +476,7 @@ void StatsGUI::upgradePlayer(const std::string &t_name,
 
 void StatsGUI::setAbilityIcon()
 {
-    this->sprite_buttons["ABILITY"]->setColor(gui::YELLOW);
+    this->sprite_buttons["ABILITY"]->setIdleColor(gui::YELLOW);
     this->abilityCooldown.setSize(sf::Vector2f(calcX(80, vm), calcY(80, vm)));
     this->abilityCooldown.setPosition(
         sf::Vector2f(calcX(260, vm), calcY(8, vm)));
@@ -489,7 +489,7 @@ const bool StatsGUI::updateAbilityIcon(float value)
     this->abilityCooldown.setPosition(
         sf::Vector2f(calcX(260, vm), calcX(8, vm) + value));
     if (this->abilityCooldown.getSize().y <= 0.f) {
-        this->sprite_buttons["ABILITY"]->setColor(gui::GOLD);
+        this->sprite_buttons["ABILITY"]->setIdleColor(gui::GOLD);
         this->player.setAbilityActive(false);
         return true;
     }

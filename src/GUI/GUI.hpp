@@ -136,6 +136,7 @@ namespace gui {
 
         bool isPressed(const sf::Vector2i &mousePosWindow);
         const sf::Color getColor() const;
+        void setIdleColor(const sf::Color color);
 
     private:
         ButtonState buttonState;

@@ -279,6 +279,8 @@ void PlayerGUI::upgradePlayer(const std::string &name)
                                               this->lang["SLOWDOWN"]);
     this->abilityUpgradeGUI->updatePlayerInfo("GOLD", this->lang["GOLD"]);
     this->abilityUpgradeGUI->updatePlayerInfo("TARGETS", this->lang["TARGETS"]);
+    player.setHP(player.getMaxHP());
+    player.setRegenerating(true);
     updatePlayerAttributes();
     this->update_Gold();
 }

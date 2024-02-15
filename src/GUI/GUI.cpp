@@ -358,6 +358,11 @@ namespace gui {
         return this->idleColor;
     }
 
+    void ButtonSprite::setIdleColor(const sf::Color color)
+    {
+        this->idleColor = color;
+    }
+
     bool ButtonSprite::isPressed(const sf::Vector2i &mousePosWindow)
     {
         this->buttonState = ButtonState::BUTTON_IDLE;
