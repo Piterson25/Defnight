@@ -164,11 +164,11 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
         gui::FLAMINGO, false);
 
     this->text_buttons["SKIP"] = std::make_unique<gui::ButtonText>(
-        t_lang["SKIP"], calcChar(16, vm), calcX(1240, vm), calcY(70, vm),
+        t_lang["SKIP"], calcChar(16, vm), calcX(1240, vm), calcY(136, vm),
         gui::LIGHT_BLUE, gui::WHITE, false);
     this->text_buttons["SKIP"]->setPosition(
-        sf::Vector2f(calcX(1240, vm) - this->text_buttons["SKIP"]->getWidth(),
-                     calcY(70, vm)));
+        sf::Vector2f(calcX(1248, vm) - this->text_buttons["SKIP"]->getWidth(),
+                     calcY(136, vm)));
 
     this->texts["WAVE_COUNTDOWN"] = std::make_unique<gui::Text>(
         t_lang["NEXT_WAVE"], calcChar(16, vm), calcX(954, vm), calcY(98, vm),
