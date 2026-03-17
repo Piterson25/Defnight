@@ -4,12 +4,12 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
                    std::unordered_map<std::string, std::string> &t_lang)
     : vm(t_vm), player(t_player)
 {
-    this->framesTexture.loadFromFile("assets/textures/frames.png");
-    this->attributesTexture.loadFromFile(
+    this->framesTexture = sf::Texture("assets/textures/frames.png");
+    this->attributesTexture = sf::Texture(
         "assets/textures/attributes_icons.png");
-    this->barsTexture.loadFromFile("assets/textures/bars.png");
-    this->upgradesTexture.loadFromFile("assets/textures/upgrades_icons.png");
-    this->abilitiesTexture.loadFromFile("assets/textures/abilities_icons.png");
+    this->barsTexture = sf::Texture("assets/textures/bars.png");
+    this->upgradesTexture = sf::Texture("assets/textures/upgrades_icons.png");
+    this->abilitiesTexture = sf::Texture("assets/textures/abilities_icons.png");
 
     this->sprites["TOP_GUI"] = std::make_unique<gui::Sprite>(
         "assets/textures/top_gui.png", 0.f, 0.f, calcScale(1, vm), false);
@@ -27,24 +27,24 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
 
     this->sprites["GOLD"] = std::make_unique<gui::Sprite>(
         attributesTexture, 0.f, calcY(88, vm), calcScale(2, vm), false,
-        sf::IntRect(0, 0, 16, 16));
+        sf::IntRect({0, 0}, {16, 16}));
     this->texts["GOLD"] = std::make_unique<gui::Text>(
         std::to_string(player.getGold()), calcChar(16, vm), calcX(36, vm),
         calcY(98, vm), gui::GOLD, false);
 
     this->sprites["PLAYER_FRAME"] = std::make_unique<gui::Sprite>(
         framesTexture, calcX(188, vm), calcY(4, vm), calcScale(1, vm), true,
-        sf::IntRect(0, 0, 88, 88));
+        sf::IntRect({0, 0}, {88, 88}));
     this->sprites["PLAYER_ICON"] = std::make_unique<gui::Sprite>(
         upgradesTexture, calcX(188, vm), calcY(16, vm), calcScale(4, vm), true,
-        sf::IntRect(0, 0, 16, 16));
+        sf::IntRect({0, 0}, {16, 16}));
     this->texts["PLAYER_NAME"] = std::make_unique<gui::Text>(
         t_lang[player.getName()], calcChar(16, vm), calcX(188, vm),
         calcY(98, vm), gui::WHITE, true);
 
     this->sprites["ABILITY_ICON"] = std::make_unique<gui::Sprite>(
         abilitiesTexture, calcX(268, vm), calcY(16, vm), calcScale(4, vm),
-        false, sf::IntRect(0, 0, 16, 16));
+        false, sf::IntRect({0, 0}, {16, 16}));
     this->sprite_buttons["ABILITY"] = std::make_unique<gui::ButtonSprite>(
         gui::RECT_BUTTON, calcX(256, vm), calcY(4, vm), calcScale(1, vm),
         gui::YELLOW, gui::WHITE, false);
@@ -56,14 +56,14 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
 
     this->sprites["ARMOR"] = std::make_unique<gui::Sprite>(
         attributesTexture, calcX(376, vm), calcY(16, vm), calcScale(2, vm),
-        false, sf::IntRect(16, 0, 16, 16));
+        false, sf::IntRect({16, 0}, {16, 16}));
     this->texts["ARMOR"] = std::make_unique<gui::Text>(
         std::to_string(player.getArmor()), calcChar(16, vm), calcX(392, vm),
         calcY(70, vm), gui::LIGHT_GREY, true);
 
     this->sprites["REG"] = std::make_unique<gui::Sprite>(
         attributesTexture, calcX(440, vm), calcY(16, vm), calcScale(2, vm),
-        false, sf::IntRect(32, 0, 16, 16));
+        false, sf::IntRect({32, 0}, {16, 16}));
     this->texts["REG"] = std::make_unique<gui::Text>(
         std::to_string(player.getReg()), calcChar(16, vm), calcX(456, vm),
         calcY(70, vm), gui::RED, true);
@@ -71,10 +71,10 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
     XPBar = Bar{
         std::make_unique<gui::Sprite>(framesTexture, calcX(640, vm),
                                       calcY(4, vm), calcScale(1, vm), true,
-                                      sf::IntRect(88, 0, 272, 36)),
+                                      sf::IntRect({88, 0}, {272, 36})),
         std::make_unique<gui::Sprite>(barsTexture, calcX(512, vm),
                                       calcY(12, vm), calcScale(1, vm), false,
-                                      sf::IntRect(0, 0, 0, 0)),
+                                      sf::IntRect({0, 0}, {0, 0})),
         std::make_unique<gui::Text>(
             "Level " + std::to_string(player.getLevel()), calcChar(16, vm),
             calcX(640, vm), calcY(15, vm), gui::WHITE, true),
@@ -89,10 +89,10 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
     HPBar = Bar{
         std::make_unique<gui::Sprite>(framesTexture, calcX(640, vm),
                                       calcY(44, vm), calcScale(1, vm), true,
-                                      sf::IntRect(88, 0, 272, 36)),
+                                      sf::IntRect({88, 0}, {272, 36})),
         std::make_unique<gui::Sprite>(barsTexture, calcX(512, vm),
                                       calcY(52, vm), calcScale(1, vm), false,
-                                      sf::IntRect(0, 20, 256, 20)),
+                                      sf::IntRect({0, 20}, {256, 20})),
         std::make_unique<gui::Text>("HP:" + std::to_string(player.getHP()) +
                                         "/" + std::to_string(player.getMaxHP()),
                                     calcChar(16, vm), calcX(640, vm),
@@ -108,10 +108,10 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
     SprintBar = Bar{
         std::make_unique<gui::Sprite>(framesTexture, calcX(640, vm),
                                       calcY(84, vm), calcScale(1, vm), true,
-                                      sf::IntRect(88, 0, 272, 36)),
+                                      sf::IntRect({88, 0}, {272, 36})),
         std::make_unique<gui::Sprite>(barsTexture, calcX(512, vm),
                                       calcY(92, vm), calcScale(1, vm), false,
-                                      sf::IntRect(0, 40, 256, 20)),
+                                      sf::IntRect({0, 40}, {256, 20})),
         std::make_unique<gui::Text>(std::to_string(player.getSprint()) + "/" +
                                         std::to_string(player.getMaxSprint()),
                                     calcChar(16, vm), calcX(640, vm),
@@ -126,28 +126,28 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
 
     this->sprites["ATTACK"] = std::make_unique<gui::Sprite>(
         attributesTexture, calcX(808, vm), calcY(16, vm), calcScale(2, vm),
-        false, sf::IntRect(80, 0, 16, 16));
+        false, sf::IntRect({80, 0}, {16, 16}));
     this->texts["ATTACK"] = std::make_unique<gui::Text>(
         std::to_string(player.getAttack()), calcChar(16, vm), calcX(824, vm),
         calcY(70, vm), gui::LIGHT_GREY, true);
 
     this->sprites["ATTACK_SPEED"] = std::make_unique<gui::Sprite>(
         attributesTexture, calcX(872, vm), calcY(16, vm), calcScale(2, vm),
-        false, sf::IntRect(96, 0, 16, 16));
+        false, sf::IntRect({96, 0}, {16, 16}));
     this->texts["ATTACK_SPEED"] = std::make_unique<gui::Text>(
         std::to_string(player.getAttackSpeed()), calcChar(16, vm),
         calcX(888, vm), calcY(70, vm), gui::LIGHT_GREY, true);
 
     this->sprites["SPEED"] = std::make_unique<gui::Sprite>(
         attributesTexture, calcX(936, vm), calcY(16, vm), calcScale(2, vm),
-        false, sf::IntRect(112, 0, 16, 16));
+        false, sf::IntRect({112, 0}, {16, 16}));
     this->texts["SPEED"] = std::make_unique<gui::Text>(
         std::to_string(player.getSpeed()), calcChar(16, vm), calcX(952, vm),
         calcY(70, vm), gui::LIGHT_GREY, true);
 
     this->sprites["CRITICAL"] = std::make_unique<gui::Sprite>(
         attributesTexture, calcX(1000, vm), calcY(16, vm), calcScale(2, vm),
-        false, sf::IntRect(128, 0, 16, 16));
+        false, sf::IntRect({128, 0}, {16, 16}));
     this->texts["CRITICAL"] = std::make_unique<gui::Text>(
         std::to_string(player.getCriticalChance()) + "%", calcChar(16, vm),
         calcX(1016, vm), calcY(70, vm), gui::LIGHT_GREY, true);
@@ -257,19 +257,19 @@ void StatsGUI::updateXP()
 
 void StatsGUI::updatingXP(float dt)
 {
-    const int width = XPBar.bar->getTextureRect().width;
+    const int width = XPBar.bar->getTextureRect().size.x;
     const int barrier = static_cast<int>(XPBar.percent * 256.f);
 
     if (width <= barrier && player.isLeveling()) {
         const int distance = static_cast<int>(width + 1000.f * dt);
         if (distance > barrier) {
-            XPBar.bar->setTextureRect(sf::IntRect(0, 0, barrier, 20));
+            XPBar.bar->setTextureRect(sf::IntRect({0, 0}, {barrier, 20}));
         }
         else if (distance > 256) {
-            XPBar.bar->setTextureRect(sf::IntRect(0, 0, 256, 20));
+            XPBar.bar->setTextureRect(sf::IntRect({0, 0}, {256, 20}));
         }
         else {
-            XPBar.bar->setTextureRect(sf::IntRect(0, 0, distance, 20));
+            XPBar.bar->setTextureRect(sf::IntRect({0, 0}, {distance, 20}));
         }
     }
     else {
@@ -279,7 +279,7 @@ void StatsGUI::updatingXP(float dt)
 
 void StatsGUI::updateLevel()
 {
-    XPBar.bar->setTextureRect(sf::IntRect(0, 0, 0, 20));
+    XPBar.bar->setTextureRect(sf::IntRect({0, 0}, {0, 20}));
     XPBar.text->setText("Level " + std::to_string(player.getLevel()));
     XPBar.text->center(calcX(640, this->vm));
 }
@@ -288,7 +288,7 @@ void StatsGUI::updateHP()
 {
     if (player.isDead()) {
         HPBar.percent = 0.f;
-        HPBar.bar->setTextureRect(sf::IntRect(0, 20, 0, 20));
+        HPBar.bar->setTextureRect(sf::IntRect({0, 20}, {0, 20}));
     }
     else {
         HPBar.percent = static_cast<float>(player.getHP()) / player.getMaxHP();
@@ -310,7 +310,7 @@ void StatsGUI::updatingHP(float dt)
     }
     else if (player.isDead()) {
         HPBar.percent = 0.f;
-        HPBar.bar->setTextureRect(sf::IntRect(0, 20, 0, 20));
+        HPBar.bar->setTextureRect(sf::IntRect({0, 20}, {0, 20}));
     }
 
     if (HPBar.isHovering) {
@@ -343,31 +343,31 @@ void StatsGUI::updatingHP(float dt)
         }
     }
 
-    const int width = HPBar.bar->getTextureRect().width;
+    const int width = HPBar.bar->getTextureRect().size.x;
     const int barrier = static_cast<int>(HPBar.percent * 256.f);
 
     if (width > barrier) {
         const int distance = static_cast<int>(width - 1000.f * dt);
         if (distance < barrier) {
-            HPBar.bar->setTextureRect(sf::IntRect(0, 20, barrier, 20));
+            HPBar.bar->setTextureRect(sf::IntRect({0, 20}, {barrier, 20}));
         }
         else if (distance < 0) {
-            HPBar.bar->setTextureRect(sf::IntRect(0, 20, 0, 20));
+            HPBar.bar->setTextureRect(sf::IntRect({0, 20}, {0, 20}));
         }
         else {
-            HPBar.bar->setTextureRect(sf::IntRect(0, 20, distance, 20));
+            HPBar.bar->setTextureRect(sf::IntRect({0, 20}, {distance, 20}));
         }
     }
     else if (width < barrier && player.isRegenerating()) {
         const int distance = static_cast<int>(width + 1000.f * dt);
         if (distance > barrier) {
-            HPBar.bar->setTextureRect(sf::IntRect(0, 20, barrier, 20));
+            HPBar.bar->setTextureRect(sf::IntRect({0, 20}, {barrier, 20}));
         }
         else if (distance > 256) {
-            HPBar.bar->setTextureRect(sf::IntRect(0, 20, 256, 20));
+            HPBar.bar->setTextureRect(sf::IntRect({0, 20}, {256, 20}));
         }
         else {
-            HPBar.bar->setTextureRect(sf::IntRect(0, 20, distance, 20));
+            HPBar.bar->setTextureRect(sf::IntRect({0, 20}, {distance, 20}));
         }
     }
     else {
@@ -417,7 +417,7 @@ void StatsGUI::updatingSprint(float dt)
         }
     }
 
-    const int bar_width = SprintBar.bar->getTextureRect().width;
+    const int bar_width = SprintBar.bar->getTextureRect().size.x;
     const int barrier_width = static_cast<int>(
         player.getSprint() / static_cast<float>(player.getMaxSprint()) * 256.f);
 
@@ -425,26 +425,26 @@ void StatsGUI::updatingSprint(float dt)
         const int new_width = static_cast<int>(bar_width - 1000.f * dt);
         if (new_width < barrier_width) {
             SprintBar.bar->setTextureRect(
-                sf::IntRect(0, 40, barrier_width, 20));
+                sf::IntRect({0, 40}, {barrier_width, 20}));
         }
         else if (new_width < 0) {
-            SprintBar.bar->setTextureRect(sf::IntRect(0, 40, 0, 20));
+            SprintBar.bar->setTextureRect(sf::IntRect({0, 40}, {0, 20}));
         }
         else {
-            SprintBar.bar->setTextureRect(sf::IntRect(0, 40, new_width, 20));
+            SprintBar.bar->setTextureRect(sf::IntRect({0, 40}, {new_width, 20}));
         }
     }
     else if (bar_width < barrier_width) {
         const int new_width = static_cast<int>(bar_width + 1000.f * dt);
         if (new_width > barrier_width) {
             SprintBar.bar->setTextureRect(
-                sf::IntRect(0, 40, barrier_width, 20));
+                sf::IntRect({0, 40}, {barrier_width, 20}));
         }
         else if (new_width > 256) {
-            SprintBar.bar->setTextureRect(sf::IntRect(0, 40, 256, 20));
+            SprintBar.bar->setTextureRect(sf::IntRect({0, 40}, {256, 20}));
         }
         else {
-            SprintBar.bar->setTextureRect(sf::IntRect(0, 40, new_width, 20));
+            SprintBar.bar->setTextureRect(sf::IntRect({0, 40}, {new_width, 20}));
         }
     }
 
@@ -471,7 +471,7 @@ void StatsGUI::upgradePlayer(const std::string &t_name,
     this->texts["PLAYER_NAME"]->center(calcX(188, this->vm));
     this->sprites["PLAYER_ICON"]->setTextureRect(intRect);
     this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(
-        intRect.left, intRect.top - 16, intRect.width, intRect.height));
+      {intRect.position.x, intRect.position.y - 16}, {intRect.size.x, intRect.size.y}));
 }
 
 void StatsGUI::setAbilityIcon()

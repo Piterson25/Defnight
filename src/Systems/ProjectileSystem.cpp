@@ -2,7 +2,7 @@
 
 ProjectileSystem::ProjectileSystem(sf::VideoMode &vm) : vm(vm)
 {
-    this->textures.loadFromFile("assets/textures/projectiles.png");
+    this->textures = sf::Texture("assets/textures/projectiles.png");
 }
 
 ProjectileSystem::~ProjectileSystem()

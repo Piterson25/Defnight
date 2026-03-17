@@ -21,22 +21,22 @@ Warrior::~Warrior() = default;
 void Warrior::setAbilityTexture()
 {
     if (this->name == "KNIGHT") {
-        this->ability.setTextureRect(sf::IntRect(0, 16, 16, 16));
+        this->ability.setTextureRect(sf::IntRect({0, 16}, {16, 16}));
     }
     else if (this->name == "SCOUT") {
-        this->ability.setTextureRect(sf::IntRect(0, 32, 16, 16));
+        this->ability.setTextureRect(sf::IntRect({0, 32}, {16, 16}));
     }
     else if (this->name == "CRUSADER") {
-        this->ability.setTextureRect(sf::IntRect(16, 16, 16, 16));
+        this->ability.setTextureRect(sf::IntRect({16, 16}, {16, 16}));
     }
     else if (this->name == "PALADIN") {
-        this->ability.setTextureRect(sf::IntRect(32, 16, 16, 16));
+        this->ability.setTextureRect(sf::IntRect({32, 16}, {16, 16}));
     }
     else if (this->name == "ASSASSIN") {
-        this->ability.setTextureRect(sf::IntRect(16, 32, 16, 16));
+        this->ability.setTextureRect(sf::IntRect({16, 32}, {16, 16}));
     }
     else if (this->name == "KILLER") {
-        this->ability.setTextureRect(sf::IntRect(32, 32, 16, 16));
+        this->ability.setTextureRect(sf::IntRect({32, 32}, {16, 16}));
     }
 }
 
@@ -103,48 +103,48 @@ void Warrior::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
 {
     this->name = t_name;
     if (t_name == "NINJA") {
-        intRect = sf::IntRect(0, 16, 16, 16);
+        intRect = sf::IntRect({0, 16}, {16, 16});
         this->setSpeed(this->getSpeed() + 1);
         this->abilityComponent->setAbilityStats(2.f, 2.f, 2.f);
     }
     else if (t_name == "KNIGHT") {
-        intRect = sf::IntRect(0, 32, 16, 16);
+        intRect = sf::IntRect({0, 32}, {16, 16});
         this->setAttack(this->getAttack() + 1);
         this->increasedArmor = 5;
         this->abilityComponent->setAbilityStats(20.f, 20.f, 5.f);
     }
     else if (t_name == "SCOUT") {
-        intRect = sf::IntRect(0, 48, 16, 16);
+        intRect = sf::IntRect({0, 48}, {16, 16});
         this->setReg(this->getReg() + 1);
         this->timeSlowdown = 0.5f;
         this->abilityComponent->setAbilityStats(20.f, 20.f, 5.f);
     }
     else if (t_name == "SENSEI") {
-        intRect = sf::IntRect(16, 16, 16, 16);
+        intRect = sf::IntRect({16, 16}, {16, 16});
         this->setAttackSpeed(this->getAttackSpeed() + 1);
     }
     else if (t_name == "BOMBER") {
-        intRect = sf::IntRect(32, 16, 16, 16);
+        intRect = sf::IntRect({32, 16}, {16, 16});
         this->setCriticalChance(this->getCriticalChance() + 10);
         this->setProjectileArea(2);
     }
     else if (t_name == "CRUSADER") {
-        intRect = sf::IntRect(16, 32, 16, 16);
+        intRect = sf::IntRect({16, 32}, {16, 16});
         this->setMaxHP(this->getMaxHP() + 2);
         this->increasedAttack = 10;
     }
     else if (t_name == "PALADIN") {
-        intRect = sf::IntRect(32, 32, 16, 16);
+        intRect = sf::IntRect({32, 32}, {16, 16});
         this->setAttackSpeed(this->getAttackSpeed() + 1);
         this->increasedReg = 5;
     }
     else if (t_name == "ASSASSIN") {
-        intRect = sf::IntRect(16, 48, 16, 16);
+        intRect = sf::IntRect({16, 48}, {16, 16});
         this->setAttackSpeed(this->getAttackSpeed() + 1);
         this->increasedGold = 1;
     }
     else if (t_name == "KILLER") {
-        intRect = sf::IntRect(32, 48, 16, 16);
+        intRect = sf::IntRect({32, 48}, {16, 16});
         this->setCriticalChance(this->getCriticalChance() + 10);
         this->increasedTargets = 1;
     }

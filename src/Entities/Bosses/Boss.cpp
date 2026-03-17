@@ -52,10 +52,10 @@ void Boss::specialAttackAnimation(float dt)
 
 void Boss::update(float dt)
 {
-    this->shadow.setPosition(this->getDownCenter().x -
-                                 this->shadow.getTextureRect().width / 2 *
+    this->shadow.setPosition({this->getDownCenter().x -
+                                 this->shadow.getTextureRect().size.x / 2 *
                                      this->shadow.getScale().x,
-                             this->getDownCenter().y);
+                             this->getDownCenter().y});
     if (this->soundPlayed && this->frame != 80) {
         this->soundPlayed = false;
     }

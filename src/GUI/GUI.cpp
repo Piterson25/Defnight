@@ -3,7 +3,6 @@
 namespace gui {
 
     static sf::VideoMode vm;
-    static sf::Font font;
     static sf::Texture selectsTexture;
 
     void initVM(const sf::VideoMode &t_vm)
@@ -13,7 +12,8 @@ namespace gui {
 
     void initFont()
     {
-        if (!font.loadFromFile("assets/font/PressStart2P-vaV7.ttf")) {
+        font = new sf::Font();
+        if (!font->openFromFile("assets/font/PressStart2P-vaV7.ttf")) {
             throw std::runtime_error("ERROR - COULDN'T FIND FONT");
         }
     }
@@ -24,24 +24,25 @@ namespace gui {
             throw std::runtime_error("ERROR - COULDN'T FIND SELECTS TEXTURE");
         }
     }
+    
+    void clean()
+    {
+        delete font;
+        font = nullptr;
+    }
 
     Text::Text(const std::string &text, unsigned charSize, float x, float y,
-               const sf::Color &color, bool center)
+               const sf::Color &color, bool center) : text(*font, text, charSize)
     {
-        this->text.setFont(font);
-        this->text.setString(text);
-        this->text.setCharacterSize(charSize);
         this->text.setFillColor(color);
-        this->text.setPosition(x, y);
+        this->text.setPosition({x, y});
         this->centered = center;
         if (centered) {
             this->center(x);
         }
     }
 
-    Text::~Text() = default;
-
-    const sf::Vector2f &Text::getPosition() const
+    const sf::Vector2f Text::getPosition() const
     {
         return this->text.getPosition();
     }
@@ -53,15 +54,15 @@ namespace gui {
 
     const float Text::getWidth() const
     {
-        return this->text.getGlobalBounds().width;
+        return static_cast<float>(this->text.getGlobalBounds().size.x);
     }
 
     void Text::move(float x, float y)
     {
-        this->text.move(x, y);
+        this->text.move({x, y});
     }
 
-    void Text::setAlphaColor(sf::Uint8 alpha)
+    void Text::setAlphaColor(uint8_t alpha)
     {
         this->text.setFillColor(sf::Color(this->text.getFillColor().r,
                                           this->text.getFillColor().g,
@@ -70,7 +71,7 @@ namespace gui {
 
     void Text::setPositionX(float x)
     {
-        this->text.setPosition(x, this->text.getPosition().y);
+        this->text.setPosition({x, this->text.getPosition().y});
     }
 
     const sf::Color Text::getFillColor() const
@@ -101,9 +102,8 @@ namespace gui {
     void Text::center(float x)
     {
         this->text.setPosition(
-            static_cast<float>(
-                static_cast<int>(x - (this->text.getGlobalBounds().width) / 2)),
-            this->text.getPosition().y);
+                {x - static_cast<float>(this->text.getGlobalBounds().size.x) * 0.5f,
+            this->text.getPosition().y});
     }
 
     void Text::draw(sf::RenderTarget &target)
@@ -113,26 +113,21 @@ namespace gui {
 
     ShadowText::ShadowText(const std::string &text, unsigned charSize, float x,
                            float y, const sf::Color &color, bool center)
-        : Text(text, charSize, x, y, color, center)
+        : Text(text, charSize, x, y, color, center), shadowText(*font, text, charSize)
     {
-        this->shadowText.setFont(font);
-        this->shadowText.setString(text);
-        this->shadowText.setCharacterSize(charSize);
         this->shadowText.setFillColor(sf::Color(GREY.r, GREY.b, GREY.b, 192));
-        this->shadowText.setPosition(
-            this->text.getPosition().x + this->text.getCharacterSize() / 8,
-            this->text.getPosition().y + this->text.getCharacterSize() / 8);
+        this->shadowText.setPosition({
+            this->text.getPosition().x + this->text.getCharacterSize() / 8.f,
+            this->text.getPosition().y + this->text.getCharacterSize() / 8.f});
     }
-
-    ShadowText::~ShadowText() = default;
 
     void ShadowText::move(float x, float y)
     {
-        this->text.move(x, y);
-        this->shadowText.move(x, y);
+        this->text.move({x, y});
+        this->shadowText.move({x, y});
     }
 
-    void ShadowText::setAlphaColor(sf::Uint8 alpha)
+    void ShadowText::setAlphaColor(uint8_t alpha)
     {
         this->text.setFillColor(sf::Color(this->text.getFillColor().r,
                                           this->text.getFillColor().g,
@@ -145,16 +140,16 @@ namespace gui {
 
     void ShadowText::setPositionX(float x)
     {
-        this->text.setPosition(x, this->text.getPosition().y);
-        this->shadowText.setPosition(x, this->shadowText.getPosition().y);
+        this->text.setPosition({x, this->text.getPosition().y});
+        this->shadowText.setPosition({x, this->shadowText.getPosition().y});
     }
 
     void ShadowText::setPosition(const sf::Vector2f &position)
     {
         this->text.setPosition(sf::Vector2f(position));
-        this->shadowText.setPosition(
-            this->text.getPosition().x + this->text.getCharacterSize() / 8,
-            this->text.getPosition().y + this->text.getCharacterSize() / 8);
+        this->shadowText.setPosition({
+            this->text.getPosition().x + this->text.getCharacterSize() / 8.f,
+            this->text.getPosition().y + this->text.getCharacterSize() / 8.f});
     }
 
     void ShadowText::setText(const std::string &text)
@@ -165,13 +160,12 @@ namespace gui {
 
     void ShadowText::center(float x)
     {
-        this->text.setPosition(
-            static_cast<float>(
-                static_cast<int>(x - (this->text.getGlobalBounds().width) / 2)),
-            this->text.getPosition().y);
-        this->shadowText.setPosition(
-            this->text.getPosition().x + this->text.getCharacterSize() / 8,
-            this->text.getPosition().y + this->text.getCharacterSize() / 8);
+        this->text.setPosition({
+            x - static_cast<float>(this->text.getGlobalBounds().size.x) * 0.5f,
+            this->text.getPosition().y});
+        this->shadowText.setPosition({
+            this->text.getPosition().x + this->text.getCharacterSize() / 8.f,
+            this->text.getPosition().y + this->text.getCharacterSize() / 8.f});
     }
 
     void ShadowText::draw(sf::RenderTarget &target)
@@ -190,8 +184,6 @@ namespace gui {
         this->setFillColor(idleColor);
     }
 
-    ButtonText::~ButtonText() = default;
-
     bool ButtonText::isPressed(const sf::Vector2i &mousePosWindow)
     {
         this->buttonState = ButtonState::BUTTON_IDLE;
@@ -200,7 +192,7 @@ namespace gui {
                 static_cast<sf::Vector2f>(mousePosWindow))) {
             this->buttonState = ButtonState::BUTTON_HOVER;
 
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
                 this->buttonState = ButtonState::BUTTON_PRESSED;
             }
         }
@@ -227,12 +219,12 @@ namespace gui {
     }
 
     Sprite::Sprite(const std::string &texturePath, float x, float y,
-                   float scale, bool center)
+                   float scale, bool center) : texture(texturePath), sprite(texture)
     {
-        this->texture.loadFromFile(texturePath);
-        this->sprite.setTexture(this->texture);
-        this->sprite.setPosition(x, y);
-        this->sprite.setScale(scale, scale);
+        this->texture = sf::Texture(texturePath);
+        this->sprite = sf::Sprite(this->texture);
+        this->sprite.setPosition({x, y});
+        this->sprite.setScale({scale, scale});
         this->centered = center;
         if (center) {
             this->center(x);
@@ -241,11 +233,11 @@ namespace gui {
 
     Sprite::Sprite(const sf::Texture &texture, float x, float y, float scale,
                    bool center)
-        : texture(texture)
+        : texture(texture), sprite(texture)
     {
-        this->sprite.setTexture(this->texture);
-        this->sprite.setPosition(x, y);
-        this->sprite.setScale(scale, scale);
+        this->sprite = sf::Sprite(this->texture);
+        this->sprite.setPosition({x, y});
+        this->sprite.setScale({scale, scale});
         this->centered = center;
         if (center) {
             this->center(x);
@@ -254,11 +246,11 @@ namespace gui {
 
     Sprite::Sprite(const sf::Texture &texture, float x, float y, float scale,
                    bool center, const sf::IntRect &intRect)
-        : texture(texture)
+        : texture(texture), sprite(texture)
     {
-        this->sprite.setTexture(this->texture);
-        this->sprite.setPosition(x, y);
-        this->sprite.setScale(scale, scale);
+        this->sprite = sf::Sprite(this->texture);
+        this->sprite.setPosition({x, y});
+        this->sprite.setScale({scale, scale});
         this->sprite.setTextureRect(intRect);
         this->centered = center;
         if (center) {
@@ -270,15 +262,13 @@ namespace gui {
                    bool center)
         : sprite(sprite)
     {
-        this->sprite.setPosition(x, y);
-        this->sprite.setScale(scale, scale);
+        this->sprite.setPosition({x, y});
+        this->sprite.setScale({scale, scale});
         this->centered = center;
         if (center) {
             this->center(x);
         }
     }
-
-    Sprite::~Sprite() = default;
 
     const sf::Vector2f Sprite::getPosition() const
     {
@@ -295,7 +285,7 @@ namespace gui {
         return this->sprite.getTextureRect();
     }
 
-    void Sprite::setAlphaColor(sf::Uint8 alpha)
+    void Sprite::setAlphaColor(uint8_t alpha)
     {
         this->sprite.setColor(sf::Color(this->sprite.getColor().r,
                                         this->sprite.getColor().g,
@@ -324,16 +314,16 @@ namespace gui {
 
     void Sprite::flipHorizontal()
     {
-        this->sprite.setScale(-this->sprite.getScale().x,
-                              this->sprite.getScale().y);
+        this->sprite.setScale({-this->sprite.getScale().x,
+                              this->sprite.getScale().y});
     }
 
     void Sprite::center(float x)
     {
-        this->sprite.setPosition(
+        this->sprite.setPosition({
             static_cast<float>(static_cast<int>(
-                x - (this->sprite.getGlobalBounds().width) / 2)),
-            this->sprite.getPosition().y);
+                x - (this->sprite.getGlobalBounds().size.x) / 2)),
+            this->sprite.getPosition().y});
     }
 
     void Sprite::draw(sf::RenderTarget &target)
@@ -350,8 +340,6 @@ namespace gui {
     {
         this->sprite.setColor(idleColor);
     }
-
-    ButtonSprite::~ButtonSprite() = default;
 
     const sf::Color ButtonSprite::getColor() const
     {
@@ -371,7 +359,7 @@ namespace gui {
                 static_cast<sf::Vector2f>(mousePosWindow))) {
             this->buttonState = ButtonState::BUTTON_HOVER;
 
-            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
                 this->buttonState = ButtonState::BUTTON_PRESSED;
             }
         }

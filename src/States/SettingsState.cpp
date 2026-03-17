@@ -11,7 +11,7 @@ SettingsState::SettingsState(float gridSize, sf::RenderWindow &window,
 
     for (int i = sf::VideoMode::getFullscreenModes().size() - 1; i >= 0; --i) {
         const auto &v = sf::VideoMode::getFullscreenModes()[i];
-        if (static_cast<float>(v.width) / v.height == 16.f / 9.f) {
+        if (static_cast<float>(v.size.x) / v.size.y == 16.f / 9.f) {
             this->videoModes.push_back(v);
         }
     }
@@ -104,8 +104,8 @@ void SettingsState::initGUI()
             this->id = i;
             addSetting("RESOLUTION", calcX(192, vm), calcY(192, vm),
                        this->lang["RESOLUTION"],
-                       std::to_string(this->videoModes[this->id].width) + "x" +
-                           std::to_string(this->videoModes[this->id].height));
+                       std::to_string(this->videoModes[this->id].size.x) + "x" +
+                           std::to_string(this->videoModes[this->id].size.y));
             break;
         }
     }
@@ -209,7 +209,7 @@ void SettingsState::resetGUI()
 {
     vm = gameSettings.resolution;
 
-    std::cout << vm.width << vm.height;
+    std::cout << vm.size.x << vm.size.y;
 
     this->texts["SETTINGS"]->setPosition(calcX(640, vm), calcY(96, vm));
     this->sprite_buttons["GO_BACK"]->setPosition(calcX(32, vm), calcY(24, vm));
@@ -262,8 +262,8 @@ void SettingsState::update(float dt)
                 }
 
                 this->settings["RESOLUTION"].change->setText(
-                    std::to_string(this->videoModes[this->id].width) + "x" +
-                    std::to_string(this->videoModes[this->id].height));
+                    std::to_string(this->videoModes[this->id].size.x) + "x" +
+                    std::to_string(this->videoModes[this->id].size.y));
                 this->settings["RESOLUTION"].change->center(
                     this->settings["RESOLUTION"].desc->getPosition().x +
                     calcX(640, vm));
@@ -279,8 +279,8 @@ void SettingsState::update(float dt)
                 }
 
                 this->settings["RESOLUTION"].change->setText(
-                    std::to_string(this->videoModes[this->id].width) + "x" +
-                    std::to_string(this->videoModes[this->id].height));
+                    std::to_string(this->videoModes[this->id].size.x) + "x" +
+                    std::to_string(this->videoModes[this->id].size.y));
                 this->settings["RESOLUTION"].change->center(
                     this->settings["RESOLUTION"].desc->getPosition().x +
                     calcX(640, vm));
@@ -531,7 +531,7 @@ void SettingsState::update(float dt)
 
     GameInputHandler::updateMouseClick();
 
-    if (GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Escape)) {
+    if (GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Key::Escape)) {
         if (page == 0) {
             this->endState();
         }

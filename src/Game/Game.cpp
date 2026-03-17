@@ -1,11 +1,10 @@
 #include "Game.hpp"
 
-Game::Game()
+Game::Game() : sfEvent(sf::Event::FocusGained())
 {
     this->window = NULL;
     this->dt = 0.f;
     this->gridSize = 64.f;
-    this->sfEvent.type = sf::Event::GainedFocus;
     this->fps = 0;
     this->fpsTimer = 0.f;
 
@@ -33,13 +32,14 @@ Game::~Game()
     delete this->gameSettings;
     delete this->soundEngine;
     delete this->musicEngine;
+    gui::clean();
 }
 
 void Game::createWindow()
 {
     if (this->gameSettings->fullscreen) {
         this->window = new sf::RenderWindow(this->gameSettings->resolution,
-                                            "Defnight", sf::Style::Fullscreen);
+                                            "Defnight", sf::State::Fullscreen);
     }
     else {
         this->window = new sf::RenderWindow(this->gameSettings->resolution,
@@ -51,9 +51,8 @@ void Game::createWindow()
 
 void Game::setIcon()
 {
-    sf::Image icon;
-    icon.loadFromFile("assets/textures/icon.png");
-    this->window->setIcon(32, 32, icon.getPixelsPtr());
+    sf::Image icon("assets/textures/icon.png");
+    this->window->setIcon({32, 32}, icon.getPixelsPtr());
 }
 
 void Game::initGUI()
@@ -69,8 +68,8 @@ void Game::initGUI()
 
 void Game::checkEvents()
 {
-    while (this->window->pollEvent(this->sfEvent)) {
-        if (this->sfEvent.type == sf::Event::Closed) {
+    while (std::optional event = this->window->pollEvent()) {
+        if (this->sfEvent.is<sf::Event::Closed>()) {
             this->close();
         }
     }

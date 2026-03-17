@@ -7,179 +7,70 @@ const std::vector<PlayerStats::Rank> PlayerStats::ranks = {
     {"SOLDIER", 2000, gui::PURPLE},     {"AMATEUR", 500, gui::LIME},
     {"RECRUIT", 100, gui::LIGHT_GREY},  {"NOVICE", 0, gui::WHITE}};
 
-const CryptoPP::byte PlayerStats::key[CryptoPP::AES::DEFAULT_KEYLENGTH] = {
+const uint8_t PlayerStats::key[16] = {
     0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF,
     0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10};
 
-const CryptoPP::byte PlayerStats::iv[CryptoPP::AES::BLOCKSIZE] = {
+const uint8_t PlayerStats::iv[16] = {
     0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0x77,
     0x88, 0x99, 0xAA, 0xBB, 0xCC, 0xDD, 0xEE, 0xFF};
 
-void PlayerStats::saveStats(const std::string &filename,
-                            const PlayerData &playerdata)
+void PlayerStats::saveStats(PlayerData &playerdata)
 {
     PlayerData loadedPlayerData{0, 0, 1, 0, 0, 0, 0, 0, 0,
                                 0, 0, 0, 0, 0, 0, 0, 0};
-    loadStats("data/player_stats.dat", loadedPlayerData);
+    loadStats(loadedPlayerData);
 
-    const uint32_t wave = std::max(playerdata.wave, loadedPlayerData.wave);
-    const uint32_t xp = playerdata.xp + loadedPlayerData.xp;
-    const uint32_t maxLevel =
+    playerdata.wave = std::max(playerdata.wave, loadedPlayerData.wave);
+    playerdata.xp = playerdata.xp + loadedPlayerData.xp;
+    playerdata.maxLevel =
         std::max(playerdata.maxLevel, loadedPlayerData.maxLevel);
-    const uint32_t kills = playerdata.kills + loadedPlayerData.kills;
-    const uint32_t damageDealt =
+    playerdata.kills = playerdata.kills + loadedPlayerData.kills;
+    playerdata.damageDealt =
         playerdata.damageDealt + loadedPlayerData.damageDealt;
-    const uint32_t damageTaken =
+    playerdata.damageTaken =
         playerdata.damageTaken + loadedPlayerData.damageTaken;
-    const uint32_t deaths = playerdata.deaths + loadedPlayerData.deaths;
-    const uint32_t gold = playerdata.gold + loadedPlayerData.gold;
-    const uint32_t boughtItems =
+    playerdata.deaths = playerdata.deaths + loadedPlayerData.deaths;
+    playerdata.gold = playerdata.gold + loadedPlayerData.gold;
+    playerdata.boughtItems =
         playerdata.boughtItems + loadedPlayerData.boughtItems;
 
-    const uint32_t timePlayed =
+    playerdata.timePlayed =
         playerdata.timePlayed + loadedPlayerData.timePlayed;
-    const uint32_t gamesPlayed =
+    playerdata.gamesPlayed =
         playerdata.gamesPlayed + loadedPlayerData.gamesPlayed;
-    const uint32_t ruins = playerdata.ruins + loadedPlayerData.ruins;
-    const uint32_t desolation =
+    playerdata.ruins = playerdata.ruins + loadedPlayerData.ruins;
+    playerdata.desolation =
         playerdata.desolation + loadedPlayerData.desolation;
-    const uint32_t permafrost =
+    playerdata.permafrost =
         playerdata.permafrost + loadedPlayerData.permafrost;
-    const uint32_t easy = playerdata.easy + loadedPlayerData.easy;
-    const uint32_t normal = playerdata.normal + loadedPlayerData.normal;
-    const uint32_t hard = playerdata.hard + loadedPlayerData.hard;
+    playerdata.easy = playerdata.easy + loadedPlayerData.easy;
+    playerdata.normal = playerdata.normal + loadedPlayerData.normal;
+    playerdata.hard = playerdata.hard + loadedPlayerData.hard;
 
-    std::string data;
-    data.reserve(80);
-    data.append(reinterpret_cast<const char *>(&wave), sizeof(wave));
-    data.append(reinterpret_cast<const char *>(&xp), sizeof(xp));
-    data.append(reinterpret_cast<const char *>(&maxLevel), sizeof(maxLevel));
-    data.append(reinterpret_cast<const char *>(&kills), sizeof(kills));
-    data.append(reinterpret_cast<const char *>(&damageDealt),
-                sizeof(damageDealt));
-    data.append(reinterpret_cast<const char *>(&damageTaken),
-                sizeof(damageTaken));
-    data.append(reinterpret_cast<const char *>(&deaths), sizeof(deaths));
-    data.append(reinterpret_cast<const char *>(&gold), sizeof(gold));
-    data.append(reinterpret_cast<const char *>(&boughtItems),
-                sizeof(boughtItems));
-    data.append(reinterpret_cast<const char *>(&timePlayed),
-                sizeof(timePlayed));
-    data.append(reinterpret_cast<const char *>(&gamesPlayed),
-                sizeof(gamesPlayed));
-    data.append(reinterpret_cast<const char *>(&ruins), sizeof(ruins));
-    data.append(reinterpret_cast<const char *>(&desolation),
-                sizeof(desolation));
-    data.append(reinterpret_cast<const char *>(&permafrost),
-                sizeof(permafrost));
-    data.append(reinterpret_cast<const char *>(&easy), sizeof(easy));
-    data.append(reinterpret_cast<const char *>(&normal), sizeof(normal));
-    data.append(reinterpret_cast<const char *>(&hard), sizeof(hard));
+    struct AES_ctx ctx;
+    AES_init_ctx_iv(&ctx, key, iv);
+    AES_ECB_encrypt(&ctx, (uint8_t*)&playerdata);
 
-    std::string encryptedData;
-    EncryptData(data, encryptedData);
-
-    std::ofstream file(filename, std::ios::binary);
+    std::ofstream file(PlayerStats::filePath, std::ios::binary);
     if (!file.is_open()) {
-        std::cerr << "Error opening file for writing." << std::endl;
+        std::cerr << "[ERROR] Failed to save player stats "<< PlayerStats::filePath << '\n';
         return;
     }
-    file.write(encryptedData.c_str(), encryptedData.size());
+    file.write((char*)&playerdata, sizeof(PlayerData));
 }
 
-void PlayerStats::loadStats(const std::string &filename, PlayerData &playerdata)
+void PlayerStats::loadStats(PlayerData &playerdata)
 {
-    std::ifstream file(filename, std::ios::binary);
+    std::ifstream file(PlayerStats::filePath, std::ios::binary);
     if (!file.is_open()) {
-        std::cerr << "Error opening file for reading." << std::endl;
+        std::cerr << "[ERROR] Failed to load player stats "<< PlayerStats::filePath << '\n';
         return;
     }
-
-    file.seekg(0, std::ios::end);
-    size_t fileSize = file.tellg();
-    file.seekg(0, std::ios::beg);
-
-    std::vector<CryptoPP::byte> encryptedData(fileSize);
-    file.read(reinterpret_cast<char *>(encryptedData.data()), fileSize);
-
-    std::string decryptedData;
-    DecryptData(encryptedData.data(), fileSize, decryptedData);
-
-    size_t offset = 0;
-    memcpy(&playerdata.wave, decryptedData.c_str() + offset,
-           sizeof(playerdata.wave));
-    offset += sizeof(playerdata.wave);
-    memcpy(&playerdata.xp, decryptedData.c_str() + offset,
-           sizeof(playerdata.xp));
-    offset += sizeof(playerdata.xp);
-    memcpy(&playerdata.maxLevel, decryptedData.c_str() + offset,
-           sizeof(playerdata.maxLevel));
-    offset += sizeof(playerdata.maxLevel);
-    memcpy(&playerdata.kills, decryptedData.c_str() + offset,
-           sizeof(playerdata.kills));
-    offset += sizeof(playerdata.kills);
-    memcpy(&playerdata.damageDealt, decryptedData.c_str() + offset,
-           sizeof(playerdata.damageDealt));
-    offset += sizeof(playerdata.damageDealt);
-    memcpy(&playerdata.damageTaken, decryptedData.c_str() + offset,
-           sizeof(playerdata.damageTaken));
-    offset += sizeof(playerdata.damageTaken);
-    memcpy(&playerdata.deaths, decryptedData.c_str() + offset,
-           sizeof(playerdata.deaths));
-    offset += sizeof(playerdata.deaths);
-    memcpy(&playerdata.gold, decryptedData.c_str() + offset,
-           sizeof(playerdata.gold));
-    offset += sizeof(playerdata.gold);
-    memcpy(&playerdata.boughtItems, decryptedData.c_str() + offset,
-           sizeof(playerdata.boughtItems));
-    offset += sizeof(playerdata.boughtItems);
-    memcpy(&playerdata.timePlayed, decryptedData.c_str() + offset,
-           sizeof(playerdata.timePlayed));
-    offset += sizeof(playerdata.timePlayed);
-    memcpy(&playerdata.gamesPlayed, decryptedData.c_str() + offset,
-           sizeof(playerdata.gamesPlayed));
-    offset += sizeof(playerdata.gamesPlayed);
-    memcpy(&playerdata.ruins, decryptedData.c_str() + offset,
-           sizeof(playerdata.ruins));
-    offset += sizeof(playerdata.ruins);
-    memcpy(&playerdata.desolation, decryptedData.c_str() + offset,
-           sizeof(playerdata.desolation));
-    offset += sizeof(playerdata.desolation);
-    memcpy(&playerdata.permafrost, decryptedData.c_str() + offset,
-           sizeof(playerdata.permafrost));
-    offset += sizeof(playerdata.permafrost);
-    memcpy(&playerdata.easy, decryptedData.c_str() + offset,
-           sizeof(playerdata.easy));
-    offset += sizeof(playerdata.easy);
-    memcpy(&playerdata.normal, decryptedData.c_str() + offset,
-           sizeof(playerdata.normal));
-    offset += sizeof(playerdata.normal);
-    memcpy(&playerdata.hard, decryptedData.c_str() + offset,
-           sizeof(playerdata.hard));
+    file.read((char*)&playerdata, sizeof(PlayerData));
+    
+    struct AES_ctx ctx;
+    AES_init_ctx_iv(&ctx, key, iv);
+    AES_ECB_decrypt(&ctx, (uint8_t*)&playerdata);
 }
 
-void PlayerStats::EncryptData(const std::string &plaintext,
-                              std::string &ciphertext)
-{
-    CryptoPP::CBC_Mode<CryptoPP::AES>::Encryption encryptor;
-    encryptor.SetKeyWithIV(PlayerStats::key, CryptoPP::AES::DEFAULT_KEYLENGTH,
-                           PlayerStats::iv);
-
-    CryptoPP::StringSource(
-        plaintext, true,
-        new CryptoPP::StreamTransformationFilter(
-            encryptor, new CryptoPP::StringSink(ciphertext)));
-}
-
-void PlayerStats::DecryptData(const CryptoPP::byte *ciphertext,
-                              size_t ciphertextLength, std::string &plaintext)
-{
-    CryptoPP::CBC_Mode<CryptoPP::AES>::Decryption decryptor;
-    decryptor.SetKeyWithIV(PlayerStats::key, CryptoPP::AES::DEFAULT_KEYLENGTH,
-                           PlayerStats::iv);
-
-    CryptoPP::StreamTransformationFilter filter(
-        decryptor, new CryptoPP::StringSink(plaintext));
-    filter.Put(ciphertext, ciphertextLength);
-    filter.MessageEnd();
-}

@@ -2,38 +2,39 @@
 
 Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
                float t_y)
-    : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f)
+    : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f), 
+      shadow(shadow_texture), ability(ability_texture), glow(glow_texture)
 {
-    this->texture.loadFromFile("assets/textures/player/" + toLowerCase(t_name) +
-                               ".png");
-    this->sprite.setTexture(this->texture);
+    this->texture = sf::Texture("assets/textures/player/" + toLowerCase(t_name) + ".png");
+    this->sprite = sf::Sprite(this->texture);
+    this->sprite.setPosition({t_x, t_y});
     this->entitySize =
-        static_cast<uint32_t>(this->sprite.getGlobalBounds().width / 128);
-    this->sprite.setTextureRect(sf::IntRect(0, 32, 16, 16));
-    this->sprite.setScale(calcScale(4, vm), calcScale(4, vm));
+        static_cast<uint32_t>(this->sprite.getGlobalBounds().size.x / 128);
+    this->sprite.setTextureRect(sf::IntRect({0, 32}, {16, 16}));
+    this->sprite.setScale({calcScale(4, vm), calcScale(4, vm)});
     this->sprite.setColor(sf::Color(255, 255, 255, 0));
 
-    this->shadow_texture.loadFromFile("assets/textures/entity_shadow.png");
-    this->shadow.setTexture(this->shadow_texture);
-    this->shadow.setTextureRect(sf::IntRect(0, 0, 8, 4));
-    this->shadow.setScale(calcScale(4, vm), calcScale(4, vm));
-    this->shadow.setPosition(this->getDownCenter().x -
-                                 this->shadow.getTextureRect().width / 2 *
+    this->shadow_texture = sf::Texture("assets/textures/entity_shadow.png");
+    this->shadow = sf::Sprite(this->shadow_texture);
+    this->shadow.setTextureRect(sf::IntRect({0, 0}, {8, 4}));
+    this->shadow.setScale({calcScale(4, vm), calcScale(4, vm)});
+    this->shadow.setPosition({this->getDownCenter().x -
+                                 (this->shadow.getTextureRect().size.x * 0.5f) *
                                      this->shadow.getScale().x,
-                             this->getDownCenter().y);
+                             this->getDownCenter().y});
     this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
-    this->glow_texture.loadFromFile("assets/textures/player_glow.png");
-    this->glow.setTexture(this->glow_texture);
-    this->glow.setScale(calcScale(4, vm), calcScale(4, vm));
-    this->glow.setPosition(this->getPosition().x,
-                           this->getPosition().y + calcY(8, vm));
+    this->glow_texture = sf::Texture("assets/textures/player_glow.png");
+    this->glow = sf::Sprite(this->glow_texture);
+    this->glow.setScale({calcScale(4, vm), calcScale(4, vm)});
+    this->glow.setPosition({this->getPosition().x,
+                           this->getPosition().y + calcY(8, vm)});
     this->glow.setColor(sf::Color(255, 255, 255, 128));
 
-    this->ability_texture.loadFromFile("assets/textures/abilities_icons.png");
-    this->ability.setTexture(this->ability_texture);
-    this->ability.setScale(calcScale(4, vm), calcScale(4, vm));
-    this->ability.setTextureRect(sf::IntRect(0, 0, 0, 0));
+    this->ability_texture = sf::Texture("assets/textures/abilities_icons.png");
+    this->ability = sf::Sprite(this->ability_texture);
+    this->ability.setScale({calcScale(4, vm), calcScale(4, vm)});
+    this->ability.setTextureRect(sf::IntRect({0, 0}, {0, 0}));
     this->ability.setColor(sf::Color(255, 255, 255, 0));
 
     this->damageDealt = 0;
@@ -442,7 +443,7 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds,
     this->velocity = sf::Vector2f(0.f, 0.f);
 
     const float vel = ((this->speed * 0.2f + 0.8f) * 2.f *
-                       this->sprite.getGlobalBounds().width) *
+                       this->sprite.getGlobalBounds().size.x) *
                       dt;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_UP")))) {
@@ -542,7 +543,7 @@ const bool Player::isHPRegenerating(float dt)
 
 const bool Player::isAbilityActivated()
 {
-    if (this->upgraded && sf::Mouse::isButtonPressed(sf::Mouse::Right) &&
+    if (this->upgraded && sf::Mouse::isButtonPressed(sf::Mouse::Button::Right) &&
         this->getAbilityCooldown() == this->getAbilityTotalMaxTime()) {
         this->abilityComponent->setAbilityActive(true);
         this->abilityComponent->setAbilityCooldown(0.f);
@@ -566,10 +567,10 @@ void Player::spawn(float dt)
     if (this->spawnCountdown < 0.5f) {
         this->sprite.setColor(
             sf::Color(255, 255, 255,
-                      static_cast<sf::Uint8>(this->spawnCountdown * 510.f)));
+                      static_cast<uint8_t>(this->spawnCountdown * 510.f)));
         this->shadow.setColor(
             sf::Color(255, 255, 255,
-                      static_cast<sf::Uint8>(this->spawnCountdown * 510.f)));
+                      static_cast<uint8_t>(this->spawnCountdown * 510.f)));
         this->spawnCountdown += dt;
     }
     if (this->spawnCountdown >= 0.5f) {
@@ -590,12 +591,12 @@ void Player::upgrade(const std::string &t_name, sf::IntRect &intRect)
 
 void Player::update(float dt)
 {
-    this->shadow.setPosition(this->getDownCenter().x -
-                                 this->shadow.getTextureRect().width / 2 *
+    this->shadow.setPosition({this->getDownCenter().x -
+                                 (this->shadow.getTextureRect().size.x * 0.5f) *
                                      this->shadow.getScale().x,
-                             this->getDownCenter().y);
-    this->glow.setPosition(this->getPosition().x,
-                           this->getPosition().y + calcY(8, vm));
+                             this->getDownCenter().y});
+    this->glow.setPosition({this->getPosition().x,
+                           this->getPosition().y + calcY(8, vm)});
     this->ability.setPosition(this->sprite.getPosition());
 }
 

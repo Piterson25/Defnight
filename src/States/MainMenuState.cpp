@@ -4,7 +4,7 @@ MainMenuState::MainMenuState(float gridSize, sf::RenderWindow &window,
                              GameSettings &gameSettings,
                              SoundEngine &soundEngine, MusicEngine &musicEngine,
                              std::stack<State *> &states)
-    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states)
+    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states), map(map_texture)
 {
     this->initGUI();
     this->musicEngine.addMusic("main_menu.ogg");
@@ -25,9 +25,9 @@ void MainMenuState::initGUI()
 
     this->fading = false;
     this->appearing = false;
-    this->framesTexture.loadFromFile("assets/textures/frames.png");
-    this->dimBackground.setSize(sf::Vector2f(static_cast<float>(vm.width),
-                                             static_cast<float>(vm.height)));
+    this->framesTexture = sf::Texture("assets/textures/frames.png");
+    this->dimBackground.setSize(sf::Vector2f(static_cast<float>(vm.size.x),
+                                             static_cast<float>(vm.size.y)));
     this->dimBackground.setFillColor(sf::Color(0, 0, 0, 0));
 
     // PAGE 0 - Loading
@@ -47,33 +47,33 @@ void MainMenuState::initGUI()
                                      32.f * cos((3.1415f / 180.f)));
     this->mapRotate = Random::Float() * 360.f - 90.f;
 
-    this->mapView.setSize(sf::Vector2f(static_cast<float>(vm.width),
-                                       static_cast<float>(vm.height)));
-    this->mapView.setCenter(static_cast<float>(vm.width / 2),
-                            static_cast<float>(vm.height / 2));
+    this->mapView.setSize(sf::Vector2f(static_cast<float>(vm.size.x),
+                                       static_cast<float>(vm.size.y)));
+    this->mapView.setCenter({static_cast<float>(vm.size.x * 0.5f),
+                            static_cast<float>(vm.size.y * 0.5f)});
 
     if (const uint8_t m = static_cast<uint8_t>(Random::Float() * 3.f); m == 0) {
-        this->map_texture.loadFromFile("assets/textures/maps/ruins.png");
+        this->map_texture = sf::Texture("assets/textures/maps/ruins.png");
     }
     else if (m == 1) {
-        this->map_texture.loadFromFile("assets/textures/maps/desolation.png");
+        this->map_texture = sf::Texture("assets/textures/maps/desolation.png");
     }
     else {
-        this->map_texture.loadFromFile("assets/textures/maps/permafrost.png");
+        this->map_texture = sf::Texture("assets/textures/maps/permafrost.png");
     }
 
-    this->map.setTexture(this->map_texture);
-    this->map.setScale(calcScale(4, vm), calcScale(4, vm));
-    this->map.setPosition(256.f, 256.f);
-    this->map.setOrigin(256.f, 256.f);
-    this->map.setRotation(this->mapRotate);
+    this->map = sf::Sprite(this->map_texture);
+    this->map.setScale({calcScale(4, vm), calcScale(4, vm)});
+    this->map.setPosition({256.f, 256.f});
+    this->map.setOrigin({256.f, 256.f});
+    this->map.setRotation(sf::degrees(this->mapRotate));
 
-    this->dimMap.setSize(sf::Vector2f(static_cast<float>(vm.width),
-                                      static_cast<float>(vm.height)));
+    this->dimMap.setSize(sf::Vector2f(static_cast<float>(vm.size.x),
+                                      static_cast<float>(vm.size.y)));
     this->dimMap.setFillColor(sf::Color(0, 0, 0, 192));
 
-    this->quitBackground.setSize(sf::Vector2f(static_cast<float>(vm.width),
-                                              static_cast<float>(vm.height)));
+    this->quitBackground.setSize(sf::Vector2f(static_cast<float>(vm.size.x),
+                                              static_cast<float>(vm.size.y)));
     this->quitBackground.setFillColor(sf::Color(0, 0, 0, 192));
 
     this->sprites["TITLE"] = std::make_unique<gui::Sprite>(
@@ -178,7 +178,7 @@ void MainMenuState::initGUI()
     this->sprites["HERO1"] = std::make_unique<gui::Sprite>(
         "assets/textures/upgrades_icons.png", calcX(88, vm), calcY(280, vm),
         calcScale(8, vm), false);
-    this->sprites["HERO1"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
+    this->sprites["HERO1"]->setTextureRect(sf::IntRect({0, 0}, {16, 16}));
     this->texts["WARRIOR"] = std::make_unique<gui::Text>(
         this->lang["WARRIOR"], calcChar(32, vm), calcX(150, vm), calcY(200, vm),
         gui::WHITE, true);
@@ -191,49 +191,48 @@ void MainMenuState::initGUI()
     this->sprites["HERO_PREVIEW"] = std::make_unique<gui::Sprite>(
         "assets/textures/upgrades_icons.png", calcX(640, vm), calcY(512, vm),
         calcScale(8, vm), true);
-    this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect(0, 0, 16, 16));
+    this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect({0, 0}, {16, 16}));
     this->sprites["HERO_PREVIEW"]->center(calcX(640, vm));
     this->sprites["HP_FRAME"] = std::make_unique<gui::Sprite>(
         framesTexture, calcX(860, vm), calcY(498, vm), calcScale(1, vm), true,
-        sf::IntRect(88, 0, 272, 36));
+        sf::IntRect({88, 0}, {272, 36}));
     this->sprites["HP_BAR"] = std::make_unique<gui::Sprite>(
         "assets/textures/bars.png", calcX(860, vm), calcY(506, vm),
         calcScale(1, vm), true);
-    this->sprites["HP_BAR"]->setTextureRect(sf::IntRect(0, 20, 256, 20));
+    this->sprites["HP_BAR"]->setTextureRect(sf::IntRect({0, 20}, {256, 20}));
     this->sprites["HP_BAR"]->center(calcX(860, vm));
     this->texts["HP"] = std::make_unique<gui::Text>(
         "HP:10/10", calcChar(16, vm), calcX(860, vm), calcY(509, vm),
         gui::WHITE, true);
     this->sprites["SPRINT_FRAME"] = std::make_unique<gui::Sprite>(
         framesTexture, calcX(860, vm), calcY(538, vm), calcScale(1, vm), true,
-        sf::IntRect(88, 0, 272, 36));
+        sf::IntRect({88, 0}, {272, 36}));
     this->sprites["SPRINT_BAR"] = std::make_unique<gui::Sprite>(
         "assets/textures/bars.png", calcX(860, vm), calcY(546, vm),
         calcScale(1, vm), true);
-    this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect(0, 40, 256, 20));
+    this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect({0, 40}, {256, 20}));
     this->sprites["SPRINT_BAR"]->center(calcX(860, vm));
     this->texts["SPRINT"] =
         std::make_unique<gui::Text>("100/100", calcChar(16, vm), calcX(860, vm),
                                     calcY(549, vm), gui::WHITE, true);
 
-    this->attributes_texture.loadFromFile(
+    this->attributes_texture = sf::Texture(
         "assets/textures/attributes_icons.png");
-    for (short i = 0; i < 10; ++i) {
-        sf::Sprite att;
-        att.setTexture(this->attributes_texture);
-        sf::IntRect intRect(i * 16, 0, 16, 16);
+    for (int i = 0; i < 10; ++i) {
+        sf::Sprite att(this->attributes_texture);
+        sf::IntRect intRect({i * 16, 0}, {16, 16});
         att.setTextureRect(intRect);
-        att.setScale(calcScale(2, vm), calcScale(2, vm));
+        att.setScale({calcScale(2, vm), calcScale(2, vm)});
         this->attribute_vec.push_back(att);
     }
 
-    this->abilities_texture.loadFromFile("assets/textures/abilities_icons.png");
+    this->abilities_texture = sf::Texture("assets/textures/abilities_icons.png");
     for (int y = 0; y < 3; y++) {
         for (int x = 0; x < 3; x++) {
             this->abilties.push_back(std::make_unique<gui::Sprite>(
                 this->abilities_texture, calcX(432.f + 48.f * x, vm),
                 calcY(512.f + 48.f * y, vm), calcScale(2, vm), true,
-                sf::IntRect(x * 16, y * 16, 16, 16)));
+                sf::IntRect({x * 16, y * 16}, {16, 16})));
         }
     }
 
@@ -293,15 +292,15 @@ void MainMenuState::initGUI()
     this->sprites["DIFFICULTY1"] = std::make_unique<gui::Sprite>(
         "assets/textures/difficulty_icons.png", calcX(168, vm), calcY(272, vm),
         calcScale(16, vm), false);
-    this->sprites["DIFFICULTY1"]->setTextureRect(sf::IntRect(0, 0, 7, 6));
+    this->sprites["DIFFICULTY1"]->setTextureRect(sf::IntRect({0, 0}, {7, 6}));
     this->sprites["DIFFICULTY2"] = std::make_unique<gui::Sprite>(
         "assets/textures/difficulty_icons.png", calcX(584, vm), calcY(272, vm),
         calcScale(16, vm), false);
-    this->sprites["DIFFICULTY2"]->setTextureRect(sf::IntRect(7, 0, 7, 6));
+    this->sprites["DIFFICULTY2"]->setTextureRect(sf::IntRect({7, 0}, {7, 6}));
     this->sprites["DIFFICULTY3"] = std::make_unique<gui::Sprite>(
         "assets/textures/difficulty_icons.png", calcX(1000, vm), calcY(272, vm),
         calcScale(8, vm), false);
-    this->sprites["DIFFICULTY3"]->setTextureRect(sf::IntRect(14, 0, 13, 12));
+    this->sprites["DIFFICULTY3"]->setTextureRect(sf::IntRect({14, 0}, {13, 12}));
     this->sprites["DIFFICULTY3"]->center(calcX(1056, vm));
 
     this->texts["EASY"] = std::make_unique<gui::Text>(
@@ -441,10 +440,10 @@ void MainMenuState::initGUI()
     this->sprites["XP_BAR"] = std::make_unique<gui::Sprite>(
         "assets/textures/bars.png", calcX(832, vm), calcY(344, vm),
         calcScale(1, vm), false);
-    this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(0, 0, 0, 0));
+    this->sprites["XP_BAR"]->setTextureRect(sf::IntRect({0, 0}, {0, 0}));
     this->sprites["XP_FRAME"] = std::make_unique<gui::Sprite>(
         framesTexture, calcX(960, vm), calcY(336, vm), calcScale(1, vm), true,
-        sf::IntRect(88, 0, 272, 36));
+        sf::IntRect({88, 0}, {272, 36}));
     this->texts["PERCENT"] =
         std::make_unique<gui::Text>("0%", calcChar(16, vm), calcX(960, vm),
                                     calcY(347, vm), gui::WHITE, true);
@@ -474,7 +473,7 @@ void MainMenuState::update(float dt)
 
     if (!this->loadedPlayerData) {
         this->loadedPlayerData = true;
-        PlayerStats::loadStats("data/player_stats.dat", playerData);
+        PlayerStats::loadStats(playerData);
         this->texts["TOTAL_XP"]->setText(this->lang["TOTAL_XP"] +
                                          std::to_string(playerData.xp));
 
@@ -485,13 +484,13 @@ void MainMenuState::update(float dt)
     }
 
     if (this->page >= 1) {
-        if (!this->map.getGlobalBounds().intersects(
+        if (!this->map.getGlobalBounds().findIntersection(
                 this->mapView.getViewport())) {
             this->mapVelocity = sf::Vector2f(32.f * cos((3.1415f / 180.f)),
                                              32.f * cos((3.1415f / 180.f)));
             this->mapRotate = Random::Float() * 360.f - 90.f;
-            this->map.setPosition(256.f, 256.f);
-            this->map.setRotation(this->mapRotate);
+            this->map.setPosition({256.f, 256.f});
+            this->map.setRotation(sf::degrees(this->mapRotate));
         }
         this->map.move(this->mapVelocity * dt);
     }
@@ -502,7 +501,7 @@ void MainMenuState::update(float dt)
     else {
         switch (this->page) {
             case 0:
-                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
                     this->page = 1;
                     this->dimAlpha = 1.f;
                     this->fading = true;
@@ -540,7 +539,7 @@ void MainMenuState::update(float dt)
                         }
                         this->sprites["LOGO"]->setColor(sf::Color(
                             255, 255, 255,
-                            static_cast<sf::Uint8>(this->dimAlpha * 255.f)));
+                            static_cast<uint8_t>(this->dimAlpha * 255.f)));
                     }
                 }
                 break;
@@ -723,7 +722,7 @@ void MainMenuState::update(float dt)
 
     if (!this->quitwindow && this->page > 0) {
 
-        if (GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Escape)) {
+        if (GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Key::Escape)) {
             if (this->page == 1) {
                 this->quitwindow = true;
             }
@@ -907,7 +906,7 @@ void MainMenuState::fadingEffect(float dt)
         }
     }
     this->dimBackground.setFillColor(
-        sf::Color(0, 0, 0, static_cast<sf::Uint8>(this->dimAlpha * 255.f)));
+        sf::Color(0, 0, 0, static_cast<uint8_t>(this->dimAlpha * 255.f)));
 }
 
 void MainMenuState::setPlayerRank()
@@ -925,7 +924,7 @@ void MainMenuState::setPlayerRank()
                     std::to_string(static_cast<int>(percent)) + "%");
                 this->texts["PERCENT"]->center(calcX(960, vm));
                 this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(
-                    0, 0, static_cast<int>(percent * 256.f / 100.f), 20));
+                                                        {0, 0}, {static_cast<int>(percent * 256.f / 100.f), 20}));
                 this->texts["NEXT_RANK_XP"]->setText(
                     std::to_string(std::prev(it)->minXP));
                 this->texts["NEXT_RANK_XP"]->center(calcX(1096, vm));
@@ -957,7 +956,7 @@ void MainMenuState::setPlayerRank()
                     std::to_string(static_cast<int>(percent)) + "%");
                 this->texts["PERCENT"]->center(calcX(960, vm));
                 this->sprites["XP_BAR"]->setTextureRect(sf::IntRect(
-                    0, 0, static_cast<int>(percent * 256.f / 100.f), 20));
+                                                        {0, 0}, {static_cast<int>(percent * 256.f / 100.f), 20}));
                 this->texts["NEXT_RANK"]->setText("");
                 this->texts["NEXT_RANK_XP"]->setText("");
                 this->texts["NEXT_PLAYER_RANK"]->setText("");

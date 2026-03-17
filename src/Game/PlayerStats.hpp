@@ -32,16 +32,10 @@ public:
 
     static const std::vector<Rank> ranks;
 
-    static const CryptoPP::byte key[CryptoPP::AES::DEFAULT_KEYLENGTH];
-    static const CryptoPP::byte iv[CryptoPP::AES::BLOCKSIZE];
+    static inline const std::string filePath = "data/player_stats.dat";
+    static const uint8_t key[16];
+    static const uint8_t iv[16];
 
-    static void saveStats(const std::string &filename,
-                          const PlayerData &playerdata);
-    static void loadStats(const std::string &filename, PlayerData &playerdata);
-
-private:
-    static void EncryptData(const std::string &plaintext,
-                            std::string &ciphertext);
-    static void DecryptData(const CryptoPP::byte *ciphertext,
-                            size_t ciphertextLength, std::string &plaintext);
+    static void saveStats(PlayerData &playerdata);
+    static void loadStats(PlayerData &playerdata);
 };

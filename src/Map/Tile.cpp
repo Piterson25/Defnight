@@ -9,7 +9,7 @@ Tile::~Tile() = default;
 
 const sf::Vector2f Tile::getPosition() const
 {
-    return sf::Vector2f(this->globalBounds.left, this->globalBounds.top);
+    return this->globalBounds.position;
 }
 
 const sf::FloatRect Tile::getGlobalBounds() const

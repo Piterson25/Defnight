@@ -24,7 +24,7 @@ void GameSettings::save()
     ofs.open("config/game_settings.ini");
 
     if (ofs.is_open()) {
-        ofs << this->resolution.width << " " << this->resolution.height << '\n';
+        ofs << this->resolution.size.x << " " << this->resolution.size.y << '\n';
         ofs << this->fullscreen << '\n';
         ofs << this->fpsLimit << '\n';
         ofs << this->fpsCounterOn << '\n';
@@ -42,7 +42,7 @@ void GameSettings::load()
     ifs.open("config/game_settings.ini");
 
     if (ifs.is_open()) {
-        ifs >> this->resolution.width >> this->resolution.height;
+        ifs >> this->resolution.size.x >> this->resolution.size.y;
         ifs >> this->fullscreen;
         ifs >> this->fpsLimit;
         ifs >> this->fpsCounterOn;

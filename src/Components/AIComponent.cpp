@@ -14,8 +14,8 @@ AIComponent::AIComponent(sf::VideoMode &vm,
 
     this->initNodes();
     for (const auto &obstacle : obstaclesBounds) {
-        Nodes[static_cast<size_t>(obstacle.left / this->BlockSize.x)]
-             [static_cast<size_t>(obstacle.top / this->BlockSize.y)]
+        Nodes[static_cast<size_t>(obstacle.position.x / this->BlockSize.x)]
+             [static_cast<size_t>(obstacle.position.y / this->BlockSize.y)]
                  .isWall = true;
     }
 }

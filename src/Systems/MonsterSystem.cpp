@@ -138,7 +138,7 @@ void MonsterSystem::explosionAttack(
 {
     for (const auto &bounds : particlesBounds) {
         for (const auto &monster : monsters) {
-            if (monster->getGlobalBounds().intersects(bounds)) {
+            if (monster->getGlobalBounds().findIntersection(bounds)) {
                 if (!monster->isDead() && !monster->isPunched() &&
                     monster->hasSpawned()) {
                     const int attack = player.getProjectileAttack();
@@ -176,35 +176,35 @@ void MonsterSystem::monsterCollision(Monster &mob)
 {
     for (const auto &monster : monsters) {
         if (vectorDistance(mob.getPosition(), monster->getPosition()) <
-            2 * monster->getGlobalBounds().width) {
+            2 * monster->getGlobalBounds().size.x) {
             sf::FloatRect mobBounds = mob.getGlobalBounds();
             sf::FloatRect monsterBounds = monster->getGlobalBounds();
 
             sf::FloatRect nextPos = mobBounds;
-            nextPos.left += mob.getVelocity().x;
-            nextPos.top += mob.getVelocity().y;
+            nextPos.position.x += mob.getVelocity().x;
+            nextPos.position.y += mob.getVelocity().y;
 
-            if (monsterBounds.intersects(nextPos)) {
+            if (monsterBounds.findIntersection(nextPos)) {
                 if (mob.hasCollidedBottom(mobBounds, monsterBounds)) {
                     mob.setVeloctiy(sf::Vector2f(mob.getVelocity().x, 0.f));
-                    mob.setPosition(mobBounds.left,
-                                    monsterBounds.top - mobBounds.height);
+                    mob.setPosition(mobBounds.position.x,
+                                    monsterBounds.position.y - mobBounds.size.y);
                 }
                 else if (mob.hasCollidedTop(mobBounds, monsterBounds)) {
                     mob.setVeloctiy(sf::Vector2f(mob.getVelocity().x, 0.f));
-                    mob.setPosition(mobBounds.left,
-                                    monsterBounds.top + monsterBounds.height);
+                    mob.setPosition(mobBounds.position.x,
+                                    monsterBounds.position.y + monsterBounds.size.y);
                 }
 
                 if (mob.hasCollidedRight(mobBounds, monsterBounds)) {
                     mob.setVeloctiy(sf::Vector2f(0.f, mob.getVelocity().y));
-                    mob.setPosition(monsterBounds.left - mobBounds.width,
-                                    mobBounds.top);
+                    mob.setPosition(monsterBounds.position.x - mobBounds.size.x,
+                                    mobBounds.position.y);
                 }
                 else if (mob.hasCollidedLeft(mobBounds, monsterBounds)) {
                     mob.setVeloctiy(sf::Vector2f(0.f, mob.getVelocity().y));
-                    mob.setPosition(monsterBounds.left + monsterBounds.width,
-                                    mobBounds.top);
+                    mob.setPosition(monsterBounds.position.x + monsterBounds.size.x,
+                                    mobBounds.position.y);
                 }
             }
         }
@@ -238,14 +238,14 @@ void MonsterSystem::spawnMonsters(
                 (id == 4) ? calcX(128, vm) : calcX(64, vm);
             const float monsterHeight =
                 (id == 4) ? calcX(128, vm) : calcX(64, vm);
-            monsterBounds = sf::FloatRect(calcX(this->gridSize * rx, this->vm),
-                                          calcY(this->gridSize * ry, this->vm),
-                                          monsterWidth, monsterHeight);
+            monsterBounds = sf::FloatRect({calcX(this->gridSize * rx, this->vm),
+                                          calcY(this->gridSize * ry, this->vm)},
+                                          {monsterWidth, monsterHeight});
 
             canSpawnMonster = true;
 
-            if (monsterBounds.intersects(player.getGlobalBounds()) ||
-                vectorDistance(monsterBounds.left, monsterBounds.top,
+            if (monsterBounds.findIntersection(player.getGlobalBounds()) ||
+                vectorDistance(monsterBounds.position.x, monsterBounds.position.y,
                                player.getPosition().x,
                                player.getPosition().y) <= minSpawnDistance) {
                 canSpawnMonster = false;
@@ -253,7 +253,7 @@ void MonsterSystem::spawnMonsters(
             }
 
             for (const auto &obstacle : obstaclesBounds) {
-                if (monsterBounds.intersects(obstacle)) {
+                if (monsterBounds.findIntersection(obstacle)) {
                     canSpawnMonster = false;
                     break;
                 }
@@ -262,7 +262,7 @@ void MonsterSystem::spawnMonsters(
             if (canSpawnMonster) {
                 for (const auto &mob : this->monsters) {
                     sf::FloatRect mobBounds = mob->getGlobalBounds();
-                    if (monsterBounds.intersects(mobBounds)) {
+                    if (monsterBounds.findIntersection(mobBounds)) {
                         canSpawnMonster = false;
                         break;
                     }
@@ -271,20 +271,20 @@ void MonsterSystem::spawnMonsters(
 
             if (id == 4 && canSpawnMonster) {
                 sf::FloatRect monsterBounds2(
-                    monsterBounds.left + this->gridSize, monsterBounds.top,
-                    monsterWidth, monsterHeight);
-                sf::FloatRect monsterBounds3(monsterBounds.left,
-                                             monsterBounds.top + this->gridSize,
-                                             monsterWidth, monsterHeight);
-                sf::FloatRect monsterBounds4(monsterBounds.left +
+                    {monsterBounds.position.x + this->gridSize, monsterBounds.position.y},
+                    {monsterWidth, monsterHeight});
+                sf::FloatRect monsterBounds3({monsterBounds.position.x,
+                                             monsterBounds.position.y + this->gridSize},
+                                             {monsterWidth, monsterHeight});
+                sf::FloatRect monsterBounds4({monsterBounds.position.x +
                                                  this->gridSize,
-                                             monsterBounds.top + this->gridSize,
-                                             monsterWidth, monsterHeight);
+                                             monsterBounds.position.y + this->gridSize},
+                                             {monsterWidth, monsterHeight});
 
                 for (const auto &obstacle : obstaclesBounds) {
-                    if (monsterBounds2.intersects(obstacle) ||
-                        monsterBounds3.intersects(obstacle) ||
-                        monsterBounds4.intersects(obstacle)) {
+                    if (monsterBounds2.findIntersection(obstacle) ||
+                        monsterBounds3.findIntersection(obstacle) ||
+                        monsterBounds4.findIntersection(obstacle)) {
                         canSpawnMonster = false;
                         break;
                     }
@@ -293,9 +293,9 @@ void MonsterSystem::spawnMonsters(
                 if (canSpawnMonster) {
                     for (const auto &mob : this->monsters) {
                         sf::FloatRect mobBounds = mob->getGlobalBounds();
-                        if (monsterBounds2.intersects(mobBounds) ||
-                            monsterBounds3.intersects(mobBounds) ||
-                            monsterBounds4.intersects(mobBounds)) {
+                        if (monsterBounds2.findIntersection(mobBounds) ||
+                            monsterBounds3.findIntersection(mobBounds) ||
+                            monsterBounds4.findIntersection(mobBounds)) {
                             canSpawnMonster = false;
                             break;
                         }

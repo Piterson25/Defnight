@@ -6,7 +6,7 @@ StatsState::StatsState(float gridSize, sf::RenderWindow &window,
     : State(gridSize, window, gameSettings, soundEngine, musicEngine, states)
 {
     playerData = PlayerStats::PlayerData{0, 0, 1, 0, 0, 0, 0, 0, 0, 0};
-    PlayerStats::loadStats("data/player_stats.dat", playerData);
+    PlayerStats::loadStats(playerData);
     initGUI();
 }
 
@@ -122,7 +122,7 @@ void StatsState::update(float dt)
 
     GameInputHandler::updateMouseClick();
 
-    if (GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Escape)) {
+    if (GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Key::Escape)) {
         this->endState();
     }
 

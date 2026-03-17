@@ -5,29 +5,30 @@ Monster::Monster(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
                  const std::vector<sf::FloatRect> &obstaclesBounds)
     : Entity(t_name, t_vm, t_x, t_y), difficultyMod(difficulty_mod), gold(0),
       spawned(false), spawnCountdown(0.f), deadCountdown(0.f),
-      soundPlayed(false)
+      soundPlayed(false), shadow(shadow_texture)
 {
-    this->texture.loadFromFile("assets/textures/monsters/" +
+    this->texture = sf::Texture("assets/textures/monsters/" +
                                toLowerCase(t_name) + ".png");
-    this->sprite.setTexture(this->texture);
+    this->sprite = sf::Sprite(this->texture);
+    this->sprite.setPosition({t_x, t_y});
     this->entitySize =
-        static_cast<uint32_t>(this->sprite.getGlobalBounds().width / 128);
-    this->sprite.setTextureRect(sf::IntRect(0, 32 * this->entitySize,
-                                            16 * this->entitySize,
-                                            16 * this->entitySize));
-    this->sprite.setScale(calcScale(4, vm), calcScale(4, vm));
+        static_cast<uint32_t>(this->sprite.getGlobalBounds().size.x / 128);
+    this->sprite.setTextureRect(sf::IntRect({0, static_cast<int>(32 * this->entitySize)},
+                                          {static_cast<int>(16 * this->entitySize),
+                                          static_cast<int>(16 * this->entitySize)}));
+    this->sprite.setScale({calcScale(4, vm), calcScale(4, vm)});
     this->sprite.setColor(sf::Color(255, 255, 255, 0));
 
-    this->shadow_texture.loadFromFile("assets/textures/entity_shadow.png");
-    this->shadow.setTexture(this->shadow_texture);
-    this->shadow.setTextureRect(sf::IntRect(0, 0, 8, 4));
-    this->shadow.setScale(
+    this->shadow_texture = sf::Texture("assets/textures/entity_shadow.png");
+    this->shadow = sf::Sprite(this->shadow_texture);
+    this->shadow.setTextureRect(sf::IntRect({0, 0}, {8, 4}));
+    this->shadow.setScale({
         calcScale(static_cast<float>(4 * this->entitySize), vm),
-        calcScale(static_cast<float>(4 * this->entitySize), vm));
-    this->shadow.setPosition(this->getDownCenter().x -
-                                 this->shadow.getTextureRect().width / 2 *
+        calcScale(static_cast<float>(4 * this->entitySize), vm)});
+    this->shadow.setPosition({this->getDownCenter().x -
+                                 (this->shadow.getTextureRect().size.x * 0.5f) *
                                      this->shadow.getScale().x,
-                             this->getDownCenter().y);
+                             this->getDownCenter().y});
     this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
     this->AI = std::make_unique<AIComponent>(this->vm, obstaclesBounds);
@@ -119,10 +120,10 @@ void Monster::spawn(float dt)
     if (this->spawnCountdown < 0.5f) {
         this->sprite.setColor(
             sf::Color(255, 255, 255,
-                      static_cast<sf::Uint8>(this->spawnCountdown * 510.f)));
+                      static_cast<uint8_t>(this->spawnCountdown * 510.f)));
         this->shadow.setColor(
             sf::Color(255, 255, 255,
-                      static_cast<sf::Uint8>(this->spawnCountdown * 510.f)));
+                      static_cast<uint8_t>(this->spawnCountdown * 510.f)));
         this->spawnCountdown += dt;
     }
     if (this->spawnCountdown >= 0.5f) {
@@ -137,10 +138,10 @@ void Monster::dyingAnimation(float dt)
     if (this->deadCountdown < 0.25f) {
         this->sprite.setColor(sf::Color(
             255, 255, 255,
-            static_cast<sf::Uint8>(255.f - (this->deadCountdown * 1020.f))));
+            static_cast<uint8_t>(255.f - (this->deadCountdown * 1020.f))));
         this->shadow.setColor(sf::Color(
             255, 255, 255,
-            static_cast<sf::Uint8>(255.f - (this->deadCountdown * 1020.f))));
+            static_cast<uint8_t>(255.f - (this->deadCountdown * 1020.f))));
         this->deadCountdown += dt;
     }
     if (this->hasDeadCountdownExpired()) {
@@ -155,7 +156,7 @@ void Monster::calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds,
 {
     this->velocity = sf::Vector2f(0.f, 0.f);
     const float vel = ((this->speed * 0.2f + 0.8f) * 2 *
-                       this->sprite.getGlobalBounds().width) *
+                       this->sprite.getGlobalBounds().size.x) *
                       dt;
 
     if (!hasLineOfSight(obstaclesBounds, this->getCenter(),
@@ -188,10 +189,10 @@ void Monster::calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds,
 
 void Monster::update(float dt)
 {
-    this->shadow.setPosition(this->getDownCenter().x -
-                                 this->shadow.getTextureRect().width / 2 *
+    this->shadow.setPosition({this->getDownCenter().x -
+                                 (this->shadow.getTextureRect().size.x * 0.5f) *
                                      this->shadow.getScale().x,
-                             this->getDownCenter().y);
+                             this->getDownCenter().y});
     if (this->soundPlayed && this->frame != 80) {
         this->soundPlayed = false;
     }

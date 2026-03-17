@@ -7,8 +7,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
                      std::unordered_map<std::string, std::string> &lang)
     : vm(vm), player(player), floatingTextSystem(floatingTextSystem), lang(lang)
 {
-    this->attributesTexture.loadFromFile(
-        "assets/textures/attributes_icons.png");
+    this->attributesTexture = sf::Texture("assets/textures/attributes_icons.png");
 
     this->statsGUI = new StatsGUI(this->vm, this->player, this->lang);
 
@@ -149,12 +148,12 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
     this->sprites["BOSS_BAR"] = std::make_unique<gui::Sprite>(
         "assets/textures/bars.png", calcX(640, vm), calcY(158, vm),
         calcScale(1, vm), true);
-    this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 60, 512, 20));
+    this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {512, 20}));
     this->sprites["BOSS_BAR_EMPTY"] = std::make_unique<gui::Sprite>(
         "assets/textures/bars.png", calcX(640, vm), calcY(158, vm),
         calcScale(1, vm), true);
     this->sprites["BOSS_BAR_EMPTY"]->setTextureRect(
-        sf::IntRect(0, 80, 512, 20));
+        sf::IntRect({0, 80}, {512, 20}));
 
     this->boss_bar_percent = 1.f;
 }
@@ -213,7 +212,7 @@ void PlayerGUI::updateOption(Option &option, std::vector<short> &id_vector,
     }
     option.optionValue->center(pos);
     id_vector.erase(id_vector.begin() + id);
-    option.optionSprite->setTextureRect(sf::IntRect(option.id * 16, 0, 16, 16));
+    option.optionSprite->setTextureRect(sf::IntRect({static_cast<int>(option.id * 16), 0}, {16, 16}));
     option.optionDesc->center(pos);
 }
 
@@ -263,7 +262,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
         player.endAbility();
     }
 
-    auto intRect = sf::IntRect(0, 0, 16, 16);
+    auto intRect = sf::IntRect({0, 0}, {16, 16});
     player.upgrade(name, intRect);
     statsGUI->upgradePlayer(this->lang[name], intRect);
     this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");
@@ -578,22 +577,22 @@ void PlayerGUI::updateReg()
 void PlayerGUI::updateBossHP(float dt)
 {
     if (this->bossWave) {
-        const int width = this->sprites["BOSS_BAR"]->getTextureRect().width;
+        const int width = this->sprites["BOSS_BAR"]->getTextureRect().size.x;
         const int barrier = static_cast<int>(this->boss_bar_percent * 512.f);
 
         if (width > barrier) {
             const int distance = static_cast<int>(width - 1000.f * dt);
             if (distance < barrier) {
                 this->sprites["BOSS_BAR"]->setTextureRect(
-                    sf::IntRect(0, 60, barrier, 20));
+                    sf::IntRect({0, 60}, {barrier, 20}));
             }
             else if (distance < 0) {
                 this->sprites["BOSS_BAR"]->setTextureRect(
-                    sf::IntRect(0, 60, 0, 20));
+                    sf::IntRect({0, 60}, {0, 20}));
             }
             else {
                 this->sprites["BOSS_BAR"]->setTextureRect(
-                    sf::IntRect(0, 60, distance, 20));
+                    sf::IntRect({0, 60}, {distance, 20}));
             }
         }
     }
@@ -970,15 +969,15 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
             }
 
             this->texts["BOSS"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->bossCooldown));
+                static_cast<uint8_t>(this->bossCooldown));
             this->sprites["BOSS_BAR_EMPTY"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->bossCooldown));
+                static_cast<uint8_t>(this->bossCooldown));
             this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(
-                0, 60, static_cast<int>(this->bossCooldown / 255.f * 512.f),
-                20));
+                {0, 60}, {static_cast<int>(this->bossCooldown / 255.f * 512.f),
+                20}));
 
             this->sprites["BOSS_BAR"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->bossCooldown));
+                static_cast<uint8_t>(this->bossCooldown));
         }
         else if (this->boss_bar_percent == 0.f && this->bossCooldown > 0.f) {
             this->bossCooldown -= dt * 255.f;
@@ -987,11 +986,11 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
             }
 
             this->texts["BOSS"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->bossCooldown));
+                static_cast<uint8_t>(this->bossCooldown));
             this->sprites["BOSS_BAR_EMPTY"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->bossCooldown));
+                static_cast<uint8_t>(this->bossCooldown));
             this->sprites["BOSS_BAR"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->bossCooldown));
+                static_cast<uint8_t>(this->bossCooldown));
         }
     }
 
@@ -1009,11 +1008,11 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
                 this->titleCooldown = 255.f;
             }
             this->texts["BIG_WAVE_NUMBER"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->titleCooldown));
+                static_cast<uint8_t>(this->titleCooldown));
             this->texts["WAVE_NEW_MOBS"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->titleCooldown));
+                static_cast<uint8_t>(this->titleCooldown));
             this->texts["MOBS_TO_KILL"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->titleCooldown));
+                static_cast<uint8_t>(this->titleCooldown));
         }
         else if (this->waveCountdown > 9.f && this->titleCooldown > 0.f) {
             this->titleCooldown -= dt * 1000.f;
@@ -1021,11 +1020,11 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
                 this->titleCooldown = 0.f;
             }
             this->texts["BIG_WAVE_NUMBER"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->titleCooldown));
+                static_cast<uint8_t>(this->titleCooldown));
             this->texts["WAVE_NEW_MOBS"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->titleCooldown));
+                static_cast<uint8_t>(this->titleCooldown));
             this->texts["MOBS_TO_KILL"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->titleCooldown));
+                static_cast<uint8_t>(this->titleCooldown));
         }
 
         this->statsGUI->setWaveCountdownText(

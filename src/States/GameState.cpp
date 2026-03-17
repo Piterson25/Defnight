@@ -29,14 +29,14 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
         new PlayerGUI(this->vm, *this->player, *this->floatingTextSystem,
                       mapName, difficultyName, this->gameSettings.lang);
 
-    this->view.setSize(sf::Vector2f(static_cast<float>(vm.width),
-                                    static_cast<float>(vm.height)));
+    this->view.setSize(sf::Vector2f(static_cast<float>(vm.size.x),
+                                    static_cast<float>(vm.size.y)));
     this->view.setCenter(this->player->getCenter());
 
-    this->viewHUD.setSize(sf::Vector2f(static_cast<float>(vm.width),
-                                       static_cast<float>(vm.height)));
-    this->viewHUD.setCenter(sf::Vector2f(static_cast<float>(vm.width) / 2.f,
-                                         static_cast<float>(vm.height) / 2.f));
+    this->viewHUD.setSize(sf::Vector2f(static_cast<float>(vm.size.x),
+                                       static_cast<float>(vm.size.y)));
+    this->viewHUD.setCenter(sf::Vector2f(static_cast<float>(vm.size.x) / 2.f,
+                                         static_cast<float>(vm.size.y) / 2.f));
 
     Random::Init();
 
@@ -152,7 +152,7 @@ void GameState::savePlayerData()
         static_cast<uint32_t>(this->difficultyName == "EASY"),
         static_cast<uint32_t>(this->difficultyName == "NORMAL"),
         static_cast<uint32_t>(this->difficultyName == "HARD")};
-    PlayerStats::saveStats("data/player_stats.dat", playerData);
+    PlayerStats::saveStats(playerData);
 }
 
 void GameState::update(float dt)
@@ -189,7 +189,7 @@ void GameState::update(float dt)
 
     if (!this->playerGUI->isLeveling() && !this->playerGUI->isUpgrading()) {
 
-        if (GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Escape)) {
+        if (GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Key::Escape)) {
             this->playerGUI->updatePaused(this->paused);
             if (this->paused) {
                 this->musicEngine.pauseMusic();
@@ -305,7 +305,7 @@ void GameState::update(float dt)
             this->playerGUI->updateReg();
             this->playerGUI->update_ability(dt);
 
-            if (GameInputHandler::isKeyPressed("Q", sf::Keyboard::Q)) {
+            if (GameInputHandler::isKeyPressed("Q", sf::Keyboard::Key::Q)) {
                 this->playerGUI->updateIsShopping();
             }
 
@@ -313,7 +313,7 @@ void GameState::update(float dt)
 
             if (this->player->isUpgraded()) {
 
-                if (GameInputHandler::isKeyPressed("E", sf::Keyboard::E)) {
+                if (GameInputHandler::isKeyPressed("E", sf::Keyboard::Key::E)) {
                     this->playerGUI->updateIsBuyingAbility();
                 }
 

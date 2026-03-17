@@ -59,7 +59,7 @@ void GameInputHandler::setKeysClick(const std::string &keyName, bool click)
 
 void GameInputHandler::updateMouseClick()
 {
-    if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+    if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left)) {
         mouseClick = true;
     }
     else {

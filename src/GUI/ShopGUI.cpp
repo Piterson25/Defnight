@@ -3,7 +3,7 @@
 ShopGUI::ShopGUI(sf::VideoMode &t_vm, Player &t_player)
     : vm(t_vm), player(t_player)
 {
-    this->attributesTexture.loadFromFile(
+    this->attributesTexture = sf::Texture(
         "assets/textures/attributes_icons.png");
 }
 
@@ -61,16 +61,15 @@ void ShopGUI::addShopItem(const std::string &t_name, float t_x, float t_y,
         });
 
     this->shopItems[t_name].sprite->setTextureRect(
-        sf::IntRect(16 * iconID, 0, 16, 16));
+        sf::IntRect({static_cast<int>(16 * iconID), 0}, {16, 16}));
 
     this->shopItems[t_name].button->setColor(gui::DARK_RED);
 
     this->shopItems[t_name].coinSprite->setTextureRect(
-        sf::IntRect(0, 0, 16, 16));
+        sf::IntRect({0, 0}, {16, 16}));
 
     if (maxNumber > 0) {
-        sf::Texture texture;
-        texture.loadFromFile("assets/textures/progress_segment.png");
+        sf::Texture texture("assets/textures/progress_segment.png");
         const sf::Vector2f position =
             this->shopItems[t_name].sprite->getPosition();
         for (uint32_t i = 0; i < maxNumber; i++) {
@@ -81,11 +80,11 @@ void ShopGUI::addShopItem(const std::string &t_name, float t_x, float t_y,
                     position.y + calcY(74, vm) - calcY(offsetY, vm),
                     calcScale(2, vm), false));
             this->shopItems[t_name].segments[i]->setTextureRect(
-                sf::IntRect(4, 0, 4, 8));
+                sf::IntRect({4, 0}, {4, 8}));
 
             if (i < boughtNumber) {
                 this->shopItems[t_name].segments[i]->setTextureRect(
-                    sf::IntRect(0, 0, 4, 8));
+                    sf::IntRect({0, 0}, {4, 8}));
             }
         }
     }
@@ -95,7 +94,7 @@ void ShopGUI::updateSegments(const std::string &t_name)
 {
     this->shopItems[t_name]
         .segments[this->shopItems[t_name].boughtNumber]
-        ->setTextureRect(sf::IntRect(0, 0, 4, 8));
+        ->setTextureRect(sf::IntRect({0, 0}, {4, 8}));
     this->shopItems[t_name].boughtNumber++;
 
     if (this->shopItems[t_name].boughtNumber ==

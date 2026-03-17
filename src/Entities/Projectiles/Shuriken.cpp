@@ -7,7 +7,7 @@ Shuriken::Shuriken(const std::string &t_name, sf::VideoMode &t_vm,
     : Projectile(t_name, t_vm, t_position.x, t_position.y, difficulty_mod,
                  coords, coordsOffset)
 {
-    this->sprite.setTextureRect(sf::IntRect(4, 0, 4, 4));
+    this->sprite.setTextureRect(sf::IntRect({4, 0}, {4, 4}));
     this->attack = player.getProjectileAttack();
     this->HP = 3;
     this->speed = 4;
@@ -23,7 +23,7 @@ void Shuriken::playerCollision(Player &player)
 void Shuriken::monsterCollision(Monster &monster, Player &player,
                                 FloatingTextSystem &floatingTextSystem)
 {
-    const float distance = 2 * monster.getGlobalBounds().width;
+    const float distance = 2 * monster.getGlobalBounds().size.x;
 
     if (!monster.isPunched() &&
         vectorDistance(this->sprite.getPosition(), monster.getPosition()) <
@@ -34,10 +34,10 @@ void Shuriken::monsterCollision(Monster &monster, Player &player,
         sf::FloatRect mobBounds = monster.getGlobalBounds();
 
         sf::FloatRect nextPos = projectileBounds;
-        nextPos.left += this->velocity.x;
-        nextPos.top += this->velocity.y;
+        nextPos.position.x += this->velocity.x;
+        nextPos.position.y += this->velocity.y;
 
-        if (mobBounds.intersects(nextPos)) {
+        if (mobBounds.findIntersection(nextPos)) {
             this->collidedMonster = true;
             if ((static_cast<uint32_t>(Random::Float() * 100.f) + 1) <=
                 player.getCriticalChance()) {

@@ -6,7 +6,7 @@ Bomb::Bomb(const std::string &t_name, sf::VideoMode &t_vm,
     : Projectile(t_name, t_vm, t_position.x, t_position.y, difficulty_mod,
                  coords, coordsOffset)
 {
-    this->sprite.setTextureRect(sf::IntRect(8, 0, 4, 4));
+    this->sprite.setTextureRect(sf::IntRect({8, 0}, {4, 4}));
     this->attack = player.getProjectileAttack();
     this->HP = 1;
     this->speed = 3;
@@ -22,7 +22,7 @@ void Bomb::playerCollision(Player &player)
 void Bomb::monsterCollision(Monster &monster, Player &player,
                             FloatingTextSystem &floatingTextSystem)
 {
-    const float distance = 2 * monster.getGlobalBounds().width;
+    const float distance = 2 * monster.getGlobalBounds().size.x;
 
     if (vectorDistance(this->sprite.getPosition(), monster.getPosition()) <
             distance &&
@@ -33,36 +33,37 @@ void Bomb::monsterCollision(Monster &monster, Player &player,
         sf::FloatRect mobBounds = monster.getGlobalBounds();
 
         sf::FloatRect nextPos = projectileBounds;
-        nextPos.left += this->velocity.x;
-        nextPos.top += this->velocity.y;
+        nextPos.position.x += this->velocity.x;
+        nextPos.position.y += this->velocity.y;
 
-        if (mobBounds.intersects(nextPos)) {
+        if (mobBounds.findIntersection(nextPos)) {
             if (hasCollidedBottom(projectileBounds, mobBounds)) {
                 this->velocity.y = 0.f;
-                this->sprite.setPosition(projectileBounds.left,
-                                         mobBounds.top -
-                                             projectileBounds.height);
-                this->collidedMonster = true;
+                this->sprite.setPosition({projectileBounds.position.x,
+                                         mobBounds.position.y -
+                                             projectileBounds.size.y});
+                this->collidedPlayer = true;
             }
             else if (hasCollidedTop(projectileBounds, mobBounds)) {
                 this->velocity.y = 0.f;
-                this->sprite.setPosition(projectileBounds.left,
-                                         mobBounds.top + mobBounds.height);
-                this->collidedMonster = true;
+                this->sprite.setPosition({projectileBounds.position.x,
+                                         mobBounds.position.y +
+                                             mobBounds.size.y});
+                this->collidedPlayer = true;
             }
 
             if (hasCollidedRight(projectileBounds, mobBounds)) {
                 this->velocity.x = 0.f;
-                this->sprite.setPosition(mobBounds.left -
-                                             projectileBounds.width,
-                                         projectileBounds.top);
-                this->collidedMonster = true;
+                this->sprite.setPosition({mobBounds.position.x -
+                                             mobBounds.size.x,
+                                         mobBounds.position.y});
+                this->collidedPlayer = true;
             }
             else if (hasCollidedLeft(projectileBounds, mobBounds)) {
                 this->velocity.x = 0.f;
-                this->sprite.setPosition(mobBounds.left + mobBounds.width,
-                                         projectileBounds.top);
-                this->collidedMonster = true;
+                this->sprite.setPosition({mobBounds.position.x + mobBounds.size.x,
+                                         projectileBounds.position.y});
+                this->collidedPlayer = true;
             }
         }
 

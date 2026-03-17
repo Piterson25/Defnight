@@ -4,7 +4,7 @@ Heart::Heart(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
              float t_y, uint32_t t_worth, bool t_vanishing)
     : Drop(t_name, t_vm, t_x, t_y, t_worth, t_vanishing)
 {
-    this->sprite.setTextureRect(sf::IntRect(0, 16, 16, 16));
+    this->sprite.setTextureRect(sf::IntRect({0, 16}, {16, 16}));
 }
 
 Heart::~Heart() = default;
@@ -13,13 +13,13 @@ void Heart::spin(float dt)
 {
     this->spinCooldown += dt;
     if (this->spinCooldown > 0.166f) {
-        const int w = this->sprite.getTextureRect().left;
+        const int w = this->sprite.getTextureRect().size.x;
 
         if (w == 80) {
-            this->sprite.setTextureRect(sf::IntRect(0, 16, 16, 16));
+            this->sprite.setTextureRect(sf::IntRect({0, 16}, {16, 16}));
         }
         else {
-            this->sprite.setTextureRect(sf::IntRect(w + 16, 16, 16, 16));
+            this->sprite.setTextureRect(sf::IntRect({w + 16, 16}, {16, 16}));
         }
 
         this->spinCooldown = 0.f;

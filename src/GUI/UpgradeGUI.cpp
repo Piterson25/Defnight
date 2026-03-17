@@ -3,10 +3,10 @@
 UpgradeGUI::UpgradeGUI(sf::VideoMode &t_vm, Player &t_player)
     : vm(t_vm), player(t_player)
 {
-    this->abilitiesTexture.loadFromFile("assets/textures/abilities_icons.png");
-    this->attributesTexture.loadFromFile(
+    this->abilitiesTexture = sf::Texture("assets/textures/abilities_icons.png");
+    this->attributesTexture = sf::Texture(
         "assets/textures/attributes_icons.png");
-    this->upgradesTexture.loadFromFile("assets/textures/upgrades_icons.png");
+    this->upgradesTexture = sf::Texture("assets/textures/upgrades_icons.png");
 }
 
 UpgradeGUI::~UpgradeGUI()
@@ -41,17 +41,17 @@ void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y,
         attributeValue,
     };
 
-    const uint32_t positionX = static_cast<uint32_t>(abilityIconID % 3);
-    const uint32_t positionY = static_cast<uint32_t>(abilityIconID / 3);
+    const int positionX = static_cast<uint32_t>(abilityIconID % 3);
+    const int positionY = static_cast<uint32_t>(abilityIconID / 3);
 
     this->upgrades[t_name].sprite->setTextureRect(
-        sf::IntRect(16 * positionX, 16 * positionY + 16, 16, 16));
+        sf::IntRect({16 * positionX, 16 * positionY + 16}, {16, 16}));
 
     this->upgrades[t_name].ability->setTextureRect(
-        sf::IntRect(16 * positionX, 16 * positionY, 16, 16));
+        sf::IntRect({16 * positionX, 16 * positionY}, {16, 16}));
 
     this->upgrades[t_name].attribute->setTextureRect(
-        sf::IntRect(16 * attributeIconID, 0, 16, 16));
+        sf::IntRect({16 * static_cast<int>(attributeIconID), 0}, {16, 16}));
 }
 
 void UpgradeGUI::deleteUpgrade(const std::string &t_name)

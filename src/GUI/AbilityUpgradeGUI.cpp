@@ -6,9 +6,9 @@ AbilityUpgradeGUI::AbilityUpgradeGUI(sf::VideoMode &t_vm, Player &t_player)
     this->playerStats["COOLDOWN"] = std::make_unique<gui::Text>(
         "Cooldown: 0s", calcChar(16, vm), calcX(32, vm), calcY(180, vm),
         sf::Color(255, 255, 255, 255), false);
-    this->abilityUpgradesTexture.loadFromFile(
+    this->abilityUpgradesTexture = sf::Texture(
         "assets/textures/abilities_upgrades.png");
-    this->attributesTexture.loadFromFile(
+    this->attributesTexture = sf::Texture(
         "assets/textures/attributes_icons.png");
 }
 
@@ -69,15 +69,14 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
         });
 
     this->abilityUpgrades[t_name].sprite->setTextureRect(
-        sf::IntRect(16 * iconID, 0, 16, 16));
+        sf::IntRect({static_cast<int>(16 * iconID), 0}, {16, 16}));
 
     this->abilityUpgrades[t_name].button->setColor(gui::DARK_RED);
 
     this->abilityUpgrades[t_name].coinSprite->setTextureRect(
-        sf::IntRect(0, 0, 16, 16));
+        sf::IntRect({0, 0}, {16, 16}));
 
-    sf::Texture texture;
-    texture.loadFromFile("assets/textures/progress_segment.png");
+    sf::Texture texture("assets/textures/progress_segment.png");
     const sf::Vector2f position =
         this->abilityUpgrades[t_name].sprite->getPosition();
     for (uint32_t i = 0; i < segmentsNumber; i++) {
@@ -88,11 +87,11 @@ void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
                 position.y + calcY(74, vm) - calcY(offsetY, vm),
                 calcScale(2, vm), false));
         this->abilityUpgrades[t_name].segments[i]->setTextureRect(
-            sf::IntRect(4, 0, 4, 8));
+            sf::IntRect({4, 0}, {4, 8}));
 
         if (i < boughtNumber) {
             this->abilityUpgrades[t_name].segments[i]->setTextureRect(
-                sf::IntRect(0, 0, 4, 8));
+                sf::IntRect({0, 0}, {4, 8}));
         }
     }
 }
@@ -101,7 +100,7 @@ void AbilityUpgradeGUI::updateSegments(const std::string &t_name)
 {
     this->abilityUpgrades[t_name]
         .segments[this->abilityUpgrades[t_name].boughtNumber]
-        ->setTextureRect(sf::IntRect(0, 0, 4, 8));
+        ->setTextureRect(sf::IntRect({0, 0}, {4, 8}));
     this->abilityUpgrades[t_name].boughtNumber++;
 
     if (this->abilityUpgrades[t_name].boughtNumber ==
