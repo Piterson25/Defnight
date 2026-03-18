@@ -1,181 +1,129 @@
 #include "StatsGUI.hpp"
 
-StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player,
-                   std::unordered_map<std::string, std::string> &t_lang)
+StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player, std::unordered_map<std::string, std::string> &t_lang)
     : vm(t_vm), player(t_player)
 {
     this->framesTexture = sf::Texture("assets/textures/frames.png");
-    this->attributesTexture = sf::Texture(
-        "assets/textures/attributes_icons.png");
+    this->attributesTexture = sf::Texture("assets/textures/attributes_icons.png");
     this->barsTexture = sf::Texture("assets/textures/bars.png");
     this->upgradesTexture = sf::Texture("assets/textures/upgrades_icons.png");
     this->abilitiesTexture = sf::Texture("assets/textures/abilities_icons.png");
 
-    this->sprites["TOP_GUI"] = std::make_unique<gui::Sprite>(
-        "assets/textures/top_gui.png", 0.f, 0.f, calcScale(1, vm), false);
+    this->sprites["TOP_GUI"] =
+        std::make_unique<gui::Sprite>("assets/textures/top_gui.png", 0.f, 0.f, calcScale(1, vm), false);
 
-    this->sprite_buttons["MENU"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_BURGER, calcX(4, vm), calcY(4, vm), calcScale(2, vm),
-        gui::GREY, gui::WHITE, false);
+    this->sprite_buttons["MENU"] = std::make_unique<gui::ButtonSprite>(gui::RECT_BURGER, calcX(4, vm), calcY(4, vm),
+                                                                       calcScale(2, vm), gui::GREY, gui::WHITE, false);
 
-    this->sprites["SHOP_ICON"] =
-        std::make_unique<gui::Sprite>("assets/textures/shop.png", calcX(44, vm),
-                                      calcY(16, vm), calcScale(4, vm), false);
-    this->sprite_buttons["SHOP"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_BUTTON, calcX(32, vm), calcY(4, vm), calcScale(1, vm),
-        gui::GREY, gui::WHITE, false);
+    this->sprites["SHOP_ICON"] = std::make_unique<gui::Sprite>("assets/textures/shop.png", calcX(44, vm), calcY(16, vm),
+                                                               calcScale(4, vm), false);
+    this->sprite_buttons["SHOP"] = std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, calcX(32, vm), calcY(4, vm),
+                                                                       calcScale(1, vm), gui::GREY, gui::WHITE, false);
 
-    this->sprites["GOLD"] = std::make_unique<gui::Sprite>(
-        attributesTexture, 0.f, calcY(88, vm), calcScale(2, vm), false,
-        sf::IntRect({0, 0}, {16, 16}));
-    this->texts["GOLD"] = std::make_unique<gui::Text>(
-        std::to_string(player.getGold()), calcChar(16, vm), calcX(36, vm),
-        calcY(98, vm), gui::GOLD, false);
+    this->sprites["GOLD"] = std::make_unique<gui::Sprite>(attributesTexture, 0.f, calcY(88, vm), calcScale(2, vm),
+                                                          false, sf::IntRect({0, 0}, {16, 16}));
+    this->texts["GOLD"] = std::make_unique<gui::Text>(std::to_string(player.getGold()), calcChar(16, vm), calcX(36, vm),
+                                                      calcY(98, vm), gui::GOLD, false);
 
     this->sprites["PLAYER_FRAME"] = std::make_unique<gui::Sprite>(
-        framesTexture, calcX(188, vm), calcY(4, vm), calcScale(1, vm), true,
-        sf::IntRect({0, 0}, {88, 88}));
-    this->sprites["PLAYER_ICON"] = std::make_unique<gui::Sprite>(
-        upgradesTexture, calcX(188, vm), calcY(16, vm), calcScale(4, vm), true,
-        sf::IntRect({0, 0}, {16, 16}));
-    this->texts["PLAYER_NAME"] = std::make_unique<gui::Text>(
-        t_lang[player.getName()], calcChar(16, vm), calcX(188, vm),
-        calcY(98, vm), gui::WHITE, true);
+        framesTexture, calcX(188, vm), calcY(4, vm), calcScale(1, vm), true, sf::IntRect({0, 0}, {88, 88}));
+    this->sprites["PLAYER_ICON"] = std::make_unique<gui::Sprite>(upgradesTexture, calcX(188, vm), calcY(16, vm),
+                                                                 calcScale(4, vm), true, sf::IntRect({0, 0}, {16, 16}));
+    this->texts["PLAYER_NAME"] = std::make_unique<gui::Text>(t_lang[player.getName()], calcChar(16, vm), calcX(188, vm),
+                                                             calcY(98, vm), gui::WHITE, true);
 
     this->sprites["ABILITY_ICON"] = std::make_unique<gui::Sprite>(
-        abilitiesTexture, calcX(268, vm), calcY(16, vm), calcScale(4, vm),
-        false, sf::IntRect({0, 0}, {16, 16}));
+        abilitiesTexture, calcX(268, vm), calcY(16, vm), calcScale(4, vm), false, sf::IntRect({0, 0}, {16, 16}));
     this->sprite_buttons["ABILITY"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_BUTTON, calcX(256, vm), calcY(4, vm), calcScale(1, vm),
-        gui::YELLOW, gui::WHITE, false);
+        gui::RECT_BUTTON, calcX(256, vm), calcY(4, vm), calcScale(1, vm), gui::YELLOW, gui::WHITE, false);
     this->sprite_buttons["ABILITY"]->setColor(gui::GOLD);
     this->abilityCooldown.setFillColor(sf::Color(128, 128, 128, 128));
     this->abilityCooldown.setSize(sf::Vector2f(calcX(80, vm), calcY(80, vm)));
-    this->abilityCooldown.setPosition(
-        sf::Vector2f(calcX(260, vm), calcY(8, vm)));
+    this->abilityCooldown.setPosition(sf::Vector2f(calcX(260, vm), calcY(8, vm)));
 
-    this->sprites["ARMOR"] = std::make_unique<gui::Sprite>(
-        attributesTexture, calcX(376, vm), calcY(16, vm), calcScale(2, vm),
-        false, sf::IntRect({16, 0}, {16, 16}));
-    this->texts["ARMOR"] = std::make_unique<gui::Text>(
-        std::to_string(player.getArmor()), calcChar(16, vm), calcX(392, vm),
-        calcY(70, vm), gui::LIGHT_GREY, true);
+    this->sprites["ARMOR"] = std::make_unique<gui::Sprite>(attributesTexture, calcX(376, vm), calcY(16, vm),
+                                                           calcScale(2, vm), false, sf::IntRect({16, 0}, {16, 16}));
+    this->texts["ARMOR"] = std::make_unique<gui::Text>(std::to_string(player.getArmor()), calcChar(16, vm),
+                                                       calcX(392, vm), calcY(70, vm), gui::LIGHT_GREY, true);
 
-    this->sprites["REG"] = std::make_unique<gui::Sprite>(
-        attributesTexture, calcX(440, vm), calcY(16, vm), calcScale(2, vm),
-        false, sf::IntRect({32, 0}, {16, 16}));
-    this->texts["REG"] = std::make_unique<gui::Text>(
-        std::to_string(player.getReg()), calcChar(16, vm), calcX(456, vm),
-        calcY(70, vm), gui::RED, true);
+    this->sprites["REG"] = std::make_unique<gui::Sprite>(attributesTexture, calcX(440, vm), calcY(16, vm),
+                                                         calcScale(2, vm), false, sf::IntRect({32, 0}, {16, 16}));
+    this->texts["REG"] = std::make_unique<gui::Text>(std::to_string(player.getReg()), calcChar(16, vm), calcX(456, vm),
+                                                     calcY(70, vm), gui::RED, true);
 
     XPBar = Bar{
-        std::make_unique<gui::Sprite>(framesTexture, calcX(640, vm),
-                                      calcY(4, vm), calcScale(1, vm), true,
+        std::make_unique<gui::Sprite>(framesTexture, calcX(640, vm), calcY(4, vm), calcScale(1, vm), true,
                                       sf::IntRect({88, 0}, {272, 36})),
-        std::make_unique<gui::Sprite>(barsTexture, calcX(512, vm),
-                                      calcY(12, vm), calcScale(1, vm), false,
+        std::make_unique<gui::Sprite>(barsTexture, calcX(512, vm), calcY(12, vm), calcScale(1, vm), false,
                                       sf::IntRect({0, 0}, {0, 0})),
-        std::make_unique<gui::Text>(
-            "Level " + std::to_string(player.getLevel()), calcChar(16, vm),
-            calcX(640, vm), calcY(15, vm), gui::WHITE, true),
-        std::make_unique<gui::Text>("XP:" + std::to_string(player.getXP()) +
-                                        "/" + std::to_string(player.getMaxXP()),
-                                    calcChar(16, vm), calcX(640, vm),
+        std::make_unique<gui::Text>("Level " + std::to_string(player.getLevel()), calcChar(16, vm), calcX(640, vm),
                                     calcY(15, vm), gui::WHITE, true),
+        std::make_unique<gui::Text>("XP:" + std::to_string(player.getXP()) + "/" + std::to_string(player.getMaxXP()),
+                                    calcChar(16, vm), calcX(640, vm), calcY(15, vm), gui::WHITE, true),
         0.f,
         0.f,
         false};
 
     HPBar = Bar{
-        std::make_unique<gui::Sprite>(framesTexture, calcX(640, vm),
-                                      calcY(44, vm), calcScale(1, vm), true,
+        std::make_unique<gui::Sprite>(framesTexture, calcX(640, vm), calcY(44, vm), calcScale(1, vm), true,
                                       sf::IntRect({88, 0}, {272, 36})),
-        std::make_unique<gui::Sprite>(barsTexture, calcX(512, vm),
-                                      calcY(52, vm), calcScale(1, vm), false,
+        std::make_unique<gui::Sprite>(barsTexture, calcX(512, vm), calcY(52, vm), calcScale(1, vm), false,
                                       sf::IntRect({0, 20}, {256, 20})),
-        std::make_unique<gui::Text>("HP:" + std::to_string(player.getHP()) +
-                                        "/" + std::to_string(player.getMaxHP()),
-                                    calcChar(16, vm), calcX(640, vm),
-                                    calcY(55, vm), gui::WHITE, true),
-        std::make_unique<gui::Text>("HP:" + std::to_string(player.getHP()) +
-                                        "/" + std::to_string(player.getMaxHP()),
-                                    calcChar(16, vm), calcX(640, vm),
-                                    calcY(55, vm), gui::WHITE, true),
+        std::make_unique<gui::Text>("HP:" + std::to_string(player.getHP()) + "/" + std::to_string(player.getMaxHP()),
+                                    calcChar(16, vm), calcX(640, vm), calcY(55, vm), gui::WHITE, true),
+        std::make_unique<gui::Text>("HP:" + std::to_string(player.getHP()) + "/" + std::to_string(player.getMaxHP()),
+                                    calcChar(16, vm), calcX(640, vm), calcY(55, vm), gui::WHITE, true),
         1.f,
         0.f,
         false};
 
     SprintBar = Bar{
-        std::make_unique<gui::Sprite>(framesTexture, calcX(640, vm),
-                                      calcY(84, vm), calcScale(1, vm), true,
+        std::make_unique<gui::Sprite>(framesTexture, calcX(640, vm), calcY(84, vm), calcScale(1, vm), true,
                                       sf::IntRect({88, 0}, {272, 36})),
-        std::make_unique<gui::Sprite>(barsTexture, calcX(512, vm),
-                                      calcY(92, vm), calcScale(1, vm), false,
+        std::make_unique<gui::Sprite>(barsTexture, calcX(512, vm), calcY(92, vm), calcScale(1, vm), false,
                                       sf::IntRect({0, 40}, {256, 20})),
-        std::make_unique<gui::Text>(std::to_string(player.getSprint()) + "/" +
+        std::make_unique<gui::Text>(std::to_string(player.getSprint()) + "/" + std::to_string(player.getMaxSprint()),
+                                    calcChar(16, vm), calcX(640, vm), calcY(95, vm), gui::WHITE, true),
+        std::make_unique<gui::Text>(std::to_string(static_cast<uint32_t>(player.getSprint())) + "/" +
                                         std::to_string(player.getMaxSprint()),
-                                    calcChar(16, vm), calcX(640, vm),
-                                    calcY(95, vm), gui::WHITE, true),
-        std::make_unique<gui::Text>(
-            std::to_string(static_cast<uint32_t>(player.getSprint())) + "/" +
-                std::to_string(player.getMaxSprint()),
-            calcChar(16, vm), calcX(640, vm), calcY(95, vm), gui::WHITE, true),
+                                    calcChar(16, vm), calcX(640, vm), calcY(95, vm), gui::WHITE, true),
         1.f,
         0.f,
         false};
 
-    this->sprites["ATTACK"] = std::make_unique<gui::Sprite>(
-        attributesTexture, calcX(808, vm), calcY(16, vm), calcScale(2, vm),
-        false, sf::IntRect({80, 0}, {16, 16}));
-    this->texts["ATTACK"] = std::make_unique<gui::Text>(
-        std::to_string(player.getAttack()), calcChar(16, vm), calcX(824, vm),
-        calcY(70, vm), gui::LIGHT_GREY, true);
+    this->sprites["ATTACK"] = std::make_unique<gui::Sprite>(attributesTexture, calcX(808, vm), calcY(16, vm),
+                                                            calcScale(2, vm), false, sf::IntRect({80, 0}, {16, 16}));
+    this->texts["ATTACK"] = std::make_unique<gui::Text>(std::to_string(player.getAttack()), calcChar(16, vm),
+                                                        calcX(824, vm), calcY(70, vm), gui::LIGHT_GREY, true);
 
     this->sprites["ATTACK_SPEED"] = std::make_unique<gui::Sprite>(
-        attributesTexture, calcX(872, vm), calcY(16, vm), calcScale(2, vm),
-        false, sf::IntRect({96, 0}, {16, 16}));
-    this->texts["ATTACK_SPEED"] = std::make_unique<gui::Text>(
-        std::to_string(player.getAttackSpeed()), calcChar(16, vm),
-        calcX(888, vm), calcY(70, vm), gui::LIGHT_GREY, true);
+        attributesTexture, calcX(872, vm), calcY(16, vm), calcScale(2, vm), false, sf::IntRect({96, 0}, {16, 16}));
+    this->texts["ATTACK_SPEED"] = std::make_unique<gui::Text>(std::to_string(player.getAttackSpeed()), calcChar(16, vm),
+                                                              calcX(888, vm), calcY(70, vm), gui::LIGHT_GREY, true);
 
-    this->sprites["SPEED"] = std::make_unique<gui::Sprite>(
-        attributesTexture, calcX(936, vm), calcY(16, vm), calcScale(2, vm),
-        false, sf::IntRect({112, 0}, {16, 16}));
-    this->texts["SPEED"] = std::make_unique<gui::Text>(
-        std::to_string(player.getSpeed()), calcChar(16, vm), calcX(952, vm),
-        calcY(70, vm), gui::LIGHT_GREY, true);
+    this->sprites["SPEED"] = std::make_unique<gui::Sprite>(attributesTexture, calcX(936, vm), calcY(16, vm),
+                                                           calcScale(2, vm), false, sf::IntRect({112, 0}, {16, 16}));
+    this->texts["SPEED"] = std::make_unique<gui::Text>(std::to_string(player.getSpeed()), calcChar(16, vm),
+                                                       calcX(952, vm), calcY(70, vm), gui::LIGHT_GREY, true);
 
-    this->sprites["CRITICAL"] = std::make_unique<gui::Sprite>(
-        attributesTexture, calcX(1000, vm), calcY(16, vm), calcScale(2, vm),
-        false, sf::IntRect({128, 0}, {16, 16}));
-    this->texts["CRITICAL"] = std::make_unique<gui::Text>(
-        std::to_string(player.getCriticalChance()) + "%", calcChar(16, vm),
-        calcX(1016, vm), calcY(70, vm), gui::LIGHT_GREY, true);
+    this->sprites["CRITICAL"] = std::make_unique<gui::Sprite>(attributesTexture, calcX(1000, vm), calcY(16, vm),
+                                                              calcScale(2, vm), false, sf::IntRect({128, 0}, {16, 16}));
+    this->texts["CRITICAL"] =
+        std::make_unique<gui::Text>(std::to_string(player.getCriticalChance()) + "%", calcChar(16, vm), calcX(1016, vm),
+                                    calcY(70, vm), gui::LIGHT_GREY, true);
 
     this->texts["MONSTER_COUNT"] = std::make_unique<gui::Text>(
-        t_lang["MONSTER_COUNT"], calcChar(16, vm), calcX(906, vm),
-        calcY(98, vm), sf::Color(130, 139, 152), false);
+        t_lang["MONSTER_COUNT"], calcChar(16, vm), calcX(906, vm), calcY(98, vm), sf::Color(130, 139, 152), false);
     this->texts["MONSTER_COUNT"]->setPosition(
-        sf::Vector2f(calcX(1218, vm) - this->texts["MONSTER_COUNT"]->getWidth(),
-                     calcY(98, vm)));
+        sf::Vector2f(calcX(1218, vm) - this->texts["MONSTER_COUNT"]->getWidth(), calcY(98, vm)));
 
-    this->texts["WAVE_NUMBER"] = std::make_unique<gui::Text>(
-        t_lang["WAVE"], calcChar(32, vm), calcX(1060, vm), calcY(36, vm),
-        gui::FLAMINGO, false);
+    this->texts["WAVE_NUMBER"] = std::make_unique<gui::Text>(t_lang["WAVE"], calcChar(32, vm), calcX(1060, vm),
+                                                             calcY(36, vm), gui::FLAMINGO, false);
 
-    this->text_buttons["SKIP"] = std::make_unique<gui::ButtonText>(
-        t_lang["SKIP"], calcChar(16, vm), calcX(1240, vm), calcY(136, vm),
-        gui::LIGHT_BLUE, gui::WHITE, false);
-    this->text_buttons["SKIP"]->setPosition(
-        sf::Vector2f(calcX(1248, vm) - this->text_buttons["SKIP"]->getWidth(),
-                     calcY(136, vm)));
-
-    this->texts["WAVE_COUNTDOWN"] = std::make_unique<gui::Text>(
-        t_lang["NEXT_WAVE"], calcChar(16, vm), calcX(954, vm), calcY(98, vm),
-        gui::GOLD, false);
-    this->texts["WAVE_COUNTDOWN"]->setPosition(sf::Vector2f(
-        calcX(1218, vm) - this->texts["WAVE_COUNTDOWN"]->getWidth(),
-        calcY(98, vm)));
+    this->texts["WAVE_COUNTDOWN"] = std::make_unique<gui::Text>(t_lang["NEXT_WAVE"], calcChar(16, vm), calcX(954, vm),
+                                                                calcY(98, vm), gui::GOLD, false);
+    this->texts["WAVE_COUNTDOWN"]->setPosition(
+        sf::Vector2f(calcX(1218, vm) - this->texts["WAVE_COUNTDOWN"]->getWidth(), calcY(98, vm)));
 }
 
 StatsGUI::~StatsGUI() = default;
@@ -190,8 +138,7 @@ void StatsGUI::updateArmor()
     this->texts["ARMOR"]->setText(std::to_string(player.getArmor()));
     this->texts["ARMOR"]->center(calcX(392, vm));
 
-    if (this->player.isAbilityActive() &&
-        this->player.getIncreasedArmor() > 0) {
+    if (this->player.isAbilityActive() && this->player.getIncreasedArmor() > 0) {
         this->texts["ARMOR"]->setFillColor(gui::GOLD);
     }
     else {
@@ -217,8 +164,7 @@ void StatsGUI::updateAttack()
     this->texts["ATTACK"]->setText(std::to_string(player.getAttack()));
     this->texts["ATTACK"]->center(calcX(824, vm));
 
-    if (this->player.isAbilityActive() &&
-        this->player.getIncreasedAttack() > 0) {
+    if (this->player.isAbilityActive() && this->player.getIncreasedAttack() > 0) {
         this->texts["ATTACK"]->setFillColor(gui::GOLD);
     }
     else {
@@ -228,8 +174,7 @@ void StatsGUI::updateAttack()
 
 void StatsGUI::updateAttackSpeed()
 {
-    this->texts["ATTACK_SPEED"]->setText(
-        std::to_string(player.getAttackSpeed()));
+    this->texts["ATTACK_SPEED"]->setText(std::to_string(player.getAttackSpeed()));
     this->texts["ATTACK_SPEED"]->center(calcX(888, vm));
 }
 
@@ -241,17 +186,14 @@ void StatsGUI::updateSpeed()
 
 void StatsGUI::updateCritical()
 {
-    this->texts["CRITICAL"]->setText(
-        std::to_string(player.getCriticalChance()) + "%");
+    this->texts["CRITICAL"]->setText(std::to_string(player.getCriticalChance()) + "%");
     this->texts["CRITICAL"]->center(calcX(1016, vm));
 }
 
 void StatsGUI::updateXP()
 {
-    XPBar.percent = static_cast<float>(player.getXP()) /
-                    static_cast<float>(player.getMaxXP());
-    XPBar.hoverText->setText("XP:" + std::to_string(player.getXP()) + "/" +
-                             std::to_string(player.getMaxXP()));
+    XPBar.percent = static_cast<float>(player.getXP()) / static_cast<float>(player.getMaxXP());
+    XPBar.hoverText->setText("XP:" + std::to_string(player.getXP()) + "/" + std::to_string(player.getMaxXP()));
     XPBar.hoverText->center(calcX(640, vm));
 }
 
@@ -294,16 +236,14 @@ void StatsGUI::updateHP()
         HPBar.percent = static_cast<float>(player.getHP()) / player.getMaxHP();
     }
 
-    HPBar.text->setText("HP:" + std::to_string(player.getHP()) + "/" +
-                        std::to_string(player.getMaxHP()));
+    HPBar.text->setText("HP:" + std::to_string(player.getHP()) + "/" + std::to_string(player.getMaxHP()));
     HPBar.text->center(calcX(640, vm));
 }
 
 void StatsGUI::updatingHP(float dt)
 {
     if (player.isHPRegenerating(dt) && !player.isDead()) {
-        HPBar.text->setText("HP:" + std::to_string(player.getHP()) + "/" +
-                            std::to_string(player.getMaxHP()));
+        HPBar.text->setText("HP:" + std::to_string(player.getHP()) + "/" + std::to_string(player.getMaxHP()));
         HPBar.text->center(calcX(640, this->vm));
         HPBar.percent = static_cast<float>(player.getHP()) / player.getMaxHP();
         player.setRegenerating(true);
@@ -323,22 +263,19 @@ void StatsGUI::updatingHP(float dt)
                 HPBar.timeCooldown = 0.f;
                 const uint32_t HPtoFull = player.getMaxHP() - player.getHP();
                 const float step = (player.getReg() * 0.2f + 0.8f) / 4.f;
-                float totalTimeCooldown =
-                    (1.f - player.getRegCooldown()) / step;
+                float totalTimeCooldown = (1.f - player.getRegCooldown()) / step;
                 if (HPtoFull > 1) {
                     totalTimeCooldown += (HPtoFull - 1) / step;
                 }
 
-                const float rounded =
-                    std::round(totalTimeCooldown * 10.0f) / 10.0f;
+                const float rounded = std::round(totalTimeCooldown * 10.0f) / 10.0f;
 
                 HPBar.hoverText->setText(std::format("{:.1f}", rounded) + 's');
                 HPBar.hoverText->center(calcX(640, vm));
             }
         }
         else {
-            HPBar.hoverText->setText("HP:" + std::to_string(player.getHP()) +
-                                     "/" + std::to_string(player.getMaxHP()));
+            HPBar.hoverText->setText("HP:" + std::to_string(player.getHP()) + "/" + std::to_string(player.getMaxHP()));
             HPBar.hoverText->center(calcX(640, vm));
         }
     }
@@ -377,16 +314,14 @@ void StatsGUI::updatingHP(float dt)
 
 void StatsGUI::updateSprint()
 {
-    SprintBar.text->setText(
-        std::to_string(static_cast<uint32_t>(player.getSprint())) + "/" +
-        std::to_string(player.getMaxSprint()));
+    SprintBar.text->setText(std::to_string(static_cast<uint32_t>(player.getSprint())) + "/" +
+                            std::to_string(player.getMaxSprint()));
     SprintBar.text->center(calcX(640, vm));
 }
 
 void StatsGUI::updatingSprint(float dt)
 {
-    SprintBar.percent =
-        player.getSprint() / static_cast<float>(player.getMaxSprint());
+    SprintBar.percent = player.getSprint() / static_cast<float>(player.getMaxSprint());
 
     if (SprintBar.isHovering) {
         if (SprintBar.percent < 1.f) {
@@ -396,36 +331,30 @@ void StatsGUI::updatingSprint(float dt)
 
             if (SprintBar.timeCooldown >= 0.1f) {
                 SprintBar.timeCooldown = 0.f;
-                const uint32_t SprintToFull =
-                    player.getMaxSprint() - player.getSprint();
+                const uint32_t SprintToFull = player.getMaxSprint() - player.getSprint();
                 const float step = player.getMaxSprint() / 40.f;
                 const float totalTimeCooldown = SprintToFull / step;
 
-                const float rounded =
-                    std::round(totalTimeCooldown * 10.0f) / 10.0f;
+                const float rounded = std::round(totalTimeCooldown * 10.0f) / 10.0f;
 
-                SprintBar.hoverText->setText(std::format("{:.1f}", rounded) +
-                                             's');
+                SprintBar.hoverText->setText(std::format("{:.1f}", rounded) + 's');
                 SprintBar.hoverText->center(calcX(640, vm));
             }
         }
         else {
-            SprintBar.hoverText->setText(
-                std::to_string(static_cast<uint32_t>(player.getSprint())) +
-                "/" + std::to_string(player.getMaxSprint()));
+            SprintBar.hoverText->setText(std::to_string(static_cast<uint32_t>(player.getSprint())) + "/" +
+                                         std::to_string(player.getMaxSprint()));
             SprintBar.hoverText->center(calcX(640, vm));
         }
     }
 
     const int bar_width = SprintBar.bar->getTextureRect().size.x;
-    const int barrier_width = static_cast<int>(
-        player.getSprint() / static_cast<float>(player.getMaxSprint()) * 256.f);
+    const int barrier_width = static_cast<int>(player.getSprint() / static_cast<float>(player.getMaxSprint()) * 256.f);
 
     if (bar_width > barrier_width) {
         const int new_width = static_cast<int>(bar_width - 1000.f * dt);
         if (new_width < barrier_width) {
-            SprintBar.bar->setTextureRect(
-                sf::IntRect({0, 40}, {barrier_width, 20}));
+            SprintBar.bar->setTextureRect(sf::IntRect({0, 40}, {barrier_width, 20}));
         }
         else if (new_width < 0) {
             SprintBar.bar->setTextureRect(sf::IntRect({0, 40}, {0, 20}));
@@ -437,8 +366,7 @@ void StatsGUI::updatingSprint(float dt)
     else if (bar_width < barrier_width) {
         const int new_width = static_cast<int>(bar_width + 1000.f * dt);
         if (new_width > barrier_width) {
-            SprintBar.bar->setTextureRect(
-                sf::IntRect({0, 40}, {barrier_width, 20}));
+            SprintBar.bar->setTextureRect(sf::IntRect({0, 40}, {barrier_width, 20}));
         }
         else if (new_width > 256) {
             SprintBar.bar->setTextureRect(sf::IntRect({0, 40}, {256, 20}));
@@ -448,9 +376,8 @@ void StatsGUI::updatingSprint(float dt)
         }
     }
 
-    SprintBar.text->setText(
-        std::to_string(static_cast<uint32_t>(player.getSprint())) + "/" +
-        std::to_string(player.getMaxSprint()));
+    SprintBar.text->setText(std::to_string(static_cast<uint32_t>(player.getSprint())) + "/" +
+                            std::to_string(player.getMaxSprint()));
     SprintBar.text->center(calcX(640, this->vm));
 }
 
@@ -464,30 +391,26 @@ void StatsGUI::updateWaveNumber(const std::string &text)
     this->texts["WAVE_NUMBER"]->setText(text);
 }
 
-void StatsGUI::upgradePlayer(const std::string &t_name,
-                             const sf::IntRect &intRect)
+void StatsGUI::upgradePlayer(const std::string &t_name, const sf::IntRect &intRect)
 {
     this->texts["PLAYER_NAME"]->setText(t_name);
     this->texts["PLAYER_NAME"]->center(calcX(188, this->vm));
     this->sprites["PLAYER_ICON"]->setTextureRect(intRect);
-    this->sprites["ABILITY_ICON"]->setTextureRect(sf::IntRect(
-      {intRect.position.x, intRect.position.y - 16}, {intRect.size.x, intRect.size.y}));
+    this->sprites["ABILITY_ICON"]->setTextureRect(
+        sf::IntRect({intRect.position.x, intRect.position.y - 16}, {intRect.size.x, intRect.size.y}));
 }
 
 void StatsGUI::setAbilityIcon()
 {
     this->sprite_buttons["ABILITY"]->setIdleColor(gui::YELLOW);
     this->abilityCooldown.setSize(sf::Vector2f(calcX(80, vm), calcY(80, vm)));
-    this->abilityCooldown.setPosition(
-        sf::Vector2f(calcX(260, vm), calcY(8, vm)));
+    this->abilityCooldown.setPosition(sf::Vector2f(calcX(260, vm), calcY(8, vm)));
 }
 
 const bool StatsGUI::updateAbilityIcon(float value)
 {
-    this->abilityCooldown.setSize(
-        sf::Vector2f(calcX(80, vm), calcX(80, vm) - value));
-    this->abilityCooldown.setPosition(
-        sf::Vector2f(calcX(260, vm), calcX(8, vm) + value));
+    this->abilityCooldown.setSize(sf::Vector2f(calcX(80, vm), calcX(80, vm) - value));
+    this->abilityCooldown.setPosition(sf::Vector2f(calcX(260, vm), calcX(8, vm) + value));
     if (this->abilityCooldown.getSize().y <= 0.f) {
         this->sprite_buttons["ABILITY"]->setIdleColor(gui::GOLD);
         this->player.setAbilityActive(false);
@@ -516,11 +439,6 @@ bool StatsGUI::hasClickedAbilityUpgrade(const sf::Vector2i &mousePos)
     return sprite_buttons["ABILITY"]->isPressed(mousePos);
 }
 
-bool StatsGUI::hasClickedSkip(const sf::Vector2i &mousePos)
-{
-    return text_buttons["SKIP"]->isPressed(mousePos);
-}
-
 void StatsGUI::update(const sf::Vector2f &mousePosView)
 {
     XPBar.update(mousePosView);
@@ -535,11 +453,6 @@ void StatsGUI::drawAbility(sf::RenderTarget &target)
         target.draw(this->abilityCooldown);
     }
     this->sprite_buttons["ABILITY"]->draw(target);
-}
-
-void StatsGUI::drawSkip(sf::RenderTarget &target)
-{
-    this->text_buttons["SKIP"]->draw(target);
 }
 
 void StatsGUI::drawWaveCountdown(sf::RenderTarget &target)
