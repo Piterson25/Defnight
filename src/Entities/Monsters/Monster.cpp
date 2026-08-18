@@ -1,34 +1,28 @@
 #include "Monster.hpp"
 
-Monster::Monster(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
-                 float t_y, float difficulty_mod, float wave_mod,
-                 const std::vector<sf::FloatRect> &obstaclesBounds)
-    : Entity(t_name, t_vm, t_x, t_y), difficultyMod(difficulty_mod), gold(0),
-      spawned(false), spawnCountdown(0.f), deadCountdown(0.f),
-      soundPlayed(false), shadow(shadow_texture)
+Monster::Monster(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y, float difficulty_mod,
+                 float wave_mod, const std::vector<sf::FloatRect> &obstaclesBounds)
+    : Entity(t_name, t_vm, t_x, t_y), difficultyMod(difficulty_mod), gold(0), spawned(false), spawnCountdown(0.f),
+      deadCountdown(0.f), soundPlayed(false), shadow(shadow_texture)
 {
-    this->texture = sf::Texture("assets/textures/monsters/" +
-                               toLowerCase(t_name) + ".png");
+    this->texture = sf::Texture("assets/textures/monsters/" + toLowerCase(t_name) + ".png");
     this->sprite = sf::Sprite(this->texture);
     this->sprite.setPosition({t_x, t_y});
-    this->entitySize =
-        static_cast<uint32_t>(this->sprite.getGlobalBounds().size.x / 128);
-    this->sprite.setTextureRect(sf::IntRect({0, static_cast<int>(32 * this->entitySize)},
-                                          {static_cast<int>(16 * this->entitySize),
-                                          static_cast<int>(16 * this->entitySize)}));
+    this->entitySize = static_cast<uint32_t>(this->sprite.getGlobalBounds().size.x / 128);
+    this->sprite.setTextureRect(
+        sf::IntRect({0, static_cast<int>(32 * this->entitySize)},
+                    {static_cast<int>(16 * this->entitySize), static_cast<int>(16 * this->entitySize)}));
     this->sprite.setScale({calcScale(4, vm), calcScale(4, vm)});
     this->sprite.setColor(sf::Color(255, 255, 255, 0));
 
     this->shadow_texture = sf::Texture("assets/textures/entity_shadow.png");
     this->shadow = sf::Sprite(this->shadow_texture);
     this->shadow.setTextureRect(sf::IntRect({0, 0}, {8, 4}));
-    this->shadow.setScale({
-        calcScale(static_cast<float>(4 * this->entitySize), vm),
-        calcScale(static_cast<float>(4 * this->entitySize), vm)});
-    this->shadow.setPosition({this->getDownCenter().x -
-                                 (this->shadow.getTextureRect().size.x * 0.5f) *
-                                     this->shadow.getScale().x,
-                             this->getDownCenter().y});
+    this->shadow.setScale({calcScale(static_cast<float>(4 * this->entitySize), vm),
+                           calcScale(static_cast<float>(4 * this->entitySize), vm)});
+    this->shadow.setPosition(
+        {this->getDownCenter().x - (this->shadow.getTextureRect().size.x * 0.5f) * this->shadow.getScale().x,
+         this->getDownCenter().y});
     this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
     this->AI = std::make_unique<AIComponent>(this->vm, obstaclesBounds);
@@ -61,26 +55,20 @@ void Monster::setGold(uint32_t gold)
     this->gold = gold;
 }
 
-const bool
-Monster::hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
-                           Player &player, SoundEngine &soundEngine,
-                           FloatingTextSystem &floatingTextSystem)
+const bool Monster::hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds, Player &player,
+                                      SoundEngine &soundEngine, FloatingTextSystem &floatingTextSystem)
 {
     const float distance = this->attackDistance(player, *this);
 
-    if (distance <=
-        this->reach * calcX(static_cast<float>(32 * this->entitySize), vm)) {
+    if (distance <= this->reach * calcX(static_cast<float>(32 * this->entitySize), vm)) {
         this->doAttack();
-        if (!player.isDead() && !player.isPunched() && this->attacking &&
-            this->frame == 80 * this->entitySize) {
-            int Lattack = static_cast<int>(round(
-                this->attack - (this->attack * player.getArmor() * 0.05f)));
+        if (!player.isDead() && !player.isPunched() && this->attacking && this->frame == 80 * this->entitySize) {
+            int Lattack = static_cast<int>(round(this->attack - (this->attack * player.getArmor() * 0.05f)));
 
             if (Lattack > 0) {
-                floatingTextSystem.addFloatingText(
-                    gui::FLAMINGO, std::to_string(-Lattack), calcChar(16, vm),
-                    player.getPosition().x + calcX(48, vm),
-                    player.getPosition().y + calcY(32, vm), false);
+                floatingTextSystem.addFloatingText(gui::FLAMINGO, std::to_string(-Lattack), calcChar(16, vm),
+                                                   player.getPosition().x + calcX(48, vm),
+                                                   player.getPosition().y + calcY(32, vm), false);
                 if (static_cast<int>(player.getHP() - Lattack) < 0) {
                     player.setHP(0);
                 }
@@ -105,25 +93,18 @@ Monster::hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
     return false;
 }
 
-const bool
-Monster::hasLineOfSight(const std::vector<sf::FloatRect> &obstaclesBounds,
-                        const sf::Vector2f &a_p1, const sf::Vector2f &a_p2)
+const bool Monster::hasLineOfSight(const std::vector<sf::FloatRect> &obstaclesBounds, const sf::Vector2f &a_p1,
+                                   const sf::Vector2f &a_p2)
 {
     return std::any_of(obstaclesBounds.begin(), obstaclesBounds.end(),
-                       [&](const sf::FloatRect &obstacle) {
-                           return isPointVisible(obstacle, a_p1, a_p2);
-                       });
+                       [&](const sf::FloatRect &obstacle) { return isPointVisible(obstacle, a_p1, a_p2); });
 }
 
 void Monster::spawn(float dt)
 {
     if (this->spawnCountdown < 0.5f) {
-        this->sprite.setColor(
-            sf::Color(255, 255, 255,
-                      static_cast<uint8_t>(this->spawnCountdown * 510.f)));
-        this->shadow.setColor(
-            sf::Color(255, 255, 255,
-                      static_cast<uint8_t>(this->spawnCountdown * 510.f)));
+        this->sprite.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(this->spawnCountdown * 510.f)));
+        this->shadow.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(this->spawnCountdown * 510.f)));
         this->spawnCountdown += dt;
     }
     if (this->spawnCountdown >= 0.5f) {
@@ -136,12 +117,8 @@ void Monster::spawn(float dt)
 void Monster::dyingAnimation(float dt)
 {
     if (this->deadCountdown < 0.25f) {
-        this->sprite.setColor(sf::Color(
-            255, 255, 255,
-            static_cast<uint8_t>(255.f - (this->deadCountdown * 1020.f))));
-        this->shadow.setColor(sf::Color(
-            255, 255, 255,
-            static_cast<uint8_t>(255.f - (this->deadCountdown * 1020.f))));
+        this->sprite.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(255.f - (this->deadCountdown * 1020.f))));
+        this->shadow.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(255.f - (this->deadCountdown * 1020.f))));
         this->deadCountdown += dt;
     }
     if (this->hasDeadCountdownExpired()) {
@@ -150,17 +127,14 @@ void Monster::dyingAnimation(float dt)
     }
 }
 
-void Monster::calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds,
-                          Player &player,
-                          const std::vector<sf::Vector2f> &positions, float dt)
+void Monster::calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds, Player &player,
+                          const std::vector<sf::Vector2f> &positions, bool isExtreme, float dt)
 {
     this->velocity = sf::Vector2f(0.f, 0.f);
-    const float vel = ((this->speed * 0.2f + 0.8f) * 2 *
-                       this->sprite.getGlobalBounds().size.x) *
-                      dt;
+    const float mod = isExtreme ? 1.5f : 1.0f;
+    const float vel = ((this->speed * 0.2f + 0.8f) * 2 * this->sprite.getGlobalBounds().size.x) * mod * dt;
 
-    if (!hasLineOfSight(obstaclesBounds, this->getCenter(),
-                        player.getCenter())) {
+    if (!hasLineOfSight(obstaclesBounds, this->getCenter(), player.getCenter())) {
 
         if (player.getCenter().x > this->getCenter().x) {
             this->velocity.x += vel;
@@ -189,10 +163,9 @@ void Monster::calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds,
 
 void Monster::update(float dt)
 {
-    this->shadow.setPosition({this->getDownCenter().x -
-                                 (this->shadow.getTextureRect().size.x * 0.5f) *
-                                     this->shadow.getScale().x,
-                             this->getDownCenter().y});
+    this->shadow.setPosition(
+        {this->getDownCenter().x - (this->shadow.getTextureRect().size.x * 0.5f) * this->shadow.getScale().x,
+         this->getDownCenter().y});
     if (this->soundPlayed && this->frame != 80) {
         this->soundPlayed = false;
     }
@@ -208,17 +181,13 @@ void Monster::drawShadow(sf::RenderTarget &target)
     target.draw(this->shadow);
 }
 
-const bool
-Monster::canAttackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
-                         Player &player)
+const bool Monster::canAttackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds, Player &player)
 {
     const float distance = this->attackDistance(player, *this);
 
-    if (distance <= this->getReach() *
-                        calcX(static_cast<float>(32 * this->entitySize), vm)) {
+    if (distance <= this->getReach() * calcX(static_cast<float>(32 * this->entitySize), vm)) {
         this->doAttack();
-        if (!player.isDead() && !player.isPunched() && this->attacking &&
-            this->getFrame() == 80 * this->entitySize) {
+        if (!player.isDead() && !player.isPunched() && this->attacking && this->getFrame() == 80 * this->entitySize) {
             return true;
         }
     }

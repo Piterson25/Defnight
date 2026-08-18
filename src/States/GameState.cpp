@@ -1,12 +1,10 @@
 #include "GameState.hpp"
 
-GameState::GameState(float gridSize, sf::RenderWindow &window,
-                     GameSettings &gameSettings, SoundEngine &soundEngine,
-                     MusicEngine &musicEngine, std::stack<State *> &states,
-                     const std::string &mapName, const std::string &playerName,
-                     const std::string &difficultyName)
-    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states),
-      mapName(mapName), difficultyName(difficultyName)
+GameState::GameState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings, SoundEngine &soundEngine,
+                     MusicEngine &musicEngine, std::stack<State *> &states, const std::string &mapName,
+                     const std::string &playerName, const std::string &difficultyName)
+    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states), mapName(mapName),
+      difficultyName(difficultyName)
 {
     this->musicEngine.clearMusic();
     this->musicEngine.addMusic("battle1.ogg");
@@ -20,23 +18,18 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
     this->tileMap = new TileMap(vm, mapName);
 
     if (playerName == "WARRIOR") {
-        this->player = new Warrior(
-            playerName, vm, this->tileMap->getMapSize().x / 2 - calcX(32, vm),
-            this->tileMap->getMapSize().y / 2 - calcY(32, vm));
+        this->player = new Warrior(playerName, vm, this->tileMap->getMapSize().x / 2 - calcX(32, vm),
+                                   this->tileMap->getMapSize().y / 2 - calcY(32, vm));
     }
 
-    this->playerGUI =
-        new PlayerGUI(this->vm, *this->player, *this->floatingTextSystem,
-                      mapName, difficultyName, this->gameSettings.lang);
+    this->playerGUI = new PlayerGUI(this->vm, *this->player, *this->floatingTextSystem, mapName, difficultyName,
+                                    this->gameSettings.lang);
 
-    this->view.setSize(sf::Vector2f(static_cast<float>(vm.size.x),
-                                    static_cast<float>(vm.size.y)));
+    this->view.setSize(sf::Vector2f(static_cast<float>(vm.size.x), static_cast<float>(vm.size.y)));
     this->view.setCenter(this->player->getCenter());
 
-    this->viewHUD.setSize(sf::Vector2f(static_cast<float>(vm.size.x),
-                                       static_cast<float>(vm.size.y)));
-    this->viewHUD.setCenter(sf::Vector2f(static_cast<float>(vm.size.x) / 2.f,
-                                         static_cast<float>(vm.size.y) / 2.f));
+    this->viewHUD.setSize(sf::Vector2f(static_cast<float>(vm.size.x), static_cast<float>(vm.size.y)));
+    this->viewHUD.setCenter(sf::Vector2f(static_cast<float>(vm.size.x) / 2.f, static_cast<float>(vm.size.y) / 2.f));
 
     Random::Init();
 
@@ -48,16 +41,18 @@ GameState::GameState(float gridSize, sf::RenderWindow &window,
     else if (difficultyName == "HARD") {
         modifier = 1.25f;
     }
+    else if (difficultyName == "EXTREME") {
+        modifier = 1.5f;
+    }
 
     this->dropSystem = new DropSystem(vm, modifier);
 
     this->projectileSystem = new ProjectileSystem(vm);
     this->particleSystem = new ParticleSystem(vm);
 
-    this->monsterSystem = new MonsterSystem(
-        vm, *player, this->gridSize, modifier, *this->playerGUI,
-        *this->projectileSystem, *this->dropSystem, *this->floatingTextSystem,
-        this->soundEngine, this->tileMap->getTilesGlobalBounds());
+    this->monsterSystem = new MonsterSystem(vm, *player, this->gridSize, modifier, *this->playerGUI,
+                                            *this->projectileSystem, *this->dropSystem, *this->floatingTextSystem,
+                                            this->soundEngine, this->tileMap->getTilesGlobalBounds());
 
     this->wave = 0;
     this->sumHP = 15;
@@ -134,24 +129,24 @@ void GameState::draw(sf::RenderTarget *target)
 
 void GameState::savePlayerData()
 {
-    PlayerStats::PlayerData playerData{
-        wave,
-        player->getXP(),
-        player->getLevel(),
-        player->getKills(),
-        player->getDamageDealt(),
-        player->getDamageTaken(),
-        static_cast<uint32_t>(player->isDead()),
-        player->getGold(),
-        player->getBoughtItems(),
-        static_cast<uint32_t>(clock.getElapsedTime().asSeconds()) / 60,
-        1,
-        static_cast<uint32_t>(this->mapName == "ruins"),
-        static_cast<uint32_t>(this->mapName == "desolation"),
-        static_cast<uint32_t>(this->mapName == "permafrost"),
-        static_cast<uint32_t>(this->difficultyName == "EASY"),
-        static_cast<uint32_t>(this->difficultyName == "NORMAL"),
-        static_cast<uint32_t>(this->difficultyName == "HARD")};
+    PlayerStats::PlayerData playerData{wave,
+                                       player->getXP(),
+                                       player->getLevel(),
+                                       player->getKills(),
+                                       player->getDamageDealt(),
+                                       player->getDamageTaken(),
+                                       static_cast<uint32_t>(player->isDead()),
+                                       player->getGold(),
+                                       player->getBoughtItems(),
+                                       static_cast<uint32_t>(clock.getElapsedTime().asSeconds()) / 60,
+                                       1,
+                                       static_cast<uint32_t>(this->mapName == "ruins"),
+                                       static_cast<uint32_t>(this->mapName == "desolation"),
+                                       static_cast<uint32_t>(this->mapName == "permafrost"),
+                                       static_cast<uint32_t>(this->difficultyName == "EASY"),
+                                       static_cast<uint32_t>(this->difficultyName == "NORMAL"),
+                                       static_cast<uint32_t>(this->difficultyName == "HARD"),
+                                       static_cast<uint32_t>(this->difficultyName == "EXTREME")};
     PlayerStats::saveStats(playerData);
 }
 
@@ -169,14 +164,12 @@ void GameState::update(float dt)
         }
     }
 
-    if (this->playerGUI->hasClickedButtons(this->mousePosWindow,
-                                           this->soundEngine)) {
+    if (this->playerGUI->hasClickedButtons(this->mousePosWindow, this->soundEngine)) {
         this->unpauseState();
     }
 
     if (this->player->isDead()) {
-        const uint16_t result =
-            this->playerGUI->updateDeathScreenButtons(this->mousePosWindow);
+        const uint16_t result = this->playerGUI->updateDeathScreenButtons(this->mousePosWindow);
         if (result == 1) {
             this->soundEngine.addSound("button");
             this->endState();
@@ -201,10 +194,8 @@ void GameState::update(float dt)
         }
     }
 
-    if (this->playerGUI->isEscape() &&
-        (!this->playerGUI->isLeveling() && !this->playerGUI->isUpgrading())) {
-        const uint8_t result =
-            this->playerGUI->updateEscapeButton(this->mousePosWindow);
+    if (this->playerGUI->isEscape() && (!this->playerGUI->isLeveling() && !this->playerGUI->isUpgrading())) {
+        const uint8_t result = this->playerGUI->updateEscapeButton(this->mousePosWindow);
         if (result == 1) {
             this->soundEngine.addSound("button");
             this->endState();
@@ -221,9 +212,8 @@ void GameState::update(float dt)
         }
         else if (result == 4) {
             this->soundEngine.addSound("button");
-            this->states.push(new SettingsState(
-                this->gridSize, this->window, this->gameSettings,
-                this->soundEngine, this->musicEngine, this->states));
+            this->states.push(new SettingsState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
+                                                this->musicEngine, this->states));
         }
     }
 
@@ -232,12 +222,10 @@ void GameState::update(float dt)
             this->player->spawn(dt);
         }
         else {
-            this->player->controls(GameInputHandler::keybinds, dt);
-            if (this->player->isSprinting() &&
-                this->player->isParticleCooldown(dt)) {
-                this->particleSystem->addSmallParticle(
-                    this->player->getDownCenter(),
-                    sf::Vector2f(calcX(8, vm), calcY(8, vm)), gui::WHITE);
+            this->player->controls(GameInputHandler::keybinds, this->difficultyName == "EXTREME", dt);
+            if (this->player->isSprinting() && this->player->isParticleCooldown(dt)) {
+                this->particleSystem->addSmallParticle(this->player->getDownCenter(),
+                                                       sf::Vector2f(calcX(8, vm), calcY(8, vm)), gui::WHITE);
             }
 
             if (this->player->isPunched()) {
@@ -245,32 +233,25 @@ void GameState::update(float dt)
             }
 
             if (this->player->hasVelocity()) {
-                this->player->obstacleCollision(
-                    this->tileMap->getTilesGlobalBounds());
+                this->player->obstacleCollision(this->tileMap->getTilesGlobalBounds());
 
                 this->player->move();
 
                 this->player->update(dt);
 
-                const bool osY =
-                    this->player->getPosition().y <= calcY(200, this->vm) ||
-                    this->player->getPosition().y >=
-                        this->tileMap->getMapSize().y - calcY(392, this->vm);
-                const bool osX =
-                    this->player->getPosition().x <= calcX(608, this->vm) ||
-                    this->player->getPosition().x >=
-                        this->tileMap->getMapSize().x - calcX(672, this->vm);
+                const bool osY = this->player->getPosition().y <= calcY(200, this->vm) ||
+                                 this->player->getPosition().y >= this->tileMap->getMapSize().y - calcY(392, this->vm);
+                const bool osX = this->player->getPosition().x <= calcX(608, this->vm) ||
+                                 this->player->getPosition().x >= this->tileMap->getMapSize().x - calcX(672, this->vm);
 
                 if (osX && osY) {
                     this->view.setCenter(this->view.getCenter());
                 }
                 else if (osX) {
-                    this->view.setCenter(sf::Vector2f(
-                        this->view.getCenter().x, this->player->getCenter().y));
+                    this->view.setCenter(sf::Vector2f(this->view.getCenter().x, this->player->getCenter().y));
                 }
                 else if (osY) {
-                    this->view.setCenter(sf::Vector2f(
-                        this->player->getCenter().x, view.getCenter().y));
+                    this->view.setCenter(sf::Vector2f(this->player->getCenter().x, view.getCenter().y));
                 }
                 else {
                     this->view.setCenter(this->player->getCenter());
@@ -281,18 +262,15 @@ void GameState::update(float dt)
             this->player->whooshSound(this->soundEngine);
 
             if (this->mousePosView.y > calcY(128, this->vm)) {
-                if (!this->playerGUI->isShopping() &&
-                    !this->playerGUI->isBuyingAbility()) {
+                if (!this->playerGUI->isShopping() && !this->playerGUI->isBuyingAbility()) {
                     if (GameInputHandler::isMouseClick()) {
                         this->player->doAttack();
                     }
                     if (this->player->isAbilityActivated()) {
                         this->player->doAbility(this->soundEngine);
-                        this->projectileSystem->playerAbility(
-                            sf::Vector2f(this->window.mapPixelToCoords(
-                                sf::Mouse::getPosition(this->window),
-                                this->view)),
-                            *this->player);
+                        this->projectileSystem->playerAbility(sf::Vector2f(this->window.mapPixelToCoords(
+                                                                  sf::Mouse::getPosition(this->window), this->view)),
+                                                              *this->player);
                         this->playerGUI->setAbilityIcon();
                     }
                 }
@@ -317,8 +295,7 @@ void GameState::update(float dt)
                     this->playerGUI->updateIsBuyingAbility();
                 }
 
-                playerGUI->updateAbilityBuy(this->mousePosWindow,
-                                            this->soundEngine);
+                playerGUI->updateAbilityBuy(this->mousePosWindow, this->soundEngine);
             }
         }
 
@@ -330,17 +307,13 @@ void GameState::update(float dt)
             }
 
             if (this->waveCountdown >= 10.f) {
-                this->monsterSystem->spawnMonsters(
-                    this->tileMap->getTilesGlobalBounds(), this->wave);
+                this->monsterSystem->spawnMonsters(this->tileMap->getTilesGlobalBounds(), this->wave);
             }
-            else if (this->waveCountdown > 8.f &&
-                     this->monsterSystem->isMonsterIDsEmpty()) {
+            else if (this->waveCountdown > 8.f && this->monsterSystem->isMonsterIDsEmpty()) {
                 this->monsterSystem->prepareWave(this->wave, this->sumHP);
                 this->playerGUI->updateMonsterCountWave(
-                    this->gameSettings.language, this->wave,
-                    this->monsterSystem->isBossWave(),
-                    this->monsterSystem->monsterIDsSize(), this->soundEngine,
-                    this->musicEngine);
+                    this->gameSettings.language, this->wave, this->monsterSystem->isBossWave(),
+                    this->monsterSystem->monsterIDsSize(), this->soundEngine, this->musicEngine);
             }
         }
         else {
@@ -351,21 +324,17 @@ void GameState::update(float dt)
             }
             else {
                 this->monsterSystem->playerAttack();
-                this->monsterSystem->update(
-                    this->tileMap->getTilesGlobalBounds(), this->paused, dt);
+                this->monsterSystem->update(this->tileMap->getTilesGlobalBounds(), this->paused,
+                                            this->difficultyName == "EXTREME", dt);
                 this->playerGUI->updateBossHP(dt);
             }
         }
 
-        this->projectileSystem->update(
-            *this->player, *this->playerGUI, *this->particleSystem,
-            *this->monsterSystem, this->tileMap->getBounds(),
-            this->tileMap->getTilesGlobalBounds(), *this->floatingTextSystem,
-            this->soundEngine, dt);
+        this->projectileSystem->update(*this->player, *this->playerGUI, *this->particleSystem, *this->monsterSystem,
+                                       this->tileMap->getBounds(), this->tileMap->getTilesGlobalBounds(),
+                                       *this->floatingTextSystem, this->soundEngine, dt);
 
-        this->dropSystem->update(*this->player, *this->playerGUI,
-                                 *this->floatingTextSystem, this->soundEngine,
-                                 dt);
+        this->dropSystem->update(*this->player, *this->playerGUI, *this->floatingTextSystem, this->soundEngine, dt);
 
         if (this->player->isDead()) {
             this->paused = true;
@@ -373,7 +342,7 @@ void GameState::update(float dt)
             this->playerGUI->updateHP();
         }
 
-        this->playerGUI->updatingHP(this->soundEngine, dt);
+        this->playerGUI->updatingHP(this->soundEngine, this->difficultyName == "EXTREME", dt);
         this->playerGUI->updatingSprint(dt);
 
         this->soundEngine.update();
@@ -381,8 +350,7 @@ void GameState::update(float dt)
     }
 
     if (this->player->getPendingXP() > 0) {
-        if (!this->playerGUI->isLeveling() && !this->playerGUI->isUpgrading() &&
-            this->player->levelUp()) {
+        if (!this->playerGUI->isLeveling() && !this->playerGUI->isUpgrading() && this->player->levelUp()) {
             this->player->setLeveling(true);
             this->playerGUI->update_level(soundEngine);
             paused = true;
@@ -390,12 +358,10 @@ void GameState::update(float dt)
         this->playerGUI->updateXP();
     }
 
-    this->playerGUI->update(this->mousePosView, this->waveCountdown,
-                            this->monsterSystem->bossHP(), dt);
+    this->playerGUI->update(this->mousePosView, this->waveCountdown, this->monsterSystem->bossHP(), dt);
 
     this->particleSystem->update(dt);
-    this->monsterSystem->explosionAttack(
-        this->particleSystem->getParticlesGlobalBounds());
+    this->monsterSystem->explosionAttack(this->particleSystem->getParticlesGlobalBounds());
 
     this->particleSystem->clearParticlesGlobalBounds();
 

@@ -22,6 +22,7 @@ public:
         uint32_t easy;
         uint32_t normal;
         uint32_t hard;
+        uint32_t extreme;
     };
 
     struct Rank {
@@ -36,6 +37,7 @@ public:
     static const uint8_t key[16];
     static const uint8_t iv[16];
 
+    static void resetStats();
     static void saveStats(PlayerData &playerdata);
     static void loadStats(PlayerData &playerdata);
 };

@@ -99,11 +99,15 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
     this->abilityUpgradeGUI->addAbilityUpgrade("LOWER_COOLDOWN", calcX(44, vm), calcY(324, vm), 0, "Cooldown", "-5%",
                                                25, 0);
 
+    const float priceModifier = difficultyName == "EXTREME" ? 1.5f : 1.0f;
     this->shopGUI = new ShopGUI(vm, this->player);
-    this->shopGUI->addShopItem("FULL_HP", calcX(44, vm), calcY(188, vm), 9, "Full HP", "+Full", 40, 0, 0);
-    this->shopGUI->addShopItem("MAX_HP", calcX(44, vm), calcY(324, vm), 3, this->lang["MAX_HP"], "+2", 20, 0, 0);
-    this->shopGUI->addShopItem("ATTACK", calcX(44, vm), calcY(460, vm), 5, this->lang["ATTACK"], "+1", 20, 0, 0);
-    this->shopGUI->addShopItem("ARMOR", calcX(44, vm), calcY(596, vm), 1, this->lang["ARMOR"], "+1", 20,
+    this->shopGUI->addShopItem("FULL_HP", calcX(44, vm), calcY(188, vm), 9, "Full HP", "+Full", 40 * priceModifier, 0,
+                               0);
+    this->shopGUI->addShopItem("MAX_HP", calcX(44, vm), calcY(324, vm), 3, this->lang["MAX_HP"], "+2",
+                               20 * priceModifier, 0, 0);
+    this->shopGUI->addShopItem("ATTACK", calcX(44, vm), calcY(460, vm), 5, this->lang["ATTACK"], "+1",
+                               20 * priceModifier, 0, 0);
+    this->shopGUI->addShopItem("ARMOR", calcX(44, vm), calcY(596, vm), 1, this->lang["ARMOR"], "+1", 20 * priceModifier,
                                player.getArmor(), 10);
 
     this->sideGUI = SideGUI::NONE;
@@ -316,9 +320,9 @@ void PlayerGUI::updateSprint()
     this->statsGUI->updateSprint();
 }
 
-void PlayerGUI::updatingHP(SoundEngine &soundEngine, float dt)
+void PlayerGUI::updatingHP(SoundEngine &soundEngine, bool isExtreme, float dt)
 {
-    this->statsGUI->updatingHP(dt);
+    this->statsGUI->updatingHP(isExtreme, dt);
 
     if (this->isShopping() && player.getHP() / player.getMaxHP() == 1) {
         this->shopGUI->disableItem("FULL_HP");

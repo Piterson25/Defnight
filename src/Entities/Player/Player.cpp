@@ -1,15 +1,13 @@
 #include "Player.hpp"
 
-Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
-               float t_y)
-    : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f), 
-      shadow(shadow_texture), ability(ability_texture), glow(glow_texture)
+Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y)
+    : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f), shadow(shadow_texture), ability(ability_texture),
+      glow(glow_texture)
 {
     this->texture = sf::Texture("assets/textures/player/" + toLowerCase(t_name) + ".png");
     this->sprite = sf::Sprite(this->texture);
     this->sprite.setPosition({t_x, t_y});
-    this->entitySize =
-        static_cast<uint32_t>(this->sprite.getGlobalBounds().size.x / 128);
+    this->entitySize = static_cast<uint32_t>(this->sprite.getGlobalBounds().size.x / 128);
     this->sprite.setTextureRect(sf::IntRect({0, 32}, {16, 16}));
     this->sprite.setScale({calcScale(4, vm), calcScale(4, vm)});
     this->sprite.setColor(sf::Color(255, 255, 255, 0));
@@ -18,17 +16,15 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->shadow = sf::Sprite(this->shadow_texture);
     this->shadow.setTextureRect(sf::IntRect({0, 0}, {8, 4}));
     this->shadow.setScale({calcScale(4, vm), calcScale(4, vm)});
-    this->shadow.setPosition({this->getDownCenter().x -
-                                 (this->shadow.getTextureRect().size.x * 0.5f) *
-                                     this->shadow.getScale().x,
-                             this->getDownCenter().y});
+    this->shadow.setPosition(
+        {this->getDownCenter().x - (this->shadow.getTextureRect().size.x * 0.5f) * this->shadow.getScale().x,
+         this->getDownCenter().y});
     this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
     this->glow_texture = sf::Texture("assets/textures/player_glow.png");
     this->glow = sf::Sprite(this->glow_texture);
     this->glow.setScale({calcScale(4, vm), calcScale(4, vm)});
-    this->glow.setPosition({this->getPosition().x,
-                           this->getPosition().y + calcY(8, vm)});
+    this->glow.setPosition({this->getPosition().x, this->getPosition().y + calcY(8, vm)});
     this->glow.setColor(sf::Color(255, 255, 255, 128));
 
     this->ability_texture = sf::Texture("assets/textures/abilities_icons.png");
@@ -437,28 +433,22 @@ void Player::setPlayedSound(bool t_soundPlayed)
     this->soundPlayed = t_soundPlayed;
 }
 
-void Player::controls(const std::unordered_map<std::string, int> &keybinds,
-                      float dt)
+void Player::controls(const std::unordered_map<std::string, int> &keybinds, bool isExtreme, float dt)
 {
     this->velocity = sf::Vector2f(0.f, 0.f);
 
-    const float vel = ((this->speed * 0.2f + 0.8f) * 2.f *
-                       this->sprite.getGlobalBounds().size.x) *
-                      dt;
+    const float vel = ((this->speed * 0.2f + 0.8f) * 2.f * this->sprite.getGlobalBounds().size.x) * dt;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_UP")))) {
         this->velocity.y += -(vel);
     }
-    if (sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Key(keybinds.at("MOVE_DOWN")))) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_DOWN")))) {
         this->velocity.y += vel;
     }
-    if (sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Key(keybinds.at("MOVE_LEFT")))) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_LEFT")))) {
         this->velocity.x += -(vel);
     }
-    if (sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Key(keybinds.at("MOVE_RIGHT")))) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_RIGHT")))) {
         this->velocity.x += vel;
     }
 
@@ -468,7 +458,8 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds,
             this->velocity *= 1.5f;
 
             this->sprinting = true;
-            const float minusSprint = dt * 10.f;
+            const float modifier = isExtreme ? 2.0f : 1.0f;
+            const float minusSprint = dt * 10.f * modifier;
 
             if (this->sprint - minusSprint > 0.f) {
                 this->sprint -= minusSprint;
@@ -525,10 +516,11 @@ const bool Player::levelUp()
     return false;
 }
 
-const bool Player::isHPRegenerating(float dt)
+const bool Player::isHPRegenerating(bool isExtreme, float dt)
 {
+    const float modifier = isExtreme ? 0.5f : 1.0f;
     if (this->regCooldown < 1.f && this->HP < this->maxHP) {
-        this->regCooldown += ((this->reg * 0.2f + 0.8f) / 4.f) * dt;
+        this->regCooldown += ((this->reg * 0.2f + 0.8f) / 4.f) * modifier * dt;
     }
 
     if (this->regCooldown >= 1.f) {
@@ -565,12 +557,8 @@ void Player::abilityCounter(float dt)
 void Player::spawn(float dt)
 {
     if (this->spawnCountdown < 0.5f) {
-        this->sprite.setColor(
-            sf::Color(255, 255, 255,
-                      static_cast<uint8_t>(this->spawnCountdown * 510.f)));
-        this->shadow.setColor(
-            sf::Color(255, 255, 255,
-                      static_cast<uint8_t>(this->spawnCountdown * 510.f)));
+        this->sprite.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(this->spawnCountdown * 510.f)));
+        this->shadow.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(this->spawnCountdown * 510.f)));
         this->spawnCountdown += dt;
     }
     if (this->spawnCountdown >= 0.5f) {
@@ -584,19 +572,16 @@ void Player::upgrade(const std::string &t_name, sf::IntRect &intRect)
 {
     this->setAbilityActive(false);
     this->upgradeAttributes(t_name, intRect);
-    this->setTexturePath("assets/textures/player/" +
-                         toLowerCase(this->getName()) + ".png");
+    this->setTexturePath("assets/textures/player/" + toLowerCase(this->getName()) + ".png");
     this->setUpgraded(true);
 }
 
 void Player::update(float dt)
 {
-    this->shadow.setPosition({this->getDownCenter().x -
-                                 (this->shadow.getTextureRect().size.x * 0.5f) *
-                                     this->shadow.getScale().x,
-                             this->getDownCenter().y});
-    this->glow.setPosition({this->getPosition().x,
-                           this->getPosition().y + calcY(8, vm)});
+    this->shadow.setPosition(
+        {this->getDownCenter().x - (this->shadow.getTextureRect().size.x * 0.5f) * this->shadow.getScale().x,
+         this->getDownCenter().y});
+    this->glow.setPosition({this->getPosition().x, this->getPosition().y + calcY(8, vm)});
     this->ability.setPosition(this->sprite.getPosition());
 }
 

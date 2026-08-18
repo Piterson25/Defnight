@@ -6,8 +6,7 @@
 
 class Player : public Entity {
 public:
-    Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
-           float t_y);
+    Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y);
     virtual ~Player();
 
     const uint32_t getBoughtItems() const;
@@ -82,11 +81,10 @@ public:
     void setAttackIncrease(uint32_t t_attackIncrease);
     void setPlayedSound(bool t_soundPlayed);
 
-    void controls(const std::unordered_map<std::string, int> &keybinds,
-                  float dt);
+    void controls(const std::unordered_map<std::string, int> &keybinds, bool isExtreme, float dt);
     void whooshSound(SoundEngine &soundEngine);
     const bool levelUp();
-    const bool isHPRegenerating(float dt);
+    const bool isHPRegenerating(bool isExtreme, float dt);
     const bool isAbilityActivated();
     void abilityCounter(float dt);
     virtual void setAbilityTexture() = 0;
@@ -94,8 +92,7 @@ public:
     virtual void doAbility(SoundEngine &soundEngine) = 0;
     void spawn(float dt);
     void upgrade(const std::string &t_name, sf::IntRect &intRect);
-    virtual void upgradeAttributes(const std::string &t_name,
-                                   sf::IntRect &intRect) = 0;
+    virtual void upgradeAttributes(const std::string &t_name, sf::IntRect &intRect) = 0;
     void update(float dt);
     void draw(sf::RenderTarget &target);
     void drawShadow(sf::RenderTarget &target);

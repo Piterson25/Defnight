@@ -13,12 +13,9 @@ class ProjectileSystem;
 
 class MonsterSystem {
 public:
-    MonsterSystem(sf::VideoMode &vm, Player &player, float gridSize,
-                  float difficulty_mod, PlayerGUI &playerGUI,
-                  ProjectileSystem &projectileSystem, DropSystem &dropSystem,
-                  FloatingTextSystem &floatingTextSystem,
-                  SoundEngine &soundEngine,
-                  const std::vector<sf::FloatRect> &obstaclesBounds);
+    MonsterSystem(sf::VideoMode &vm, Player &player, float gridSize, float difficulty_mod, PlayerGUI &playerGUI,
+                  ProjectileSystem &projectileSystem, DropSystem &dropSystem, FloatingTextSystem &floatingTextSystem,
+                  SoundEngine &soundEngine, const std::vector<sf::FloatRect> &obstaclesBounds);
     ~MonsterSystem();
 
     const bool isMonsterIDsEmpty() const;
@@ -36,12 +33,10 @@ public:
     void projectileCollision(Projectile &proj);
 
     void monsterCollision(Monster &mob);
-    void spawnMonsters(const std::vector<sf::FloatRect> &obstaclesBounds,
-                       uint32_t wave);
+    void spawnMonsters(const std::vector<sf::FloatRect> &obstaclesBounds, uint32_t wave);
     void prepareWave(uint32_t &wave, uint32_t &sumHP);
 
-    void update(const std::vector<sf::FloatRect> &obstaclesBounds, bool &paused,
-                float dt);
+    void update(const std::vector<sf::FloatRect> &obstaclesBounds, bool &paused, bool isExtreme, float dt);
     void draw(sf::RenderTarget &target);
     void drawShadow(sf::RenderTarget &target);
 

@@ -240,9 +240,9 @@ void StatsGUI::updateHP()
     HPBar.text->center(calcX(640, vm));
 }
 
-void StatsGUI::updatingHP(float dt)
+void StatsGUI::updatingHP(bool isExtreme, float dt)
 {
-    if (player.isHPRegenerating(dt) && !player.isDead()) {
+    if (player.isHPRegenerating(isExtreme, dt) && !player.isDead()) {
         HPBar.text->setText("HP:" + std::to_string(player.getHP()) + "/" + std::to_string(player.getMaxHP()));
         HPBar.text->center(calcX(640, this->vm));
         HPBar.percent = static_cast<float>(player.getHP()) / player.getMaxHP();

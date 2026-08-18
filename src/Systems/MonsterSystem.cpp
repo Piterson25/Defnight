@@ -1,16 +1,12 @@
 #include "MonsterSystem.hpp"
 
-MonsterSystem::MonsterSystem(sf::VideoMode &vm, Player &player, float gridSize,
-                             float difficulty_mod, PlayerGUI &playerGUI,
-                             ProjectileSystem &projectileSystem,
-                             DropSystem &dropSystem,
-                             FloatingTextSystem &floatingTextSystem,
-                             SoundEngine &soundEngine,
+MonsterSystem::MonsterSystem(sf::VideoMode &vm, Player &player, float gridSize, float difficulty_mod,
+                             PlayerGUI &playerGUI, ProjectileSystem &projectileSystem, DropSystem &dropSystem,
+                             FloatingTextSystem &floatingTextSystem, SoundEngine &soundEngine,
                              const std::vector<sf::FloatRect> &obstaclesBounds)
-    : vm(vm), player(player), gridSize(gridSize),
-      difficulty_mod(difficulty_mod), playerGUIRef(playerGUI),
-      projectileSystemRef(projectileSystem), dropSystemRef(dropSystem),
-      floatingTextSystemRef(floatingTextSystem), soundEngineRef(soundEngine)
+    : vm(vm), player(player), gridSize(gridSize), difficulty_mod(difficulty_mod), playerGUIRef(playerGUI),
+      projectileSystemRef(projectileSystem), dropSystemRef(dropSystem), floatingTextSystemRef(floatingTextSystem),
+      soundEngineRef(soundEngine)
 {
     this->bossWave = false;
     freePositions.assign(obstaclesBounds.begin(), obstaclesBounds.end());
@@ -56,8 +52,7 @@ const float MonsterSystem::bossHP() const
     for (const auto &monster : monsters) {
         const auto *boss = dynamic_cast<const Boss *>(monster.get());
         if (boss) {
-            return static_cast<float>(monster->getHP()) /
-                   static_cast<float>(monster->getMaxHP());
+            return static_cast<float>(monster->getHP()) / static_cast<float>(monster->getMaxHP());
         }
     }
     return 0.f;
@@ -76,8 +71,7 @@ void MonsterSystem::playerAttack()
 
         if (limit > 0 && distance <= player.getReach() * calcX(48, vm)) {
 
-            if (!monster->isDead() && !monster->isPunched() &&
-                monster->hasSpawned() && player.isAttacking() &&
+            if (!monster->isDead() && !monster->isPunched() && monster->hasSpawned() && player.isAttacking() &&
                 player.getFrame() == 80) {
 
                 uint32_t sprintCritical = 0;
@@ -89,10 +83,9 @@ void MonsterSystem::playerAttack()
                 if ((static_cast<uint32_t>(Random::Float() * 100.f) + 1) <=
                     player.getCriticalChance() + sprintCritical) {
                     const int attack = 2 * player.getAttack();
-                    floatingTextSystemRef.addFloatingText(
-                        gui::ORANGE, std::to_string(-attack), calcChar(16, vm),
-                        monster->getPosition().x + calcX(32, vm),
-                        monster->getPosition().y + calcY(32, vm), false);
+                    floatingTextSystemRef.addFloatingText(gui::ORANGE, std::to_string(-attack), calcChar(16, vm),
+                                                          monster->getPosition().x + calcX(32, vm),
+                                                          monster->getPosition().y + calcY(32, vm), false);
                     if (static_cast<int>(monster->getHP() - attack) < 0) {
                         monster->setHP(0);
                     }
@@ -104,10 +97,9 @@ void MonsterSystem::playerAttack()
                 }
                 else {
                     const int attack = player.getAttack();
-                    floatingTextSystemRef.addFloatingText(
-                        gui::WHITE, std::to_string(-attack), calcChar(16, vm),
-                        monster->getPosition().x + calcX(32, vm),
-                        monster->getPosition().y + calcY(32, vm), false);
+                    floatingTextSystemRef.addFloatingText(gui::WHITE, std::to_string(-attack), calcChar(16, vm),
+                                                          monster->getPosition().x + calcX(32, vm),
+                                                          monster->getPosition().y + calcY(32, vm), false);
                     if (static_cast<int>(monster->getHP() - attack) < 0) {
                         monster->setHP(0);
                     }
@@ -133,19 +125,16 @@ void MonsterSystem::playerAttack()
     }
 }
 
-void MonsterSystem::explosionAttack(
-    const std::vector<sf::FloatRect> &particlesBounds)
+void MonsterSystem::explosionAttack(const std::vector<sf::FloatRect> &particlesBounds)
 {
     for (const auto &bounds : particlesBounds) {
         for (const auto &monster : monsters) {
             if (monster->getGlobalBounds().findIntersection(bounds)) {
-                if (!monster->isDead() && !monster->isPunched() &&
-                    monster->hasSpawned()) {
+                if (!monster->isDead() && !monster->isPunched() && monster->hasSpawned()) {
                     const int attack = player.getProjectileAttack();
-                    floatingTextSystemRef.addFloatingText(
-                        gui::WHITE, std::to_string(-attack), calcChar(16, vm),
-                        monster->getPosition().x + calcX(32, vm),
-                        monster->getPosition().y + calcY(32, vm), false);
+                    floatingTextSystemRef.addFloatingText(gui::WHITE, std::to_string(-attack), calcChar(16, vm),
+                                                          monster->getPosition().x + calcX(32, vm),
+                                                          monster->getPosition().y + calcY(32, vm), false);
                     if (static_cast<int>(monster->getHP() - attack) < 0) {
                         monster->setHP(0);
                     }
@@ -175,8 +164,7 @@ void MonsterSystem::projectileCollision(Projectile &proj)
 void MonsterSystem::monsterCollision(Monster &mob)
 {
     for (const auto &monster : monsters) {
-        if (vectorDistance(mob.getPosition(), monster->getPosition()) <
-            2 * monster->getGlobalBounds().size.x) {
+        if (vectorDistance(mob.getPosition(), monster->getPosition()) < 2 * monster->getGlobalBounds().size.x) {
             sf::FloatRect mobBounds = mob.getGlobalBounds();
             sf::FloatRect monsterBounds = monster->getGlobalBounds();
 
@@ -187,32 +175,27 @@ void MonsterSystem::monsterCollision(Monster &mob)
             if (monsterBounds.findIntersection(nextPos)) {
                 if (mob.hasCollidedBottom(mobBounds, monsterBounds)) {
                     mob.setVeloctiy(sf::Vector2f(mob.getVelocity().x, 0.f));
-                    mob.setPosition(mobBounds.position.x,
-                                    monsterBounds.position.y - mobBounds.size.y);
+                    mob.setPosition(mobBounds.position.x, monsterBounds.position.y - mobBounds.size.y);
                 }
                 else if (mob.hasCollidedTop(mobBounds, monsterBounds)) {
                     mob.setVeloctiy(sf::Vector2f(mob.getVelocity().x, 0.f));
-                    mob.setPosition(mobBounds.position.x,
-                                    monsterBounds.position.y + monsterBounds.size.y);
+                    mob.setPosition(mobBounds.position.x, monsterBounds.position.y + monsterBounds.size.y);
                 }
 
                 if (mob.hasCollidedRight(mobBounds, monsterBounds)) {
                     mob.setVeloctiy(sf::Vector2f(0.f, mob.getVelocity().y));
-                    mob.setPosition(monsterBounds.position.x - mobBounds.size.x,
-                                    mobBounds.position.y);
+                    mob.setPosition(monsterBounds.position.x - mobBounds.size.x, mobBounds.position.y);
                 }
                 else if (mob.hasCollidedLeft(mobBounds, monsterBounds)) {
                     mob.setVeloctiy(sf::Vector2f(0.f, mob.getVelocity().y));
-                    mob.setPosition(monsterBounds.position.x + monsterBounds.size.x,
-                                    mobBounds.position.y);
+                    mob.setPosition(monsterBounds.position.x + monsterBounds.size.x, mobBounds.position.y);
                 }
             }
         }
     }
 }
 
-void MonsterSystem::spawnMonsters(
-    const std::vector<sf::FloatRect> &obstaclesBounds, uint32_t wave)
+void MonsterSystem::spawnMonsters(const std::vector<sf::FloatRect> &obstaclesBounds, uint32_t wave)
 {
     float wave_mod = 1.f + static_cast<uint32_t>(wave / 10.f) * 2.f;
     const float minSpawnDistance = calcX(3.f * this->gridSize, this->vm);
@@ -234,19 +217,15 @@ void MonsterSystem::spawnMonsters(
             rx = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
             ry = static_cast<uint32_t>(Random::Float() * 30.f) + 1;
 
-            const float monsterWidth =
-                (id == 4) ? calcX(128, vm) : calcX(64, vm);
-            const float monsterHeight =
-                (id == 4) ? calcX(128, vm) : calcX(64, vm);
-            monsterBounds = sf::FloatRect({calcX(this->gridSize * rx, this->vm),
-                                          calcY(this->gridSize * ry, this->vm)},
+            const float monsterWidth = (id == 4) ? calcX(128, vm) : calcX(64, vm);
+            const float monsterHeight = (id == 4) ? calcX(128, vm) : calcX(64, vm);
+            monsterBounds = sf::FloatRect({calcX(this->gridSize * rx, this->vm), calcY(this->gridSize * ry, this->vm)},
                                           {monsterWidth, monsterHeight});
 
             canSpawnMonster = true;
 
             if (monsterBounds.findIntersection(player.getGlobalBounds()) ||
-                vectorDistance(monsterBounds.position.x, monsterBounds.position.y,
-                               player.getPosition().x,
+                vectorDistance(monsterBounds.position.x, monsterBounds.position.y, player.getPosition().x,
                                player.getPosition().y) <= minSpawnDistance) {
                 canSpawnMonster = false;
                 continue;
@@ -270,20 +249,16 @@ void MonsterSystem::spawnMonsters(
             }
 
             if (id == 4 && canSpawnMonster) {
-                sf::FloatRect monsterBounds2(
-                    {monsterBounds.position.x + this->gridSize, monsterBounds.position.y},
+                sf::FloatRect monsterBounds2({monsterBounds.position.x + this->gridSize, monsterBounds.position.y},
+                                             {monsterWidth, monsterHeight});
+                sf::FloatRect monsterBounds3({monsterBounds.position.x, monsterBounds.position.y + this->gridSize},
+                                             {monsterWidth, monsterHeight});
+                sf::FloatRect monsterBounds4(
+                    {monsterBounds.position.x + this->gridSize, monsterBounds.position.y + this->gridSize},
                     {monsterWidth, monsterHeight});
-                sf::FloatRect monsterBounds3({monsterBounds.position.x,
-                                             monsterBounds.position.y + this->gridSize},
-                                             {monsterWidth, monsterHeight});
-                sf::FloatRect monsterBounds4({monsterBounds.position.x +
-                                                 this->gridSize,
-                                             monsterBounds.position.y + this->gridSize},
-                                             {monsterWidth, monsterHeight});
 
                 for (const auto &obstacle : obstaclesBounds) {
-                    if (monsterBounds2.findIntersection(obstacle) ||
-                        monsterBounds3.findIntersection(obstacle) ||
+                    if (monsterBounds2.findIntersection(obstacle) || monsterBounds3.findIntersection(obstacle) ||
                         monsterBounds4.findIntersection(obstacle)) {
                         canSpawnMonster = false;
                         break;
@@ -293,8 +268,7 @@ void MonsterSystem::spawnMonsters(
                 if (canSpawnMonster) {
                     for (const auto &mob : this->monsters) {
                         sf::FloatRect mobBounds = mob->getGlobalBounds();
-                        if (monsterBounds2.findIntersection(mobBounds) ||
-                            monsterBounds3.findIntersection(mobBounds) ||
+                        if (monsterBounds2.findIntersection(mobBounds) || monsterBounds3.findIntersection(mobBounds) ||
                             monsterBounds4.findIntersection(mobBounds)) {
                             canSpawnMonster = false;
                             break;
@@ -315,33 +289,28 @@ void MonsterSystem::spawnMonsters(
         switch (id) {
             case 0:
                 this->monsters.emplace_back(std::make_unique<Goblin>(
-                    "GOBLIN", this->vm, calcX(this->gridSize * rx, this->vm),
-                    calcY(this->gridSize * ry, this->vm), this->difficulty_mod,
-                    wave_mod, obstaclesBounds));
+                    "GOBLIN", this->vm, calcX(this->gridSize * rx, this->vm), calcY(this->gridSize * ry, this->vm),
+                    this->difficulty_mod, wave_mod, obstaclesBounds));
                 break;
             case 1:
                 this->monsters.emplace_back(std::make_unique<Spider>(
-                    "SPIDER", this->vm, calcX(this->gridSize * rx, this->vm),
-                    calcY(this->gridSize * ry, this->vm), this->difficulty_mod,
-                    wave_mod, obstaclesBounds));
+                    "SPIDER", this->vm, calcX(this->gridSize * rx, this->vm), calcY(this->gridSize * ry, this->vm),
+                    this->difficulty_mod, wave_mod, obstaclesBounds));
                 break;
             case 2:
-                this->monsters.emplace_back(std::make_unique<Orc>(
-                    "ORC", this->vm, calcX(this->gridSize * rx, this->vm),
-                    calcY(this->gridSize * ry, this->vm), this->difficulty_mod,
-                    wave_mod, obstaclesBounds));
+                this->monsters.emplace_back(std::make_unique<Orc>("ORC", this->vm, calcX(this->gridSize * rx, this->vm),
+                                                                  calcY(this->gridSize * ry, this->vm),
+                                                                  this->difficulty_mod, wave_mod, obstaclesBounds));
                 break;
             case 3:
                 this->monsters.emplace_back(std::make_unique<Cyclops>(
-                    "CYCLOPS", this->vm, calcX(this->gridSize * rx, this->vm),
-                    calcY(this->gridSize * ry, this->vm), this->difficulty_mod,
-                    wave_mod, obstaclesBounds));
+                    "CYCLOPS", this->vm, calcX(this->gridSize * rx, this->vm), calcY(this->gridSize * ry, this->vm),
+                    this->difficulty_mod, wave_mod, obstaclesBounds));
                 break;
             case 4:
                 this->monsters.emplace_back(std::make_unique<Minotaur>(
-                    "MINOTAUR", this->vm, calcX(this->gridSize * rx, this->vm),
-                    calcY(this->gridSize * ry, this->vm), this->difficulty_mod,
-                    wave_mod, obstaclesBounds));
+                    "MINOTAUR", this->vm, calcX(this->gridSize * rx, this->vm), calcY(this->gridSize * ry, this->vm),
+                    this->difficulty_mod, wave_mod, obstaclesBounds));
                 break;
             default:
                 break;
@@ -451,8 +420,7 @@ void MonsterSystem::prepareWave(uint32_t &wave, uint32_t &sumHP)
     }
 }
 
-void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds,
-                           bool &paused, float dt)
+void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds, bool &paused, bool isExtreme, float dt)
 {
     float slowedDt = dt;
 
@@ -481,8 +449,7 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds,
                 }
             }
             else {
-                monster->calculateAI(obstaclesBounds, player,
-                                     this->monstersPositions(), slowedDt);
+                monster->calculateAI(obstaclesBounds, player, this->monstersPositions(), isExtreme, slowedDt);
                 monster->loadAttack(slowedDt);
                 monster->update(slowedDt);
             }
@@ -492,26 +459,19 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds,
                 monster->obstacleCollision(obstaclesBounds);
                 monster->move();
             }
-            if (monster->hasAttackedPlayer(obstaclesBounds, player,
-                                           soundEngineRef,
-                                           floatingTextSystemRef)) {
-                const auto *cyclops =
-                    dynamic_cast<const Cyclops *>(monster.get());
+            if (monster->hasAttackedPlayer(obstaclesBounds, player, soundEngineRef, floatingTextSystemRef)) {
+                const auto *cyclops = dynamic_cast<const Cyclops *>(monster.get());
                 if (cyclops) {
-                    projectileSystemRef.addProjectile(
-                        "STONE", monster->getPosition().x + calcX(24, vm),
-                        monster->getPosition().y + calcY(36, vm),
-                        monster->getDifficultyMod(), player.getCenter(), 0);
+                    projectileSystemRef.addProjectile("STONE", monster->getPosition().x + calcX(24, vm),
+                                                      monster->getPosition().y + calcY(36, vm),
+                                                      monster->getDifficultyMod(), player.getCenter(), 0);
                 }
                 else {
                     floatingTextSystemRef.addFloatingText(
                         gui::FLAMINGO,
                         std::to_string(static_cast<int>(
-                            -round(monster->getAttack() -
-                                   (monster->getAttack() * player.getArmor() *
-                                    0.05f)))),
-                        calcChar(16, vm),
-                        player.getPosition().x + calcX(48, vm),
+                            -round(monster->getAttack() - (monster->getAttack() * player.getArmor() * 0.05f)))),
+                        calcChar(16, vm), player.getPosition().x + calcX(48, vm),
                         player.getPosition().y + calcY(32, vm), false);
                 }
 
@@ -523,20 +483,17 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds,
             }
         }
     }
-    for (auto monster = this->monsters.begin();
-         monster != this->monsters.end();) {
+    for (auto monster = this->monsters.begin(); monster != this->monsters.end();) {
         if ((*monster)->hasDeadCountdownExpired()) {
             player.setPendingXP(player.getPendingXP() + (*monster)->getXP());
             player.setLeveling(true);
-            dropSystemRef.addDrop(
-                "COIN", (*monster)->getPosition().x + calcX(16, vm),
-                (*monster)->getPosition().y + calcY(16, vm),
-                (*monster)->getGold() + player.getGoldReward());
+            dropSystemRef.addDrop("COIN", (*monster)->getPosition().x + calcX(16, vm),
+                                  (*monster)->getPosition().y + calcY(16, vm),
+                                  (*monster)->getGold() + player.getGoldReward());
             if (const uint8_t t = uint8_t(Random::Float() * 4);
-                (this->difficulty_mod == 0.75f && t < 2) || t == 0) {
-                dropSystemRef.addDrop(
-                    "HEART", (*monster)->getPosition().x + calcX(16, vm),
-                    (*monster)->getPosition().y, 1);
+                (this->difficulty_mod == 0.75f && t < 2) || (t == 0 && this->difficulty_mod != 1.5f)) {
+                dropSystemRef.addDrop("HEART", (*monster)->getPosition().x + calcX(16, vm), (*monster)->getPosition().y,
+                                      1);
             }
             monster = this->monsters.erase(monster);
 

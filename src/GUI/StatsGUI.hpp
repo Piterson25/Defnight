@@ -19,7 +19,7 @@ public:
     void updatingXP(float dt);
     void updateLevel();
     void updateHP();
-    void updatingHP(float dt);
+    void updatingHP(bool isExtreme, float dt);
     void updateSprint();
     void updatingSprint(float dt);
 
