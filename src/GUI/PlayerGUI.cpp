@@ -115,8 +115,8 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
     this->bossWave = false;
     this->bossCooldown = 0.f;
 
-    this->texts["BOSS"] =
-        std::make_unique<gui::Text>("Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm), gui::PINK, true);
+    this->texts["BOSS"] = std::make_unique<gui::ShadowText>("Minotaur", calcChar(16, vm), calcX(640, vm),
+                                                            calcY(136, vm), gui::FLAMINGO, true);
     this->sprites["BOSS_BAR"] = std::make_unique<gui::Sprite>("assets/textures/bars.png", calcX(640, vm),
                                                               calcY(158, vm), calcScale(1, vm), true);
     this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {512, 20}));
