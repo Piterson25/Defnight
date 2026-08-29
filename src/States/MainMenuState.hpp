@@ -9,8 +9,7 @@
 
 class MainMenuState : public State {
 public:
-    MainMenuState(float gridSize, sf::RenderWindow &window,
-                  GameSettings &gameSettings, SoundEngine &soundEngine,
+    MainMenuState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings, SoundEngine &soundEngine,
                   MusicEngine &musicEngine, std::stack<State *> &states);
     ~MainMenuState();
 
@@ -29,15 +28,21 @@ private:
         std::unique_ptr<gui::Text> xp;
     };
 
+    struct Map {
+        sf::Texture texture;
+        std::string name;
+        uint32_t number;
+    };
+
+    std::vector<Map> maps;
+
     sf::Texture framesTexture;
     std::vector<RankText> ranksTexts;
     PlayerStats::Rank playerRank;
 
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
-        text_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>> text_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>>
-        sprite_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>> sprite_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
 
     uint16_t page;
@@ -68,7 +73,7 @@ private:
 
     std::vector<std::unique_ptr<gui::Sprite>> abilties;
 
-    std::string map_name;
+    Map chosenMap;
     std::string hero_name;
     std::string difficulty_name;
 };

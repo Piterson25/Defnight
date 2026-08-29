@@ -1,7 +1,7 @@
 #include "TileMap.hpp"
 
-TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName) : vm(t_vm), 
-    backgroundTexture("assets/textures/maps/" + mapName + ".png"), background(backgroundTexture)
+TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName)
+    : vm(t_vm), backgroundTexture("assets/textures/maps/" + mapName + ".png"), background(backgroundTexture)
 {
     background = sf::Sprite(backgroundTexture);
     background.setScale({calcScale(4, vm), calcScale(4, vm)});
@@ -17,6 +17,9 @@ TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName) : vm(t_vm),
     }
     else if (mapName == "permafrost") {
         offsetY = 96.f;
+    }
+    else if (mapName == "volcano") {
+        offsetY = 144.f;
     }
 
     const auto tile = sf::Vector2f(calcX(64, vm), calcY(64, vm));
@@ -107,8 +110,7 @@ const std::vector<sf::FloatRect> &TileMap::getTilesGlobalBounds() const
     return tilesGlobalBounds;
 }
 
-void TileMap::addTile(const std::string &name, const sf::Vector2f &size,
-                      float x, float y)
+void TileMap::addTile(const std::string &name, const sf::Vector2f &size, float x, float y)
 {
     tiles.emplace_back(std::make_unique<Tile>(name, size, x, y));
     tilesGlobalBounds.emplace_back(sf::FloatRect(sf::Vector2f(x, y), size));

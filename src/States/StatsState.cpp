@@ -21,75 +21,79 @@ void StatsState::initGUI()
 
     this->texts["RECORD_WAVE"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["RECORD_WAVE"] + std::to_string(playerData.wave),
-                                    calcChar(24, vm), calcX(640, vm), calcY(192, vm), gui::FLAMINGO, true);
+                                    calcChar(24, vm), calcX(640, vm), calcY(176, vm), gui::FLAMINGO, true);
 
     this->texts["TOTAL_XP"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["TOTAL_XP"] + std::to_string(playerData.xp),
-                                    calcChar(16, vm), calcX(192, vm), calcY(292, vm), gui::LIME, false);
+                                    calcChar(16, vm), calcX(192, vm), calcY(240, vm), gui::LIME, false);
 
     this->texts["RECORD_LEVEL"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["RECORD_LEVEL"] + std::to_string(playerData.maxLevel),
-                                    calcChar(16, vm), calcX(192, vm), calcY(342, vm), gui::LIME, false);
+                                    calcChar(16, vm), calcX(192, vm), calcY(288, vm), gui::LIME, false);
 
     this->texts["TOTAL_KILLS"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["TOTAL_KILLS"] + std::to_string(playerData.kills),
-                                    calcChar(16, vm), calcX(192, vm), calcY(392, vm), gui::RED, false);
+                                    calcChar(16, vm), calcX(192, vm), calcY(336, vm), gui::RED, false);
 
     this->texts["DAMAGE_DEALT"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["DAMAGE_DEALT"] + std::to_string(playerData.damageDealt),
-                                    calcChar(16, vm), calcX(192, vm), calcY(442, vm), gui::RED, false);
+                                    calcChar(16, vm), calcX(192, vm), calcY(384, vm), gui::RED, false);
 
     this->texts["DAMAGE_TAKEN"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["DAMAGE_TAKEN"] + std::to_string(playerData.damageTaken),
-                                    calcChar(16, vm), calcX(192, vm), calcY(492, vm), gui::RED, false);
+                                    calcChar(16, vm), calcX(192, vm), calcY(432, vm), gui::RED, false);
 
     this->texts["TOTAL_DEATHS"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["TOTAL_DEATHS"] + std::to_string(playerData.deaths),
-                                    calcChar(16, vm), calcX(192, vm), calcY(542, vm), gui::RED, false);
+                                    calcChar(16, vm), calcX(192, vm), calcY(480, vm), gui::RED, false);
 
     this->texts["TOTAL_GOLD"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["TOTAL_GOLD"] + std::to_string(playerData.gold),
-                                    calcChar(16, vm), calcX(192, vm), calcY(592, vm), gui::GOLD, false);
+                                    calcChar(16, vm), calcX(192, vm), calcY(528, vm), gui::GOLD, false);
 
     this->texts["BOUGHT_ITEMS"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["BOUGHT_ITEMS"] + std::to_string(playerData.boughtItems),
-                                    calcChar(16, vm), calcX(192, vm), calcY(642, vm), gui::GOLD, false);
+                                    calcChar(16, vm), calcX(192, vm), calcY(576, vm), gui::GOLD, false);
 
     this->texts["TIME_PLAYED"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["TIME_PLAYED"] + std::to_string(playerData.timePlayed) + "m", calcChar(16, vm),
-        calcX(800, vm), calcY(292, vm), gui::LIGHT_GREY, false);
+        calcX(800, vm), calcY(240, vm), gui::LIGHT_GREY, false);
 
     this->texts["TOTAL_PLAYED"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["TOTAL_PLAYED"] + std::to_string(playerData.gamesPlayed),
-                                    calcChar(16, vm), calcX(800, vm), calcY(342, vm), gui::LIGHT_GREY, false);
+                                    calcChar(16, vm), calcX(800, vm), calcY(288, vm), gui::LIGHT_GREY, false);
 
     this->texts["RUINS"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["RUINS"] + ": " + std::to_string(playerData.ruins),
-                                    calcChar(16, vm), calcX(800, vm), calcY(392, vm), gui::WHITE, false);
+                                    calcChar(16, vm), calcX(800, vm), calcY(336, vm), gui::WHITE, false);
 
     this->texts["DESOLATION"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["DESOLATION"] + ": " + std::to_string(playerData.desolation), calcChar(16, vm),
-        calcX(800, vm), calcY(442, vm), gui::WHITE, false);
+        calcX(800, vm), calcY(384, vm), gui::WHITE, false);
 
     this->texts["PERMAFROST"] = std::make_unique<gui::Text>(
         this->gameSettings.lang["PERMAFROST"] + ": " + std::to_string(playerData.permafrost), calcChar(16, vm),
-        calcX(800, vm), calcY(492, vm), gui::WHITE, false);
+        calcX(800, vm), calcY(432, vm), gui::WHITE, false);
+
+    this->texts["VOLCANO"] =
+        std::make_unique<gui::Text>(this->gameSettings.lang["VOLCANO"] + ": " + std::to_string(playerData.volcano),
+                                    calcChar(16, vm), calcX(800, vm), calcY(480, vm), gui::WHITE, false);
 
     this->texts["EASY"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["EASY"] + ": " + std::to_string(playerData.easy),
-                                    calcChar(16, vm), calcX(800, vm), calcY(542, vm), gui::WHITE, false);
+                                    calcChar(16, vm), calcX(800, vm), calcY(528, vm), gui::WHITE, false);
 
     this->texts["NORMAL"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["NORMAL"] + ": " + std::to_string(playerData.normal),
-                                    calcChar(16, vm), calcX(800, vm), calcY(592, vm), gui::WHITE, false);
+                                    calcChar(16, vm), calcX(800, vm), calcY(576, vm), gui::WHITE, false);
 
     this->texts["HARD"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["HARD"] + ": " + std::to_string(playerData.hard),
-                                    calcChar(16, vm), calcX(800, vm), calcY(642, vm), gui::WHITE, false);
+                                    calcChar(16, vm), calcX(800, vm), calcY(624, vm), gui::WHITE, false);
 
     this->texts["EXTREME"] =
         std::make_unique<gui::Text>(this->gameSettings.lang["EXTREME"] + ": " + std::to_string(playerData.extreme),
-                                    calcChar(16, vm), calcX(800, vm), calcY(692, vm), gui::WHITE, false);
+                                    calcChar(16, vm), calcX(800, vm), calcY(672, vm), gui::WHITE, false);
 }
 
 void StatsState::resetGUI()
@@ -136,6 +140,7 @@ void StatsState::draw(sf::RenderTarget *target)
     this->texts["RUINS"]->draw(*target);
     this->texts["DESOLATION"]->draw(*target);
     this->texts["PERMAFROST"]->draw(*target);
+    this->texts["VOLCANO"]->draw(*target);
     this->texts["EASY"]->draw(*target);
     this->texts["NORMAL"]->draw(*target);
     this->texts["HARD"]->draw(*target);

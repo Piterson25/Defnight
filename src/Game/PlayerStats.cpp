@@ -14,7 +14,7 @@ const uint8_t PlayerStats::iv[16] = {0x00, 0x11, 0x22, 0x33, 0x44, 0x55, 0x66, 0
 
 void PlayerStats::resetStats()
 {
-    PlayerData emptyPlayerdata{0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    PlayerData emptyPlayerdata{0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
     struct AES_ctx ctx;
     AES_init_ctx_iv(&ctx, key, iv);
@@ -30,7 +30,7 @@ void PlayerStats::resetStats()
 
 void PlayerStats::saveStats(PlayerData &playerdata)
 {
-    PlayerData loadedPlayerData{0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+    PlayerData loadedPlayerData{0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
     loadStats(loadedPlayerData);
 
     playerdata.wave = std::max(playerdata.wave, loadedPlayerData.wave);
@@ -48,6 +48,7 @@ void PlayerStats::saveStats(PlayerData &playerdata)
     playerdata.ruins = playerdata.ruins + loadedPlayerData.ruins;
     playerdata.desolation = playerdata.desolation + loadedPlayerData.desolation;
     playerdata.permafrost = playerdata.permafrost + loadedPlayerData.permafrost;
+    playerdata.volcano = playerdata.volcano + loadedPlayerData.volcano;
     playerdata.easy = playerdata.easy + loadedPlayerData.easy;
     playerdata.normal = playerdata.normal + loadedPlayerData.normal;
     playerdata.hard = playerdata.hard + loadedPlayerData.hard;

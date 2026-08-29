@@ -143,6 +143,7 @@ void GameState::savePlayerData()
                                        static_cast<uint32_t>(this->mapName == "ruins"),
                                        static_cast<uint32_t>(this->mapName == "desolation"),
                                        static_cast<uint32_t>(this->mapName == "permafrost"),
+                                       static_cast<uint32_t>(this->mapName == "volcano"),
                                        static_cast<uint32_t>(this->difficultyName == "EASY"),
                                        static_cast<uint32_t>(this->difficultyName == "NORMAL"),
                                        static_cast<uint32_t>(this->difficultyName == "HARD"),

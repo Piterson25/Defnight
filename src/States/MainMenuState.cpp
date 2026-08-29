@@ -45,14 +45,17 @@ void MainMenuState::initGUI()
     this->mapView.setSize(sf::Vector2f(static_cast<float>(vm.size.x), static_cast<float>(vm.size.y)));
     this->mapView.setCenter({static_cast<float>(vm.size.x * 0.5f), static_cast<float>(vm.size.y * 0.5f)});
 
-    if (const uint8_t m = static_cast<uint8_t>(Random::Float() * 3.f); m == 0) {
+    if (const uint8_t m = static_cast<uint8_t>(Random::Float() * 4.f); m == 0) {
         this->map_texture = sf::Texture("assets/textures/maps/ruins.png");
     }
     else if (m == 1) {
         this->map_texture = sf::Texture("assets/textures/maps/desolation.png");
     }
-    else {
+    else if (m == 2) {
         this->map_texture = sf::Texture("assets/textures/maps/permafrost.png");
+    }
+    else {
+        this->map_texture = sf::Texture("assets/textures/maps/volcano.png");
     }
 
     this->map = sf::Sprite(this->map_texture);
@@ -112,27 +115,27 @@ void MainMenuState::initGUI()
     this->sprite_buttons["GO_BACK"] = std::make_unique<gui::ButtonSprite>(gui::RECT_ARROW, calcX(32, vm), calcY(24, vm),
                                                                           calcX(4, vm), gui::GREY, gui::WHITE, false);
 
-    this->map_name = "";
+    maps.emplace_back(Map{sf::Texture("assets/textures/maps/ruins.png"), "ruins", 0});
+    maps.emplace_back(Map{sf::Texture("assets/textures/maps/desolation.png"), "desolation", 1});
+    maps.emplace_back(Map{sf::Texture("assets/textures/maps/permafrost.png"), "permafrost", 2});
+    maps.emplace_back(Map{sf::Texture("assets/textures/maps/volcano.png"), "volcano", 3});
+
+    this->chosenMap = maps[0];
     this->texts["CHOOSE_MAP"] = std::make_unique<gui::Text>(this->lang["CHOOSE_MAP"], calcChar(32, vm), calcX(640, vm),
                                                             calcY(96, vm), gui::WHITE, true);
-    this->sprite_buttons["MAP1"] = std::make_unique<gui::ButtonSprite>(gui::RECT_MAP, calcX(24, vm), calcY(248, vm),
-                                                                       calcScale(1, vm), gui::GREY, gui::WHITE, false);
-    this->sprites["MAP1"] = std::make_unique<gui::Sprite>("assets/textures/maps/ruins.png", calcX(48, vm),
-                                                          calcY(272, vm), calcScale(0.5f, vm), false);
-    this->texts["RUINS"] = std::make_unique<gui::Text>(this->lang["RUINS"], calcChar(32, vm), calcX(176, vm),
-                                                       calcY(200, vm), gui::WHITE, true);
-    this->sprite_buttons["MAP2"] = std::make_unique<gui::ButtonSprite>(gui::RECT_MAP, calcX(472, vm), calcY(248, vm),
-                                                                       calcScale(1, vm), gui::GREY, gui::WHITE, false);
-    this->sprites["MAP2"] = std::make_unique<gui::Sprite>("assets/textures/maps/desolation.png", calcX(496, vm),
-                                                          calcY(272, vm), calcScale(0.5f, vm), false);
-    this->texts["DESOLATION"] = std::make_unique<gui::Text>(this->lang["DESOLATION"], calcChar(32, vm), calcX(624, vm),
-                                                            calcY(200, vm), gui::WHITE, true);
-    this->sprite_buttons["MAP3"] = std::make_unique<gui::ButtonSprite>(gui::RECT_MAP, calcX(920, vm), calcY(248, vm),
-                                                                       calcScale(1, vm), gui::GREY, gui::WHITE, false);
-    this->sprites["MAP3"] = std::make_unique<gui::Sprite>("assets/textures/maps/permafrost.png", calcX(944, vm),
-                                                          calcY(272, vm), calcScale(0.5f, vm), false);
-    this->texts["PERMAFROST"] = std::make_unique<gui::Text>(this->lang["PERMAFROST"], calcChar(32, vm), calcX(1072, vm),
-                                                            calcY(200, vm), gui::WHITE, true);
+
+    this->sprite_buttons["MAP_LEFT_ARROW"] = std::make_unique<gui::ButtonSprite>(
+        gui::RECT_SMALL_ARROW, calcX(400, vm), calcY(400, vm), calcScale(4, vm), gui::GREY, gui::WHITE, true);
+    this->sprite_buttons["MAP_RIGHT_ARROW"] = std::make_unique<gui::ButtonSprite>(
+        gui::RECT_SMALL_ARROW, calcX(864, vm), calcY(400, vm), calcScale(4, vm), gui::GREY, gui::WHITE, false);
+    this->sprite_buttons["MAP_RIGHT_ARROW"]->flipHorizontal();
+
+    this->sprite_buttons["CHOSEN_MAP"] = std::make_unique<gui::ButtonSprite>(
+        gui::RECT_MAP, calcX(472, vm), calcY(248, vm), calcScale(1, vm), gui::GREY, gui::WHITE, false);
+    this->sprites["CHOSEN_MAP"] =
+        std::make_unique<gui::Sprite>(maps[0].texture, calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
+    this->texts["CHOSEN_MAP"] = std::make_unique<gui::Text>(this->lang[toUpperCase(maps[0].name)], calcChar(32, vm),
+                                                            calcX(624, vm), calcY(200, vm), gui::WHITE, true);
 
     // PAGE 3
 
@@ -453,7 +456,10 @@ void MainMenuState::update(float dt)
                 if (!quitwindow) {
                     if (this->text_buttons["PLAY"]->isPressed(this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
-                        this->map_name = "";
+                        this->chosenMap = maps[0];
+                        this->texts["CHOSEN_MAP"]->setText(this->lang[toUpperCase(chosenMap.name)]);
+                        this->sprites["CHOSEN_MAP"] = std::make_unique<gui::Sprite>(
+                            chosenMap.texture, calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
                         this->page = 2;
                     }
                     else if (this->text_buttons["STATISTICS"]->isPressed(this->mousePosWindow)) {
@@ -495,22 +501,36 @@ void MainMenuState::update(float dt)
                 if (this->sprite_buttons["GO_BACK"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     --this->page;
-                    this->map_name = "";
                 }
 
-                if (this->sprite_buttons["MAP1"]->isPressed(this->mousePosWindow)) {
+                if (this->sprite_buttons["MAP_LEFT_ARROW"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
-                    this->map_name = "ruins";
-                    this->page = 3;
+                    if (chosenMap.number == 0) {
+                        chosenMap = maps[maps.size() - 1];
+                    }
+                    else {
+                        chosenMap = maps[chosenMap.number - 1];
+                    }
+                    this->texts["CHOSEN_MAP"]->setText(this->lang[toUpperCase(chosenMap.name)]);
+                    this->sprites["CHOSEN_MAP"] = std::make_unique<gui::Sprite>(
+                        chosenMap.texture, calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
                 }
-                else if (this->sprite_buttons["MAP2"]->isPressed(this->mousePosWindow)) {
+
+                if (this->sprite_buttons["MAP_RIGHT_ARROW"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
-                    this->map_name = "desolation";
-                    this->page = 3;
+                    if (chosenMap.number == (maps.size() - 1)) {
+                        chosenMap = maps[0];
+                    }
+                    else {
+                        chosenMap = maps[chosenMap.number + 1];
+                    }
+                    this->texts["CHOSEN_MAP"]->setText(this->lang[toUpperCase(chosenMap.name)]);
+                    this->sprites["CHOSEN_MAP"] = std::make_unique<gui::Sprite>(
+                        chosenMap.texture, calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
                 }
-                else if (this->sprite_buttons["MAP3"]->isPressed(this->mousePosWindow)) {
+
+                if (this->sprite_buttons["CHOSEN_MAP"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
-                    this->map_name = "permafrost";
                     this->page = 3;
                 }
                 break;
@@ -548,8 +568,8 @@ void MainMenuState::update(float dt)
                     this->difficulty_name = "EASY";
                     this->page = 1;
                     this->states.push(new GameState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
-                                                    this->musicEngine, this->states, this->map_name, this->hero_name,
-                                                    this->difficulty_name));
+                                                    this->musicEngine, this->states, this->chosenMap.name,
+                                                    this->hero_name, this->difficulty_name));
                     this->choosing_hero = false;
                     this->loadedPlayerData = false;
                 }
@@ -558,8 +578,8 @@ void MainMenuState::update(float dt)
                     this->difficulty_name = "NORMAL";
                     this->page = 1;
                     this->states.push(new GameState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
-                                                    this->musicEngine, this->states, this->map_name, this->hero_name,
-                                                    this->difficulty_name));
+                                                    this->musicEngine, this->states, this->chosenMap.name,
+                                                    this->hero_name, this->difficulty_name));
                     this->choosing_hero = false;
                     this->loadedPlayerData = false;
                 }
@@ -568,8 +588,8 @@ void MainMenuState::update(float dt)
                     this->difficulty_name = "HARD";
                     this->page = 1;
                     this->states.push(new GameState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
-                                                    this->musicEngine, this->states, this->map_name, this->hero_name,
-                                                    this->difficulty_name));
+                                                    this->musicEngine, this->states, this->chosenMap.name,
+                                                    this->hero_name, this->difficulty_name));
                     this->choosing_hero = false;
                     this->loadedPlayerData = false;
                 }
@@ -578,8 +598,8 @@ void MainMenuState::update(float dt)
                     this->difficulty_name = "EXTREME";
                     this->page = 1;
                     this->states.push(new GameState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
-                                                    this->musicEngine, this->states, this->map_name, this->hero_name,
-                                                    this->difficulty_name));
+                                                    this->musicEngine, this->states, this->chosenMap.name,
+                                                    this->hero_name, this->difficulty_name));
                     this->choosing_hero = false;
                     this->loadedPlayerData = false;
                 }
@@ -662,16 +682,11 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->sprite_buttons["GO_BACK"]->draw(*target);
 
             this->texts["CHOOSE_MAP"]->draw(*target);
-            this->sprites["MAP1"]->draw(*target);
-            this->sprite_buttons["MAP1"]->draw(*target);
-            this->sprites["MAP2"]->draw(*target);
-            this->sprite_buttons["MAP2"]->draw(*target);
-            this->sprites["MAP3"]->draw(*target);
-            this->sprite_buttons["MAP3"]->draw(*target);
-
-            this->texts["RUINS"]->draw(*target);
-            this->texts["DESOLATION"]->draw(*target);
-            this->texts["PERMAFROST"]->draw(*target);
+            this->sprite_buttons["MAP_LEFT_ARROW"]->draw(*target);
+            this->sprite_buttons["MAP_RIGHT_ARROW"]->draw(*target);
+            this->texts["CHOSEN_MAP"]->draw(*target);
+            this->sprites["CHOSEN_MAP"]->draw(*target);
+            this->sprite_buttons["CHOSEN_MAP"]->draw(*target);
             break;
         case 3:
             this->sprite_buttons["GO_BACK"]->draw(*target);

@@ -19,6 +19,7 @@ public:
         uint32_t ruins;
         uint32_t desolation;
         uint32_t permafrost;
+        uint32_t volcano;
         uint32_t easy;
         uint32_t normal;
         uint32_t hard;
