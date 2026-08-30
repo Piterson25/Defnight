@@ -11,15 +11,15 @@ TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName)
     vertexArray.resize(static_cast<size_t>(calcX(64 * 64 * 6, vm)));
     std::ifstream map("assets/maps/" + mapName + ".txt");
 
-    float offsetY = 0.f;
+    float offsetX = 0.f;
     if (mapName == "desolation") {
-        offsetY = 48.f;
+        offsetX = 48.f;
     }
     else if (mapName == "permafrost") {
-        offsetY = 96.f;
+        offsetX = 96.f;
     }
     else if (mapName == "volcano") {
-        offsetY = 144.f;
+        offsetX = 144.f;
     }
 
     const auto tile = sf::Vector2f(calcX(64, vm), calcY(64, vm));
@@ -41,12 +41,12 @@ TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName)
                     triangles[4].position = sf::Vector2f(x + tileSize, y + tileSize);
                     triangles[5].position = sf::Vector2f(x, y + tileSize);
 
-                    triangles[0].texCoords = sf::Vector2f(48, 16 + offsetY);
-                    triangles[1].texCoords = sf::Vector2f(64, 16 + offsetY);
-                    triangles[2].texCoords = sf::Vector2f(64, 32 + offsetY);
-                    triangles[3].texCoords = sf::Vector2f(48, 16 + offsetY);
-                    triangles[4].texCoords = sf::Vector2f(64, 32 + offsetY);
-                    triangles[5].texCoords = sf::Vector2f(48, 32 + offsetY);
+                    triangles[0].texCoords = sf::Vector2f(64 + offsetX, 48);
+                    triangles[1].texCoords = sf::Vector2f(80 + offsetX, 48);
+                    triangles[2].texCoords = sf::Vector2f(80 + offsetX, 64);
+                    triangles[3].texCoords = sf::Vector2f(64 + offsetX, 48);
+                    triangles[4].texCoords = sf::Vector2f(80 + offsetX, 64);
+                    triangles[5].texCoords = sf::Vector2f(64 + offsetX, 64);
                 }
                 else if (temp[i] == '@') {
                     addTile("wall", tile, x, y);
@@ -58,12 +58,12 @@ TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName)
                     triangles[4].position = sf::Vector2f(x + tileSize, y + tileSize);
                     triangles[5].position = sf::Vector2f(x, y + tileSize);
 
-                    triangles[0].texCoords = sf::Vector2f(64, 16 + offsetY);
-                    triangles[1].texCoords = sf::Vector2f(80, 16 + offsetY);
-                    triangles[2].texCoords = sf::Vector2f(80, 32 + offsetY);
-                    triangles[3].texCoords = sf::Vector2f(64, 16 + offsetY);
-                    triangles[4].texCoords = sf::Vector2f(80, 32 + offsetY);
-                    triangles[5].texCoords = sf::Vector2f(64, 32 + offsetY);
+                    triangles[0].texCoords = sf::Vector2f(80 + offsetX, 48);
+                    triangles[1].texCoords = sf::Vector2f(96 + offsetX, 48);
+                    triangles[2].texCoords = sf::Vector2f(96 + offsetX, 64);
+                    triangles[3].texCoords = sf::Vector2f(80 + offsetX, 48);
+                    triangles[4].texCoords = sf::Vector2f(96 + offsetX, 64);
+                    triangles[5].texCoords = sf::Vector2f(80 + offsetX, 64);
                 }
                 x += pos;
                 t++;
