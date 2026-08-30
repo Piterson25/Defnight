@@ -65,6 +65,9 @@ TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName)
                     triangles[4].texCoords = sf::Vector2f(96 + offsetX, 64);
                     triangles[5].texCoords = sf::Vector2f(80 + offsetX, 64);
                 }
+                else if (temp[i] == 'L') {
+                    addTile("wall", tile, x, y);
+                }
                 x += pos;
                 t++;
             }
