@@ -125,17 +125,17 @@ void MainMenuState::initGUI()
                                                             calcY(96, vm), gui::WHITE, true);
 
     this->sprite_buttons["MAP_LEFT_ARROW"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_SMALL_ARROW, calcX(400, vm), calcY(400, vm), calcScale(4, vm), gui::GREY, gui::WHITE, true);
+        gui::RECT_SMALL_ARROW, calcX(408, vm), calcY(372, vm), calcScale(4, vm), gui::GREY, gui::WHITE, true);
     this->sprite_buttons["MAP_RIGHT_ARROW"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_SMALL_ARROW, calcX(864, vm), calcY(400, vm), calcScale(4, vm), gui::GREY, gui::WHITE, false);
+        gui::RECT_SMALL_ARROW, calcX(888, vm), calcY(372, vm), calcScale(4, vm), gui::GREY, gui::WHITE, false);
     this->sprite_buttons["MAP_RIGHT_ARROW"]->flipHorizontal();
 
     this->sprite_buttons["CHOSEN_MAP"] = std::make_unique<gui::ButtonSprite>(
-        gui::RECT_MAP, calcX(472, vm), calcY(248, vm), calcScale(1, vm), gui::GREY, gui::WHITE, false);
+        gui::RECT_MAP, calcX(640, vm), calcY(248, vm), calcScale(1, vm), gui::GREY, gui::WHITE, true);
     this->sprites["CHOSEN_MAP"] =
-        std::make_unique<gui::Sprite>(maps[0].texture, calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
-    this->texts["CHOSEN_MAP"] = std::make_unique<gui::Text>(this->lang[toUpperCase(maps[0].name)], calcChar(32, vm),
-                                                            calcX(624, vm), calcY(200, vm), gui::WHITE, true);
+        std::make_unique<gui::Sprite>(chosenMap.texture, calcX(640, vm), calcY(272, vm), calcScale(0.5f, vm), true);
+    this->texts["CHOSEN_MAP"] = std::make_unique<gui::Text>(this->lang[toUpperCase(chosenMap.name)], calcChar(32, vm),
+                                                            calcX(640, vm), calcY(200, vm), gui::WHITE, true);
 
     // PAGE 3
 
@@ -458,8 +458,9 @@ void MainMenuState::update(float dt)
                         this->soundEngine.addSound("button");
                         this->chosenMap = maps[0];
                         this->texts["CHOSEN_MAP"]->setText(this->lang[toUpperCase(chosenMap.name)]);
+                        this->texts["CHOSEN_MAP"]->center(calcX(640, vm));
                         this->sprites["CHOSEN_MAP"] = std::make_unique<gui::Sprite>(
-                            chosenMap.texture, calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
+                            chosenMap.texture, calcX(640, vm), calcY(272, vm), calcScale(0.5f, vm), true);
                         this->page = 2;
                     }
                     else if (this->text_buttons["STATISTICS"]->isPressed(this->mousePosWindow)) {
@@ -502,8 +503,7 @@ void MainMenuState::update(float dt)
                     this->soundEngine.addSound("button");
                     --this->page;
                 }
-
-                if (this->sprite_buttons["MAP_LEFT_ARROW"]->isPressed(this->mousePosWindow)) {
+                else if (this->sprite_buttons["MAP_LEFT_ARROW"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     if (chosenMap.number == 0) {
                         chosenMap = maps[maps.size() - 1];
@@ -512,11 +512,11 @@ void MainMenuState::update(float dt)
                         chosenMap = maps[chosenMap.number - 1];
                     }
                     this->texts["CHOSEN_MAP"]->setText(this->lang[toUpperCase(chosenMap.name)]);
+                    this->texts["CHOSEN_MAP"]->center(calcX(640, vm));
                     this->sprites["CHOSEN_MAP"] = std::make_unique<gui::Sprite>(
-                        chosenMap.texture, calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
+                        chosenMap.texture, calcX(640, vm), calcY(272, vm), calcScale(0.5f, vm), true);
                 }
-
-                if (this->sprite_buttons["MAP_RIGHT_ARROW"]->isPressed(this->mousePosWindow)) {
+                else if (this->sprite_buttons["MAP_RIGHT_ARROW"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     if (chosenMap.number == (maps.size() - 1)) {
                         chosenMap = maps[0];
@@ -525,11 +525,11 @@ void MainMenuState::update(float dt)
                         chosenMap = maps[chosenMap.number + 1];
                     }
                     this->texts["CHOSEN_MAP"]->setText(this->lang[toUpperCase(chosenMap.name)]);
+                    this->texts["CHOSEN_MAP"]->center(calcX(640, vm));
                     this->sprites["CHOSEN_MAP"] = std::make_unique<gui::Sprite>(
-                        chosenMap.texture, calcX(496, vm), calcY(272, vm), calcScale(0.5f, vm), false);
+                        chosenMap.texture, calcX(640, vm), calcY(272, vm), calcScale(0.5f, vm), true);
                 }
-
-                if (this->sprite_buttons["CHOSEN_MAP"]->isPressed(this->mousePosWindow)) {
+                else if (this->sprite_buttons["CHOSEN_MAP"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     this->page = 3;
                 }
