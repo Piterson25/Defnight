@@ -277,20 +277,24 @@ void MainMenuState::initGUI()
 
     this->texts["CREDITS"] = std::make_unique<gui::Text>(this->lang["CREDITS"], calcChar(32, vm), calcX(640, vm),
                                                          calcY(96, vm), gui::WHITE, true);
-    this->texts["MAIN_CREATOR"] = std::make_unique<gui::Text>(this->lang["MAIN_CREATOR"], calcChar(16, vm),
+    this->texts["MAIN_CREATOR"] = std::make_unique<gui::Text>(this->lang["MAIN_CREATOR"], calcChar(24, vm),
                                                               calcX(400, vm), calcY(192, vm), gui::WHITE, false);
     this->texts["CREATOR_LIST"] =
-        std::make_unique<gui::Text>("Piterson25", calcChar(16, vm), calcX(722, vm), calcY(192, vm), gui::LIME, false);
-    this->texts["ARTIST"] = std::make_unique<gui::Text>(this->lang["ARTIST"], calcChar(16, vm), calcX(400, vm),
+        std::make_unique<gui::Text>("Piterson25", calcChar(24, vm), calcX(722, vm), calcY(192, vm), gui::LIME, false);
+    this->texts["ARTIST"] = std::make_unique<gui::Text>(this->lang["ARTIST"], calcChar(24, vm), calcX(400, vm),
                                                         calcY(292, vm), gui::WHITE, false);
     this->texts["ARTIST_LIST"] =
-        std::make_unique<gui::Text>("Nithorax", calcChar(16, vm), calcX(722, vm), calcY(292, vm), gui::RED, false);
-    this->texts["TESTERS"] = std::make_unique<gui::Text>(this->lang["TESTERS"], calcChar(16, vm), calcX(400, vm),
-                                                         calcY(392, vm), gui::WHITE, false);
-    this->text_buttons["SZMIGIELKO"] = std::make_unique<gui::ButtonText>(
-        "Szmigielko", calcChar(16, vm), calcX(722, vm), calcY(392, vm), gui::LIGHT_BLUE, gui::WHITE, false);
-    this->texts["TESTERS_LIST"] = std::make_unique<gui::Text>("Raspar\n\nKeku\n\nyouhOrin", calcChar(16, vm),
-                                                              calcX(722, vm), calcY(424, vm), gui::LIGHT_BLUE, false);
+        std::make_unique<gui::Text>("Nithorax", calcChar(24, vm), calcX(722, vm), calcY(292, vm), gui::RED, false);
+    this->texts["SOUNDS"] = std::make_unique<gui::Text>(this->lang["SOUNDS"], calcChar(24, vm), calcX(400, vm),
+                                                        calcY(392, vm), gui::WHITE, false);
+    this->text_buttons["RASPAR"] = std::make_unique<gui::ButtonText>(
+        "Raspar", calcChar(24, vm), calcX(722, vm), calcY(392, vm), gui::LIGHT_BLUE, gui::WHITE, false);
+    this->texts["TESTERS"] = std::make_unique<gui::Text>(this->lang["TESTERS"], calcChar(24, vm), calcX(400, vm),
+                                                         calcY(492, vm), gui::WHITE, false);
+    this->text_buttons["SZMIGIELKO"] = std::make_unique<gui::ButtonText>("Szmigielko", calcChar(24, vm), calcX(722, vm),
+                                                                         calcY(492, vm), gui::GREEN, gui::WHITE, false);
+    this->texts["TESTERS_LIST"] = std::make_unique<gui::Text>("Keku\n\nBadKarma\n\nyouhOrin", calcChar(24, vm),
+                                                              calcX(722, vm), calcY(540, vm), gui::GREEN, false);
 
     // PAGE 6
 
@@ -609,6 +613,9 @@ void MainMenuState::update(float dt)
                     this->soundEngine.addSound("button");
                     this->page = 1;
                 }
+                else if (this->text_buttons["RASPAR"]->isPressed(this->mousePosWindow)) {
+                    this->soundEngine.addSound("minotaur_spawn");
+                }
                 else if (this->text_buttons["SZMIGIELKO"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("hi_hi");
                 }
@@ -758,6 +765,8 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->texts["CREATOR_LIST"]->draw(*target);
             this->texts["ARTIST"]->draw(*target);
             this->texts["ARTIST_LIST"]->draw(*target);
+            this->texts["SOUNDS"]->draw(*target);
+            this->text_buttons["RASPAR"]->draw(*target);
             this->texts["TESTERS"]->draw(*target);
             this->text_buttons["SZMIGIELKO"]->draw(*target);
             this->texts["TESTERS_LIST"]->draw(*target);
