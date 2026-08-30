@@ -79,7 +79,7 @@ const bool Monster::hasAttackedPlayer(const std::vector<sf::FloatRect> &obstacle
                 player.setDamageTaken(player.getDamageTaken() + Lattack);
 
                 if (!this->soundPlayed) {
-                    soundEngine.addSound("punch");
+                    soundEngine.addSound(toLowerCase(this->getName()) + "_attack");
                     this->soundPlayed = true;
                 }
 
@@ -111,6 +111,14 @@ void Monster::spawn(float dt)
         this->spawned = true;
         this->sprite.setColor(sf::Color::White);
         this->shadow.setColor(sf::Color::White);
+    }
+}
+
+void Monster::playDeadSound(SoundEngine &soundEngine)
+{
+    if (!this->soundPlayed) {
+        soundEngine.addSound(toLowerCase(this->getName()) + "_death");
+        this->soundPlayed = true;
     }
 }
 

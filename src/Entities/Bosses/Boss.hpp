@@ -4,8 +4,7 @@
 
 class Boss : public Monster {
 public:
-    Boss(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
-         float difficulty_mod, float wave_mod,
+    Boss(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y, float difficulty_mod, float wave_mod,
          const std::vector<sf::FloatRect> &obstaclesBounds);
     virtual ~Boss();
 
@@ -14,6 +13,7 @@ public:
     void resetSpecialAttack();
     void loadSpecialAttack(float dt);
     void specialAttackAnimation(float dt);
+    void playSpawnSound(SoundEngine &soundEngine);
 
     virtual void specialAttack(SoundEngine &soundEngine, float dt) = 0;
     void update(float dt);

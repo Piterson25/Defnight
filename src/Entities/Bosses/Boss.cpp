@@ -1,12 +1,9 @@
 #include "Boss.hpp"
 
-Boss::Boss(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
-           float difficulty_mod, float wave_mod,
+Boss::Boss(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y, float difficulty_mod, float wave_mod,
            const std::vector<sf::FloatRect> &obstaclesBounds)
-    : Monster(t_name, t_vm, t_x, t_y, difficulty_mod, wave_mod,
-              obstaclesBounds),
-      specialAttackTimer(0.f), specialAttackLimit(5.f),
-      specialAttackAnimationReady(false)
+    : Monster(t_name, t_vm, t_x, t_y, difficulty_mod, wave_mod, obstaclesBounds), specialAttackTimer(0.f),
+      specialAttackLimit(5.f), specialAttackAnimationReady(false)
 {
 }
 
@@ -50,12 +47,19 @@ void Boss::specialAttackAnimation(float dt)
     }
 }
 
+void Boss::playSpawnSound(SoundEngine &soundEngine)
+{
+    if (!this->soundPlayed) {
+        soundEngine.addSound(toLowerCase(this->getName()) + "_spawn");
+        this->soundPlayed = true;
+    }
+}
+
 void Boss::update(float dt)
 {
-    this->shadow.setPosition({this->getDownCenter().x -
-                                 this->shadow.getTextureRect().size.x / 2 *
-                                     this->shadow.getScale().x,
-                             this->getDownCenter().y});
+    this->shadow.setPosition(
+        {this->getDownCenter().x - this->shadow.getTextureRect().size.x / 2 * this->shadow.getScale().x,
+         this->getDownCenter().y});
     if (this->soundPlayed && this->frame != 80) {
         this->soundPlayed = false;
     }

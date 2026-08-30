@@ -24,6 +24,7 @@ public:
     const bool hasLineOfSight(const std::vector<sf::FloatRect> &obstaclesBounds, const sf::Vector2f &a_p1,
                               const sf::Vector2f &a_p2);
 
+    void playDeadSound(SoundEngine &soundEngine);
     void dyingAnimation(float dt);
 
     void calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds, Player &player,

@@ -311,6 +311,7 @@ void MonsterSystem::spawnMonsters(const std::vector<sf::FloatRect> &obstaclesBou
                 this->monsters.emplace_back(std::make_unique<Minotaur>(
                     "MINOTAUR", this->vm, calcX(this->gridSize * rx, this->vm), calcY(this->gridSize * ry, this->vm),
                     this->difficulty_mod, wave_mod, obstaclesBounds));
+                soundEngineRef.addSound("minotaur_spawn");
                 break;
             default:
                 break;
@@ -432,6 +433,7 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds, bo
             monster->spawn(dt);
         }
         else if (monster->isDead()) {
+            monster->playDeadSound(soundEngineRef);
             monster->dyingAnimation(dt);
         }
         else if (monster->isPunched()) {
