@@ -7,7 +7,9 @@ GameSettings::GameSettings()
     this->fpsLimit = 60;
     this->fpsCounterOn = true;
     this->musicVolume = 50;
-    this->soundsVolume = 50;
+    this->gameSoundsVolume = 50;
+    this->playerSoundsVolume = 50;
+    this->monsterSoundsVolume = 50;
     this->language = "english";
     this->videoModes = sf::VideoMode::getFullscreenModes();
 }
@@ -29,7 +31,9 @@ void GameSettings::save()
         ofs << this->fpsLimit << '\n';
         ofs << this->fpsCounterOn << '\n';
         ofs << this->musicVolume << '\n';
-        ofs << this->soundsVolume << '\n';
+        ofs << this->gameSoundsVolume << '\n';
+        ofs << this->playerSoundsVolume << '\n';
+        ofs << this->monsterSoundsVolume << '\n';
         ofs << this->language;
     }
     ofs.close();
@@ -47,7 +51,9 @@ void GameSettings::load()
         ifs >> this->fpsLimit;
         ifs >> this->fpsCounterOn;
         ifs >> this->musicVolume;
-        ifs >> this->soundsVolume;
+        ifs >> this->gameSoundsVolume;
+        ifs >> this->playerSoundsVolume;
+        ifs >> this->monsterSoundsVolume;
         ifs >> this->language;
     }
     ifs.close();

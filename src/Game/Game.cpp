@@ -13,11 +13,11 @@ Game::Game() : sfEvent(sf::Event::FocusGained())
     this->createWindow();
     this->setIcon();
     this->initGUI();
-    this->soundEngine = new SoundEngine(this->gameSettings->soundsVolume);
+    this->soundEngine = new SoundEngine(this->gameSettings->gameSoundsVolume, this->gameSettings->playerSoundsVolume,
+                                        this->gameSettings->monsterSoundsVolume);
     this->musicEngine = new MusicEngine(this->gameSettings->musicVolume);
 
-    this->states.push(new MainMenuState(this->gridSize, *this->window,
-                                        *this->gameSettings, *this->soundEngine,
+    this->states.push(new MainMenuState(this->gridSize, *this->window, *this->gameSettings, *this->soundEngine,
                                         *this->musicEngine, this->states));
 }
 
@@ -38,12 +38,10 @@ Game::~Game()
 void Game::createWindow()
 {
     if (this->gameSettings->fullscreen) {
-        this->window = new sf::RenderWindow(this->gameSettings->resolution,
-                                            "Defnight", sf::State::Fullscreen);
+        this->window = new sf::RenderWindow(this->gameSettings->resolution, "Defnight", sf::State::Fullscreen);
     }
     else {
-        this->window = new sf::RenderWindow(this->gameSettings->resolution,
-                                            "Defnight", sf::Style::Close);
+        this->window = new sf::RenderWindow(this->gameSettings->resolution, "Defnight", sf::Style::Close);
     }
 
     this->window->setFramerateLimit(this->gameSettings->fpsLimit);
@@ -62,8 +60,8 @@ void Game::initGUI()
     gui::initVM(vm);
     gui::initFont();
     gui::initTextures();
-    this->fpsCounter = std::make_unique<gui::Text>(
-        "", calcChar(16, vm), calcX(1150, vm), calcY(4, vm), gui::WHITE, false);
+    this->fpsCounter =
+        std::make_unique<gui::Text>("", calcChar(16, vm), calcX(1150, vm), calcY(4, vm), gui::WHITE, false);
 }
 
 void Game::checkEvents()
@@ -102,9 +100,7 @@ void Game::update()
 
         if (this->fpsTimer >= 1.f) {
             this->fpsCounter->setText(std::to_string(this->fps) + " FPS");
-            this->fpsCounter->setPositionX(
-                calcX(1276, this->gameSettings->resolution) -
-                this->fpsCounter->getWidth());
+            this->fpsCounter->setPositionX(calcX(1276, this->gameSettings->resolution) - this->fpsCounter->getWidth());
             this->fps = 0;
             this->fpsTimer = 0.f;
         }
@@ -139,11 +135,12 @@ void Game::update()
         this->setIcon();
         this->initGUI();
         this->musicEngine->setVolume(this->gameSettings->musicVolume);
-        this->soundEngine->setVolume(this->gameSettings->soundsVolume);
+        this->soundEngine->setVolume(this->gameSettings->gameSoundsVolume, SoundType::GAME);
+        this->soundEngine->setVolume(this->gameSettings->playerSoundsVolume, SoundType::PLAYER);
+        this->soundEngine->setVolume(this->gameSettings->monsterSoundsVolume, SoundType::MONSTER);
 
-        this->states.push(new MainMenuState(
-            this->gridSize, *this->window, *this->gameSettings,
-            *this->soundEngine, *this->musicEngine, this->states));
+        this->states.push(new MainMenuState(this->gridSize, *this->window, *this->gameSettings, *this->soundEngine,
+                                            *this->musicEngine, this->states));
     }
 }
 

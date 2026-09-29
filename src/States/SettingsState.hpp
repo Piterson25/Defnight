@@ -5,8 +5,7 @@
 
 class SettingsState : public State {
 public:
-    SettingsState(float gridSize, sf::RenderWindow &window,
-                  GameSettings &gameSettings, SoundEngine &soundEngine,
+    SettingsState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings, SoundEngine &soundEngine,
                   MusicEngine &musicEngine, std::stack<State *> &states);
     ~SettingsState();
 
@@ -36,11 +35,10 @@ public:
         }
     };
 
-    void addSetting(const std::string &t_name, float t_x, float t_y,
-                    const std::string &desc, const std::string &change);
+    void addSetting(const std::string &t_name, float t_x, float t_y, const std::string &desc,
+                    const std::string &change);
 
-    void addKeybind(const std::string &t_name, float t_x, float t_y,
-                    const std::string &desc, const std::string &key);
+    void addKeybind(const std::string &t_name, float t_x, float t_y, const std::string &desc, const std::string &key);
 
     void initGUI();
     void resetGUI();
@@ -65,15 +63,19 @@ private:
     float musicVolume;
     int musicVolume_id;
     std::vector<uint32_t> musicVolumes;
-    float soundsVolume;
-    int soundsVolume_id;
-    std::vector<uint32_t> soundsVolumes;
+    float gameSoundsVolume;
+    int gameSoundsVolume_id;
+    std::vector<uint32_t> gameSoundsVolumes;
+    float playerSoundsVolume;
+    int playerSoundsVolume_id;
+    std::vector<uint32_t> playerSoundsVolumes;
+    float monsterSoundsVolume;
+    int monsterSoundsVolume_id;
+    std::vector<uint32_t> monsterSoundsVolumes;
     std::string language;
 
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
-        text_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>> text_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>>
-        sprite_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>> sprite_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
 };

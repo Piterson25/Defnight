@@ -1,6 +1,7 @@
 #include "SoundEffect.hpp"
 
-SoundEffect::SoundEffect(const std::string &name, float volume) : name(name), sound(buffer)
+SoundEffect::SoundEffect(const std::string &name, float volume, SoundType soundType)
+    : name(name), sound(buffer), soundType(soundType)
 {
     if (!this->buffer.loadFromFile("assets/sounds/" + name + ".wav")) {
         throw("ERROR - COULDN'T LOAD SOUND:" + name);
