@@ -1,7 +1,6 @@
 #include "Projectile.hpp"
 
-Projectile::Projectile(const std::string &t_name, sf::VideoMode &t_vm,
-                       float t_x, float t_y, float difficulty_mod,
+Projectile::Projectile(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y, float difficulty_mod,
                        const sf::Vector2f &coords, float coordsOffset)
     : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f)
 {
@@ -80,7 +79,7 @@ const bool Projectile::isParticleCooldown(float dt)
 {
     this->particleCooldown += dt;
 
-    if (this->particleCooldown > 0.01f) {
+    if (this->particleCooldown > 0.02f) {
         this->particleCooldown = 0.f;
         return true;
     }
@@ -95,9 +94,7 @@ void Projectile::setPiercing(uint32_t t_piercing)
 void Projectile::calculateVelocity(const sf::Vector2f &coords)
 {
     const float addAngle =
-        getAngle(this->sprite.getPosition().x, this->sprite.getPosition().y,
-                 coords.x, coords.y) +
-        90.f;
+        getAngle(this->sprite.getPosition().x, this->sprite.getPosition().y, coords.x, coords.y) + 90.f;
     if (addAngle + this->angle >= 270.f) {
         this->angle = -90.f + this->angle - (270.f - addAngle);
     }
@@ -118,8 +115,7 @@ void Projectile::wallCollision(const std::vector<sf::FloatRect> &obstacles)
 
     for (const auto &obstacleBounds : obstacles) {
         if (vectorDistance(this->sprite.getPosition(),
-                           sf::Vector2f(obstacleBounds.position.x,
-                                        obstacleBounds.position.y)) < distance &&
+                           sf::Vector2f(obstacleBounds.position.x, obstacleBounds.position.y)) < distance &&
             !this->collidedWall && !this->collidedPlayer) {
 
             checkWallCollision(obstacleBounds);
@@ -145,8 +141,7 @@ void Projectile::checkWallCollision(const sf::FloatRect &obstacleBounds)
             this->angle *= -1.f;
         }
         else {
-            this->sprite.setPosition({projectileBounds.position.x,
-                                     wallBounds.position.y - projectileBounds.size.y});
+            this->sprite.setPosition({projectileBounds.position.x, wallBounds.position.y - projectileBounds.size.y});
         }
         this->velocity.y = 0.f;
         this->collidedWall = true;
@@ -156,8 +151,7 @@ void Projectile::checkWallCollision(const sf::FloatRect &obstacleBounds)
             this->angle *= -1.f;
         }
         else {
-            this->sprite.setPosition({projectileBounds.position.x,
-                                     wallBounds.position.y + wallBounds.size.y});
+            this->sprite.setPosition({projectileBounds.position.x, wallBounds.position.y + wallBounds.size.y});
         }
         this->velocity.y = 0.f;
         this->collidedWall = true;
@@ -168,8 +162,7 @@ void Projectile::checkWallCollision(const sf::FloatRect &obstacleBounds)
             this->angle = 180.f - this->angle;
         }
         else {
-            this->sprite.setPosition({wallBounds.position.x - projectileBounds.size.x,
-                                     projectileBounds.position.y});
+            this->sprite.setPosition({wallBounds.position.x - projectileBounds.size.x, projectileBounds.position.y});
         }
         this->velocity.x = 0.f;
         this->collidedWall = true;
@@ -179,8 +172,7 @@ void Projectile::checkWallCollision(const sf::FloatRect &obstacleBounds)
             this->angle = 180.f - this->angle;
         }
         else {
-            this->sprite.setPosition({wallBounds.position.x + wallBounds.size.x,
-                                     projectileBounds.position.y});
+            this->sprite.setPosition({wallBounds.position.x + wallBounds.size.x, projectileBounds.position.y});
         }
         this->velocity.x = 0.f;
         this->collidedWall = true;
@@ -193,8 +185,7 @@ void Projectile::checkWallCollision(const sf::FloatRect &obstacleBounds)
 
 void Projectile::update(float dt)
 {
-    const float vel = (this->speed * 0.2f + 0.8f) * 16.f *
-                      this->sprite.getGlobalBounds().size.x * dt;
+    const float vel = (this->speed * 0.2f + 0.8f) * 16.f * this->sprite.getGlobalBounds().size.x * dt;
 
     this->velocity.x = vel * cos((3.1415f / 180.f) * this->angle);
     this->velocity.y = vel * sin((3.1415f / 180.f) * this->angle);
