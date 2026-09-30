@@ -2,6 +2,16 @@
 
 #include "GUI/GUI.hpp"
 
+enum class MAP { RUINS, DESOLATION, PERMAFROST, VOLCANO };
+enum class HERO { WARRIOR, ARCHER };
+enum class DIFFICULTY { EASY, NORMAL, HARD, EXTREME };
+
+struct CurrentGame {
+    MAP map;
+    HERO hero;
+    DIFFICULTY difficulty;
+};
+
 class PlayerStats {
 public:
     struct PlayerData {

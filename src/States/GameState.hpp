@@ -14,11 +14,8 @@
 
 class GameState : public State {
 public:
-    GameState(float gridSize, sf::RenderWindow &window,
-              GameSettings &gameSettings, SoundEngine &soundEngine,
-              MusicEngine &musicEngine, std::stack<State *> &states,
-              const std::string &mapName, const std::string &playerName,
-              const std::string &difficultyName);
+    GameState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings, SoundEngine &soundEngine,
+              MusicEngine &musicEngine, std::stack<State *> &states, CurrentGame &t_currentGame);
     ~GameState();
 
     void initGUI() override;
@@ -34,15 +31,12 @@ private:
     sf::View view;
     sf::View viewHUD;
 
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
-        text_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>> text_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>>
-        sprite_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>> sprite_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
 
-    std::string mapName;
-    std::string difficultyName;
+    CurrentGame currentGame;
 
     PlayerGUI *playerGUI;
     Player *player;

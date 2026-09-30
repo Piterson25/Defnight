@@ -1,10 +1,8 @@
 #include "GameState.hpp"
 
 GameState::GameState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings, SoundEngine &soundEngine,
-                     MusicEngine &musicEngine, std::stack<State *> &states, const std::string &mapName,
-                     const std::string &playerName, const std::string &difficultyName)
-    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states), mapName(mapName),
-      difficultyName(difficultyName)
+                     MusicEngine &musicEngine, std::stack<State *> &states, CurrentGame &t_currentGame)
+    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states), currentGame(t_currentGame)
 {
     this->musicEngine.clearMusic();
     this->musicEngine.addMusic("battle1.ogg");
@@ -15,11 +13,55 @@ GameState::GameState(float gridSize, sf::RenderWindow &window, GameSettings &gam
     this->musicEngine.addMusic("battle6.ogg");
 
     this->floatingTextSystem = new FloatingTextSystem(this->vm);
+
+    std::string mapName = "ruins";
+    switch (currentGame.map) {
+        case MAP::RUINS:
+            mapName = "ruins";
+            break;
+        case MAP::DESOLATION:
+            mapName = "desolation";
+            break;
+        case MAP::PERMAFROST:
+            mapName = "permafrost";
+            break;
+        case MAP::VOLCANO:
+            mapName = "volcano";
+            break;
+    }
     this->tileMap = new TileMap(vm, mapName);
 
-    if (playerName == "WARRIOR") {
-        this->player = new Warrior(playerName, vm, this->tileMap->getMapSize().x / 2 - calcX(32, vm),
-                                   this->tileMap->getMapSize().y / 2 - calcY(32, vm));
+    std::string heroName = "warrior";
+    switch (currentGame.hero) {
+        case HERO::WARRIOR:
+            heroName = "warrior";
+            this->player = new Warrior(heroName, vm, this->tileMap->getMapSize().x / 2 - calcX(32, vm),
+                                       this->tileMap->getMapSize().y / 2 - calcY(32, vm));
+            break;
+        case HERO::ARCHER:
+            mapName = "archer";
+            break;
+    }
+
+    std::string difficultyName = "NORMAL";
+    float difficultyModifier = 1.0f;
+    switch (currentGame.difficulty) {
+        case DIFFICULTY::EASY:
+            difficultyName = "EASY";
+            difficultyModifier = 0.5f;
+            break;
+        case DIFFICULTY::NORMAL:
+            difficultyName = "NORMAL";
+            difficultyModifier = 1.0f;
+            break;
+        case DIFFICULTY::HARD:
+            difficultyName = "HARD";
+            difficultyModifier = 1.25f;
+            break;
+        case DIFFICULTY::EXTREME:
+            difficultyName = "EXTREME";
+            difficultyModifier = 1.5f;
+            break;
     }
 
     this->playerGUI = new PlayerGUI(this->vm, *this->player, *this->floatingTextSystem, mapName, difficultyName,
@@ -33,24 +75,12 @@ GameState::GameState(float gridSize, sf::RenderWindow &window, GameSettings &gam
 
     Random::Init();
 
-    float modifier = 1.f;
-
-    if (difficultyName == "EASY") {
-        modifier = 0.75f;
-    }
-    else if (difficultyName == "HARD") {
-        modifier = 1.25f;
-    }
-    else if (difficultyName == "EXTREME") {
-        modifier = 1.5f;
-    }
-
-    this->dropSystem = new DropSystem(vm, modifier);
+    this->dropSystem = new DropSystem(vm, difficultyModifier);
 
     this->projectileSystem = new ProjectileSystem(vm);
     this->particleSystem = new ParticleSystem(vm);
 
-    this->monsterSystem = new MonsterSystem(vm, *player, this->gridSize, modifier, *this->playerGUI,
+    this->monsterSystem = new MonsterSystem(vm, *player, this->gridSize, difficultyModifier, *this->playerGUI,
                                             *this->projectileSystem, *this->dropSystem, *this->floatingTextSystem,
                                             this->soundEngine, this->tileMap->getTilesGlobalBounds());
 
@@ -140,14 +170,14 @@ void GameState::savePlayerData()
                                        player->getBoughtItems(),
                                        static_cast<uint32_t>(clock.getElapsedTime().asSeconds()) / 60,
                                        1,
-                                       static_cast<uint32_t>(this->mapName == "ruins"),
-                                       static_cast<uint32_t>(this->mapName == "desolation"),
-                                       static_cast<uint32_t>(this->mapName == "permafrost"),
-                                       static_cast<uint32_t>(this->mapName == "volcano"),
-                                       static_cast<uint32_t>(this->difficultyName == "EASY"),
-                                       static_cast<uint32_t>(this->difficultyName == "NORMAL"),
-                                       static_cast<uint32_t>(this->difficultyName == "HARD"),
-                                       static_cast<uint32_t>(this->difficultyName == "EXTREME")};
+                                       static_cast<uint32_t>(currentGame.map == MAP::RUINS),
+                                       static_cast<uint32_t>(currentGame.map == MAP::DESOLATION),
+                                       static_cast<uint32_t>(currentGame.map == MAP::PERMAFROST),
+                                       static_cast<uint32_t>(currentGame.map == MAP::VOLCANO),
+                                       static_cast<uint32_t>(currentGame.difficulty == DIFFICULTY::EASY),
+                                       static_cast<uint32_t>(currentGame.difficulty == DIFFICULTY::NORMAL),
+                                       static_cast<uint32_t>(currentGame.difficulty == DIFFICULTY::HARD),
+                                       static_cast<uint32_t>(currentGame.difficulty == DIFFICULTY::EXTREME)};
     PlayerStats::saveStats(playerData);
 }
 
@@ -223,7 +253,7 @@ void GameState::update(float dt)
             this->player->spawn(dt);
         }
         else {
-            this->player->controls(GameInputHandler::keybinds, this->difficultyName == "EXTREME", dt);
+            this->player->controls(GameInputHandler::keybinds, currentGame.difficulty == DIFFICULTY::EXTREME, dt);
             if (this->player->isSprinting() && this->player->isParticleCooldown(dt)) {
                 this->particleSystem->addSmallParticle(this->player->getDownCenter(),
                                                        sf::Vector2f(calcX(8, vm), calcY(8, vm)), gui::WHITE);
@@ -326,7 +356,7 @@ void GameState::update(float dt)
             else {
                 this->monsterSystem->playerAttack();
                 this->monsterSystem->update(this->tileMap->getTilesGlobalBounds(), this->paused,
-                                            this->difficultyName == "EXTREME", dt);
+                                            currentGame.difficulty == DIFFICULTY::EXTREME, dt);
                 this->playerGUI->updateBossHP(dt);
             }
         }
@@ -343,7 +373,7 @@ void GameState::update(float dt)
             this->playerGUI->updateHP();
         }
 
-        this->playerGUI->updatingHP(this->soundEngine, this->difficultyName == "EXTREME", dt);
+        this->playerGUI->updatingHP(this->soundEngine, currentGame.difficulty == DIFFICULTY::EXTREME, dt);
         this->playerGUI->updatingSprint(dt);
 
         this->soundEngine.update();

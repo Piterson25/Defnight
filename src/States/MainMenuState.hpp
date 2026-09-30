@@ -30,6 +30,7 @@ private:
 
     struct Map {
         sf::Texture texture;
+        MAP type;
         std::string name;
         uint32_t number;
     };
@@ -73,7 +74,7 @@ private:
 
     std::vector<std::unique_ptr<gui::Sprite>> abilties;
 
+    CurrentGame newGame;
+
     Map chosenMap;
-    std::string hero_name;
-    std::string difficulty_name;
 };

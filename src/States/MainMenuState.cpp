@@ -115,10 +115,10 @@ void MainMenuState::initGUI()
     this->sprite_buttons["GO_BACK"] = std::make_unique<gui::ButtonSprite>(gui::RECT_ARROW, calcX(32, vm), calcY(24, vm),
                                                                           calcX(4, vm), gui::GREY, gui::WHITE, false);
 
-    maps.emplace_back(Map{sf::Texture("assets/textures/maps/ruins.png"), "ruins", 0});
-    maps.emplace_back(Map{sf::Texture("assets/textures/maps/desolation.png"), "desolation", 1});
-    maps.emplace_back(Map{sf::Texture("assets/textures/maps/permafrost.png"), "permafrost", 2});
-    maps.emplace_back(Map{sf::Texture("assets/textures/maps/volcano.png"), "volcano", 3});
+    maps.emplace_back(Map{sf::Texture("assets/textures/maps/ruins.png"), MAP::RUINS, "ruins", 0});
+    maps.emplace_back(Map{sf::Texture("assets/textures/maps/desolation.png"), MAP::DESOLATION, "desolation", 1});
+    maps.emplace_back(Map{sf::Texture("assets/textures/maps/permafrost.png"), MAP::PERMAFROST, "permafrost", 2});
+    maps.emplace_back(Map{sf::Texture("assets/textures/maps/volcano.png"), MAP::VOLCANO, "volcano", 3});
 
     this->chosenMap = maps[0];
     this->texts["CHOOSE_MAP"] = std::make_unique<gui::Text>(this->lang["CHOOSE_MAP"], calcChar(32, vm), calcX(640, vm),
@@ -139,7 +139,6 @@ void MainMenuState::initGUI()
 
     // PAGE 3
 
-    this->hero_name = "";
     this->texts["CHOOSE_HERO"] = std::make_unique<gui::Text>(this->lang["CHOOSE_HERO"], calcChar(32, vm),
                                                              calcX(640, vm), calcY(96, vm), gui::WHITE, true);
     this->sprite_buttons["HERO1"] = std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, calcX(64, vm), calcY(256, vm),
@@ -220,7 +219,6 @@ void MainMenuState::initGUI()
 
     // PAGE 4
 
-    this->difficulty_name = "";
     this->texts["CHOOSE_DIFFICULTY"] = std::make_unique<gui::Text>(this->lang["CHOOSE_DIFFICULTY"], calcChar(32, vm),
                                                                    calcX(640, vm), calcY(96, vm), gui::WHITE, true);
 
@@ -535,6 +533,7 @@ void MainMenuState::update(float dt)
                 }
                 else if (this->sprite_buttons["CHOSEN_MAP"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
+                    newGame.map = chosenMap.type;
                     this->page = 3;
                 }
                 break;
@@ -542,14 +541,13 @@ void MainMenuState::update(float dt)
                 if (this->sprite_buttons["GO_BACK"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     --this->page;
-                    this->hero_name = "";
                     this->choosing_hero = false;
                 }
 
                 if (this->sprite_buttons["HERO1"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     this->choosing_hero = true;
-                    this->hero_name = "WARRIOR";
+                    newGame.hero = HERO::WARRIOR;
                 }
 
                 if (this->choosing_hero) {
@@ -563,47 +561,42 @@ void MainMenuState::update(float dt)
                 if (this->sprite_buttons["GO_BACK"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     --this->page;
-                    this->difficulty_name = "";
                     this->choosing_hero = false;
                 }
 
                 if (this->sprite_buttons["DIFFICULTY1"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
-                    this->difficulty_name = "EASY";
+                    newGame.difficulty = DIFFICULTY::EASY;
                     this->page = 1;
                     this->states.push(new GameState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
-                                                    this->musicEngine, this->states, this->chosenMap.name,
-                                                    this->hero_name, this->difficulty_name));
+                                                    this->musicEngine, this->states, newGame));
                     this->choosing_hero = false;
                     this->loadedPlayerData = false;
                 }
                 else if (this->sprite_buttons["DIFFICULTY2"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
-                    this->difficulty_name = "NORMAL";
+                    newGame.difficulty = DIFFICULTY::NORMAL;
                     this->page = 1;
                     this->states.push(new GameState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
-                                                    this->musicEngine, this->states, this->chosenMap.name,
-                                                    this->hero_name, this->difficulty_name));
+                                                    this->musicEngine, this->states, newGame));
                     this->choosing_hero = false;
                     this->loadedPlayerData = false;
                 }
                 else if (this->sprite_buttons["DIFFICULTY3"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
-                    this->difficulty_name = "HARD";
+                    newGame.difficulty = DIFFICULTY::HARD;
                     this->page = 1;
                     this->states.push(new GameState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
-                                                    this->musicEngine, this->states, this->chosenMap.name,
-                                                    this->hero_name, this->difficulty_name));
+                                                    this->musicEngine, this->states, newGame));
                     this->choosing_hero = false;
                     this->loadedPlayerData = false;
                 }
                 else if (this->sprite_buttons["DIFFICULTY4"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
-                    this->difficulty_name = "EXTREME";
+                    newGame.difficulty = DIFFICULTY::EXTREME;
                     this->page = 1;
                     this->states.push(new GameState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
-                                                    this->musicEngine, this->states, this->chosenMap.name,
-                                                    this->hero_name, this->difficulty_name));
+                                                    this->musicEngine, this->states, newGame));
                     this->choosing_hero = false;
                     this->loadedPlayerData = false;
                 }
