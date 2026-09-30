@@ -12,6 +12,7 @@ Minotaur::Minotaur(const std::string &t_name, sf::VideoMode &t_vm, float t_x, fl
     this->speed = 1;
     this->gold = 50;
     this->XP = static_cast<uint32_t>(200 * wave_mod);
+    this->reg = 2;
 
     this->specialAttackLimit = 5.f;
     this->specialAttackTimer = 0.f;

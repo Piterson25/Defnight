@@ -8,6 +8,13 @@ public:
          const std::vector<sf::FloatRect> &obstaclesBounds);
     virtual ~Boss();
 
+    const uint32_t getReg() const;
+    const bool getRegenerating() const;
+
+    void setReg(uint32_t t_reg);
+    void setRegenerating(bool t_regenerating);
+
+    const bool isHPRegenerating(float dt);
     const bool isSpecialAttackReady() const;
     const bool isSpecialAttackAnimationDone() const;
     void resetSpecialAttack();
@@ -21,6 +28,9 @@ public:
     void drawShadow(sf::RenderTarget &target);
 
 protected:
+    uint32_t reg;
+    float regCooldown;
+    bool regenerating;
     float specialAttackTimer;
     float specialAttackLimit;
     bool specialAttackAnimationReady;

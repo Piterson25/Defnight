@@ -514,7 +514,7 @@ void PlayerGUI::updateReg()
     this->statsGUI->updateReg();
 }
 
-void PlayerGUI::updateBossHP(float dt)
+void PlayerGUI::updateBossHP(bool isExtreme, float dt)
 {
     if (this->bossWave) {
         const int width = this->sprites["BOSS_BAR"]->getTextureRect().size.x;
@@ -526,6 +526,18 @@ void PlayerGUI::updateBossHP(float dt)
                 this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {barrier, 20}));
             }
             else if (distance < 0) {
+                this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {0, 20}));
+            }
+            else {
+                this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {distance, 20}));
+            }
+        }
+        else if (isExtreme && width < barrier) {
+            const int distance = static_cast<int>(width + 1000.f * dt);
+            if (distance > barrier) {
+                this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {barrier, 20}));
+            }
+            else if (distance > 256) {
                 this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {0, 20}));
             }
             else {

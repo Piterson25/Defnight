@@ -24,7 +24,7 @@ public:
     void updateArmor();
     void updateAttack();
     void updateReg();
-    void updateBossHP(float dt);
+    void updateBossHP(bool isExtreme, float dt);
     void updateShopBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
     void updateAbilityBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
 

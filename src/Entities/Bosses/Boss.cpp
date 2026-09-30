@@ -5,9 +5,48 @@ Boss::Boss(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
     : Monster(t_name, t_vm, t_x, t_y, difficulty_mod, wave_mod, obstaclesBounds), specialAttackTimer(0.f),
       specialAttackLimit(5.f), specialAttackAnimationReady(false)
 {
+    reg = 1;
+    regCooldown = 0.f;
+    regenerating = false;
 }
 
 Boss::~Boss() = default;
+
+const uint32_t Boss::getReg() const
+{
+    return this->reg;
+}
+
+const bool Boss::getRegenerating() const
+{
+    return this->regenerating;
+}
+
+void Boss::setReg(uint32_t t_reg)
+{
+    this->reg = t_reg;
+}
+
+void Boss::setRegenerating(bool t_regenerating)
+{
+    this->regenerating = t_regenerating;
+}
+
+const bool Boss::isHPRegenerating(float dt)
+{
+    if (this->regCooldown < 1.f && this->HP < this->maxHP) {
+        this->regCooldown += (this->reg * 0.2f + 0.8f) * dt;
+    }
+
+    if (this->regCooldown >= 1.f) {
+        this->regCooldown = 0.f;
+        if (this->HP < this->maxHP) {
+            this->HP++;
+            return true;
+        }
+    }
+    return false;
+}
 
 const bool Boss::isSpecialAttackReady() const
 {

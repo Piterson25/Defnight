@@ -450,6 +450,9 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds, bo
                     boss->resetSpecialAttack();
                 }
             }
+            else if (boss && isExtreme && boss->isHPRegenerating(dt)) {
+                boss->setRegenerating(true);
+            }
             else {
                 monster->calculateAI(obstaclesBounds, player, this->monstersPositions(), isExtreme, slowedDt);
                 monster->loadAttack(slowedDt);

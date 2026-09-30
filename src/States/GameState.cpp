@@ -357,7 +357,7 @@ void GameState::update(float dt)
                 this->monsterSystem->playerAttack();
                 this->monsterSystem->update(this->tileMap->getTilesGlobalBounds(), this->paused,
                                             currentGame.difficulty == DIFFICULTY::EXTREME, dt);
-                this->playerGUI->updateBossHP(dt);
+                this->playerGUI->updateBossHP(currentGame.difficulty == DIFFICULTY::EXTREME, dt);
             }
         }
 
