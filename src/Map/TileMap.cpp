@@ -58,12 +58,12 @@ TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName)
                     triangles[4].position = sf::Vector2f(x + tileSize, y + tileSize);
                     triangles[5].position = sf::Vector2f(x, y + tileSize);
 
-                    triangles[0].texCoords = sf::Vector2f(80 + offsetX, 48);
-                    triangles[1].texCoords = sf::Vector2f(96 + offsetX, 48);
-                    triangles[2].texCoords = sf::Vector2f(96 + offsetX, 64);
-                    triangles[3].texCoords = sf::Vector2f(80 + offsetX, 48);
-                    triangles[4].texCoords = sf::Vector2f(96 + offsetX, 64);
-                    triangles[5].texCoords = sf::Vector2f(80 + offsetX, 64);
+                    triangles[0].texCoords = sf::Vector2f(64 + offsetX, 64);
+                    triangles[1].texCoords = sf::Vector2f(80 + offsetX, 64);
+                    triangles[2].texCoords = sf::Vector2f(80 + offsetX, 80);
+                    triangles[3].texCoords = sf::Vector2f(64 + offsetX, 64);
+                    triangles[4].texCoords = sf::Vector2f(80 + offsetX, 80);
+                    triangles[5].texCoords = sf::Vector2f(64 + offsetX, 80);
                 }
                 else if (temp[i] == 'L') {
                     addTile("wall", tile, x, y);
