@@ -6,7 +6,7 @@
 class PlayerGUI {
 public:
     PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floatingTextSystem, const std::string &mapName,
-              const std::string &difficultyName, std::unordered_map<std::string, std::string> &lang);
+              const std::string &t_difficultyName, std::unordered_map<std::string, std::string> &lang);
     ~PlayerGUI();
 
     void levelUpPlayer(uint32_t optionID, uint32_t optionValue);

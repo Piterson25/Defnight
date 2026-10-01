@@ -14,32 +14,32 @@ GameState::GameState(float gridSize, sf::RenderWindow &window, GameSettings &gam
 
     this->floatingTextSystem = new FloatingTextSystem(this->vm);
 
-    std::string mapName = "ruins";
+    std::string mapName = "RUINS";
     switch (currentGame.map) {
         case MAP::RUINS:
-            mapName = "ruins";
+            mapName = "RUINS";
             break;
         case MAP::DESOLATION:
-            mapName = "desolation";
+            mapName = "DESOLATION";
             break;
         case MAP::PERMAFROST:
-            mapName = "permafrost";
+            mapName = "PERMAFROST";
             break;
         case MAP::VOLCANO:
-            mapName = "volcano";
+            mapName = "VOLCANO";
             break;
     }
     this->tileMap = new TileMap(vm, mapName);
 
-    std::string heroName = "warrior";
+    std::string heroName = "WARRIOR";
     switch (currentGame.hero) {
         case HERO::WARRIOR:
-            heroName = "warrior";
+            heroName = "WARRIOR";
             this->player = new Warrior(heroName, vm, this->tileMap->getMapSize().x / 2 - calcX(32, vm),
                                        this->tileMap->getMapSize().y / 2 - calcY(32, vm));
             break;
         case HERO::ARCHER:
-            mapName = "archer";
+            heroName = "ARCHER";
             break;
     }
 

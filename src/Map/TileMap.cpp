@@ -1,7 +1,8 @@
 #include "TileMap.hpp"
 
 TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName)
-    : vm(t_vm), backgroundTexture("assets/textures/maps/" + mapName + ".png"), background(backgroundTexture)
+    : vm(t_vm), backgroundTexture("assets/textures/maps/" + toLowerCase(mapName) + ".png"),
+      background(backgroundTexture)
 {
     background = sf::Sprite(backgroundTexture);
     background.setScale({calcScale(4, vm), calcScale(4, vm)});
@@ -9,16 +10,16 @@ TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName)
     tilesTexture = sf::Texture("assets/textures/tiles.png");
     vertexArray.setPrimitiveType(sf::PrimitiveType::Triangles);
     vertexArray.resize(static_cast<size_t>(calcX(64 * 64 * 6, vm)));
-    std::ifstream map("assets/maps/" + mapName + ".txt");
+    std::ifstream map("assets/maps/" + toLowerCase(mapName) + ".txt");
 
     float offsetX = 0.f;
-    if (mapName == "desolation") {
+    if (mapName == "DESOLATION") {
         offsetX = 48.f;
     }
-    else if (mapName == "permafrost") {
+    else if (mapName == "PERMAFROST") {
         offsetX = 96.f;
     }
-    else if (mapName == "volcano") {
+    else if (mapName == "VOLCANO") {
         offsetX = 144.f;
     }
 
