@@ -1,7 +1,7 @@
 #include "PlayerGUI.hpp"
 
 PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floatingTextSystem,
-                     const std::string &mapName, const std::string &difficultyName,
+                     const std::string &mapName, const std::string &t_difficultyName,
                      std::unordered_map<std::string, std::string> &lang)
     : vm(vm), player(player), floatingTextSystem(floatingTextSystem), lang(lang)
 {
@@ -95,11 +95,13 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
     this->sprites["SIDE_GUI"] =
         std::make_unique<gui::Sprite>("assets/textures/side_gui.png", 0.f, calcY(128, vm), calcScale(1, vm), false);
 
+    difficultyName = t_difficultyName;
+    const float priceModifier = difficultyName == "EXTREME" ? 1.5f : 1.0f;
+
     this->abilityUpgradeGUI = new AbilityUpgradeGUI(vm, this->player);
     this->abilityUpgradeGUI->addAbilityUpgrade("LOWER_COOLDOWN", calcX(44, vm), calcY(324, vm), 0, "Cooldown", "-5%",
-                                               25, 0);
+                                               25 * priceModifier, 0);
 
-    const float priceModifier = difficultyName == "EXTREME" ? 1.5f : 1.0f;
     this->shopGUI = new ShopGUI(vm, this->player);
     this->shopGUI->addShopItem("FULL_HP", calcX(44, vm), calcY(188, vm), 9, "Full HP", "+Full", 40 * priceModifier, 0,
                                0);
@@ -730,11 +732,12 @@ const bool PlayerGUI::hasClickedLevelUpButtons(const sf::Vector2i &mousePos, Sou
 
 const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, SoundEngine &soundEngine)
 {
+    const float priceModifier = difficultyName == "EXTREME" ? 1.5f : 1.0f;
     if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE1", &soundEngine)) {
         if (player.getLevel() == 5) {
             this->abilityUpgradeGUI->addPlayerStat("PROJ_ATTACK", calcX(32, vm), calcY(212, vm), this->lang["ATTACK"]);
             this->abilityUpgradeGUI->addAbilityUpgrade("PROJ_ATTACK", calcX(44, vm), calcY(460, vm), 1,
-                                                       this->lang["ATTACK"], "+1", 50, 0);
+                                                       this->lang["ATTACK"], "+1", 50 * priceModifier, 0);
             this->upgradePlayer("NINJA");
         }
         else if (player.getLevel() == 10) {
@@ -742,20 +745,20 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
                 this->abilityUpgradeGUI->addPlayerStat("PIERCING", calcX(32, vm), calcY(244, vm),
                                                        this->lang["PIERCING"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade("PIERCING", calcX(44, vm), calcY(596, vm), 2,
-                                                           this->lang["PIERCING"], "+1", 50, 1);
+                                                           this->lang["PIERCING"], "+1", 50 * priceModifier, 1);
                 this->upgradePlayer("SENSEI");
             }
             else if (player.getName() == "KNIGHT") {
                 this->abilityUpgradeGUI->addPlayerStat("ATTACK", calcX(32, vm), calcY(244, vm), this->lang["ATTACK"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade("ATTACK", calcX(44, vm), calcY(596, vm), 1,
-                                                           this->lang["ATTACK"], "+1", 50, 0);
+                                                           this->lang["ATTACK"], "+1", 50 * priceModifier, 0);
                 this->upgradePlayer("CRUSADER");
             }
             else if (player.getLevel() == 10) {
                 if (player.getName() == "SCOUT") {
                     this->abilityUpgradeGUI->addPlayerStat("GOLD", calcX(32, vm), calcY(244, vm), this->lang["GOLD"]);
                     this->abilityUpgradeGUI->addAbilityUpgrade("GOLD", calcX(44, vm), calcY(596, vm), 7,
-                                                               this->lang["GOLD"], "+1", 100, 1);
+                                                               this->lang["GOLD"], "+1", 100 * priceModifier, 1);
                     this->upgradePlayer("ASSASSIN");
                 }
             }
@@ -768,26 +771,26 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
         if (player.getLevel() == 5) {
             this->abilityUpgradeGUI->addPlayerStat("ARMOR", calcX(32, vm), calcY(212, vm), this->lang["ARMOR"]);
             this->abilityUpgradeGUI->addAbilityUpgrade("ARMOR", calcX(44, vm), calcY(460, vm), 4, this->lang["ARMOR"],
-                                                       "+1", 50, 5);
+                                                       "+1", 50 * priceModifier, 5);
             this->upgradePlayer("KNIGHT");
         }
         else if (player.getLevel() == 10) {
             if (player.getName() == "NINJA") {
                 this->abilityUpgradeGUI->addPlayerStat("AREA", calcX(32, vm), calcY(244, vm), this->lang["AREA"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade("AREA", calcX(44, vm), calcY(596, vm), 3, this->lang["AREA"],
-                                                           "+1", 100, 2);
+                                                           "+1", 100 * priceModifier, 2);
                 this->upgradePlayer("BOMBER");
             }
             else if (player.getName() == "KNIGHT") {
                 this->abilityUpgradeGUI->addPlayerStat("REG", calcX(32, vm), calcY(244, vm), this->lang["REG"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade("REG", calcX(44, vm), calcY(596, vm), 5, this->lang["REG"],
-                                                           "+1", 100, 5);
+                                                           "+1", 100 * priceModifier, 5);
                 this->upgradePlayer("PALADIN");
             }
             else if (player.getName() == "SCOUT") {
                 this->abilityUpgradeGUI->addPlayerStat("TARGETS", calcX(32, vm), calcY(244, vm), this->lang["TARGETS"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade("TARGETS", calcX(44, vm), calcY(596, vm), 8,
-                                                           this->lang["TARGETS"], "+1", 100, 1);
+                                                           this->lang["TARGETS"], "+1", 100 * priceModifier, 1);
                 this->upgradePlayer("KILLER");
             }
         }
@@ -799,7 +802,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
         if (player.getLevel() == 5) {
             this->abilityUpgradeGUI->addPlayerStat("SLOWDOWN", calcX(32, vm), calcY(212, vm), this->lang["SLOWDOWN"]);
             this->abilityUpgradeGUI->addAbilityUpgrade("SLOWDOWN", calcX(44, vm), calcY(460, vm), 6,
-                                                       this->lang["SLOWDOWN"], "+10%", 50, 5);
+                                                       this->lang["SLOWDOWN"], "+10%", 50 * priceModifier, 5);
             this->upgradePlayer("SCOUT");
         }
 

@@ -63,6 +63,8 @@ private:
 
     enum class SideGUI { SHOP, ABILITY_UPGRADE, UPGRADE, NONE };
 
+    std::string difficultyName;
+
     SideGUI sideGUI;
 
     sf::Texture attributesTexture;
