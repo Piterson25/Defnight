@@ -20,6 +20,7 @@ public:
     void update_ability(float dt);
     void setAbilityIcon();
     void setIsEscape(bool escape);
+    void setWaveBreakLimit(float t_waveBreakLimit);
     void updatePaused(bool &paused);
     void updateArmor();
     void updateAttack();
@@ -93,6 +94,7 @@ private:
 
     float titleCooldown;
     float waveCountdown;
+    float waveBreakLimit;
 
     sf::RectangleShape death_background;
     sf::RectangleShape escape_background;

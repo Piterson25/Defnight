@@ -51,4 +51,5 @@ private:
     uint32_t sumHP;
     uint32_t gems;
     float waveCountdown;
+    float waveBreakLimit;
 };

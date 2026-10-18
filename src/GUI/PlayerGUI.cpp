@@ -17,6 +17,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
     this->texts["MOBS_TO_KILL"] = std::make_unique<gui::ShadowText>(
         this->lang["MONSTER"], calcChar(32, vm), calcX(640, vm), calcY(512, vm), gui::LIGHT_GREY, true);
     this->waveCountdown = 0.f;
+    this->waveBreakLimit = 10.f;
 
     this->leveling = false;
 
@@ -350,6 +351,11 @@ void PlayerGUI::setAbilityIcon()
     abilityUpgradeGUI->updateItemFrames();
 }
 
+void PlayerGUI::setWaveBreakLimit(float t_waveBreakLimit)
+{
+    waveBreakLimit = t_waveBreakLimit;
+}
+
 void PlayerGUI::updatingSprint(float dt)
 {
     this->statsGUI->updatingSprint(dt);
@@ -470,8 +476,8 @@ const bool PlayerGUI::hasClickedMenu(const sf::Vector2i &mousePos, bool &paused)
 
 const bool PlayerGUI::hasClickedSkip(const sf::Vector2i &mousePos, bool &paused)
 {
-    if (this->waveCountdown < 8.f && statsGUI->hasClickedSkip(mousePos)) {
-        this->waveCountdown = 8.f;
+    if (this->waveCountdown < waveBreakLimit - 2.f && statsGUI->hasClickedSkip(mousePos)) {
+        this->waveCountdown = waveBreakLimit - 2.f;
         return true;
     }
     return false;
@@ -867,11 +873,12 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown, float bo
 
     this->statsGUI->update(mousePosView);
 
-    if (this->waveCountdown < 10.f) {
+    if (this->waveCountdown < waveBreakLimit) {
 
-        this->statsGUI->setWaveCountdownText(this->lang["NEXT_WAVE"] +
-                                             std::to_string(static_cast<int>(11.f - this->waveCountdown)));
-        if (this->waveCountdown > 8.f && this->waveCountdown < 9.f && this->titleCooldown < 255.f) {
+        this->statsGUI->setWaveCountdownText(
+            this->lang["NEXT_WAVE"] + std::to_string(static_cast<int>(waveBreakLimit + 1.f - this->waveCountdown)));
+        if (this->waveCountdown > waveBreakLimit - 2.f && this->waveCountdown < waveBreakLimit - 1.f &&
+            this->titleCooldown < 255.f) {
             this->titleCooldown += dt * 1000.f;
             if (this->titleCooldown > 255.f) {
                 this->titleCooldown = 255.f;
@@ -880,7 +887,7 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown, float bo
             this->texts["WAVE_NEW_MOBS"]->setAlphaColor(static_cast<uint8_t>(this->titleCooldown));
             this->texts["MOBS_TO_KILL"]->setAlphaColor(static_cast<uint8_t>(this->titleCooldown));
         }
-        else if (this->waveCountdown > 9.f && this->titleCooldown > 0.f) {
+        else if (this->waveCountdown > waveBreakLimit - 1.f && this->titleCooldown > 0.f) {
             this->titleCooldown -= dt * 1000.f;
             if (this->titleCooldown < 0.f) {
                 this->titleCooldown = 0.f;
@@ -891,7 +898,7 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown, float bo
         }
 
         this->statsGUI->setWaveCountdownText(this->lang["NEXT_WAVE"] +
-                                             std::to_string(static_cast<int>(10.f - this->waveCountdown)));
+                                             std::to_string(static_cast<int>(waveBreakLimit - this->waveCountdown)));
     }
 }
 
@@ -912,19 +919,19 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         }
     }
 
-    if (this->waveCountdown < 10.f) {
+    if (this->waveCountdown < waveBreakLimit) {
         this->statsGUI->drawWaveCountdown(target);
-        if (this->waveCountdown < 7.f) {
+        if (this->waveCountdown < waveBreakLimit - 3.f) {
             this->statsGUI->drawSkip(target);
         }
 
-        if (this->waveCountdown > 8.f) {
+        if (this->waveCountdown > waveBreakLimit - 2.f) {
             this->texts["BIG_WAVE_NUMBER"]->draw(target);
             this->texts["WAVE_NEW_MOBS"]->draw(target);
             this->texts["MOBS_TO_KILL"]->draw(target);
         }
     }
-    else if (this->waveCountdown >= 10.f) {
+    else if (this->waveCountdown >= waveBreakLimit) {
         this->statsGUI->drawMonsterCount(target);
         if (this->leveling) {
             this->texts["LEVEL_UP"]->draw(target);

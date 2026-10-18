@@ -45,6 +45,7 @@ GameState::GameState(float gridSize, sf::RenderWindow &window, GameSettings &gam
 
     std::string difficultyName = "NORMAL";
     float difficultyModifier = 1.0f;
+    this->waveBreakLimit = 10.f;
     switch (currentGame.difficulty) {
         case DIFFICULTY::EASY:
             difficultyName = "EASY";
@@ -61,11 +62,13 @@ GameState::GameState(float gridSize, sf::RenderWindow &window, GameSettings &gam
         case DIFFICULTY::EXTREME:
             difficultyName = "EXTREME";
             difficultyModifier = 1.5f;
+            waveBreakLimit = 3.f;
             break;
     }
 
     this->playerGUI = new PlayerGUI(this->vm, *this->player, *this->floatingTextSystem, mapName, difficultyName,
                                     this->gameSettings.lang);
+    this->playerGUI->setWaveBreakLimit(waveBreakLimit);
 
     this->view.setSize(sf::Vector2f(static_cast<float>(vm.size.x), static_cast<float>(vm.size.y)));
     this->view.setCenter(this->player->getCenter());
@@ -330,17 +333,17 @@ void GameState::update(float dt)
             }
         }
 
-        if (this->waveCountdown < 10.f) {
+        if (this->waveCountdown < waveBreakLimit) {
             this->waveCountdown += dt;
 
             if (this->playerGUI->hasClickedSkip(mousePosWindow, paused)) {
-                this->waveCountdown = 8.f;
+                this->waveCountdown = waveBreakLimit - 2.f;
             }
 
-            if (this->waveCountdown >= 10.f) {
+            if (this->waveCountdown >= waveBreakLimit) {
                 this->monsterSystem->spawnMonsters(this->tileMap->getTilesGlobalBounds(), this->wave);
             }
-            else if (this->waveCountdown > 8.f && this->monsterSystem->isMonsterIDsEmpty()) {
+            else if (this->waveCountdown > waveBreakLimit - 2.f && this->monsterSystem->isMonsterIDsEmpty()) {
                 this->monsterSystem->prepareWave(this->wave, this->sumHP);
                 this->playerGUI->updateMonsterCountWave(
                     this->gameSettings.language, this->wave, this->monsterSystem->isBossWave(),
