@@ -33,11 +33,13 @@ public:
     bool hasClickedMenu(const sf::Vector2i &mousePos);
     bool hasClickedShop(const sf::Vector2i &mousePos);
     bool hasClickedAbilityUpgrade(const sf::Vector2i &mousePos);
+    bool hasClickedSkip(const sf::Vector2i &mousePos);
     void update(const sf::Vector2f &mousePosView);
     void drawAbility(sf::RenderTarget &target);
     void drawWaveCountdown(sf::RenderTarget &target);
     void drawMonsterCount(sf::RenderTarget &target);
     void drawMenu(sf::RenderTarget &target);
+    void drawSkip(sf::RenderTarget &target);
     void draw(sf::RenderTarget &target);
 
 private:

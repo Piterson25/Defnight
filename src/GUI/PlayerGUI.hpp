@@ -42,7 +42,7 @@ public:
                                 SoundEngine &soundEngine, MusicEngine &musicEngine);
     void updateMonsterCount(const size_t &monsterCount);
     const bool hasClickedMenu(const sf::Vector2i &mousePos, bool &paused);
-    const bool hasClickedShip(const sf::Vector2i &mousePos, bool &paused);
+    const bool hasClickedSkip(const sf::Vector2i &mousePos, bool &paused);
     const uint8_t updateEscapeButton(const sf::Vector2i &mousePos);
     const bool hasClickedButtons(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
     const bool hasClickedLevelUpButtons(const sf::Vector2i &mousePos, SoundEngine &soundEngine);

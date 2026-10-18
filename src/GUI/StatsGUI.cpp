@@ -120,6 +120,10 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player, std::unordered_map<std
     this->texts["WAVE_NUMBER"] = std::make_unique<gui::Text>(t_lang["WAVE"], calcChar(32, vm), calcX(1060, vm),
                                                              calcY(36, vm), gui::FLAMINGO, false);
 
+    this->text_buttons["SKIP"] = std::make_unique<gui::ButtonText>(t_lang["SKIP"], calcChar(16, vm), calcX(954, vm),
+                                                                   calcY(98, vm), gui::LIGHT_BLUE, gui::WHITE, false);
+    this->text_buttons["SKIP"]->setPositionX(calcX(954, vm) - this->text_buttons["SKIP"]->getWidth());
+
     this->texts["WAVE_COUNTDOWN"] = std::make_unique<gui::Text>(t_lang["NEXT_WAVE"], calcChar(16, vm), calcX(954, vm),
                                                                 calcY(98, vm), gui::GOLD, false);
     this->texts["WAVE_COUNTDOWN"]->setPosition(
@@ -439,6 +443,11 @@ bool StatsGUI::hasClickedAbilityUpgrade(const sf::Vector2i &mousePos)
     return sprite_buttons["ABILITY"]->isPressed(mousePos);
 }
 
+bool StatsGUI::hasClickedSkip(const sf::Vector2i &mousePos)
+{
+    return text_buttons["SKIP"]->isPressed(mousePos);
+}
+
 void StatsGUI::update(const sf::Vector2f &mousePosView)
 {
     XPBar.update(mousePosView);
@@ -468,6 +477,11 @@ void StatsGUI::drawMonsterCount(sf::RenderTarget &target)
 void StatsGUI::drawMenu(sf::RenderTarget &target)
 {
     this->sprite_buttons["MENU"]->draw(target);
+}
+
+void StatsGUI::drawSkip(sf::RenderTarget &target)
+{
+    this->text_buttons["SKIP"]->draw(target);
 }
 
 void StatsGUI::draw(sf::RenderTarget &target)

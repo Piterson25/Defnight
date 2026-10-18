@@ -333,7 +333,7 @@ void GameState::update(float dt)
         if (this->waveCountdown < 10.f) {
             this->waveCountdown += dt;
 
-            if (this->playerGUI->hasClickedShip(mousePosWindow, paused)) {
+            if (this->playerGUI->hasClickedSkip(mousePosWindow, paused)) {
                 this->waveCountdown = 8.f;
             }
 

@@ -18,11 +18,6 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
         this->lang["MONSTER"], calcChar(32, vm), calcX(640, vm), calcY(512, vm), gui::LIGHT_GREY, true);
     this->waveCountdown = 0.f;
 
-    this->text_buttons["SKIP"] = std::make_unique<gui::ButtonText>(lang["SKIP"], calcChar(16, vm), calcX(1240, vm),
-                                                                   calcY(136, vm), gui::LIGHT_BLUE, gui::WHITE, false);
-    this->text_buttons["SKIP"]->setPosition(
-        sf::Vector2f(calcX(1248, vm) - this->text_buttons["SKIP"]->getWidth(), calcY(136, vm)));
-
     this->leveling = false;
 
     this->texts["LEVEL_UP"] = std::make_unique<gui::ShadowText>("LEVEL UP!", calcChar(32, vm), calcX(640, vm),
@@ -473,9 +468,9 @@ const bool PlayerGUI::hasClickedMenu(const sf::Vector2i &mousePos, bool &paused)
     return false;
 }
 
-const bool PlayerGUI::hasClickedShip(const sf::Vector2i &mousePos, bool &paused)
+const bool PlayerGUI::hasClickedSkip(const sf::Vector2i &mousePos, bool &paused)
 {
-    if (this->waveCountdown < 8.f && text_buttons["SKIP"]->isPressed(mousePos)) {
+    if (this->waveCountdown < 8.f && statsGUI->hasClickedSkip(mousePos)) {
         this->waveCountdown = 8.f;
         return true;
     }
@@ -920,7 +915,7 @@ void PlayerGUI::draw(sf::RenderTarget &target)
     if (this->waveCountdown < 10.f) {
         this->statsGUI->drawWaveCountdown(target);
         if (this->waveCountdown < 7.f) {
-            this->text_buttons["SKIP"]->draw(target);
+            this->statsGUI->drawSkip(target);
         }
 
         if (this->waveCountdown > 8.f) {
