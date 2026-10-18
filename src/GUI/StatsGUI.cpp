@@ -265,8 +265,9 @@ void StatsGUI::updatingHP(bool isExtreme, float dt)
 
             if (HPBar.timeCooldown >= 0.1f) {
                 HPBar.timeCooldown = 0.f;
+                const float modifier = isExtreme ? 0.5f : 1.0f;
                 const uint32_t HPtoFull = player.getMaxHP() - player.getHP();
-                const float step = (player.getReg() * 0.2f + 0.8f) / 4.f;
+                const float step = (player.getReg() * 0.2f + 0.8f) / 4.f * modifier;
                 float totalTimeCooldown = (1.f - player.getRegCooldown()) / step;
                 if (HPtoFull > 1) {
                     totalTimeCooldown += (HPtoFull - 1) / step;
