@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Entities/Player/Archer.hpp"
 #include "Entities/Player/Warrior.hpp"
 #include "GUI/PlayerGUI.hpp"
 #include "Game/PlayerStats.hpp"

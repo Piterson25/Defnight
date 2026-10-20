@@ -141,36 +141,37 @@ void MainMenuState::initGUI()
 
     this->texts["CHOOSE_HERO"] = std::make_unique<gui::Text>(this->lang["CHOOSE_HERO"], calcChar(32, vm),
                                                              calcX(640, vm), calcY(96, vm), gui::WHITE, true);
-    this->sprite_buttons["HERO1"] = std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, calcX(64, vm), calcY(256, vm),
-                                                                        calcScale(2, vm), gui::GREY, gui::WHITE, false);
-    this->sprites["HERO1"] = std::make_unique<gui::Sprite>("assets/textures/upgrades_icons.png", calcX(88, vm),
-                                                           calcY(280, vm), calcScale(8, vm), false);
-    this->sprites["HERO1"]->setTextureRect(sf::IntRect({0, 0}, {16, 16}));
-    this->texts["WARRIOR"] = std::make_unique<gui::Text>(this->lang["WARRIOR"], calcChar(32, vm), calcX(150, vm),
+    sf::Texture upgradeIcons = sf::Texture("assets/textures/upgrades_icons.png");
+    sf::Texture bars = sf::Texture("assets/textures/bars.png");
+    this->sprite_buttons["HERO1"] = std::make_unique<gui::ButtonSprite>(
+        gui::RECT_BUTTON, calcX(320, vm), calcY(256, vm), calcScale(2, vm), gui::GREY, gui::WHITE, true);
+    this->sprites["HERO1"] = std::make_unique<gui::Sprite>(upgradeIcons, calcX(320, vm), calcY(280, vm),
+                                                           calcScale(8, vm), true, sf::IntRect({0, 0}, {16, 16}));
+    this->texts["WARRIOR"] = std::make_unique<gui::Text>(this->lang["WARRIOR"], calcChar(32, vm), calcX(320, vm),
                                                          calcY(200, vm), gui::WHITE, true);
-
+    this->sprite_buttons["HERO2"] = std::make_unique<gui::ButtonSprite>(
+        gui::RECT_BUTTON, calcX(960, vm), calcY(256, vm), calcScale(2, vm), gui::GREY, gui::WHITE, true);
+    this->sprites["HERO2"] = std::make_unique<gui::Sprite>(upgradeIcons, calcX(960, vm), calcY(280, vm),
+                                                           calcScale(8, vm), true, sf::IntRect({48, 0}, {16, 16}));
+    this->sprites["HERO2"]->setTextureRect(sf::IntRect({48, 0}, {16, 16}));
+    this->texts["ARCHER"] = std::make_unique<gui::Text>(this->lang["ARCHER"], calcChar(32, vm), calcX(960, vm),
+                                                        calcY(200, vm), gui::WHITE, true);
     this->choosing_hero = false;
 
     this->text_buttons["CHOOSE"] = std::make_unique<gui::ButtonText>(
         this->lang["CHOOSE"], calcChar(32, vm), calcX(240, vm), calcY(564, vm), gui::WHITE, gui::LIGHT_GREY, true);
-    this->sprites["HERO_PREVIEW"] = std::make_unique<gui::Sprite>("assets/textures/upgrades_icons.png", calcX(640, vm),
-                                                                  calcY(512, vm), calcScale(8, vm), true);
-    this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect({0, 0}, {16, 16}));
-    this->sprites["HERO_PREVIEW"]->center(calcX(640, vm));
+    this->sprites["HERO_PREVIEW"] = std::make_unique<gui::Sprite>(
+        upgradeIcons, calcX(640, vm), calcY(512, vm), calcScale(8, vm), true, sf::IntRect({0, 0}, {16, 16}));
     this->sprites["HP_FRAME"] = std::make_unique<gui::Sprite>(framesTexture, calcX(860, vm), calcY(498, vm),
                                                               calcScale(1, vm), true, sf::IntRect({88, 0}, {272, 36}));
-    this->sprites["HP_BAR"] = std::make_unique<gui::Sprite>("assets/textures/bars.png", calcX(860, vm), calcY(506, vm),
-                                                            calcScale(1, vm), true);
-    this->sprites["HP_BAR"]->setTextureRect(sf::IntRect({0, 20}, {256, 20}));
-    this->sprites["HP_BAR"]->center(calcX(860, vm));
+    this->sprites["HP_BAR"] = std::make_unique<gui::Sprite>(bars, calcX(860, vm), calcY(506, vm), calcScale(1, vm),
+                                                            true, sf::IntRect({0, 20}, {256, 20}));
     this->texts["HP"] =
         std::make_unique<gui::Text>("HP:10/10", calcChar(16, vm), calcX(860, vm), calcY(509, vm), gui::WHITE, true);
     this->sprites["SPRINT_FRAME"] = std::make_unique<gui::Sprite>(
         framesTexture, calcX(860, vm), calcY(538, vm), calcScale(1, vm), true, sf::IntRect({88, 0}, {272, 36}));
-    this->sprites["SPRINT_BAR"] = std::make_unique<gui::Sprite>("assets/textures/bars.png", calcX(860, vm),
-                                                                calcY(546, vm), calcScale(1, vm), true);
-    this->sprites["SPRINT_BAR"]->setTextureRect(sf::IntRect({0, 40}, {256, 20}));
-    this->sprites["SPRINT_BAR"]->center(calcX(860, vm));
+    this->sprites["SPRINT_BAR"] = std::make_unique<gui::Sprite>(bars, calcX(860, vm), calcY(546, vm), calcScale(1, vm),
+                                                                true, sf::IntRect({0, 40}, {256, 20}));
     this->texts["SPRINT"] =
         std::make_unique<gui::Text>("100/100", calcChar(16, vm), calcX(860, vm), calcY(549, vm), gui::WHITE, true);
 
@@ -543,14 +544,35 @@ void MainMenuState::update(float dt)
                     --this->page;
                     this->choosing_hero = false;
                 }
-
-                if (this->sprite_buttons["HERO1"]->isPressed(this->mousePosWindow)) {
+                else if (this->sprite_buttons["HERO1"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     this->choosing_hero = true;
                     newGame.hero = HERO::WARRIOR;
+                    this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect({0, 0}, {16, 16}));
+                    this->texts["HP"]->setText("HP:10/10");
+                    this->texts["SPRINT"]->setText("100/100");
+                    this->texts["ARMOR"]->setText("3");
+                    this->texts["REG"]->setText("1");
+                    this->texts["ATTACK"]->setText("5");
+                    this->texts["ATTACK_SPEED"]->setText("4");
+                    this->texts["SPEED"]->setText("4");
+                    this->texts["CRITICAL"]->setText("20%");
                 }
-
-                if (this->choosing_hero) {
+                else if (this->sprite_buttons["HERO2"]->isPressed(this->mousePosWindow)) {
+                    this->soundEngine.addSound("button");
+                    this->choosing_hero = true;
+                    newGame.hero = HERO::ARCHER;
+                    this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect({48, 0}, {16, 16}));
+                    this->texts["HP"]->setText("HP:10/10");
+                    this->texts["SPRINT"]->setText("200/200");
+                    this->texts["ARMOR"]->setText("2");
+                    this->texts["REG"]->setText("2");
+                    this->texts["ATTACK"]->setText("3");
+                    this->texts["ATTACK_SPEED"]->setText("4");
+                    this->texts["SPEED"]->setText("5");
+                    this->texts["CRITICAL"]->setText("20%");
+                }
+                else if (this->choosing_hero) {
                     if (this->text_buttons["CHOOSE"]->isPressed(this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
                         this->page = 4;
@@ -694,8 +716,10 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->texts["CHOOSE_HERO"]->draw(*target);
             this->sprites["HERO1"]->draw(*target);
             this->sprite_buttons["HERO1"]->draw(*target);
-
             this->texts["WARRIOR"]->draw(*target);
+            this->sprites["HERO2"]->draw(*target);
+            this->sprite_buttons["HERO2"]->draw(*target);
+            this->texts["ARCHER"]->draw(*target);
 
             if (this->choosing_hero) {
                 this->text_buttons["CHOOSE"]->draw(*target);

@@ -40,6 +40,8 @@ GameState::GameState(float gridSize, sf::RenderWindow &window, GameSettings &gam
             break;
         case HERO::ARCHER:
             heroName = "ARCHER";
+            this->player = new Archer(heroName, vm, this->tileMap->getMapSize().x / 2 - calcX(32, vm),
+                                      this->tileMap->getMapSize().y / 2 - calcY(32, vm));
             break;
     }
 

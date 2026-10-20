@@ -29,6 +29,10 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player, std::unordered_map<std
         framesTexture, calcX(188, vm), calcY(4, vm), calcScale(1, vm), true, sf::IntRect({0, 0}, {88, 88}));
     this->sprites["PLAYER_ICON"] = std::make_unique<gui::Sprite>(upgradesTexture, calcX(188, vm), calcY(16, vm),
                                                                  calcScale(4, vm), true, sf::IntRect({0, 0}, {16, 16}));
+    if (player.getName() == "ARCHER") {
+        this->sprites["PLAYER_ICON"]->setTextureRect(sf::IntRect({48, 0}, {16, 16}));
+        this->sprites["PLAYER_ICON"]->center(calcX(188, vm));
+    }
     this->texts["PLAYER_NAME"] = std::make_unique<gui::Text>(t_lang[player.getName()], calcChar(16, vm), calcX(188, vm),
                                                              calcY(98, vm), gui::WHITE, true);
 
