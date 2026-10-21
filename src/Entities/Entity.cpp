@@ -1,7 +1,6 @@
 #include "Entity.hpp"
 
-Entity::Entity(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
-               float t_y)
+Entity::Entity(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y)
     : name(t_name), vm(t_vm), sprite(this->texture)
 {
     this->sprite = sf::Sprite(this->texture);
@@ -49,42 +48,32 @@ const sf::FloatRect Entity::getGlobalBounds() const
 
 const sf::Vector2f Entity::getCenter() const
 {
-    return sf::Vector2f(this->sprite.getPosition().x +
-                            (this->sprite.getGlobalBounds().size.x * 0.5f),
-                        this->sprite.getPosition().y +
-                            (this->sprite.getGlobalBounds().size.y * 0.5f));
+    return sf::Vector2f(this->sprite.getPosition().x + (this->sprite.getGlobalBounds().size.x * 0.5f),
+                        this->sprite.getPosition().y + (this->sprite.getGlobalBounds().size.y * 0.5f));
 }
 
 const sf::Vector2f Entity::getUpCenter() const
 {
-    return sf::Vector2f(this->sprite.getPosition().x +
-                            (this->sprite.getGlobalBounds().size.x * 0.5f),
-                        this->sprite.getPosition().y +
-                            (this->sprite.getGlobalBounds().size.y * 0.125f));
+    return sf::Vector2f(this->sprite.getPosition().x + (this->sprite.getGlobalBounds().size.x * 0.5f),
+                        this->sprite.getPosition().y + (this->sprite.getGlobalBounds().size.y * 0.125f));
 }
 
 const sf::Vector2f Entity::getRightCenter() const
 {
-    return sf::Vector2f(this->sprite.getPosition().x +
-                            (this->sprite.getGlobalBounds().size.x * 0.875f),
-                        this->sprite.getPosition().y +
-                            (this->sprite.getGlobalBounds().size.y * 0.5f));
+    return sf::Vector2f(this->sprite.getPosition().x + (this->sprite.getGlobalBounds().size.x * 0.875f),
+                        this->sprite.getPosition().y + (this->sprite.getGlobalBounds().size.y * 0.5f));
 }
 
 const sf::Vector2f Entity::getDownCenter() const
 {
-    return sf::Vector2f(this->sprite.getPosition().x +
-                            (this->sprite.getGlobalBounds().size.x * 0.5f),
-                        this->sprite.getPosition().y +
-                            (this->sprite.getGlobalBounds().size.y * 0.875f));
+    return sf::Vector2f(this->sprite.getPosition().x + (this->sprite.getGlobalBounds().size.x * 0.5f),
+                        this->sprite.getPosition().y + (this->sprite.getGlobalBounds().size.y * 0.875f));
 }
 
 const sf::Vector2f Entity::getLeftCenter() const
 {
-    return sf::Vector2f(this->sprite.getPosition().x +
-                            (this->sprite.getGlobalBounds().size.x * 0.125f),
-                        this->sprite.getPosition().y +
-                            (this->sprite.getGlobalBounds().size.y * 0.5f));
+    return sf::Vector2f(this->sprite.getPosition().x + (this->sprite.getGlobalBounds().size.x * 0.125f),
+                        this->sprite.getPosition().y + (this->sprite.getGlobalBounds().size.y * 0.5f));
 }
 
 const sf::Texture Entity::getTexture() const
@@ -228,8 +217,12 @@ void Entity::setReach(const uint32_t reach)
     this->reach = reach;
 }
 
-const bool Entity::hasCollidedTop(const sf::FloatRect &e1Bounds,
-                                  const sf::FloatRect &e2Bounds) const
+void Entity::setAttacking(bool t_attacking)
+{
+    this->attacking = t_attacking;
+}
+
+const bool Entity::hasCollidedTop(const sf::FloatRect &e1Bounds, const sf::FloatRect &e2Bounds) const
 {
     if (e1Bounds.position.y > e2Bounds.position.y &&
         e1Bounds.position.y + e1Bounds.size.y > e2Bounds.position.y + e2Bounds.size.y &&
@@ -240,8 +233,7 @@ const bool Entity::hasCollidedTop(const sf::FloatRect &e1Bounds,
     return false;
 }
 
-const bool Entity::hasCollidedRight(const sf::FloatRect &e1Bounds,
-                                    const sf::FloatRect &e2Bounds) const
+const bool Entity::hasCollidedRight(const sf::FloatRect &e1Bounds, const sf::FloatRect &e2Bounds) const
 {
     if (e1Bounds.position.x < e2Bounds.position.x &&
         e1Bounds.position.x + e1Bounds.size.x < e2Bounds.position.x + e2Bounds.size.x &&
@@ -252,8 +244,7 @@ const bool Entity::hasCollidedRight(const sf::FloatRect &e1Bounds,
     return false;
 }
 
-const bool Entity::hasCollidedLeft(const sf::FloatRect &e1Bounds,
-                                   const sf::FloatRect &e2Bounds) const
+const bool Entity::hasCollidedLeft(const sf::FloatRect &e1Bounds, const sf::FloatRect &e2Bounds) const
 {
     if (e1Bounds.position.x > e2Bounds.position.x &&
         e1Bounds.position.x + e1Bounds.size.x > e2Bounds.position.x + e2Bounds.size.x &&
@@ -264,8 +255,7 @@ const bool Entity::hasCollidedLeft(const sf::FloatRect &e1Bounds,
     return false;
 }
 
-const bool Entity::hasCollidedBottom(const sf::FloatRect &e1Bounds,
-                                     const sf::FloatRect &e2Bounds) const
+const bool Entity::hasCollidedBottom(const sf::FloatRect &e1Bounds, const sf::FloatRect &e2Bounds) const
 {
     if (e1Bounds.position.y < e2Bounds.position.y &&
         e1Bounds.position.y + e1Bounds.size.y < e2Bounds.position.y + e2Bounds.size.y &&
@@ -309,8 +299,7 @@ void Entity::obstacleCollision(const std::vector<sf::FloatRect> &obstacles)
 
     for (const auto &obstacleBounds : obstacles) {
         if (vectorDistance(this->sprite.getPosition(),
-                           sf::Vector2f(obstacleBounds.position.x,
-                                        obstacleBounds.position.y)) < distance) {
+                           sf::Vector2f(obstacleBounds.position.x, obstacleBounds.position.y)) < distance) {
             checkCollision(obstacleBounds);
         }
     }
@@ -326,24 +315,20 @@ void Entity::checkCollision(const sf::FloatRect &obstacleBounds)
     if (obstacleBounds.findIntersection(nextPos)) {
         if (hasCollidedBottom(spriteBounds, obstacleBounds)) {
             this->velocity.y = 0.f;
-            this->sprite.setPosition({spriteBounds.position.x,
-                                     obstacleBounds.position.y - spriteBounds.size.y});
+            this->sprite.setPosition({spriteBounds.position.x, obstacleBounds.position.y - spriteBounds.size.y});
         }
         else if (hasCollidedTop(spriteBounds, obstacleBounds)) {
             this->velocity.y = 0.f;
-            this->sprite.setPosition(
-                      {spriteBounds.position.x, obstacleBounds.position.y + obstacleBounds.size.y});
+            this->sprite.setPosition({spriteBounds.position.x, obstacleBounds.position.y + obstacleBounds.size.y});
         }
 
         if (hasCollidedRight(spriteBounds, obstacleBounds)) {
             this->velocity.x = 0.f;
-            this->sprite.setPosition({obstacleBounds.position.x - spriteBounds.size.x,
-                                     spriteBounds.position.y});
+            this->sprite.setPosition({obstacleBounds.position.x - spriteBounds.size.x, spriteBounds.position.y});
         }
         else if (hasCollidedLeft(spriteBounds, obstacleBounds)) {
             this->velocity.x = 0.f;
-            this->sprite.setPosition({obstacleBounds.position.x + obstacleBounds.size.x,
-                                     spriteBounds.position.y});
+            this->sprite.setPosition({obstacleBounds.position.x + obstacleBounds.size.x, spriteBounds.position.y});
         }
     }
 }
@@ -446,7 +431,7 @@ void Entity::attackAnimation(int offsetY, float dt)
     if (this->animationCooldown >= 1.f) {
         this->animationCooldown = 0.f;
 
-        sf::IntRect intRect({static_cast<int>(this->frame), static_cast<int>(y * 16 * entitySize)}, 
+        sf::IntRect intRect({static_cast<int>(this->frame), static_cast<int>(y * 16 * entitySize)},
                             {static_cast<int>(16 * entitySize), static_cast<int>(16 * entitySize)});
         this->sprite.setTextureRect(intRect);
 
@@ -482,7 +467,7 @@ void Entity::walkAnimation(float dt)
     if (this->animationCooldown >= 1.f) {
         this->animationCooldown = 0.f;
 
-        sf::IntRect intRect({static_cast<int>(this->frame), static_cast<int>(y * 16 * entitySize)}, 
+        sf::IntRect intRect({static_cast<int>(this->frame), static_cast<int>(y * 16 * entitySize)},
                             {static_cast<int>(16 * entitySize), static_cast<int>(16 * entitySize)});
         this->sprite.setTextureRect(intRect);
 

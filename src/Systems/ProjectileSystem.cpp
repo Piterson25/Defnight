@@ -10,6 +10,13 @@ ProjectileSystem::~ProjectileSystem()
     this->projectiles.clear();
 }
 
+void ProjectileSystem::addArrow(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
+                                float coordsOffset, Player &player)
+{
+    this->projectiles.emplace_back(
+        std::make_unique<Arrow>("ARROW", this->vm, t_position, difficulty_mod, coords, coordsOffset, player));
+}
+
 void ProjectileSystem::addBomb(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
                                float coordsOffset, Player &player)
 {

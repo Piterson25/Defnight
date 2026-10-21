@@ -4,6 +4,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
     : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f), shadow(shadow_texture), ability(ability_texture),
       glow(glow_texture)
 {
+    this->attackType = AttackType::MELEE;
     this->texture = sf::Texture("assets/textures/player/" + toLowerCase(t_name) + ".png");
     this->sprite = sf::Sprite(this->texture);
     this->sprite.setPosition({t_x, t_y});
@@ -76,6 +77,11 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
 }
 
 Player::~Player() = default;
+
+const AttackType Player::getAttackType() const
+{
+    return this->attackType;
+}
 
 const uint32_t Player::getBoughtItems() const
 {
@@ -484,7 +490,7 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds, bool
     }
 }
 
-void Player::whooshSound(SoundEngine &soundEngine)
+void Player::weaponSound(SoundEngine &soundEngine)
 {
     if (this->isAttacking() && this->frame == 80 && !this->soundPlayed) {
         soundEngine.addSound("whoosh");

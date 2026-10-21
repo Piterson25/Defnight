@@ -295,12 +295,20 @@ void GameState::update(float dt)
             }
 
             this->player->loadAttack(dt);
-            this->player->whooshSound(this->soundEngine);
+            this->player->weaponSound(this->soundEngine);
 
             if (this->mousePosView.y > calcY(128, this->vm)) {
                 if (!this->playerGUI->isShopping() && !this->playerGUI->isBuyingAbility()) {
                     if (GameInputHandler::isMouseClick()) {
                         this->player->doAttack();
+                        if (player->getAttackType() == AttackType::RANGED && player->isAttacking() &&
+                            player->getFrame() == 80) {
+                            projectileSystem->addArrow(player->getCenter(), 0,
+                                                       sf::Vector2f(this->window.mapPixelToCoords(
+                                                           sf::Mouse::getPosition(this->window), this->view)),
+                                                       0, *this->player);
+                            player->setAttacking(false);
+                        }
                     }
                     if (this->player->isAbilityActivated()) {
                         this->player->doAbility(this->soundEngine);
@@ -359,7 +367,10 @@ void GameState::update(float dt)
                 this->gems += 5;
             }
             else {
-                this->monsterSystem->playerAttack();
+                if (player->getAttackType() == AttackType::MELEE) {
+                    this->monsterSystem->playerAttack();
+                }
+
                 this->monsterSystem->update(this->tileMap->getTilesGlobalBounds(), this->paused,
                                             currentGame.difficulty == DIFFICULTY::EXTREME, dt);
                 this->playerGUI->updateBossHP(currentGame.difficulty == DIFFICULTY::EXTREME, dt);

@@ -4,11 +4,14 @@
 #include "Components/AbilityComponent.hpp"
 #include "Entities/Entity.hpp"
 
+enum class AttackType { MELEE, RANGED };
+
 class Player : public Entity {
 public:
     Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y);
     virtual ~Player();
 
+    const AttackType getAttackType() const;
     const uint32_t getBoughtItems() const;
     const uint32_t getDamageDealt() const;
     const uint32_t getDamageTaken() const;
@@ -82,7 +85,7 @@ public:
     void setPlayedSound(bool t_soundPlayed);
 
     void controls(const std::unordered_map<std::string, int> &keybinds, bool isExtreme, float dt);
-    void whooshSound(SoundEngine &soundEngine);
+    void weaponSound(SoundEngine &soundEngine);
     const bool levelUp();
     const bool isHPRegenerating(bool isExtreme, float dt);
     const bool isAbilityActivated();
@@ -104,6 +107,8 @@ protected:
     sf::Texture ability_texture;
     sf::Sprite glow;
     sf::Texture glow_texture;
+
+    AttackType attackType;
 
     uint32_t damageDealt;
     uint32_t damageTaken;

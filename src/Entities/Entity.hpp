@@ -4,8 +4,7 @@
 
 class Entity {
 public:
-    Entity(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
-           float t_y);
+    Entity(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y);
     virtual ~Entity();
 
     const std::string getName() const;
@@ -45,15 +44,12 @@ public:
     void setXP(uint32_t t_XP);
     void setSpeed(uint32_t t_speed);
     void setReach(uint32_t t_reach);
+    void setAttacking(bool t_attacking);
 
-    const bool hasCollidedTop(const sf::FloatRect &e1Bounds,
-                              const sf::FloatRect &e2Bounds) const;
-    const bool hasCollidedRight(const sf::FloatRect &e1Bounds,
-                                const sf::FloatRect &e2Bounds) const;
-    const bool hasCollidedLeft(const sf::FloatRect &e1Bounds,
-                               const sf::FloatRect &e2Bounds) const;
-    const bool hasCollidedBottom(const sf::FloatRect &e1Bounds,
-                                 const sf::FloatRect &e2Bounds) const;
+    const bool hasCollidedTop(const sf::FloatRect &e1Bounds, const sf::FloatRect &e2Bounds) const;
+    const bool hasCollidedRight(const sf::FloatRect &e1Bounds, const sf::FloatRect &e2Bounds) const;
+    const bool hasCollidedLeft(const sf::FloatRect &e1Bounds, const sf::FloatRect &e2Bounds) const;
+    const bool hasCollidedBottom(const sf::FloatRect &e1Bounds, const sf::FloatRect &e2Bounds) const;
     const float attackDistance(const Entity &e1, const Entity &e2) const;
     const bool hasVelocity() const;
     const bool isDead() const;
