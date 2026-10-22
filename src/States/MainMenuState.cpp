@@ -568,7 +568,7 @@ void MainMenuState::update(float dt)
                     this->texts["ARMOR"]->setText("2");
                     this->texts["REG"]->setText("2");
                     this->texts["ATTACK"]->setText("3");
-                    this->texts["ATTACK_SPEED"]->setText("4");
+                    this->texts["ATTACK_SPEED"]->setText("3");
                     this->texts["SPEED"]->setText("5");
                     this->texts["CRITICAL"]->setText("20%");
                 }

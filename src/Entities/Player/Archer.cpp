@@ -5,7 +5,7 @@ Archer::Archer(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
     this->attackType = AttackType::RANGED;
     this->name = "ARCHER";
     this->attack = 3;
-    this->attackSpeed = 4;
+    this->attackSpeed = 3;
     this->maxHP = 10;
     this->HP = 10;
     this->reg = 2;
