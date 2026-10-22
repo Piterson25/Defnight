@@ -185,10 +185,11 @@ void Projectile::checkWallCollision(const sf::FloatRect &obstacleBounds)
 
 void Projectile::update(float dt)
 {
-    const float vel = (this->speed * 0.2f + 0.8f) * 16.f * this->sprite.getGlobalBounds().size.x * dt;
+    const float VELOCITY = (this->speed * 0.2f + 0.8f) * 16.f * dt;
+    const float VELOCITY_ANGLE = (M_PI / 180.f) * this->angle;
 
-    this->velocity.x = vel * cos((3.1415f / 180.f) * this->angle);
-    this->velocity.y = vel * sin((3.1415f / 180.f) * this->angle);
+    this->velocity.x = this->sprite.getGlobalBounds().size.x * VELOCITY * cos(VELOCITY_ANGLE);
+    this->velocity.y = this->sprite.getGlobalBounds().size.y * VELOCITY * sin(VELOCITY_ANGLE);
     this->timeExisting += dt;
     if (this->name == "SHURIKEN") {
         this->sprite.rotate(sf::degrees(90.f / dt));
