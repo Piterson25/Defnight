@@ -124,14 +124,15 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player, std::unordered_map<std
     this->texts["WAVE_NUMBER"] = std::make_unique<gui::Text>(t_lang["WAVE"], calcChar(32, vm), calcX(1060, vm),
                                                              calcY(36, vm), gui::FLAMINGO, false);
 
-    this->text_buttons["SKIP"] = std::make_unique<gui::ButtonText>(t_lang["SKIP"], calcChar(16, vm), calcX(954, vm),
-                                                                   calcY(98, vm), gui::LIGHT_BLUE, gui::WHITE, false);
-    this->text_buttons["SKIP"]->setPositionX(calcX(954, vm) - this->text_buttons["SKIP"]->getWidth());
-
     this->texts["WAVE_COUNTDOWN"] = std::make_unique<gui::Text>(t_lang["NEXT_WAVE"], calcChar(16, vm), calcX(954, vm),
                                                                 calcY(98, vm), gui::GOLD, false);
     this->texts["WAVE_COUNTDOWN"]->setPosition(
         sf::Vector2f(calcX(1218, vm) - this->texts["WAVE_COUNTDOWN"]->getWidth(), calcY(98, vm)));
+
+    this->text_buttons["SKIP"] = std::make_unique<gui::ButtonText>(t_lang["SKIP"], calcChar(16, vm), calcX(954, vm),
+                                                                   calcY(98, vm), gui::LIGHT_BLUE, gui::WHITE, false);
+    this->text_buttons["SKIP"]->setPositionX(this->texts.at("WAVE_COUNTDOWN")->getPosition().x -
+                                             this->text_buttons["SKIP"]->getWidth() - calcX(32, vm));
 }
 
 StatsGUI::~StatsGUI() = default;
