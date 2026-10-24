@@ -7,7 +7,7 @@ Arrow::Arrow(const std::string &t_name, sf::VideoMode &t_vm, const sf::Vector2f 
     this->sprite.setTextureRect(sf::IntRect({12, 0}, {6, 3}));
     this->attack = player.getAttack();
     this->HP = 1;
-    this->speed = 5;
+    this->speed = 6;
     this->piercing = player.getProjectilePiercing();
     this->sprite.rotate(sf::degrees(180.f));
 }
