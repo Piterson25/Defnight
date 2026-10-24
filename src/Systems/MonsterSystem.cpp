@@ -110,11 +110,6 @@ void MonsterSystem::playerAttack()
                     player.setDamageDealt(player.getDamageDealt() + attack);
                 }
 
-                if (!player.isSoundPlayed()) {
-                    soundEngineRef.addSound("whoosh_hit");
-                    player.setPlayedSound(true);
-                }
-
                 monster->punch();
                 --limit;
                 if (limit == 0) {

@@ -19,8 +19,8 @@ SoundEngine::SoundEngine(float gameVolume, float playerVolume, float monsterVolu
     soundsMap.emplace("minotaur_ability", SoundType::MONSTER);
     soundsMap.emplace("minotaur_spawn", SoundType::MONSTER);
     soundsMap.emplace("minotaur_death", SoundType::MONSTER);
-    soundsMap.emplace("whoosh_hit", SoundType::PLAYER);
-    soundsMap.emplace("whoosh", SoundType::PLAYER);
+    soundsMap.emplace("warrior_attack", SoundType::PLAYER);
+    soundsMap.emplace("archer_attack", SoundType::PLAYER);
     soundsMap.emplace("upgrade", SoundType::PLAYER);
     soundsMap.emplace("slowtime", SoundType::PLAYER);
     soundsMap.emplace("shuriken", SoundType::PLAYER);

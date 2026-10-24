@@ -493,7 +493,12 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds, bool
 void Player::weaponSound(SoundEngine &soundEngine)
 {
     if (this->isAttacking() && this->frame == 80 && !this->soundPlayed) {
-        soundEngine.addSound("whoosh");
+        if (attackType == AttackType::RANGED) {
+            soundEngine.addSound("archer_attack");
+        }
+        else {
+            soundEngine.addSound("warrior_attack");
+        }
         this->soundPlayed = true;
     }
     if (this->soundPlayed && this->frame != 80) {
