@@ -186,7 +186,7 @@ void Projectile::checkWallCollision(const sf::FloatRect &obstacleBounds)
 void Projectile::update(float dt)
 {
     const float VELOCITY = (this->speed * 0.2f + 0.8f) * 16.f * dt;
-    const float VELOCITY_ANGLE = (M_PI / 180.f) * this->angle;
+    const float VELOCITY_ANGLE = degToRad(angle);
 
     this->velocity.x = this->sprite.getGlobalBounds().size.x * VELOCITY * cos(VELOCITY_ANGLE);
     this->velocity.y = this->sprite.getGlobalBounds().size.y * VELOCITY * sin(VELOCITY_ANGLE);

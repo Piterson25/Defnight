@@ -23,10 +23,13 @@ public:
                   Player &player);
     void addBomb(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords, float coordsOffset,
                  Player &player);
+    void addGroundWave(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
+                       float coordsOffset);
     void addShuriken(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
                      float coordsOffset, Player &player);
-    void addProjectile(const std::string &name, float x, float y, float difficulty_mod, const sf::Vector2f &coords,
-                       float coordsOffset);
+    void addStone(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords, float coordsOffset);
+    void addProjectile(const std::string &name, const sf::Vector2f &t_position, float difficulty_mod,
+                       const sf::Vector2f &coords, float coordsOffset);
     void playerAbility(const sf::Vector2f &coords, Player &player);
     void bossSpecialAttack(Boss &boss);
     void update(Player &player, PlayerGUI &playerGui, ParticleSystem &particleSystem, MonsterSystem &monsterSystem,

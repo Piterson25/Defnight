@@ -28,5 +28,9 @@ static std::string toUpperCase(std::string str)
     return str;
 }
 
-const bool isPointVisible(const sf::FloatRect &rect, const sf::Vector2f &a_p1,
-                          const sf::Vector2f &a_p2);
+const bool isPointVisible(const sf::FloatRect &rect, const sf::Vector2f &a_p1, const sf::Vector2f &a_p2);
+
+const float degToRad(float angleInDegrees);
+const float radToDeg(float angleInRadians);
+
+const sf::Vector2f pointCoordsOnCircle(const sf::Vector2f t_pos, float radius, float angle);

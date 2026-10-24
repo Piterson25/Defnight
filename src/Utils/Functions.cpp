@@ -17,8 +17,7 @@ const float calcScale(float x, const sf::VideoMode &vm)
 
 const unsigned calcChar(unsigned size, const sf::VideoMode &vm)
 {
-    return static_cast<unsigned>(
-        std::floor(static_cast<float>(size * (vm.size.y / 720.f))));
+    return static_cast<unsigned>(std::floor(static_cast<float>(size * (vm.size.y / 720.f))));
 }
 
 const float getAngle(float x1, float y1, float x2, float y2)
@@ -59,18 +58,15 @@ const float vectorDistance(const sf::Vector2f &vec1, const sf::Vector2f &vec2)
 
 void center(sf::Text &text, float x)
 {
-    text.setPosition({float(int(x - (text.getLocalBounds().size.x) / 2)),
-                     text.getPosition().y});
+    text.setPosition({float(int(x - (text.getLocalBounds().size.x) / 2)), text.getPosition().y});
 }
 
 void center(sf::Sprite &sprite, float x)
 {
-    sprite.setPosition({float(int(x - (sprite.getLocalBounds().size.x) / 2)),
-                       sprite.getPosition().y});
+    sprite.setPosition({float(int(x - (sprite.getLocalBounds().size.x) / 2)), sprite.getPosition().y});
 }
 
-const bool isPointVisible(const sf::FloatRect &rect, const sf::Vector2f &a_p1,
-                          const sf::Vector2f &a_p2)
+const bool isPointVisible(const sf::FloatRect &rect, const sf::Vector2f &a_p1, const sf::Vector2f &a_p2)
 {
     float minX = std::min(a_p1.x, a_p2.x);
     float maxX = std::max(a_p1.x, a_p2.x);
@@ -114,4 +110,19 @@ const bool isPointVisible(const sf::FloatRect &rect, const sf::Vector2f &a_p1,
         return false;
     }
     return true;
+}
+
+const float degToRad(float angleInDegrees)
+{
+    return (M_PI / 180.f) * angleInDegrees;
+}
+
+const float radToDeg(float angleInRadians)
+{
+    return (180.f / M_PI) * angleInRadians;
+}
+
+const sf::Vector2f pointCoordsOnCircle(const sf::Vector2f t_pos, float radius, float angle)
+{
+    return sf::Vector2f(t_pos.x + radius * cos(degToRad(angle)), t_pos.y + radius * sin(degToRad(angle)));
 }

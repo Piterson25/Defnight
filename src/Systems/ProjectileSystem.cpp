@@ -24,6 +24,13 @@ void ProjectileSystem::addBomb(const sf::Vector2f &t_position, float difficulty_
         std::make_unique<Bomb>("BOMB", this->vm, t_position, difficulty_mod, coords, coordsOffset, player));
 }
 
+void ProjectileSystem::addGroundWave(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
+                                     float coordsOffset)
+{
+    this->projectiles.emplace_back(
+        std::make_unique<GroundWave>("GROUNDWAVE", this->vm, t_position, difficulty_mod, coords, coordsOffset));
+}
+
 void ProjectileSystem::addShuriken(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
                                    float coordsOffset, Player &player)
 {
@@ -31,16 +38,23 @@ void ProjectileSystem::addShuriken(const sf::Vector2f &t_position, float difficu
         std::make_unique<Shuriken>("SHURIKEN", this->vm, t_position, difficulty_mod, coords, coordsOffset, player));
 }
 
-void ProjectileSystem::addProjectile(const std::string &name, float x, float y, float difficulty_mod,
+void ProjectileSystem::addStone(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
+                                float coordsOffset)
+{
+    this->projectiles.emplace_back(
+        std::make_unique<Stone>("STONE", this->vm, t_position, difficulty_mod, coords, coordsOffset));
+}
+
+void ProjectileSystem::addProjectile(const std::string &name, const sf::Vector2f &t_position, float difficulty_mod,
                                      const sf::Vector2f &coords, float coordsOffset)
 {
     if (name == "STONE") {
         this->projectiles.emplace_back(
-            std::make_unique<Stone>(name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
+            std::make_unique<Stone>(name, this->vm, t_position, difficulty_mod, coords, coordsOffset));
     }
     else if (name == "GROUNDWAVE") {
         this->projectiles.emplace_back(
-            std::make_unique<GroundWave>(name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
+            std::make_unique<GroundWave>(name, this->vm, t_position, difficulty_mod, coords, coordsOffset));
     }
 }
 
@@ -62,54 +76,10 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
 void ProjectileSystem::bossSpecialAttack(Boss &boss)
 {
     if (boss.getName() == "MINOTAUR") {
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getUpCenter()), 0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getRightCenter().x + (boss.getRightCenter().x - boss.getUpCenter().x) / 2,
-                                   boss.getUpCenter().y),
-                      0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getRightCenter().x, boss.getUpCenter().y), 0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getRightCenter().x,
-                                   boss.getRightCenter().y + (boss.getRightCenter().y - boss.getUpCenter().y) / 2),
-                      0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getRightCenter()), 0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getRightCenter().x,
-                                   boss.getDownCenter().y + (boss.getDownCenter().y - boss.getRightCenter().y) / 2),
-                      0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getRightCenter().x, boss.getDownCenter().y), 0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getRightCenter().x + (boss.getRightCenter().x - boss.getDownCenter().x) / 2,
-                                   boss.getDownCenter().y),
-                      0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getDownCenter()), 0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getLeftCenter().x + (boss.getLeftCenter().x - boss.getDownCenter().x) / 2,
-                                   boss.getDownCenter().y),
-                      0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getLeftCenter().x, boss.getDownCenter().y), 0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getLeftCenter().x,
-                                   boss.getDownCenter().y + (boss.getDownCenter().y - boss.getLeftCenter().y) / 2),
-                      0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getLeftCenter()), 0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getLeftCenter().x,
-                                   boss.getUpCenter().y + (boss.getUpCenter().y - boss.getLeftCenter().y) / 2),
-                      0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getLeftCenter().x, boss.getUpCenter().y), 0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y, boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getUpCenter().x + (boss.getUpCenter().x - boss.getLeftCenter().x) / 2,
-                                   boss.getUpCenter().y),
-                      0);
+        for (float deg = 0; deg < 360; deg += 22.5f) {
+            addGroundWave(boss.getCenter(), boss.getDifficultyMod(),
+                          pointCoordsOnCircle(boss.getCenter(), calcX(16, vm), deg), 0);
+        }
     }
 }
 

@@ -467,9 +467,9 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds, bo
             if (monster->hasAttackedPlayer(obstaclesBounds, player, soundEngineRef, floatingTextSystemRef)) {
                 const auto *cyclops = dynamic_cast<const Cyclops *>(monster.get());
                 if (cyclops) {
-                    projectileSystemRef.addProjectile("STONE", monster->getPosition().x + calcX(24, vm),
-                                                      monster->getPosition().y + calcY(36, vm),
-                                                      monster->getDifficultyMod(), player.getCenter(), 0);
+                    projectileSystemRef.addStone(sf::Vector2f(monster->getPosition().x + calcX(24, vm),
+                                                              monster->getPosition().y + calcY(36, vm)),
+                                                 monster->getDifficultyMod(), player.getCenter(), 0);
                 }
                 else {
                     floatingTextSystemRef.addFloatingText(
