@@ -13,7 +13,7 @@ Archer::Archer(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
     this->armor = 2;
     this->sprint = 200;
     this->maxSprint = 200;
-    this->criticalChance = 20;
+    this->criticalChance = 10;
     this->projectileAttack = 3;
 }
 

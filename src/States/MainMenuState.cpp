@@ -570,7 +570,7 @@ void MainMenuState::update(float dt)
                     this->texts["ATTACK"]->setText("3");
                     this->texts["ATTACK_SPEED"]->setText("3");
                     this->texts["SPEED"]->setText("5");
-                    this->texts["CRITICAL"]->setText("20%");
+                    this->texts["CRITICAL"]->setText("10%");
                 }
                 else if (this->choosing_hero) {
                     if (this->text_buttons["CHOOSE"]->isPressed(this->mousePosWindow)) {
