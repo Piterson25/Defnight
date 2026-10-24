@@ -97,8 +97,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
                                                25 * priceModifier, 0);
 
     this->shopGUI = new ShopGUI(vm, this->player);
-    this->shopGUI->addShopItem("FULL_HP", calcX(44, vm), calcY(188, vm), 9, "Full HP", "+Full", 40 * priceModifier, 0,
-                               0);
+    this->shopGUI->addShopItem("FULL_HP", calcX(44, vm), calcY(188, vm), 9, "", "Full HP", 40 * priceModifier, 0, 0);
     this->shopGUI->addShopItem("MAX_HP", calcX(44, vm), calcY(324, vm), 3, this->lang["MAX_HP"], "+2",
                                20 * priceModifier, 0, 0);
     this->shopGUI->addShopItem("ATTACK", calcX(44, vm), calcY(460, vm), 5, this->lang["ATTACK"], "+1",
