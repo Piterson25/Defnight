@@ -3,6 +3,7 @@
 ShopGUI::ShopGUI(sf::VideoMode &t_vm, Player &t_player) : vm(t_vm), player(t_player)
 {
     this->attributesTexture = sf::Texture("assets/textures/attributes_icons.png");
+    this->itemsTexture = sf::Texture("assets/textures/items.png");
 }
 
 ShopGUI::~ShopGUI()
@@ -27,7 +28,7 @@ void ShopGUI::addItem(const std::string &t_name, float t_x, float t_y, uint32_t 
     this->shopItems.emplace(
         t_name,
         BuyItem{
-            std::make_unique<gui::Sprite>(this->attributesTexture, t_x, t_y, calcScale(4, vm), false),
+            std::make_unique<gui::Sprite>(this->itemsTexture, t_x, t_y, calcScale(4, vm), false),
             std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, t_x - calcX(12, vm), t_y - calcY(12, vm),
                                                 calcScale(1, vm), gui::DARK_GREEN, gui::WHITE, false),
             std::make_unique<gui::Sprite>("assets/textures/lock.png", t_x, t_y, calcScale(4, vm), false),
@@ -123,9 +124,17 @@ void ShopGUI::buy(const std::string &t_name, FloatingTextSystem *floatingTextSys
 void ShopGUI::updateItemFrames()
 {
     for (auto &pair : shopItems) {
-
         if (pair.first == "FULL_HP") {
             if (!pair.second.locked && player.getGold() >= pair.second.price && player.getHP() < player.getMaxHP()) {
+                pair.second.button->setColor(gui::DARK_GREEN);
+            }
+            else {
+                pair.second.button->setColor(gui::DARK_RED);
+            }
+        }
+        else if (pair.first == "FULL_SPRINT") {
+            if (!pair.second.locked && player.getGold() >= pair.second.price &&
+                player.getSprint() < player.getMaxSprint()) {
                 pair.second.button->setColor(gui::DARK_GREEN);
             }
             else {

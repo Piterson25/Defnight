@@ -97,7 +97,8 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
                                                25 * priceModifier, 0);
 
     this->shopGUI = new ShopGUI(vm, this->player);
-    this->shopGUI->addItem("FULL_HP", calcX(44, vm), calcY(188, vm), 9, "", "Full HP", 40 * priceModifier, 0, 0);
+    this->shopGUI->addItem("FULL_HP", calcX(44, vm), calcY(188, vm), 0, "Full", "HP", 40 * priceModifier, 0, 0);
+    this->shopGUI->addItem("FULL_SPRINT", calcX(44, vm), calcY(324, vm), 1, "Full", "Sprint", 40 * priceModifier, 0, 0);
     this->heroGUI = new HeroGUI(vm, this->player);
     this->heroGUI->addItem("MAX_HP", calcX(44, vm), calcY(188, vm), 3, this->lang["MAX_HP"], "+2", 20 * priceModifier,
                            0, 0);
@@ -360,6 +361,9 @@ void PlayerGUI::setWaveBreakLimit(float t_waveBreakLimit)
 void PlayerGUI::updatingSprint(float dt)
 {
     this->statsGUI->updatingSprint(dt);
+    if (this->isShopping() && player.getSprint() / player.getMaxSprint() == 1) {
+        this->shopGUI->disableItem("FULL_SPRINT");
+    }
 }
 
 void PlayerGUI::updateIsShopping()
@@ -571,6 +575,12 @@ void PlayerGUI::updateShopBuy(const sf::Vector2i &mousePos, SoundEngine &soundEn
             player.setHP(player.getMaxHP());
             this->updateHP();
             player.setRegenerating(true);
+            this->updateGold();
+        }
+        if (player.getSprint() < player.getMaxSprint() &&
+            shopGUI->hasBoughtItem(mousePos, "FULL_SPRINT", &this->floatingTextSystem, &soundEngine)) {
+            player.setSprint(player.getMaxSprint());
+            this->updateSprint();
             this->updateGold();
         }
     }

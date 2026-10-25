@@ -26,6 +26,7 @@ private:
     sf::VideoMode &vm;
     Player &player;
     sf::Texture attributesTexture;
+    sf::Texture itemsTexture;
 
     std::unordered_map<std::string, BuyItem> shopItems;
 };
