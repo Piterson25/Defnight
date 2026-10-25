@@ -98,7 +98,9 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
 
     this->shopGUI = new ShopGUI(vm, this->player);
     this->shopGUI->addItem("FULL_HP", calcX(44, vm), calcY(188, vm), 0, "Full", "HP", 40 * priceModifier, 0, 0);
-    this->shopGUI->addItem("FULL_SPRINT", calcX(44, vm), calcY(324, vm), 1, "Full", "Sprint", 40 * priceModifier, 0, 0);
+    this->shopGUI->addItem("HP", calcX(44, vm), calcY(324, vm), 1, "HP", "+5", 15 * priceModifier, 0, 0);
+    this->shopGUI->addItem("FULL_SPRINT", calcX(44, vm), calcY(460, vm), 2, "Full", "Sprint", 40 * priceModifier, 0, 0);
+    this->shopGUI->addItem("SPRINT", calcX(44, vm), calcY(596, vm), 3, "Sprint", "+50", 15 * priceModifier, 0, 0);
     this->heroGUI = new HeroGUI(vm, this->player);
     this->heroGUI->addItem("MAX_HP", calcX(44, vm), calcY(188, vm), 3, this->lang["MAX_HP"], "+2", 20 * priceModifier,
                            0, 0);
@@ -323,6 +325,7 @@ void PlayerGUI::updatingHP(SoundEngine &soundEngine, bool isExtreme, float dt)
 
     if (this->isShopping() && player.getHP() / player.getMaxHP() == 1) {
         this->shopGUI->disableItem("FULL_HP");
+        this->shopGUI->disableItem("HP");
     }
     else if (player.isDead()) {
         soundEngine.addSound("gameover");
@@ -363,6 +366,7 @@ void PlayerGUI::updatingSprint(float dt)
     this->statsGUI->updatingSprint(dt);
     if (this->isShopping() && player.getSprint() / player.getMaxSprint() == 1) {
         this->shopGUI->disableItem("FULL_SPRINT");
+        this->shopGUI->disableItem("SPRINT");
     }
 }
 
@@ -570,18 +574,31 @@ void PlayerGUI::updateShopBuy(const sf::Vector2i &mousePos, SoundEngine &soundEn
     }
 
     if (this->isShopping()) {
-        if (player.getHP() < player.getMaxHP() &&
-            shopGUI->hasBoughtItem(mousePos, "FULL_HP", &this->floatingTextSystem, &soundEngine)) {
-            player.setHP(player.getMaxHP());
-            this->updateHP();
-            player.setRegenerating(true);
-            this->updateGold();
+        if (player.getHP() < player.getMaxHP()) {
+            if (shopGUI->hasBoughtItem(mousePos, "FULL_HP", &this->floatingTextSystem, &soundEngine)) {
+                player.setHP(player.getMaxHP());
+                this->updateHP();
+                player.setRegenerating(true);
+                this->updateGold();
+            }
+            else if (shopGUI->hasBoughtItem(mousePos, "HP", &this->floatingTextSystem, &soundEngine)) {
+                player.setHP(player.getHP() + 5);
+                this->updateHP();
+                player.setRegenerating(true);
+                this->updateGold();
+            }
         }
-        if (player.getSprint() < player.getMaxSprint() &&
-            shopGUI->hasBoughtItem(mousePos, "FULL_SPRINT", &this->floatingTextSystem, &soundEngine)) {
-            player.setSprint(player.getMaxSprint());
-            this->updateSprint();
-            this->updateGold();
+        if (player.getSprint() < player.getMaxSprint()) {
+            if (shopGUI->hasBoughtItem(mousePos, "FULL_SPRINT", &this->floatingTextSystem, &soundEngine)) {
+                player.setSprint(player.getMaxSprint());
+                this->updateSprint();
+                this->updateGold();
+            }
+            else if (shopGUI->hasBoughtItem(mousePos, "SPRINT", &this->floatingTextSystem, &soundEngine)) {
+                player.setSprint(player.getSprint() + 50);
+                this->updateSprint();
+                this->updateGold();
+            }
         }
     }
 }

@@ -316,7 +316,12 @@ void Player::setReg(uint32_t t_reg)
 
 void Player::setSprint(float t_sprint)
 {
-    this->sprint = t_sprint;
+    if (t_sprint > maxSprint) {
+        this->sprint = maxSprint;
+    }
+    else {
+        this->sprint = t_sprint;
+    }
 }
 
 void Player::setMaxSprint(uint32_t t_maxSprint)

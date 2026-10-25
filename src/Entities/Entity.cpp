@@ -199,7 +199,12 @@ void Entity::setMaxHP(const uint32_t maxHP)
 
 void Entity::setHP(const uint32_t HP)
 {
-    this->HP = HP;
+    if (HP > maxHP) {
+        this->HP = maxHP;
+    }
+    else {
+        this->HP = HP;
+    }
 }
 
 void Entity::setXP(const uint32_t XP)
