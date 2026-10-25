@@ -97,13 +97,14 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
                                                25 * priceModifier, 0);
 
     this->shopGUI = new ShopGUI(vm, this->player);
-    this->shopGUI->addShopItem("FULL_HP", calcX(44, vm), calcY(188, vm), 9, "", "Full HP", 40 * priceModifier, 0, 0);
-    this->shopGUI->addShopItem("MAX_HP", calcX(44, vm), calcY(324, vm), 3, this->lang["MAX_HP"], "+2",
-                               20 * priceModifier, 0, 0);
-    this->shopGUI->addShopItem("ATTACK", calcX(44, vm), calcY(460, vm), 5, this->lang["ATTACK"], "+1",
-                               20 * priceModifier, 0, 0);
-    this->shopGUI->addShopItem("ARMOR", calcX(44, vm), calcY(596, vm), 1, this->lang["ARMOR"], "+1", 20 * priceModifier,
-                               player.getArmor(), 10);
+    this->shopGUI->addItem("FULL_HP", calcX(44, vm), calcY(188, vm), 9, "", "Full HP", 40 * priceModifier, 0, 0);
+    this->heroGUI = new HeroGUI(vm, this->player);
+    this->heroGUI->addItem("MAX_HP", calcX(44, vm), calcY(188, vm), 3, this->lang["MAX_HP"], "+2", 20 * priceModifier,
+                           0, 0);
+    this->heroGUI->addItem("ATTACK", calcX(44, vm), calcY(324, vm), 5, this->lang["ATTACK"], "+1", 20 * priceModifier,
+                           0, 0);
+    this->heroGUI->addItem("ARMOR", calcX(44, vm), calcY(460, vm), 1, this->lang["ARMOR"], "+1", 20 * priceModifier,
+                           player.getArmor(), 10);
 
     this->sideGUI = SideGUI::NONE;
 
@@ -241,7 +242,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     player.setHP(player.getMaxHP());
     player.setRegenerating(true);
     updatePlayerAttributes();
-    this->update_Gold();
+    this->updateGold();
 }
 
 void PlayerGUI::update_level(SoundEngine &soundEngine)
@@ -327,10 +328,11 @@ void PlayerGUI::updatingHP(SoundEngine &soundEngine, bool isExtreme, float dt)
     }
 }
 
-void PlayerGUI::update_Gold()
+void PlayerGUI::updateGold()
 {
     statsGUI->updateGold();
     shopGUI->updateItemFrames();
+    heroGUI->updateItemFrames();
     abilityUpgradeGUI->updateItemFrames();
 }
 
@@ -367,6 +369,16 @@ void PlayerGUI::updateIsShopping()
     }
     else {
         this->sideGUI = SideGUI::SHOP;
+    }
+}
+
+void PlayerGUI::updateIsBuyingHero()
+{
+    if (this->isBuyingHero()) {
+        this->sideGUI = SideGUI::NONE;
+    }
+    else {
+        this->sideGUI = SideGUI::HERO;
     }
 }
 
@@ -559,22 +571,32 @@ void PlayerGUI::updateShopBuy(const sf::Vector2i &mousePos, SoundEngine &soundEn
             player.setHP(player.getMaxHP());
             this->updateHP();
             player.setRegenerating(true);
-            this->update_Gold();
+            this->updateGold();
         }
-        else if (shopGUI->hasBoughtItem(mousePos, "MAX_HP", &this->floatingTextSystem, &soundEngine)) {
+    }
+}
+
+void PlayerGUI::updateHeroBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine)
+{
+    if (statsGUI->hasClickedPlayer(mousePos)) {
+        updateIsBuyingHero();
+    }
+
+    if (this->isBuyingHero()) {
+        if (heroGUI->hasBoughtItem(mousePos, "MAX_HP", &this->floatingTextSystem, &soundEngine)) {
             player.setMaxHP(player.getMaxHP() + 2);
             this->updateHP();
             player.setRegenerating(true);
-            this->update_Gold();
+            this->updateGold();
         }
-        else if (shopGUI->hasBoughtItem(mousePos, "ATTACK", &this->floatingTextSystem, &soundEngine)) {
+        else if (heroGUI->hasBoughtItem(mousePos, "ATTACK", &this->floatingTextSystem, &soundEngine)) {
             player.setAttack(player.getAttack() + 1);
-            this->update_Gold();
+            this->updateGold();
         }
-        else if (shopGUI->hasBoughtItem(mousePos, "ARMOR", &this->floatingTextSystem, &soundEngine)) {
+        else if (heroGUI->hasBoughtItem(mousePos, "ARMOR", &this->floatingTextSystem, &soundEngine)) {
             player.setArmor(player.getArmor() + 1);
-            shopGUI->updateSegments("ARMOR");
-            this->update_Gold();
+            heroGUI->updateSegments("ARMOR");
+            this->updateGold();
         }
     }
 }
@@ -588,62 +610,62 @@ void PlayerGUI::updateAbilityBuy(const sf::Vector2i &mousePos, SoundEngine &soun
     if (this->isBuyingAbility() && !player.isAbilityActive()) {
         if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "LOWER_COOLDOWN", &this->floatingTextSystem, &soundEngine)) {
             player.setAbilityMaxTimeModifier(player.getAbilityMaxTimeModifier() - 0.05f);
-            this->update_Gold();
+            this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");
             this->abilityUpgradeGUI->updateSegments("LOWER_COOLDOWN");
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "PROJ_ATTACK", &this->floatingTextSystem,
                                                      &soundEngine)) {
             player.setProjectileAttack(player.getProjectileAttack() + 1);
-            this->update_Gold();
+            this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("PROJ_ATTACK", this->lang["ATTACK"]);
             this->abilityUpgradeGUI->updateSegments("PROJ_ATTACK");
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "PIERCING", &this->floatingTextSystem, &soundEngine)) {
             player.setProjectilePiercing(player.getProjectilePiercing() + 1);
-            this->update_Gold();
+            this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("PIERCING", this->lang["PIERCING"]);
             this->abilityUpgradeGUI->updateSegments("PIERCING");
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "AREA", &this->floatingTextSystem, &soundEngine)) {
             player.setProjectileArea(player.getProjectileArea() + 1);
-            this->update_Gold();
+            this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("AREA", this->lang["AREA"]);
             this->abilityUpgradeGUI->updateSegments("AREA");
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "ARMOR", &this->floatingTextSystem, &soundEngine)) {
             player.setIncreasedArmor(player.getIncreasedArmor() + 1);
-            this->update_Gold();
+            this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("ARMOR", this->lang["ARMOR"]);
             this->abilityUpgradeGUI->updateSegments("ARMOR");
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "ATTACK", &this->floatingTextSystem, &soundEngine)) {
             player.setIncreasedAttack(player.getIncreasedAttack() + 1);
-            this->update_Gold();
+            this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("ATTACK", this->lang["ATTACK"]);
             this->abilityUpgradeGUI->updateSegments("ATTACK");
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "REG", &this->floatingTextSystem, &soundEngine)) {
             player.setIncreasedReg(player.getIncreasedReg() + 1);
-            this->update_Gold();
+            this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("REG", this->lang["REG"]);
             this->abilityUpgradeGUI->updateSegments("REG");
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "SLOWDOWN", &this->floatingTextSystem, &soundEngine)) {
             player.setTimeSlowdown(player.getTimeSlowdown() + 0.1f);
-            this->update_Gold();
+            this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("SLOWDOWN", this->lang["SLOWDOWN"]);
             this->abilityUpgradeGUI->updateSegments("SLOWDOWN");
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "GOLD", &this->floatingTextSystem, &soundEngine)) {
             player.setIncreasedGold(player.getIncreasedGold() + 1);
-            this->update_Gold();
+            this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("GOLD", this->lang["GOLD"]);
             this->abilityUpgradeGUI->updateSegments("GOLD");
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "TARGETS", &this->floatingTextSystem, &soundEngine)) {
             player.setAttackLimit(player.getAttackLimit() + 1);
-            this->update_Gold();
+            this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("TARGETS", this->lang["TARGETS"]);
             this->abilityUpgradeGUI->updateSegments("TARGETS");
         }
@@ -668,6 +690,11 @@ const bool PlayerGUI::isUpgrading() const
 const bool PlayerGUI::isShopping() const
 {
     return this->sideGUI == SideGUI::SHOP;
+}
+
+const bool PlayerGUI::isBuyingHero() const
+{
+    return this->sideGUI == SideGUI::HERO;
 }
 
 const bool PlayerGUI::isBuyingAbility() const
@@ -908,6 +935,10 @@ void PlayerGUI::draw(sf::RenderTarget &target)
     if (isShopping()) {
         this->sprites["SIDE_GUI"]->draw(target);
         this->shopGUI->draw(target);
+    }
+    else if (isBuyingHero()) {
+        this->sprites["SIDE_GUI"]->draw(target);
+        this->heroGUI->draw(target);
     }
 
     if (player.isUpgraded()) {

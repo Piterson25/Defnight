@@ -195,8 +195,9 @@ void SettingsState::initGUI()
     addKeybind("RIGHT_CLICK", calcX(256, vm), calcY(288, vm), this->lang["RIGHT_CLICK"], "RMB");
     addKeybind("RUN", calcX(256, vm), calcY(336, vm), this->lang["RUN"], "LShift");
     addKeybind("ESCAPE", calcX(256, vm), calcY(384, vm), this->lang["ESCAPE"], "Esc");
-    addKeybind("SHOP", calcX(256, vm), calcY(432, vm), this->lang["SHOP"], "Q");
-    addKeybind("BUY_ABILITY", calcX(256, vm), calcY(480, vm), this->lang["BUY_ABILITY"], "E");
+    addKeybind("SHOP", calcX(256, vm), calcY(432, vm), this->lang["SHOP"], "E");
+    addKeybind("HERO", calcX(256, vm), calcY(480, vm), this->lang["HERO"], "R");
+    addKeybind("BUY_ABILITY", calcX(256, vm), calcY(524, vm), this->lang["BUY_ABILITY"], "F");
 
     this->text_buttons["APPLY"] =
         std::make_unique<gui::ButtonText>(this->gameSettings.lang["APPLY"], calcChar(32, vm), calcX(640, vm),
@@ -599,6 +600,7 @@ void SettingsState::draw(sf::RenderTarget *target)
             this->keybindsTexts["RUN"].draw(*target);
             this->keybindsTexts["ESCAPE"].draw(*target);
             this->keybindsTexts["SHOP"].draw(*target);
+            this->keybindsTexts["HERO"].draw(*target);
             this->keybindsTexts["BUY_ABILITY"].draw(*target);
             break;
     }

@@ -34,7 +34,7 @@ const bool Coin::isPickedByPlayer(Player &player, PlayerGUI &playerGUI, Floating
     }
     if (distance <= player.getReach() * calcX(16, vm)) {
         player.setGold(player.getGold() + this->worth);
-        playerGUI.update_Gold();
+        playerGUI.updateGold();
         floatingTextSystem.addFloatingText(gui::GOLD, "+" + std::to_string(this->worth), calcChar(16, vm),
                                            this->sprite.getPosition().x - calcX(16, vm), this->sprite.getPosition().y,
                                            false);

@@ -16,7 +16,7 @@ public:
     void updateHP();
     void updateSprint();
     void updatingHP(SoundEngine &soundEngine, bool isExtreme, float dt);
-    void update_Gold();
+    void updateGold();
     void update_ability(float dt);
     void setAbilityIcon();
     void setIsEscape(bool escape);
@@ -27,16 +27,19 @@ public:
     void updateReg();
     void updateBossHP(bool isExtreme, float dt);
     void updateShopBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
+    void updateHeroBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
     void updateAbilityBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
 
     const bool isEscape() const;
     const bool isLeveling() const;
     const bool isUpgrading() const;
     const bool isShopping() const;
+    const bool isBuyingHero() const;
     const bool isBuyingAbility() const;
 
     void updatingSprint(float dt);
     void updateIsShopping();
+    void updateIsBuyingHero();
     void updateIsBuyingAbility();
     void updateKills();
     void updateMonsterCountWave(const std::string &language, uint32_t wave, bool bossWave, const size_t &monsterCount,
@@ -59,10 +62,11 @@ private:
     FloatingTextSystem &floatingTextSystem;
     StatsGUI *statsGUI;
     ShopGUI *shopGUI;
+    HeroGUI *heroGUI;
     UpgradeGUI *upgradeGUI;
     AbilityUpgradeGUI *abilityUpgradeGUI;
 
-    enum class SideGUI { SHOP, ABILITY_UPGRADE, UPGRADE, NONE };
+    enum class SideGUI { SHOP, HERO, ABILITY_UPGRADE, UPGRADE, NONE };
 
     std::string difficultyName;
 

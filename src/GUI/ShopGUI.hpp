@@ -1,6 +1,6 @@
 #pragma once
 
-#include "UpgradeGUI.hpp"
+#include "HeroGUI.hpp"
 
 class ShopGUI {
 public:
@@ -9,16 +9,12 @@ public:
 
     const uint32_t getPrice(const std::string &t_name);
 
-    void addShopItem(const std::string &t_name, float t_x, float t_y,
-                     uint32_t iconID, const std::string &desc,
-                     const std::string &value, uint32_t price,
-                     uint32_t boughtNumber, uint32_t maxNumber);
+    void addItem(const std::string &t_name, float t_x, float t_y, uint32_t iconID, const std::string &desc,
+                 const std::string &value, uint32_t price, uint32_t boughtNumber, uint32_t maxNumber);
     void updateSegments(const std::string &t_name);
 
-    const bool hasBoughtItem(const sf::Vector2i &mousePos,
-                             const std::string &t_name,
-                             FloatingTextSystem *floatingTextSystem,
-                             SoundEngine *soundEngine);
+    const bool hasBoughtItem(const sf::Vector2i &mousePos, const std::string &t_name,
+                             FloatingTextSystem *floatingTextSystem, SoundEngine *soundEngine);
     void lockItem(const std::string &t_name);
     void unlockItem(const std::string &t_name);
     void disableItem(const std::string &t_name);

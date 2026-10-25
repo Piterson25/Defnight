@@ -32,6 +32,7 @@ public:
     void setWaveCountdownText(const std::string &text);
     bool hasClickedMenu(const sf::Vector2i &mousePos);
     bool hasClickedShop(const sf::Vector2i &mousePos);
+    const bool hasClickedPlayer(const sf::Vector2i &mousePos);
     bool hasClickedAbilityUpgrade(const sf::Vector2i &mousePos);
     bool hasClickedSkip(const sf::Vector2i &mousePos);
     void update(const sf::Vector2f &mousePosView);
@@ -78,7 +79,6 @@ private:
     sf::VideoMode &vm;
     Player &player;
 
-    sf::Texture framesTexture;
     sf::Texture attributesTexture;
     sf::Texture barsTexture;
     sf::Texture upgradesTexture;

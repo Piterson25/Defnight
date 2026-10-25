@@ -3,7 +3,6 @@
 StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player, std::unordered_map<std::string, std::string> &t_lang)
     : vm(t_vm), player(t_player)
 {
-    this->framesTexture = sf::Texture("assets/textures/frames.png");
     this->attributesTexture = sf::Texture("assets/textures/attributes_icons.png");
     this->barsTexture = sf::Texture("assets/textures/bars.png");
     this->upgradesTexture = sf::Texture("assets/textures/upgrades_icons.png");
@@ -25,10 +24,10 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player, std::unordered_map<std
     this->texts["GOLD"] = std::make_unique<gui::Text>(std::to_string(player.getGold()), calcChar(16, vm), calcX(36, vm),
                                                       calcY(98, vm), gui::GOLD, false);
 
-    this->sprites["PLAYER_FRAME"] = std::make_unique<gui::Sprite>(
-        framesTexture, calcX(188, vm), calcY(4, vm), calcScale(1, vm), true, sf::IntRect({0, 0}, {88, 88}));
     this->sprites["PLAYER_ICON"] = std::make_unique<gui::Sprite>(upgradesTexture, calcX(188, vm), calcY(16, vm),
                                                                  calcScale(4, vm), true, sf::IntRect({0, 0}, {16, 16}));
+    this->sprite_buttons["PLAYER"] = std::make_unique<gui::ButtonSprite>(
+        gui::RECT_BUTTON, calcX(144, vm), calcY(4, vm), calcScale(1, vm), gui::GREY, gui::WHITE, false);
     if (player.getName() == "ARCHER") {
         this->sprites["PLAYER_ICON"]->setTextureRect(sf::IntRect({48, 0}, {16, 16}));
         this->sprites["PLAYER_ICON"]->center(calcX(188, vm));
@@ -56,8 +55,8 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player, std::unordered_map<std
                                                      calcY(70, vm), gui::RED, true);
 
     XPBar = Bar{
-        std::make_unique<gui::Sprite>(framesTexture, calcX(640, vm), calcY(4, vm), calcScale(1, vm), true,
-                                      sf::IntRect({88, 0}, {272, 36})),
+        std::make_unique<gui::Sprite>(barsTexture, calcX(640, vm), calcY(4, vm), calcScale(1, vm), true,
+                                      sf::IntRect({0, 100}, {272, 36})),
         std::make_unique<gui::Sprite>(barsTexture, calcX(512, vm), calcY(12, vm), calcScale(1, vm), false,
                                       sf::IntRect({0, 0}, {0, 0})),
         std::make_unique<gui::Text>("Level " + std::to_string(player.getLevel()), calcChar(16, vm), calcX(640, vm),
@@ -69,8 +68,8 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player, std::unordered_map<std
         false};
 
     HPBar = Bar{
-        std::make_unique<gui::Sprite>(framesTexture, calcX(640, vm), calcY(44, vm), calcScale(1, vm), true,
-                                      sf::IntRect({88, 0}, {272, 36})),
+        std::make_unique<gui::Sprite>(barsTexture, calcX(640, vm), calcY(44, vm), calcScale(1, vm), true,
+                                      sf::IntRect({0, 100}, {272, 36})),
         std::make_unique<gui::Sprite>(barsTexture, calcX(512, vm), calcY(52, vm), calcScale(1, vm), false,
                                       sf::IntRect({0, 20}, {256, 20})),
         std::make_unique<gui::Text>("HP:" + std::to_string(player.getHP()) + "/" + std::to_string(player.getMaxHP()),
@@ -82,8 +81,8 @@ StatsGUI::StatsGUI(sf::VideoMode &t_vm, Player &t_player, std::unordered_map<std
         false};
 
     SprintBar = Bar{
-        std::make_unique<gui::Sprite>(framesTexture, calcX(640, vm), calcY(84, vm), calcScale(1, vm), true,
-                                      sf::IntRect({88, 0}, {272, 36})),
+        std::make_unique<gui::Sprite>(barsTexture, calcX(640, vm), calcY(84, vm), calcScale(1, vm), true,
+                                      sf::IntRect({0, 100}, {272, 36})),
         std::make_unique<gui::Sprite>(barsTexture, calcX(512, vm), calcY(92, vm), calcScale(1, vm), false,
                                       sf::IntRect({0, 40}, {256, 20})),
         std::make_unique<gui::Text>(std::to_string(player.getSprint()) + "/" + std::to_string(player.getMaxSprint()),
@@ -444,6 +443,11 @@ bool StatsGUI::hasClickedShop(const sf::Vector2i &mousePos)
     return sprite_buttons["SHOP"]->isPressed(mousePos);
 }
 
+const bool StatsGUI::hasClickedPlayer(const sf::Vector2i &mousePos)
+{
+    return sprite_buttons.at("PLAYER")->isPressed(mousePos);
+}
+
 bool StatsGUI::hasClickedAbilityUpgrade(const sf::Vector2i &mousePos)
 {
     return sprite_buttons["ABILITY"]->isPressed(mousePos);
@@ -497,8 +501,8 @@ void StatsGUI::draw(sf::RenderTarget &target)
     this->sprite_buttons["SHOP"]->draw(target);
     this->sprites["GOLD"]->draw(target);
     this->texts["GOLD"]->draw(target);
-    this->sprites["PLAYER_FRAME"]->draw(target);
     this->sprites["PLAYER_ICON"]->draw(target);
+    this->sprite_buttons["PLAYER"]->draw(target);
     this->texts["PLAYER_NAME"]->draw(target);
     this->sprites["ARMOR"]->draw(target);
     this->texts["ARMOR"]->draw(target);

@@ -94,7 +94,7 @@ GameState::GameState(float gridSize, sf::RenderWindow &window, GameSettings &gam
     this->waveCountdown = 0.f;
     this->gems = 0;
 
-    this->playerGUI->update_Gold();
+    this->playerGUI->updateGold();
 }
 
 GameState::~GameState()
@@ -327,15 +327,19 @@ void GameState::update(float dt)
             this->playerGUI->updateReg();
             this->playerGUI->update_ability(dt);
 
-            if (GameInputHandler::isKeyPressed("Q", sf::Keyboard::Key::Q)) {
+            if (GameInputHandler::isKeyPressed("E", sf::Keyboard::Key::E)) {
                 this->playerGUI->updateIsShopping();
+            }
+            else if (GameInputHandler::isKeyPressed("R", sf::Keyboard::Key::R)) {
+                this->playerGUI->updateIsBuyingHero();
             }
 
             playerGUI->updateShopBuy(this->mousePosWindow, this->soundEngine);
+            playerGUI->updateHeroBuy(this->mousePosWindow, this->soundEngine);
 
             if (this->player->isUpgraded()) {
 
-                if (GameInputHandler::isKeyPressed("E", sf::Keyboard::Key::E)) {
+                if (GameInputHandler::isKeyPressed("F", sf::Keyboard::Key::F)) {
                     this->playerGUI->updateIsBuyingAbility();
                 }
 

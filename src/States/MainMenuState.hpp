@@ -37,7 +37,6 @@ private:
 
     std::vector<Map> maps;
 
-    sf::Texture framesTexture;
     std::vector<RankText> ranksTexts;
     PlayerStats::Rank playerRank;
 

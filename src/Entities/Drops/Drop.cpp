@@ -1,7 +1,6 @@
 #include "Drop.hpp"
 
-Drop::Drop(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
-           uint32_t t_worth, bool t_vanishing)
+Drop::Drop(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y, uint32_t t_worth, bool t_vanishing)
     : Entity(t_name, t_vm, t_x, t_y), shadow(shadow_texture)
 {
     this->texture = sf::Texture("assets/textures/drop.png");
@@ -10,17 +9,15 @@ Drop::Drop(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
     this->sprite.setPosition({t_x, t_y});
     this->sprite.setColor(sf::Color::Transparent);
 
-    this->entitySize =
-        static_cast<uint32_t>(this->sprite.getGlobalBounds().size.x / 96);
+    this->entitySize = static_cast<uint32_t>(this->sprite.getGlobalBounds().size.x / 96);
 
     this->shadow_texture = sf::Texture("assets/textures/entity_shadow.png");
     this->shadow = sf::Sprite(this->shadow_texture);
     this->shadow.setTextureRect(sf::IntRect({0, 0}, {8, 4}));
     this->shadow.setScale({calcScale(2, vm), calcScale(2, vm)});
-    this->shadow.setPosition({this->getDownCenter().x -
-                                 (this->shadow.getTextureRect().size.x * 0.5f) *
-                                     this->shadow.getScale().x,
-                             this->getDownCenter().y});
+    this->shadow.setPosition(
+        {this->getDownCenter().x - (this->shadow.getTextureRect().size.x * 0.5f) * this->shadow.getScale().x,
+         this->getDownCenter().y});
     this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
     this->spinCooldown = 0.f;
@@ -53,12 +50,8 @@ const bool Drop::hasVanished() const
 void Drop::spawn(float dt)
 {
     if (this->spawnCountdown < 0.25f) {
-        this->sprite.setColor(
-            sf::Color(255, 255, 255,
-                      static_cast<uint8_t>(this->spawnCountdown * 1020.f)));
-        this->shadow.setColor(
-            sf::Color(255, 255, 255,
-                      static_cast<uint8_t>(this->spawnCountdown * 510.f)));
+        this->sprite.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(this->spawnCountdown * 1020.f)));
+        this->shadow.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(this->spawnCountdown * 510.f)));
         this->spawnCountdown += dt;
     }
     if (this->spawnCountdown >= 0.25) {
@@ -74,27 +67,21 @@ void Drop::spin(float dt)
 
 void Drop::move(float posX, float posY, float dt)
 {
-    this->angle = getAngle(this->sprite.getPosition().x + calcX(8, vm),
-                           this->sprite.getPosition().y + calcY(8, vm),
+    this->angle = getAngle(this->sprite.getPosition().x + calcX(8, vm), this->sprite.getPosition().y + calcY(8, vm),
                            posX + calcX(32, vm), posY + calcY(32, vm)) +
                   90.f;
 
-    this->velocity.x = this->sprite.getGlobalBounds().size.x * 16.f *
-                       cos((3.1415f / 180) * this->angle) * dt;
-    this->velocity.y = this->sprite.getGlobalBounds().size.x * 16.f *
-                       sin((3.1415f / 180) * this->angle) * dt;
+    this->velocity.x = this->sprite.getGlobalBounds().size.x * 16.f * cos((3.1415f / 180) * this->angle) * dt;
+    this->velocity.y = this->sprite.getGlobalBounds().size.x * 16.f * sin((3.1415f / 180) * this->angle) * dt;
     this->sprite.move(this->velocity);
 }
 
-const bool Drop::isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
-                                  FloatingTextSystem &floatingTextSystem,
+const bool Drop::isPickedByPlayer(Player &player, PlayerGUI &playerGUI, FloatingTextSystem &floatingTextSystem,
                                   SoundEngine &soundEngine, float dt)
 {
     const float distance = vectorDistance(
-        sf::Vector2f(this->sprite.getPosition().x + calcX(8, vm),
-                     this->sprite.getPosition().y + calcY(8, vm)),
-        sf::Vector2f(player.getPosition().x + calcX(32, vm),
-                     player.getPosition().y + calcY(32, vm)));
+        sf::Vector2f(this->sprite.getPosition().x + calcX(8, vm), this->sprite.getPosition().y + calcY(8, vm)),
+        sf::Vector2f(player.getPosition().x + calcX(32, vm), player.getPosition().y + calcY(32, vm)));
 
     if (distance <= player.getReach() * calcX(64, vm)) {
         this->move(player.getPosition().x, player.getPosition().y, dt);
@@ -102,21 +89,19 @@ const bool Drop::isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
     if (distance <= player.getReach() * calcX(16, vm)) {
         if (this->name == "COIN") {
             player.setGold(player.getGold() + this->worth);
-            playerGUI.update_Gold();
-            floatingTextSystem.addFloatingText(
-                gui::GOLD, "+" + std::to_string(this->worth), calcChar(16, vm),
-                this->sprite.getPosition().x - calcX(16, vm),
-                this->sprite.getPosition().y, false);
+            playerGUI.updateGold();
+            floatingTextSystem.addFloatingText(gui::GOLD, "+" + std::to_string(this->worth), calcChar(16, vm),
+                                               this->sprite.getPosition().x - calcX(16, vm),
+                                               this->sprite.getPosition().y, false);
             soundEngine.addSound("coin");
         }
         else if (player.getHP() < player.getMaxHP()) {
             player.setHP(player.getHP() + 1);
             player.setRegenerating(true);
             playerGUI.updateHP();
-            floatingTextSystem.addFloatingText(
-                gui::RED, "+" + std::to_string(this->worth), calcChar(16, vm),
-                this->sprite.getPosition().x - calcX(16, vm),
-                this->sprite.getPosition().y - calcY(16, vm), false);
+            floatingTextSystem.addFloatingText(gui::RED, "+" + std::to_string(this->worth), calcChar(16, vm),
+                                               this->sprite.getPosition().x - calcX(16, vm),
+                                               this->sprite.getPosition().y - calcY(16, vm), false);
             soundEngine.addSound("heart");
         }
 
@@ -127,10 +112,9 @@ const bool Drop::isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
 
 void Drop::update(float dt)
 {
-    this->shadow.setPosition({this->getDownCenter().x -
-                                 (this->shadow.getTextureRect().size.x * 0.5f) *
-                                     this->shadow.getScale().x,
-                             this->getDownCenter().y});
+    this->shadow.setPosition(
+        {this->getDownCenter().x - (this->shadow.getTextureRect().size.x * 0.5f) * this->shadow.getScale().x,
+         this->getDownCenter().y});
     if (this->spawned) {
         this->spin(dt);
     }

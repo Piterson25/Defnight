@@ -23,7 +23,6 @@ void MainMenuState::initGUI()
 
     this->fading = false;
     this->appearing = false;
-    this->framesTexture = sf::Texture("assets/textures/frames.png");
     this->dimBackground.setSize(sf::Vector2f(static_cast<float>(vm.size.x), static_cast<float>(vm.size.y)));
     this->dimBackground.setFillColor(sf::Color(0, 0, 0, 0));
 
@@ -162,14 +161,14 @@ void MainMenuState::initGUI()
         this->lang["CHOOSE"], calcChar(32, vm), calcX(240, vm), calcY(564, vm), gui::WHITE, gui::LIGHT_GREY, true);
     this->sprites["HERO_PREVIEW"] = std::make_unique<gui::Sprite>(
         upgradeIcons, calcX(640, vm), calcY(512, vm), calcScale(8, vm), true, sf::IntRect({0, 0}, {16, 16}));
-    this->sprites["HP_FRAME"] = std::make_unique<gui::Sprite>(framesTexture, calcX(860, vm), calcY(498, vm),
-                                                              calcScale(1, vm), true, sf::IntRect({88, 0}, {272, 36}));
+    this->sprites["HP_FRAME"] = std::make_unique<gui::Sprite>(bars, calcX(860, vm), calcY(498, vm), calcScale(1, vm),
+                                                              true, sf::IntRect({0, 100}, {272, 36}));
     this->sprites["HP_BAR"] = std::make_unique<gui::Sprite>(bars, calcX(860, vm), calcY(506, vm), calcScale(1, vm),
                                                             true, sf::IntRect({0, 20}, {256, 20}));
     this->texts["HP"] =
         std::make_unique<gui::Text>("HP:10/10", calcChar(16, vm), calcX(860, vm), calcY(509, vm), gui::WHITE, true);
     this->sprites["SPRINT_FRAME"] = std::make_unique<gui::Sprite>(
-        framesTexture, calcX(860, vm), calcY(538, vm), calcScale(1, vm), true, sf::IntRect({88, 0}, {272, 36}));
+        bars, calcX(860, vm), calcY(538, vm), calcScale(1, vm), true, sf::IntRect({0, 100}, {272, 36}));
     this->sprites["SPRINT_BAR"] = std::make_unique<gui::Sprite>(bars, calcX(860, vm), calcY(546, vm), calcScale(1, vm),
                                                                 true, sf::IntRect({0, 40}, {256, 20}));
     this->texts["SPRINT"] =
@@ -363,8 +362,8 @@ void MainMenuState::initGUI()
     this->sprites["XP_BAR"] = std::make_unique<gui::Sprite>("assets/textures/bars.png", calcX(832, vm), calcY(344, vm),
                                                             calcScale(1, vm), false);
     this->sprites["XP_BAR"]->setTextureRect(sf::IntRect({0, 0}, {0, 0}));
-    this->sprites["XP_FRAME"] = std::make_unique<gui::Sprite>(framesTexture, calcX(960, vm), calcY(336, vm),
-                                                              calcScale(1, vm), true, sf::IntRect({88, 0}, {272, 36}));
+    this->sprites["XP_FRAME"] = std::make_unique<gui::Sprite>(bars, calcX(960, vm), calcY(336, vm), calcScale(1, vm),
+                                                              true, sf::IntRect({0, 100}, {272, 36}));
     this->texts["PERCENT"] =
         std::make_unique<gui::Text>("0%", calcChar(16, vm), calcX(960, vm), calcY(347, vm), gui::WHITE, true);
 
