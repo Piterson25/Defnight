@@ -71,6 +71,9 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
     else if (player.getName() == "BOMBER") {
         addBomb(player.getCenter(), 0, coords, 0, player);
     }
+    else if (player.getName() == "SHOOTER") {
+        addArrow(player.getCenter(), 0, coords, 0, player);
+    }
 }
 
 void ProjectileSystem::bossSpecialAttack(Boss &boss)

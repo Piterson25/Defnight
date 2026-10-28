@@ -5,6 +5,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
       glow(glow_texture)
 {
     this->attackType = AttackType::MELEE;
+    this->heroName = HeroName::WARRIOR;
     this->texture = sf::Texture("assets/textures/player/" + toLowerCase(t_name) + ".png");
     this->sprite = sf::Sprite(this->texture);
     this->sprite.setPosition({t_x, t_y});
@@ -81,6 +82,11 @@ Player::~Player() = default;
 const AttackType Player::getAttackType() const
 {
     return this->attackType;
+}
+
+const HeroName Player::getHeroName() const
+{
+    return this->heroName;
 }
 
 const uint32_t Player::getBoughtItems() const

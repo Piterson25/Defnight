@@ -50,9 +50,20 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
 
     this->upgradeGUI = new UpgradeGUI(vm, this->player);
     this->upgrading = false;
-    this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(222, vm), this->lang["NINJA"], 0, 7, 1, "1");
-    this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(392, vm), this->lang["KNIGHT"], 3, 5, 1, "1");
-    this->upgradeGUI->changeUpgrade("UPGRADE3", calcX(1024, vm), calcY(562, vm), this->lang["SCOUT"], 6, 2, 1, "1");
+    switch (player.getHeroName()) {
+        case HeroName::WARRIOR:
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(222, vm), this->lang["NINJA"], 0, 7, 1,
+                                            "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(392, vm), this->lang["KNIGHT"], 3, 5, 1,
+                                            "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE3", calcX(1024, vm), calcY(562, vm), this->lang["SCOUT"], 6, 2, 1,
+                                            "1");
+            break;
+        case HeroName::ARCHER:
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(392, vm), this->lang["SHOOTER"], 12, 1,
+                                            1, "1");
+            break;
+    };
 
     this->death_background.setFillColor(sf::Color(gui::RED.r, gui::RED.g, gui::RED.b, 192));
     this->death_background.setSize(sf::Vector2f(calcX(1280, vm), calcY(592, vm)));
@@ -822,10 +833,19 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
     }
     else if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE2", &soundEngine)) {
         if (player.getLevel() == 5) {
-            this->abilityUpgradeGUI->addPlayerStat("ARMOR", calcX(32, vm), calcY(212, vm), this->lang["ARMOR"]);
-            this->abilityUpgradeGUI->addAbilityUpgrade("ARMOR", calcX(44, vm), calcY(460, vm), 4, this->lang["ARMOR"],
-                                                       "+1", 50 * priceModifier, 5);
-            this->upgradePlayer("KNIGHT");
+            if (player.getName() == "WARRIOR") {
+                this->abilityUpgradeGUI->addPlayerStat("ARMOR", calcX(32, vm), calcY(212, vm), this->lang["ARMOR"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("ARMOR", calcX(44, vm), calcY(460, vm), 4,
+                                                           this->lang["ARMOR"], "+1", 50 * priceModifier, 5);
+                this->upgradePlayer("KNIGHT");
+            }
+            else if (player.getName() == "ARCHER") {
+                this->abilityUpgradeGUI->addPlayerStat("PROJ_ATTACK", calcX(32, vm), calcY(212, vm),
+                                                       this->lang["ATTACK"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("PROJ_ATTACK", calcX(44, vm), calcY(460, vm), 1,
+                                                           this->lang["ATTACK"], "+1", 50 * priceModifier, 0);
+                this->upgradePlayer("SHOOTER");
+            }
         }
         else if (player.getLevel() == 10) {
             if (player.getName() == "NINJA") {

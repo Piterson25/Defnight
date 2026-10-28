@@ -5,6 +5,7 @@
 #include "Entities/Entity.hpp"
 
 enum class AttackType { MELEE, RANGED };
+enum class HeroName { WARRIOR, ARCHER };
 
 class Player : public Entity {
 public:
@@ -12,6 +13,7 @@ public:
     virtual ~Player();
 
     const AttackType getAttackType() const;
+    const HeroName getHeroName() const;
     const uint32_t getBoughtItems() const;
     const uint32_t getDamageDealt() const;
     const uint32_t getDamageTaken() const;
@@ -109,6 +111,7 @@ protected:
     sf::Texture glow_texture;
 
     AttackType attackType;
+    HeroName heroName;
 
     uint32_t damageDealt;
     uint32_t damageTaken;

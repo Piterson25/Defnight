@@ -3,6 +3,7 @@
 Archer::Archer(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y) : Player(t_name, t_vm, t_x, t_y)
 {
     this->attackType = AttackType::RANGED;
+    this->heroName = HeroName::ARCHER;
     this->name = "ARCHER";
     this->attack = 3;
     this->attackSpeed = 3;
@@ -29,8 +30,17 @@ void Archer::endAbility()
 
 void Archer::doAbility(SoundEngine &soundEngine)
 {
+    if (this->name == "SHOOTER") {
+        soundEngine.addSound("shuriken");
+    }
 }
 
 void Archer::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
 {
+    this->name = t_name;
+    if (t_name == "SHOOTER") {
+        intRect = sf::IntRect({48, 32}, {16, 16});
+        this->setSpeed(this->getSpeed() + 1);
+        this->abilityComponent->setAbilityStats(2.f, 2.f, 2.f);
+    }
 }

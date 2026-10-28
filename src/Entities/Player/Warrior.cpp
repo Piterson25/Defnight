@@ -3,6 +3,7 @@
 Warrior::Warrior(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y) : Player(t_name, t_vm, t_x, t_y)
 {
     this->attackType = AttackType::MELEE;
+    this->heroName = HeroName::WARRIOR;
     this->name = "WARRIOR";
     this->attack = 5;
     this->attackSpeed = 4;
