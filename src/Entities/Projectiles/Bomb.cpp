@@ -32,30 +32,7 @@ void Bomb::monsterCollision(Monster &monster, Player &player, FloatingTextSystem
         nextPos.position.y += this->velocity.y;
 
         if (mobBounds.findIntersection(nextPos)) {
-            if (hasCollidedBottom(projectileBounds, mobBounds)) {
-                this->velocity.y = 0.f;
-                this->sprite.setPosition({projectileBounds.position.x, mobBounds.position.y - projectileBounds.size.y});
-                this->collidedPlayer = true;
-            }
-            else if (hasCollidedTop(projectileBounds, mobBounds)) {
-                this->velocity.y = 0.f;
-                this->sprite.setPosition({projectileBounds.position.x, mobBounds.position.y + mobBounds.size.y});
-                this->collidedPlayer = true;
-            }
-
-            if (hasCollidedRight(projectileBounds, mobBounds)) {
-                this->velocity.x = 0.f;
-                this->sprite.setPosition({mobBounds.position.x - mobBounds.size.x, mobBounds.position.y});
-                this->collidedPlayer = true;
-            }
-            else if (hasCollidedLeft(projectileBounds, mobBounds)) {
-                this->velocity.x = 0.f;
-                this->sprite.setPosition({mobBounds.position.x + mobBounds.size.x, projectileBounds.position.y});
-                this->collidedPlayer = true;
-            }
-        }
-
-        if (this->collidedMonster) {
+            this->collidedMonster = true;
             if ((static_cast<uint32_t>(Random::Float() * 100.f) + 1) <= player.getCriticalChance()) {
                 const int attack = 2 * this->attack;
                 floatingTextSystem.addFloatingText(gui::ORANGE, std::to_string(-attack), calcChar(16, vm),

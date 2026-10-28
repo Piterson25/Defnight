@@ -130,6 +130,7 @@ PlayerGUI::~PlayerGUI()
 {
     delete this->statsGUI;
     delete this->shopGUI;
+    delete this->heroGUI;
     delete this->upgradeGUI;
     delete this->abilityUpgradeGUI;
 }
@@ -188,7 +189,7 @@ void PlayerGUI::levelUpPlayer(uint32_t optionID, uint32_t optionValue)
     switch (optionID) {
         case 1:
             player.setArmor(player.getArmor() + optionValue);
-            shopGUI->updateSegments("ARMOR");
+            heroGUI->updateSegments("ARMOR");
             statsGUI->updateArmor();
             break;
         case 2:
