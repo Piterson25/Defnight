@@ -30,8 +30,8 @@ void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y, 
         attributeValue,
     };
 
-    const int positionX = static_cast<uint32_t>(abilityIconID % 3);
-    const int positionY = static_cast<uint32_t>(abilityIconID / 3);
+    const int positionX = static_cast<uint32_t>(abilityIconID % 6);
+    const int positionY = static_cast<uint32_t>(abilityIconID / 6);
 
     this->upgrades[t_name].sprite->setTextureRect(sf::IntRect({16 * positionX, 16 * positionY + 16}, {16, 16}));
 
