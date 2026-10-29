@@ -25,6 +25,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
 
     this->glow_texture = sf::Texture("assets/textures/player_glow.png");
     this->glow = sf::Sprite(this->glow_texture);
+    this->glow.setTextureRect(sf::IntRect({0, 0}, {16, 16}));
     this->glow.setScale({calcScale(4, vm), calcScale(4, vm)});
     this->glow.setPosition({this->getPosition().x, this->getPosition().y + calcY(8, vm)});
     this->glow.setColor(sf::Color(255, 255, 255, 128));
@@ -595,6 +596,13 @@ void Player::upgrade(const std::string &t_name, sf::IntRect &intRect)
     this->setAbilityActive(false);
     this->upgradeAttributes(t_name, intRect);
     this->setTexturePath("assets/textures/player/" + toLowerCase(this->getName()) + ".png");
+    switch (level) {
+        case 5:
+            this->glow.setTextureRect(sf::IntRect({16, 0}, {16, 16}));
+            break;
+        case 10:
+            this->glow.setTextureRect(sf::IntRect({32, 0}, {16, 16}));
+    }
     this->setUpgraded(true);
 }
 
