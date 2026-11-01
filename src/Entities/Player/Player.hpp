@@ -54,6 +54,7 @@ public:
     const uint32_t getAttackIncrease() const;
     const bool isParticleCooldown(float dt);
     const bool isInvisible() const;
+    const uint32_t getTrapAttack() const;
 
     void setDamageDealt(uint32_t t_damageDealt);
     void setDamageTaken(uint32_t t_damageTaken);
@@ -87,6 +88,7 @@ public:
     void setAttackIncrease(uint32_t t_attackIncrease);
     void setPlayedSound(bool t_soundPlayed);
     void setInvisible(bool t_invisible);
+    void setTrapAttack(uint32_t t_attack);
 
     void controls(const std::unordered_map<std::string, int> &keybinds, bool isExtreme, float dt);
     void weaponSound(SoundEngine &soundEngine);
@@ -148,6 +150,7 @@ protected:
     float spawnCountdown;
     float particleCooldown;
     bool invisible;
+    uint32_t trapAttack;
 
     std::unique_ptr<AbilityComponent> abilityComponent;
 

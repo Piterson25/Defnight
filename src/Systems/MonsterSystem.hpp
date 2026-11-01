@@ -6,9 +6,11 @@
 #include "Entities/Monsters/Goblin.hpp"
 #include "Entities/Monsters/Orc.hpp"
 #include "Entities/Monsters/Spider.hpp"
+#include "Entities/Trap.hpp"
 #include "GUI/PlayerGUI.hpp"
 #include "ProjectileSystem.hpp"
 
+class Trap;
 class ProjectileSystem;
 
 class MonsterSystem {
@@ -27,6 +29,7 @@ public:
 
     void monsterIDsClear();
 
+    void placeTrap();
     void playerAttack();
     void explosionAttack(const std::vector<sf::FloatRect> &particlesBounds);
 
@@ -53,6 +56,7 @@ private:
     std::list<std::unique_ptr<Monster>> monsters;
     std::vector<short> monsterIDs;
     std::list<sf::FloatRect> freePositions;
+    std::list<std::unique_ptr<Trap>> traps;
     float gridSize;
     float difficulty_mod;
     bool bossWave;

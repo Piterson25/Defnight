@@ -64,6 +64,8 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
                                             "1");
             this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(392, vm), this->lang["SHOOTER"], 9, 1, 1,
                                             "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE3", calcX(1024, vm), calcY(562, vm), this->lang["RANGER"], 15, 7, 1,
+                                            "1");
             break;
     };
 
@@ -248,6 +250,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     statsGUI->upgradePlayer(this->lang[name], intRect);
     this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");
     this->abilityUpgradeGUI->updatePlayerInfo("PROJ_ATTACK", this->lang["ATTACK"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("TRAP_ATTACK", this->lang["ATTACK"]);
     this->abilityUpgradeGUI->updatePlayerInfo("PIERCING", this->lang["PIERCING"]);
     this->abilityUpgradeGUI->updatePlayerInfo("AREA", this->lang["AREA"]);
     this->abilityUpgradeGUI->updatePlayerInfo("ARMOR", this->lang["ARMOR"]);
@@ -662,6 +665,13 @@ void PlayerGUI::updateAbilityBuy(const sf::Vector2i &mousePos, SoundEngine &soun
             this->abilityUpgradeGUI->updatePlayerInfo("PROJ_ATTACK", this->lang["ATTACK"]);
             this->abilityUpgradeGUI->updateSegments("PROJ_ATTACK");
         }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "TRAP_ATTACK", &this->floatingTextSystem,
+                                                     &soundEngine)) {
+            player.setTrapAttack(player.getTrapAttack() + 1);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("TRAP_ATTACK", this->lang["ATTACK"]);
+            this->abilityUpgradeGUI->updateSegments("TRAP_ATTACK");
+        }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "PIERCING", &this->floatingTextSystem, &soundEngine)) {
             player.setProjectilePiercing(player.getProjectilePiercing() + 1);
             this->updateGold();
@@ -885,10 +895,20 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
     }
     else if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE3", &soundEngine)) {
         if (player.getLevel() == 5) {
-            this->abilityUpgradeGUI->addPlayerStat("SLOWDOWN", calcX(32, vm), calcY(212, vm), this->lang["SLOWDOWN"]);
-            this->abilityUpgradeGUI->addAbilityUpgrade("SLOWDOWN", calcX(44, vm), calcY(460, vm), 6,
-                                                       this->lang["SLOWDOWN"], "+10%", 50 * priceModifier, 5);
-            this->upgradePlayer("SCOUT");
+            if (player.getName() == "WARRIOR") {
+                this->abilityUpgradeGUI->addPlayerStat("SLOWDOWN", calcX(32, vm), calcY(212, vm),
+                                                       this->lang["SLOWDOWN"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("SLOWDOWN", calcX(44, vm), calcY(460, vm), 6,
+                                                           this->lang["SLOWDOWN"], "+10%", 50 * priceModifier, 5);
+                this->upgradePlayer("SCOUT");
+            }
+            else {
+                this->abilityUpgradeGUI->addPlayerStat("TRAP_ATTACK", calcX(32, vm), calcY(212, vm),
+                                                       this->lang["ATTACK"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("TRAP_ATTACK", calcX(44, vm), calcY(460, vm), 1,
+                                                           this->lang["ATTACK"], "+1", 50 * priceModifier, 0);
+                this->upgradePlayer("RANGER");
+            }
         }
 
         this->upgrading = false;

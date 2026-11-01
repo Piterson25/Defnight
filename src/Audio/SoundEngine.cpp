@@ -36,6 +36,8 @@ SoundEngine::SoundEngine(float gameVolume, float playerVolume, float monsterVolu
     soundsMap.emplace("buy", SoundType::GAME);
     soundsMap.emplace("button", SoundType::GAME);
     soundsMap.emplace("ability", SoundType::PLAYER);
+    soundsMap.emplace("trap_place", SoundType::PLAYER);
+    soundsMap.emplace("trap_activation", SoundType::PLAYER);
 }
 
 SoundEngine::~SoundEngine()

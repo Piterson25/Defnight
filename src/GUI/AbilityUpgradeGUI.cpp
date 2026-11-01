@@ -1,15 +1,11 @@
 #include "AbilityUpgradeGUI.hpp"
 
-AbilityUpgradeGUI::AbilityUpgradeGUI(sf::VideoMode &t_vm, Player &t_player)
-    : vm(t_vm), player(t_player)
+AbilityUpgradeGUI::AbilityUpgradeGUI(sf::VideoMode &t_vm, Player &t_player) : vm(t_vm), player(t_player)
 {
-    this->playerStats["COOLDOWN"] = std::make_unique<gui::Text>(
-        "Cooldown: 0s", calcChar(16, vm), calcX(32, vm), calcY(180, vm),
-        sf::Color(255, 255, 255, 255), false);
-    this->abilityUpgradesTexture = sf::Texture(
-        "assets/textures/abilities_upgrades.png");
-    this->attributesTexture = sf::Texture(
-        "assets/textures/attributes_icons.png");
+    this->playerStats["COOLDOWN"] = std::make_unique<gui::Text>("Cooldown: 0s", calcChar(16, vm), calcX(32, vm),
+                                                                calcY(180, vm), sf::Color(255, 255, 255, 255), false);
+    this->abilityUpgradesTexture = sf::Texture("assets/textures/abilities_upgrades.png");
+    this->attributesTexture = sf::Texture("assets/textures/attributes_icons.png");
 }
 
 AbilityUpgradeGUI::~AbilityUpgradeGUI()
@@ -22,99 +18,74 @@ const uint32_t AbilityUpgradeGUI::getPrice(const std::string &t_name)
     return this->abilityUpgrades[t_name].price;
 }
 
-void AbilityUpgradeGUI::addPlayerStat(const std::string &t_name, float t_x,
-                                      float t_y, const std::string &desc)
+void AbilityUpgradeGUI::addPlayerStat(const std::string &t_name, float t_x, float t_y, const std::string &desc)
 {
-    this->playerStats[t_name] = std::make_unique<gui::Text>(
-        desc, calcChar(16, vm), t_x, t_y, gui::WHITE, false);
+    this->playerStats[t_name] = std::make_unique<gui::Text>(desc, calcChar(16, vm), t_x, t_y, gui::WHITE, false);
 }
 
-void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x,
-                                          float t_y, uint32_t iconID,
-                                          const std::string &desc,
-                                          const std::string &value,
-                                          uint32_t price, uint32_t boughtNumber)
+void AbilityUpgradeGUI::addAbilityUpgrade(const std::string &t_name, float t_x, float t_y, uint32_t iconID,
+                                          const std::string &desc, const std::string &value, uint32_t price,
+                                          uint32_t boughtNumber)
 {
     const float offsetY = 12.f;
     const uint32_t segmentsNumber = 10;
 
     this->abilityUpgrades.emplace(
-        t_name,
-        BuyItem{
-            std::make_unique<gui::Sprite>(this->abilityUpgradesTexture, t_x,
-                                          t_y, calcScale(4, vm), false),
-            std::make_unique<gui::ButtonSprite>(
-                gui::RECT_BUTTON, t_x - calcX(12, vm), t_y - calcY(12, vm),
-                calcScale(1, vm), gui::DARK_GREEN, gui::WHITE, false),
-            std::make_unique<gui::Sprite>("assets/textures/lock.png", t_x, t_y,
-                                          calcScale(4, vm), false),
-            std::make_unique<gui::Text>(
-                desc, calcChar(16, vm), t_x + calcX(166, vm),
-                t_y - calcY(2, vm) - calcY(offsetY, vm), gui::WHITE, true),
-            std::make_unique<gui::Text>(
-                value, calcChar(16, vm), t_x + calcX(166, vm),
-                t_y + calcY(20, vm) - calcY(offsetY, vm), gui::WHITE, true),
-            std::make_unique<gui::Sprite>(
-                this->attributesTexture, t_x + calcX(132, vm),
-                t_y + calcY(38, vm) - calcY(offsetY, vm), calcScale(2, vm),
-                false),
-            std::make_unique<gui::Text>(
-                std::to_string(price), calcChar(16, vm), t_x + calcX(166, vm),
-                t_y + calcY(48, vm) - calcY(offsetY, vm), gui::GOLD, false),
-            std::vector<std::unique_ptr<gui::Sprite>>(),
-            boughtNumber,
-            segmentsNumber,
-            price,
-            false,
-        });
+        t_name, BuyItem{
+                    std::make_unique<gui::Sprite>(this->abilityUpgradesTexture, t_x, t_y, calcScale(4, vm), false),
+                    std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, t_x - calcX(12, vm), t_y - calcY(12, vm),
+                                                        calcScale(1, vm), gui::DARK_GREEN, gui::WHITE, false),
+                    std::make_unique<gui::Sprite>("assets/textures/lock.png", t_x, t_y, calcScale(4, vm), false),
+                    std::make_unique<gui::Text>(desc, calcChar(16, vm), t_x + calcX(166, vm),
+                                                t_y - calcY(2, vm) - calcY(offsetY, vm), gui::WHITE, true),
+                    std::make_unique<gui::Text>(value, calcChar(16, vm), t_x + calcX(166, vm),
+                                                t_y + calcY(20, vm) - calcY(offsetY, vm), gui::WHITE, true),
+                    std::make_unique<gui::Sprite>(this->attributesTexture, t_x + calcX(132, vm),
+                                                  t_y + calcY(38, vm) - calcY(offsetY, vm), calcScale(2, vm), false),
+                    std::make_unique<gui::Text>(std::to_string(price), calcChar(16, vm), t_x + calcX(166, vm),
+                                                t_y + calcY(48, vm) - calcY(offsetY, vm), gui::GOLD, false),
+                    std::vector<std::unique_ptr<gui::Sprite>>(),
+                    boughtNumber,
+                    segmentsNumber,
+                    price,
+                    false,
+                });
 
-    this->abilityUpgrades[t_name].sprite->setTextureRect(
-        sf::IntRect({static_cast<int>(16 * iconID), 0}, {16, 16}));
+    this->abilityUpgrades[t_name].sprite->setTextureRect(sf::IntRect({static_cast<int>(16 * iconID), 0}, {16, 16}));
 
     this->abilityUpgrades[t_name].button->setColor(gui::DARK_RED);
 
-    this->abilityUpgrades[t_name].coinSprite->setTextureRect(
-        sf::IntRect({0, 0}, {16, 16}));
+    this->abilityUpgrades[t_name].coinSprite->setTextureRect(sf::IntRect({0, 0}, {16, 16}));
 
     sf::Texture texture("assets/textures/progress_segment.png");
-    const sf::Vector2f position =
-        this->abilityUpgrades[t_name].sprite->getPosition();
+    const sf::Vector2f position = this->abilityUpgrades[t_name].sprite->getPosition();
     for (uint32_t i = 0; i < segmentsNumber; i++) {
         this->abilityUpgrades[t_name].segments.push_back(
-            std::make_unique<gui::Sprite>(
-                texture,
-                position.x + calcX(static_cast<float>(i) * 12.f + 108, vm),
-                position.y + calcY(74, vm) - calcY(offsetY, vm),
-                calcScale(2, vm), false));
-        this->abilityUpgrades[t_name].segments[i]->setTextureRect(
-            sf::IntRect({4, 0}, {4, 8}));
+            std::make_unique<gui::Sprite>(texture, position.x + calcX(static_cast<float>(i) * 12.f + 108, vm),
+                                          position.y + calcY(74, vm) - calcY(offsetY, vm), calcScale(2, vm), false));
+        this->abilityUpgrades[t_name].segments[i]->setTextureRect(sf::IntRect({4, 0}, {4, 8}));
 
         if (i < boughtNumber) {
-            this->abilityUpgrades[t_name].segments[i]->setTextureRect(
-                sf::IntRect({0, 0}, {4, 8}));
+            this->abilityUpgrades[t_name].segments[i]->setTextureRect(sf::IntRect({0, 0}, {4, 8}));
         }
     }
 }
 
 void AbilityUpgradeGUI::updateSegments(const std::string &t_name)
 {
-    this->abilityUpgrades[t_name]
-        .segments[this->abilityUpgrades[t_name].boughtNumber]
-        ->setTextureRect(sf::IntRect({0, 0}, {4, 8}));
+    this->abilityUpgrades[t_name].segments[this->abilityUpgrades[t_name].boughtNumber]->setTextureRect(
+        sf::IntRect({0, 0}, {4, 8}));
     this->abilityUpgrades[t_name].boughtNumber++;
 
-    if (this->abilityUpgrades[t_name].boughtNumber ==
-        this->abilityUpgrades[t_name].maxNumber) {
+    if (this->abilityUpgrades[t_name].boughtNumber == this->abilityUpgrades[t_name].maxNumber) {
         lockUpgrade(t_name);
     }
 }
 
-const bool AbilityUpgradeGUI::hasBoughtUpgrade(
-    const sf::Vector2i &mousePos, const std::string &t_name,
-    FloatingTextSystem *floatingTextSystem, SoundEngine *soundEngine)
+const bool AbilityUpgradeGUI::hasBoughtUpgrade(const sf::Vector2i &mousePos, const std::string &t_name,
+                                               FloatingTextSystem *floatingTextSystem, SoundEngine *soundEngine)
 {
-    if (this->abilityUpgrades.find(t_name) == this->abilityUpgrades.end() ||
-        this->abilityUpgrades[t_name].locked ||
+    if (this->abilityUpgrades.find(t_name) == this->abilityUpgrades.end() || this->abilityUpgrades[t_name].locked ||
         this->abilityUpgrades[t_name].button->getColor() == gui::DARK_RED) {
         return false;
     }
@@ -147,20 +118,17 @@ void AbilityUpgradeGUI::disableUpgrade(const std::string &t_name)
     this->abilityUpgrades[t_name].button->setColor(gui::DARK_RED);
 }
 
-void AbilityUpgradeGUI::buy(const std::string &t_name,
-                            FloatingTextSystem *floatingTextSystem)
+void AbilityUpgradeGUI::buy(const std::string &t_name, FloatingTextSystem *floatingTextSystem)
 {
     player.setGold(player.getGold() - getPrice(t_name));
-    floatingTextSystem->addFloatingText(
-        gui::GOLD, "-" + std::to_string(getPrice(t_name)), calcChar(16, vm),
-        calcX(20, vm), calcX(96, vm), true);
+    floatingTextSystem->addFloatingText(gui::GOLD, "-" + std::to_string(getPrice(t_name)), calcChar(16, vm),
+                                        calcX(20, vm), calcX(96, vm), true);
 }
 
 void AbilityUpgradeGUI::updateItemFrames()
 {
     for (const auto &pair : abilityUpgrades) {
-        if (!pair.second.locked && !player.isAbilityActive() &&
-            player.getGold() >= pair.second.price) {
+        if (!pair.second.locked && !player.isAbilityActive() && player.getGold() >= pair.second.price) {
             pair.second.button->setColor(gui::DARK_GREEN);
         }
         else {
@@ -169,8 +137,7 @@ void AbilityUpgradeGUI::updateItemFrames()
     }
 }
 
-void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
-                                         const std::string &t_desc)
+void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name, const std::string &t_desc)
 {
     if (this->playerStats.find(t_name) == this->playerStats.end()) {
         return;
@@ -187,28 +154,25 @@ void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
         playerStats[t_name]->setText(text);
     }
     else if (t_name == "PROJ_ATTACK") {
-        playerStats[t_name]->setText(
-            text + std::to_string(player.getProjectileAttack()));
+        playerStats[t_name]->setText(text + std::to_string(player.getProjectileAttack()));
+    }
+    else if (t_name == "TRAP_ATTACK") {
+        playerStats[t_name]->setText(text + std::to_string(player.getTrapAttack()));
     }
     else if (t_name == "PIERCING") {
-        playerStats[t_name]->setText(
-            text + std::to_string(player.getProjectilePiercing()));
+        playerStats[t_name]->setText(text + std::to_string(player.getProjectilePiercing()));
     }
     else if (t_name == "AREA") {
-        playerStats[t_name]->setText(
-            text + std::to_string(player.getProjectileArea()));
+        playerStats[t_name]->setText(text + std::to_string(player.getProjectileArea()));
     }
     else if (t_name == "ARMOR") {
-        playerStats[t_name]->setText(
-            text + std::to_string(player.getIncreasedArmor()));
+        playerStats[t_name]->setText(text + std::to_string(player.getIncreasedArmor()));
     }
     else if (t_name == "ATTACK") {
-        playerStats[t_name]->setText(
-            text + std::to_string(player.getIncreasedAttack()));
+        playerStats[t_name]->setText(text + std::to_string(player.getIncreasedAttack()));
     }
     else if (t_name == "REG") {
-        playerStats[t_name]->setText(text +
-                                     std::to_string(player.getIncreasedReg()));
+        playerStats[t_name]->setText(text + std::to_string(player.getIncreasedReg()));
     }
     else if (t_name == "SLOWDOWN") {
         const float slowdown = player.getTimeSlowdown() * 100.f;
@@ -219,12 +183,10 @@ void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name,
         playerStats[t_name]->setText(text);
     }
     else if (t_name == "GOLD") {
-        playerStats[t_name]->setText(text +
-                                     std::to_string(player.getIncreasedGold()));
+        playerStats[t_name]->setText(text + std::to_string(player.getIncreasedGold()));
     }
     else if (t_name == "TARGETS") {
-        playerStats[t_name]->setText(text +
-                                     std::to_string(player.getAttackLimit()));
+        playerStats[t_name]->setText(text + std::to_string(player.getAttackLimit()));
     }
 }
 

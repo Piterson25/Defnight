@@ -315,6 +315,9 @@ void GameState::update(float dt)
                         this->projectileSystem->playerAbility(sf::Vector2f(this->window.mapPixelToCoords(
                                                                   sf::Mouse::getPosition(this->window), this->view)),
                                                               *this->player);
+                        if (this->player->getName() == "RANGER") {
+                            this->monsterSystem->placeTrap();
+                        }
                         this->playerGUI->setAbilityIcon();
                     }
                 }

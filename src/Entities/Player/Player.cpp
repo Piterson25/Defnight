@@ -75,6 +75,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
     this->spawnCountdown = 0.f;
     this->soundPlayed = false;
     this->invisible = false;
+    this->trapAttack = 0;
 
     this->abilityComponent = std::make_unique<AbilityComponent>(this->vm);
 }
@@ -254,6 +255,11 @@ const float Player::getAbilityMaxTimeModifier() const
 const uint32_t Player::getAttackIncrease() const
 {
     return this->abilityComponent->getAttackIncrease();
+}
+
+const uint32_t Player::getTrapAttack() const
+{
+    return this->trapAttack;
 }
 
 const bool Player::isParticleCooldown(float dt)
@@ -460,6 +466,11 @@ void Player::setPlayedSound(bool t_soundPlayed)
 void Player::setInvisible(bool t_invisible)
 {
     this->invisible = t_invisible;
+}
+
+void Player::setTrapAttack(uint32_t t_attack)
+{
+    this->trapAttack = t_attack;
 }
 
 void Player::controls(const std::unordered_map<std::string, int> &keybinds, bool isExtreme, float dt)

@@ -15,6 +15,7 @@ MonsterSystem::MonsterSystem(sf::VideoMode &vm, Player &player, float gridSize, 
 MonsterSystem::~MonsterSystem()
 {
     this->monsters.clear();
+    this->traps.clear();
 }
 
 const bool MonsterSystem::isMonsterIDsEmpty() const
@@ -61,6 +62,11 @@ const float MonsterSystem::bossHP() const
 void MonsterSystem::monsterIDsClear()
 {
     this->monsterIDs.clear();
+}
+
+void MonsterSystem::placeTrap()
+{
+    this->traps.emplace_back(std::make_unique<Trap>(vm, player.getPosition(), player.getTrapAttack()));
 }
 
 void MonsterSystem::playerAttack()
@@ -423,6 +429,21 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds, bo
     if (player.getTimeSlowdown() > 0.f && player.isAbilityActive()) {
         slowedDt -= dt * player.getTimeSlowdown();
     }
+
+    for (const auto &monster : this->monsters) {
+        for (auto trap = this->traps.begin(); trap != this->traps.end();) {
+            (*trap)->checkSteppedOn(*monster, playerGUIRef, floatingTextSystemRef, soundEngineRef, dt);
+            (*trap)->update(dt);
+
+            if ((*trap)->getState() == TrapState::CLOSED) {
+                trap = this->traps.erase(trap);
+            }
+            else {
+                ++trap;
+            }
+        }
+    }
+
     for (const auto &monster : this->monsters) {
         if (!monster->hasSpawned()) {
             monster->spawn(dt);
@@ -511,6 +532,9 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds, bo
 
 void MonsterSystem::draw(sf::RenderTarget &target)
 {
+    for (const auto &trap : this->traps) {
+        trap->draw(target);
+    }
     for (const auto &monster : this->monsters) {
         monster->draw(target);
     }
@@ -518,6 +542,9 @@ void MonsterSystem::draw(sf::RenderTarget &target)
 
 void MonsterSystem::drawShadow(sf::RenderTarget &target)
 {
+    for (const auto &trap : this->traps) {
+        trap->drawShadow(target);
+    }
     for (const auto &monster : this->monsters) {
         monster->drawShadow(target);
     }
