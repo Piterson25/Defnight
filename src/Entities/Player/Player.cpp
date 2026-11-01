@@ -74,6 +74,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
     this->spawned = false;
     this->spawnCountdown = 0.f;
     this->soundPlayed = false;
+    this->invisible = false;
 
     this->abilityComponent = std::make_unique<AbilityComponent>(this->vm);
 }
@@ -301,6 +302,11 @@ const float Player::getAbilityTotalMaxTime() const
     return this->abilityComponent->getAbilityTotalMaxTime();
 }
 
+const bool Player::isInvisible() const
+{
+    return this->invisible;
+}
+
 void Player::setBoughtItems(uint32_t t_boughtItems)
 {
     this->boughtItems = t_boughtItems;
@@ -449,6 +455,11 @@ void Player::setAttackIncrease(uint32_t t_attackIncrease)
 void Player::setPlayedSound(bool t_soundPlayed)
 {
     this->soundPlayed = t_soundPlayed;
+}
+
+void Player::setInvisible(bool t_invisible)
+{
+    this->invisible = t_invisible;
 }
 
 void Player::controls(const std::unordered_map<std::string, int> &keybinds, bool isExtreme, float dt)

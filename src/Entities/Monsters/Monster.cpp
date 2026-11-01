@@ -139,6 +139,11 @@ void Monster::calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds, Pla
                           const std::vector<sf::Vector2f> &positions, bool isExtreme, float dt)
 {
     this->velocity = sf::Vector2f(0.f, 0.f);
+
+    if (player.isInvisible()) {
+        return;
+    }
+
     const float mod = isExtreme ? 1.5f : 1.0f;
     const float vel = ((this->speed * 0.2f + 0.8f) * 2 * this->sprite.getGlobalBounds().size.x) * mod * dt;
 

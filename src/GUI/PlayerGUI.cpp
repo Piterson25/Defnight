@@ -60,6 +60,8 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
                                             "1");
             break;
         case HeroName::ARCHER:
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(222, vm), this->lang["DARK"], 3, 2, 1,
+                                            "1");
             this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(392, vm), this->lang["SHOOTER"], 9, 1, 1,
                                             "1");
             break;
@@ -799,10 +801,20 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
     const float priceModifier = difficultyName == "EXTREME" ? 1.5f : 1.0f;
     if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE1", &soundEngine)) {
         if (player.getLevel() == 5) {
-            this->abilityUpgradeGUI->addPlayerStat("PROJ_ATTACK", calcX(32, vm), calcY(212, vm), this->lang["ATTACK"]);
-            this->abilityUpgradeGUI->addAbilityUpgrade("PROJ_ATTACK", calcX(44, vm), calcY(460, vm), 1,
-                                                       this->lang["ATTACK"], "+1", 50 * priceModifier, 0);
-            this->upgradePlayer("NINJA");
+            if (player.getName() == "WARRIOR") {
+                this->abilityUpgradeGUI->addPlayerStat("PROJ_ATTACK", calcX(32, vm), calcY(212, vm),
+                                                       this->lang["ATTACK"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("PROJ_ATTACK", calcX(44, vm), calcY(460, vm), 1,
+                                                           this->lang["ATTACK"], "+1", 50 * priceModifier, 0);
+                this->upgradePlayer("NINJA");
+            }
+            else if (player.getName() == "ARCHER") {
+                this->abilityUpgradeGUI->addPlayerStat("SLOWDOWN", calcX(32, vm), calcY(212, vm),
+                                                       this->lang["SLOWDOWN"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("SLOWDOWN", calcX(44, vm), calcY(460, vm), 6,
+                                                           this->lang["SLOWDOWN"], "+10%", 50 * priceModifier, 5);
+                this->upgradePlayer("DARK");
+            }
         }
         else if (player.getLevel() == 10) {
             if (player.getName() == "NINJA") {

@@ -22,10 +22,16 @@ Archer::~Archer() = default;
 
 void Archer::setAbilityTexture()
 {
+    if (this->name == "DARK") {
+        this->ability.setTextureRect(sf::IntRect({48, 0}, {16, 16}));
+    }
 }
 
 void Archer::endAbility()
 {
+    if (this->name == "DARK") {
+        this->invisible = false;
+    }
 }
 
 void Archer::doAbility(SoundEngine &soundEngine)
@@ -33,14 +39,23 @@ void Archer::doAbility(SoundEngine &soundEngine)
     if (this->name == "SHOOTER") {
         soundEngine.addSound("shuriken");
     }
+    else if (this->name == "DARK") {
+        soundEngine.addSound("slowtime");
+        this->invisible = true;
+    }
 }
 
 void Archer::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
 {
     this->name = t_name;
-    if (t_name == "SHOOTER") {
+    if (t_name == "DARK") {
+        intRect = sf::IntRect({48, 16}, {16, 16});
+        this->setReg(this->getReg() + 1);
+        this->abilityComponent->setAbilityStats(20.f, 20.f, 20.f);
+    }
+    else if (t_name == "SHOOTER") {
         intRect = sf::IntRect({48, 32}, {16, 16});
-        this->setSpeed(this->getSpeed() + 1);
+        this->setArmor(this->getArmor() + 1);
         this->abilityComponent->setAbilityStats(2.f, 2.f, 2.f);
     }
 }
