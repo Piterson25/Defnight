@@ -563,7 +563,7 @@ void MainMenuState::update(float dt)
                     newGame.hero = HERO::ARCHER;
                     this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect({48, 0}, {16, 16}));
                     this->texts["HP"]->setText("HP:10/10");
-                    this->texts["SPRINT"]->setText("200/200");
+                    this->texts["SPRINT"]->setText("150/150");
                     this->texts["ARMOR"]->setText("2");
                     this->texts["REG"]->setText("2");
                     this->texts["ATTACK"]->setText("3");
