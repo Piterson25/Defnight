@@ -862,10 +862,10 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
                 this->upgradePlayer("KNIGHT");
             }
             else if (player.getName() == "ARCHER") {
-                this->abilityUpgradeGUI->addPlayerStat("PROJ_ATTACK", calcX(32, vm), calcY(212, vm),
-                                                       this->lang["ATTACK"]);
-                this->abilityUpgradeGUI->addAbilityUpgrade("PROJ_ATTACK", calcX(44, vm), calcY(460, vm), 1,
-                                                           this->lang["ATTACK"], "+1", 50 * priceModifier, 0);
+                this->abilityUpgradeGUI->addPlayerStat("PIERCING", calcX(32, vm), calcY(212, vm),
+                                                       this->lang["PIERCING"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("PIERCING", calcX(44, vm), calcY(460, vm), 9,
+                                                           this->lang["PIERCING"], "+1", 50 * priceModifier, 0);
                 this->upgradePlayer("SHOOTER");
             }
         }

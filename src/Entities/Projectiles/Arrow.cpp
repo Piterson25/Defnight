@@ -1,14 +1,23 @@
 #include "Arrow.hpp"
 
 Arrow::Arrow(const std::string &t_name, sf::VideoMode &t_vm, const sf::Vector2f &t_position, float difficulty_mod,
-             const sf::Vector2f &coords, float coordsOffset, Player &player)
+             const sf::Vector2f &coords, float coordsOffset, Player &player, bool upgraded)
     : Projectile(t_name, t_vm, t_position.x, t_position.y, difficulty_mod, coords, coordsOffset)
 {
-    this->sprite.setTextureRect(sf::IntRect({12, 0}, {6, 3}));
+    if (upgraded) {
+        this->sprite.setTextureRect(sf::IntRect({12, 4}, {6, 3}));
+        this->piercing = player.getProjectilePiercing();
+        this->HP = player.getProjectilePiercing();
+        this->speed = 9;
+    }
+    else {
+        this->sprite.setTextureRect(sf::IntRect({12, 0}, {6, 3}));
+        this->piercing = 1;
+        this->HP = 1;
+        this->speed = 6;
+    }
+
     this->attack = player.getAttack();
-    this->HP = 1;
-    this->speed = 6;
-    this->piercing = player.getProjectilePiercing();
     this->sprite.rotate(sf::degrees(180.f));
 }
 

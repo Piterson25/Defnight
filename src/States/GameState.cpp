@@ -306,7 +306,7 @@ void GameState::update(float dt)
                             projectileSystem->addArrow(player->getCenter(), 0,
                                                        sf::Vector2f(this->window.mapPixelToCoords(
                                                            sf::Mouse::getPosition(this->window), this->view)),
-                                                       0, *this->player);
+                                                       0, *this->player, false);
                             player->setAttacking(false);
                         }
                     }

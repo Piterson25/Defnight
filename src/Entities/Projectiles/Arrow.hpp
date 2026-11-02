@@ -5,7 +5,7 @@
 class Arrow : public Projectile {
 public:
     Arrow(const std::string &t_name, sf::VideoMode &t_vm, const sf::Vector2f &t_position, float difficulty_mod,
-          const sf::Vector2f &coords, float coordsOffset, Player &player);
+          const sf::Vector2f &coords, float coordsOffset, Player &player, bool upgraded);
     ~Arrow();
 
     void playerCollision(Player &player) override;

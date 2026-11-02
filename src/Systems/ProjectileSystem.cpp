@@ -11,10 +11,10 @@ ProjectileSystem::~ProjectileSystem()
 }
 
 void ProjectileSystem::addArrow(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
-                                float coordsOffset, Player &player)
+                                float coordsOffset, Player &player, bool upgraded)
 {
     this->projectiles.emplace_back(
-        std::make_unique<Arrow>("ARROW", this->vm, t_position, difficulty_mod, coords, coordsOffset, player));
+        std::make_unique<Arrow>("ARROW", this->vm, t_position, difficulty_mod, coords, coordsOffset, player, upgraded));
 }
 
 void ProjectileSystem::addBomb(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
@@ -72,7 +72,7 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
         addBomb(player.getCenter(), 0, coords, 0, player);
     }
     else if (player.getName() == "SHOOTER") {
-        addArrow(player.getCenter(), 0, coords, 0, player);
+        addArrow(player.getCenter(), 0, coords, 0, player, true);
     }
 }
 
