@@ -121,7 +121,7 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
                            0, 0);
     this->heroGUI->addItem("ATTACK", calcX(44, vm), calcY(324, vm), 5, this->lang["ATTACK"], "+1", 20 * priceModifier,
                            0, 0);
-    this->heroGUI->addItem("ARMOR", calcX(44, vm), calcY(460, vm), 1, this->lang["ARMOR"], "+1", 20 * priceModifier,
+    this->heroGUI->addItem("ARMOR", calcX(44, vm), calcY(460, vm), 1, this->lang["ARMOR"], "+1", 15 * priceModifier,
                            player.getArmor(), 10);
 
     this->sideGUI = SideGUI::NONE;
