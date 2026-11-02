@@ -186,9 +186,9 @@ void MainMenuState::initGUI()
     this->abilities_texture = sf::Texture("assets/textures/abilities_icons.png");
     for (int y = 0; y < 3; y++) {
         for (int x = 0; x < 3; x++) {
-            this->abilties.push_back(std::make_unique<gui::Sprite>(this->abilities_texture, calcX(432.f + 48.f * x, vm),
-                                                                   calcY(512.f + 48.f * y, vm), calcScale(2, vm), true,
-                                                                   sf::IntRect({x * 16, y * 16}, {16, 16})));
+            this->abilities.push_back(std::make_unique<gui::Sprite>(
+                this->abilities_texture, calcX(432.f + 48.f * x, vm), calcY(512.f + 48.f * y, vm), calcScale(2, vm),
+                true, sf::IntRect({x * 16, y * 16}, {16, 16})));
         }
     }
 
@@ -547,6 +547,14 @@ void MainMenuState::update(float dt)
                     this->soundEngine.addSound("button");
                     this->choosing_hero = true;
                     newGame.hero = HERO::WARRIOR;
+                    this->abilities.clear();
+                    for (int y = 0; y < 3; y++) {
+                        for (int x = 0; x < 3; x++) {
+                            this->abilities.push_back(std::make_unique<gui::Sprite>(
+                                this->abilities_texture, calcX(432.f + 48.f * x, vm), calcY(512.f + 48.f * y, vm),
+                                calcScale(2, vm), true, sf::IntRect({x * 16, y * 16}, {16, 16})));
+                        }
+                    }
                     this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect({0, 0}, {16, 16}));
                     this->texts["HP"]->setText("HP:10/10");
                     this->texts["SPRINT"]->setText("100/100");
@@ -561,6 +569,14 @@ void MainMenuState::update(float dt)
                     this->soundEngine.addSound("button");
                     this->choosing_hero = true;
                     newGame.hero = HERO::ARCHER;
+                    this->abilities.clear();
+                    for (int y = 0; y < 3; y++) {
+                        for (int x = 0; x < 3; x++) {
+                            this->abilities.push_back(std::make_unique<gui::Sprite>(
+                                this->abilities_texture, calcX(432.f + 48.f * x, vm), calcY(512.f + 48.f * y, vm),
+                                calcScale(2, vm), true, sf::IntRect({x * 16 + 48, y * 16}, {16, 16})));
+                        }
+                    }
                     this->sprites["HERO_PREVIEW"]->setTextureRect(sf::IntRect({48, 0}, {16, 16}));
                     this->texts["HP"]->setText("HP:10/10");
                     this->texts["SPRINT"]->setText("150/150");
@@ -723,7 +739,7 @@ void MainMenuState::draw(sf::RenderTarget *target)
             if (this->choosing_hero) {
                 this->text_buttons["CHOOSE"]->draw(*target);
 
-                for (const auto &ability : abilties) {
+                for (const auto &ability : abilities) {
                     ability->draw(*target);
                 }
 

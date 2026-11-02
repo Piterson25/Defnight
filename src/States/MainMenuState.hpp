@@ -71,7 +71,7 @@ private:
 
     sf::Texture abilities_texture;
 
-    std::vector<std::unique_ptr<gui::Sprite>> abilties;
+    std::vector<std::unique_ptr<gui::Sprite>> abilities;
 
     CurrentGame newGame;
 
