@@ -6,7 +6,7 @@ Archer::Archer(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
     this->heroName = HeroName::ARCHER;
     this->name = "ARCHER";
     this->attack = 3;
-    this->attackSpeed = 3;
+    this->attackSpeed = 2;
     this->maxHP = 10;
     this->HP = 10;
     this->reg = 2;
