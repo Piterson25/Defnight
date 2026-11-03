@@ -190,14 +190,14 @@ void SettingsState::initGUI()
         }
     }
 
-    addKeybind("MOVEMENT", calcX(256, vm), calcY(192, vm), this->lang["MOVEMENT"], "WSAD");
-    addKeybind("LEFT_CLICK", calcX(256, vm), calcY(240, vm), this->lang["LEFT_CLICK"], "LMB");
-    addKeybind("RIGHT_CLICK", calcX(256, vm), calcY(288, vm), this->lang["RIGHT_CLICK"], "RMB");
-    addKeybind("RUN", calcX(256, vm), calcY(336, vm), this->lang["RUN"], "LShift");
-    addKeybind("ESCAPE", calcX(256, vm), calcY(384, vm), this->lang["ESCAPE"], "Esc");
-    addKeybind("SHOP", calcX(256, vm), calcY(432, vm), this->lang["SHOP"], "E");
-    addKeybind("HERO", calcX(256, vm), calcY(480, vm), this->lang["HERO"], "R");
-    addKeybind("BUY_ABILITY", calcX(256, vm), calcY(524, vm), this->lang["BUY_ABILITY"], "F");
+    addKeybind("ESCAPE", calcX(224, vm), calcY(192, vm), this->lang["ESCAPE"], "Esc");
+    addKeybind("MOVEMENT", calcX(224, vm), calcY(240, vm), this->lang["MOVEMENT"], "WSAD");
+    addKeybind("SPRINT", calcX(224, vm), calcY(288, vm), this->lang["SPRINT"], "LShift");
+    addKeybind("ATTACK", calcX(224, vm), calcY(336, vm), this->lang["ATTACK"], this->lang["LMB"]);
+    addKeybind("ABILITY", calcX(224, vm), calcY(384, vm), this->lang["ABILITY"], this->lang["RMB"]);
+    addKeybind("SHOP", calcX(224, vm), calcY(432, vm), this->lang["SHOP"], "E");
+    addKeybind("HERO", calcX(224, vm), calcY(480, vm), this->lang["HERO"], "R");
+    addKeybind("ABILITY_UPGRADE", calcX(224, vm), calcY(524, vm), this->lang["ABILITY_UPGRADE"], "F");
 
     this->text_buttons["APPLY"] =
         std::make_unique<gui::ButtonText>(this->gameSettings.lang["APPLY"], calcChar(32, vm), calcX(640, vm),
@@ -594,14 +594,14 @@ void SettingsState::draw(sf::RenderTarget *target)
             this->settings["MONSTER_SOUNDS"].draw(*target);
             break;
         case 3:
-            this->keybindsTexts["MOVEMENT"].draw(*target);
-            this->keybindsTexts["LEFT_CLICK"].draw(*target);
-            this->keybindsTexts["RIGHT_CLICK"].draw(*target);
-            this->keybindsTexts["RUN"].draw(*target);
             this->keybindsTexts["ESCAPE"].draw(*target);
+            this->keybindsTexts["MOVEMENT"].draw(*target);
+            this->keybindsTexts["ATTACK"].draw(*target);
+            this->keybindsTexts["ABILITY"].draw(*target);
+            this->keybindsTexts["SPRINT"].draw(*target);
             this->keybindsTexts["SHOP"].draw(*target);
             this->keybindsTexts["HERO"].draw(*target);
-            this->keybindsTexts["BUY_ABILITY"].draw(*target);
+            this->keybindsTexts["ABILITY_UPGRADE"].draw(*target);
             break;
     }
 }
