@@ -314,6 +314,10 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
             this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["KILLER"], 14, 8, 1,
                                             "10%");
         }
+        else if (player.getName() == "DARK") {
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["PHANTOM"], 4, 5, 1,
+                                            "1");
+        }
     }
 }
 
@@ -840,13 +844,17 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
                                                            this->lang["ATTACK"], "+1", 50 * priceModifier, 0);
                 this->upgradePlayer("CRUSADER");
             }
-            else if (player.getLevel() == 10) {
-                if (player.getName() == "SCOUT") {
-                    this->abilityUpgradeGUI->addPlayerStat("GOLD", calcX(32, vm), calcY(244, vm), this->lang["GOLD"]);
-                    this->abilityUpgradeGUI->addAbilityUpgrade("GOLD", calcX(44, vm), calcY(596, vm), 7,
-                                                               this->lang["GOLD"], "+1", 100 * priceModifier, 1);
-                    this->upgradePlayer("ASSASSIN");
-                }
+            else if (player.getName() == "SCOUT") {
+                this->abilityUpgradeGUI->addPlayerStat("GOLD", calcX(32, vm), calcY(244, vm), this->lang["GOLD"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("GOLD", calcX(44, vm), calcY(596, vm), 7, this->lang["GOLD"],
+                                                           "+1", 100 * priceModifier, 1);
+                this->upgradePlayer("ASSASSIN");
+            }
+            else if (player.getName() == "DARK") {
+                this->abilityUpgradeGUI->addPlayerStat("GOLD", calcX(32, vm), calcY(244, vm), this->lang["GOLD"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("GOLD", calcX(44, vm), calcY(596, vm), 7, this->lang["GOLD"],
+                                                           "+1", 100 * priceModifier, 1);
+                this->upgradePlayer("PHANTOM");
             }
         }
 

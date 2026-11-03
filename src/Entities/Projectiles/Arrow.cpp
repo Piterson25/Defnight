@@ -74,6 +74,10 @@ void Arrow::monsterCollision(Monster &monster, Player &player, FloatingTextSyste
 
             monster.punch();
 
+            if (player.getName() == "DARK") {
+                player.setInvisible(false);
+            }
+
             piercing -= 1;
 
             if (this->piercing == 0) {
