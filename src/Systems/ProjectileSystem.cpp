@@ -100,23 +100,17 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui, ParticleSyst
     for (auto proj = this->projectiles.begin(); proj != this->projectiles.end();) {
         const auto *const stone = dynamic_cast<const Stone *>((*proj).get());
         const auto *const groundWave = dynamic_cast<const GroundWave *>((*proj).get());
-        if (stone || groundWave) {
-            (*proj)->update(slowedDt);
-            if ((*proj)->isParticleCooldown(slowedDt)) {
-                if (groundWave) {
-                    particleSystem.addSmallParticle((*proj)->getCenter(), sf::Vector2f(calcX(8, vm), calcY(8, vm)),
-                                                    gui::BROWN);
-                }
-                else {
-                    particleSystem.addSmallParticle((*proj)->getCenter(), sf::Vector2f(calcX(4, vm), calcY(4, vm)),
-                                                    gui::WHITE);
-                }
+        if ((*proj)->isParticleCooldown(slowedDt)) {
+            if (groundWave) {
+                particleSystem.addSmallParticle((*proj)->getPosition(), sf::Vector2f(calcX(8, vm), calcY(8, vm)),
+                                                gui::BROWN);
+            }
+            else {
+                particleSystem.addSmallParticle((*proj)->getPosition(), sf::Vector2f(calcX(4, vm), calcY(4, vm)),
+                                                gui::WHITE);
             }
         }
-        else {
-            (*proj)->update(dt);
-            particleSystem.addSmallParticle((*proj)->getCenter(), sf::Vector2f(calcX(4, vm), calcY(4, vm)), gui::WHITE);
-        }
+        (*proj)->update(slowedDt);
 
         if (!groundWave) {
             (*proj)->wallCollision(obstaclesBounds);
