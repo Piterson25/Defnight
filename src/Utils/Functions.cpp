@@ -114,12 +114,12 @@ const bool isPointVisible(const sf::FloatRect &rect, const sf::Vector2f &a_p1, c
 
 const float degToRad(float angleInDegrees)
 {
-    return (M_PI / 180.f) * angleInDegrees;
+    return (3.1415f / 180.f) * angleInDegrees;
 }
 
 const float radToDeg(float angleInRadians)
 {
-    return (180.f / M_PI) * angleInRadians;
+    return (180.f / 3.1415f) * angleInRadians;
 }
 
 const sf::Vector2f pointCoordsOnCircle(const sf::Vector2f t_pos, float radius, float angle)
