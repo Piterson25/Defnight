@@ -38,6 +38,7 @@ SoundEngine::SoundEngine(float gameVolume, float playerVolume, float monsterVolu
     soundsMap.emplace("ability", SoundType::PLAYER);
     soundsMap.emplace("trap_place", SoundType::PLAYER);
     soundsMap.emplace("trap_activation", SoundType::PLAYER);
+    soundsMap.emplace("predator", SoundType::PLAYER);
 }
 
 SoundEngine::~SoundEngine()

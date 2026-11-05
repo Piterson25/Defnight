@@ -50,16 +50,18 @@ void Archer::endAbility()
 
 void Archer::doAbility(SoundEngine &soundEngine)
 {
-    if (this->name == "DARK" || this->name == "PHANTOM" || this->name == "PREDATOR") {
+    if (this->name == "DARK" || this->name == "PHANTOM") {
         soundEngine.addSound("slowtime");
         this->invisible = true;
     }
     if (this->name == "PREDATOR") {
+        soundEngine.addSound("predator");
+        this->invisible = true;
         this->reg += increasedReg;
         this->attack += increasedAttack;
         this->attackSpeed += increasedAttackSpeed;
         this->speed += increasedSpeed;
-        this->criticalChance += criticalChance;
+        this->criticalChance += increasedCriticalChance;
     }
     else if (this->name == "SHOOTER") {
         soundEngine.addSound("shuriken");
