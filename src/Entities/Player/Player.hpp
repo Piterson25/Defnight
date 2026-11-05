@@ -34,6 +34,9 @@ public:
     const uint32_t getIncreasedArmor() const;
     const uint32_t getIncreasedReg() const;
     const uint32_t getIncreasedAttack() const;
+    const uint32_t getIncreasedAttackSpeed() const;
+    const uint32_t getIncreasedSpeed() const;
+    const uint32_t getIncreasedCriticalChance() const;
     const uint32_t getIncreasedGold() const;
     const uint32_t getIncreasedTargets() const;
     const uint32_t getGoldReward() const;
@@ -137,6 +140,9 @@ protected:
     uint32_t increasedArmor;
     uint32_t increasedReg;
     uint32_t increasedAttack;
+    uint32_t increasedAttackSpeed;
+    uint32_t increasedSpeed;
+    uint32_t increasedCriticalChance;
     uint32_t increasedGold;
     uint32_t goldReward;
     uint32_t attackLimit;

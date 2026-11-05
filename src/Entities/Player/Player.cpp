@@ -62,6 +62,9 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
     this->increasedArmor = 0;
     this->increasedReg = 0;
     this->increasedAttack = 0;
+    this->increasedAttackSpeed = 0;
+    this->increasedSpeed = 0;
+    this->increasedCriticalChance = 0;
     this->increasedGold = 0;
     this->increasedTargets = 0;
     this->goldReward = 0;
@@ -190,6 +193,21 @@ const uint32_t Player::getIncreasedReg() const
 const uint32_t Player::getIncreasedAttack() const
 {
     return this->increasedAttack;
+}
+
+const uint32_t Player::getIncreasedAttackSpeed() const
+{
+    return this->increasedAttackSpeed;
+}
+
+const uint32_t Player::getIncreasedSpeed() const
+{
+    return this->increasedSpeed;
+}
+
+const uint32_t Player::getIncreasedCriticalChance() const
+{
+    return this->increasedCriticalChance;
 }
 
 const uint32_t Player::getIncreasedGold() const

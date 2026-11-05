@@ -11,20 +11,23 @@ public:
 
     void levelUpPlayer(uint32_t optionID, uint32_t optionValue);
     void upgradePlayer(const std::string &name);
-    void update_level(SoundEngine &soundEngine);
+    void updateLevel(SoundEngine &soundEngine);
     void updateXP();
     void updateHP();
     void updateSprint();
     void updatingHP(SoundEngine &soundEngine, bool isExtreme, float dt);
     void updateGold();
-    void update_ability(float dt);
+    void updateAbility(float dt);
     void setAbilityIcon();
     void setIsEscape(bool escape);
     void setWaveBreakLimit(float t_waveBreakLimit);
     void updatePaused(bool &paused);
     void updateArmor();
-    void updateAttack();
     void updateReg();
+    void updateAttack();
+    void updateAttackSpeed();
+    void updateSpeed();
+    void updateCriticalChance();
     void updateBossHP(bool isExtreme, float dt);
     void updateShopBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
     void updateHeroBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine);

@@ -184,18 +184,39 @@ void StatsGUI::updateAttackSpeed()
 {
     this->texts["ATTACK_SPEED"]->setText(std::to_string(player.getAttackSpeed()));
     this->texts["ATTACK_SPEED"]->center(calcX(888, vm));
+
+    if (this->player.isAbilityActive() && this->player.getIncreasedAttackSpeed() > 0) {
+        this->texts["ATTACK_SPEED"]->setFillColor(gui::GOLD);
+    }
+    else {
+        this->texts["ATTACK_SPEED"]->setFillColor(gui::LIGHT_GREY);
+    }
 }
 
 void StatsGUI::updateSpeed()
 {
     this->texts["SPEED"]->setText(std::to_string(player.getSpeed()));
     this->texts["SPEED"]->center(calcX(952, vm));
+
+    if (this->player.isAbilityActive() && this->player.getIncreasedSpeed() > 0) {
+        this->texts["SPEED"]->setFillColor(gui::GOLD);
+    }
+    else {
+        this->texts["SPEED"]->setFillColor(gui::LIGHT_GREY);
+    }
 }
 
 void StatsGUI::updateCritical()
 {
     this->texts["CRITICAL"]->setText(std::to_string(player.getCriticalChance()) + "%");
     this->texts["CRITICAL"]->center(calcX(1016, vm));
+
+    if (this->player.isAbilityActive() && this->player.getIncreasedCriticalChance() > 0) {
+        this->texts["CRITICAL"]->setFillColor(gui::GOLD);
+    }
+    else {
+        this->texts["CRITICAL"]->setFillColor(gui::LIGHT_GREY);
+    }
 }
 
 void StatsGUI::updateXP()

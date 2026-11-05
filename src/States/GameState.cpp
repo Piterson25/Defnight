@@ -326,9 +326,12 @@ void GameState::update(float dt)
             this->player->animation(dt);
             this->player->abilityCounter(dt);
             this->playerGUI->updateArmor();
-            this->playerGUI->updateAttack();
             this->playerGUI->updateReg();
-            this->playerGUI->update_ability(dt);
+            this->playerGUI->updateAttack();
+            this->playerGUI->updateAttackSpeed();
+            this->playerGUI->updateSpeed();
+            this->playerGUI->updateCriticalChance();
+            this->playerGUI->updateAbility(dt);
 
             if (GameInputHandler::isKeyPressed("E", sf::Keyboard::Key::E)) {
                 this->playerGUI->updateIsShopping();
@@ -406,7 +409,7 @@ void GameState::update(float dt)
     if (this->player->getPendingXP() > 0) {
         if (!this->playerGUI->isLeveling() && !this->playerGUI->isUpgrading() && this->player->levelUp()) {
             this->player->setLeveling(true);
-            this->playerGUI->update_level(soundEngine);
+            this->playerGUI->updateLevel(soundEngine);
             paused = true;
         }
         this->playerGUI->updateXP();

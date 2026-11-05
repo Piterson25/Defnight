@@ -265,7 +265,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     this->updateGold();
 }
 
-void PlayerGUI::update_level(SoundEngine &soundEngine)
+void PlayerGUI::updateLevel(SoundEngine &soundEngine)
 {
     soundEngine.addSound("levelup");
     this->leveling = true;
@@ -317,6 +317,8 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
         else if (player.getName() == "DARK") {
             this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["PHANTOM"], 4, 5, 1,
                                             "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["PREDATOR"], 5, 8,
+                                            1, "10%");
         }
     }
 }
@@ -361,7 +363,7 @@ void PlayerGUI::updateGold()
     abilityUpgradeGUI->updateItemFrames();
 }
 
-void PlayerGUI::update_ability(float dt)
+void PlayerGUI::updateAbility(float dt)
 {
     if (player.getAbilityCooldown() > 0.f) {
         const float value = player.getAbilityCooldown() / (player.getAbilityTotalMaxTime()) * calcX(80, vm);
@@ -545,14 +547,29 @@ void PlayerGUI::updateArmor()
     this->statsGUI->updateArmor();
 }
 
+void PlayerGUI::updateReg()
+{
+    this->statsGUI->updateReg();
+}
+
 void PlayerGUI::updateAttack()
 {
     this->statsGUI->updateAttack();
 }
 
-void PlayerGUI::updateReg()
+void PlayerGUI::updateAttackSpeed()
 {
-    this->statsGUI->updateReg();
+    this->statsGUI->updateAttackSpeed();
+}
+
+void PlayerGUI::updateSpeed()
+{
+    this->statsGUI->updateSpeed();
+}
+
+void PlayerGUI::updateCriticalChance()
+{
+    this->statsGUI->updateCritical();
 }
 
 void PlayerGUI::updateBossHP(bool isExtreme, float dt)
@@ -895,6 +912,12 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
                 this->abilityUpgradeGUI->addAbilityUpgrade("TARGETS", calcX(44, vm), calcY(596, vm), 8,
                                                            this->lang["TARGETS"], "+1", 100 * priceModifier, 1);
                 this->upgradePlayer("KILLER");
+            }
+            else if (player.getName() == "DARK") {
+                this->abilityUpgradeGUI->addPlayerStat("REG", calcX(32, vm), calcY(244, vm), this->lang["REG"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("REG", calcX(44, vm), calcY(596, vm), 5, this->lang["REG"],
+                                                           "+1", 100 * priceModifier, 5);
+                this->upgradePlayer("PREDATOR");
             }
         }
 

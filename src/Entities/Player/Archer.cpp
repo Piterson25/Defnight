@@ -29,20 +29,37 @@ void Archer::setAbilityTexture()
     else if (this->name == "PHANTOM") {
         this->ability.setTextureRect(sf::IntRect({64, 0}, {16, 16}));
     }
+    else if (this->name == "PREDATOR") {
+        this->ability.setTextureRect(sf::IntRect({80, 0}, {16, 16}));
+    }
 }
 
 void Archer::endAbility()
 {
-    if (this->name == "DARK" || this->name == "PHANTOM") {
+    if (this->name == "DARK" || this->name == "PHANTOM" || this->name == "PREDATOR") {
         this->invisible = false;
+    }
+    if (this->name == "PREDATOR") {
+        this->reg -= increasedReg;
+        this->attack -= increasedAttack;
+        this->attackSpeed -= increasedAttackSpeed;
+        this->speed -= increasedSpeed;
+        this->criticalChance -= increasedCriticalChance;
     }
 }
 
 void Archer::doAbility(SoundEngine &soundEngine)
 {
-    if (this->name == "DARK" || this->name == "PHANTOM") {
+    if (this->name == "DARK" || this->name == "PHANTOM" || this->name == "PREDATOR") {
         soundEngine.addSound("slowtime");
         this->invisible = true;
+    }
+    if (this->name == "PREDATOR") {
+        this->reg += increasedReg;
+        this->attack += increasedAttack;
+        this->attackSpeed += increasedAttackSpeed;
+        this->speed += increasedSpeed;
+        this->criticalChance += criticalChance;
     }
     else if (this->name == "SHOOTER") {
         soundEngine.addSound("shuriken");
@@ -63,6 +80,16 @@ void Archer::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
     else if (t_name == "PHANTOM") {
         intRect = sf::IntRect({64, 16}, {16, 16});
         this->setAttack(this->getAttack() + 1);
+        this->abilityComponent->setAbilityStats(20.f, 20.f, 5.f);
+    }
+    else if (t_name == "PREDATOR") {
+        intRect = sf::IntRect({80, 16}, {16, 16});
+        this->setCriticalChance(this->getCriticalChance() + 10);
+        this->increasedReg = 3;
+        this->increasedAttack = 5;
+        this->increasedAttackSpeed = 2;
+        this->increasedSpeed = 2;
+        this->increasedCriticalChance = 20;
         this->abilityComponent->setAbilityStats(20.f, 20.f, 5.f);
     }
     else if (t_name == "SHOOTER") {
