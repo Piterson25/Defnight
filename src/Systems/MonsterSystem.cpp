@@ -532,11 +532,15 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds, bo
 
 void MonsterSystem::draw(sf::RenderTarget &target)
 {
-    for (const auto &trap : this->traps) {
-        trap->draw(target);
-    }
     for (const auto &monster : this->monsters) {
         monster->draw(target);
+    }
+}
+
+void MonsterSystem::drawTraps(sf::RenderTarget &target)
+{
+    for (const auto &trap : this->traps) {
+        trap->draw(target);
     }
 }
 

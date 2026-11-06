@@ -143,6 +143,8 @@ void GameState::draw(sf::RenderTarget *target)
 
     this->tileMap->drawObstacles(*target);
 
+    this->monsterSystem->drawTraps(*target);
+
     this->projectileSystem->draw(*target);
 
     this->dropSystem->draw(*target);
@@ -315,7 +317,7 @@ void GameState::update(float dt)
                         this->projectileSystem->playerAbility(sf::Vector2f(this->window.mapPixelToCoords(
                                                                   sf::Mouse::getPosition(this->window), this->view)),
                                                               *this->player);
-                        if (this->player->getName() == "RANGER") {
+                        if (this->player->getName() == "HUNTER" || this->player->getName() == "RANGER") {
                             this->monsterSystem->placeTrap();
                         }
                         this->playerGUI->setAbilityIcon();

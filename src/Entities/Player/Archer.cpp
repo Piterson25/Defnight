@@ -24,13 +24,13 @@ Archer::~Archer() = default;
 void Archer::setAbilityTexture()
 {
     if (this->name == "DARK") {
-        this->ability.setTextureRect(sf::IntRect({48, 0}, {16, 16}));
+        this->ability.setTextureRect(sf::IntRect({48, 32}, {16, 16}));
     }
     else if (this->name == "PHANTOM") {
-        this->ability.setTextureRect(sf::IntRect({64, 0}, {16, 16}));
+        this->ability.setTextureRect(sf::IntRect({64, 32}, {16, 16}));
     }
     else if (this->name == "PREDATOR") {
-        this->ability.setTextureRect(sf::IntRect({80, 0}, {16, 16}));
+        this->ability.setTextureRect(sf::IntRect({80, 32}, {16, 16}));
     }
 }
 
@@ -50,7 +50,13 @@ void Archer::endAbility()
 
 void Archer::doAbility(SoundEngine &soundEngine)
 {
-    if (this->name == "DARK" || this->name == "PHANTOM") {
+    if (this->name == "HUNTER" || this->name == "RANGER") {
+        soundEngine.addSound("trap_place");
+    }
+    else if (this->name == "SHOOTER") {
+        soundEngine.addSound("shuriken");
+    }
+    else if (this->name == "DARK" || this->name == "PHANTOM") {
         soundEngine.addSound("slowtime");
         this->invisible = true;
     }
@@ -63,29 +69,38 @@ void Archer::doAbility(SoundEngine &soundEngine)
         this->speed += increasedSpeed;
         this->criticalChance += increasedCriticalChance;
     }
-    else if (this->name == "SHOOTER") {
-        soundEngine.addSound("shuriken");
-    }
-    else if (this->name == "RANGER") {
-        soundEngine.addSound("trap_place");
-    }
 }
 
 void Archer::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
 {
     this->name = t_name;
-    if (t_name == "DARK") {
+    if (this->name == "HUNTER") {
         intRect = sf::IntRect({48, 16}, {16, 16});
+        this->setAttackSpeed(this->getAttackSpeed() + 1);
+        this->abilityComponent->setAbilityStats(10.f, 10.f, 2.f);
+    }
+    else if (this->name == "RANGER") {
+        intRect = sf::IntRect({64, 16}, {16, 16});
+        this->setSpeed(this->getSpeed() + 1);
+        this->abilityComponent->setAbilityStats(10.f, 10.f, 2.f);
+    }
+    else if (this->name == "SHOOTER") {
+        intRect = sf::IntRect({48, 32}, {16, 16});
+        this->setArmor(this->getArmor() + 1);
+        this->abilityComponent->setAbilityStats(2.f, 2.f, 2.f);
+    }
+    else if (this->name == "DARK") {
+        intRect = sf::IntRect({48, 48}, {16, 16});
         this->setReg(this->getReg() + 1);
         this->abilityComponent->setAbilityStats(20.f, 20.f, 5.f);
     }
-    else if (t_name == "PHANTOM") {
-        intRect = sf::IntRect({64, 16}, {16, 16});
+    else if (this->name == "PHANTOM") {
+        intRect = sf::IntRect({64, 48}, {16, 16});
         this->setAttack(this->getAttack() + 1);
         this->abilityComponent->setAbilityStats(20.f, 20.f, 5.f);
     }
-    else if (t_name == "PREDATOR") {
-        intRect = sf::IntRect({80, 16}, {16, 16});
+    else if (this->name == "PREDATOR") {
+        intRect = sf::IntRect({80, 48}, {16, 16});
         this->setCriticalChance(this->getCriticalChance() + 10);
         this->increasedReg = 3;
         this->increasedAttack = 5;
@@ -93,15 +108,5 @@ void Archer::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
         this->increasedSpeed = 2;
         this->increasedCriticalChance = 30;
         this->abilityComponent->setAbilityStats(20.f, 20.f, 5.f);
-    }
-    else if (t_name == "SHOOTER") {
-        intRect = sf::IntRect({48, 32}, {16, 16});
-        this->setArmor(this->getArmor() + 1);
-        this->abilityComponent->setAbilityStats(2.f, 2.f, 2.f);
-    }
-    else if (t_name == "RANGER") {
-        intRect = sf::IntRect({48, 48}, {16, 16});
-        this->setSpeed(this->getSpeed() + 1);
-        this->abilityComponent->setAbilityStats(10.f, 10.f, 2.f);
     }
 }
