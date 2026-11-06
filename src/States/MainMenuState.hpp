@@ -20,8 +20,19 @@ public:
     void draw(sf::RenderTarget *target = NULL) override;
 
 private:
+    void initLoadingPage();
+    void initMainPage();
+    void initCreditsPage();
+    void initRanksPage();
+    void initChooseMapPage();
+    void initChooseHeroPage();
+    void initChooseDifficultyPage();
     void fadingEffect(float dt);
     void setPlayerRank();
+
+    enum class Page { LOADING, MAIN, CREDITS, RANKS, CHOOSE_MAP, CHOOSE_HERO, CHOOSE_DIFFICULTY };
+
+    Page page;
 
     struct RankText {
         std::unique_ptr<gui::Text> rank;
@@ -44,8 +55,6 @@ private:
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
     std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>> sprite_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
-
-    uint16_t page;
 
     bool loadedPlayerData;
     PlayerStats::PlayerData playerData;

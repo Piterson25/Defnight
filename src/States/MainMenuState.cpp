@@ -4,6 +4,9 @@ MainMenuState::MainMenuState(float gridSize, sf::RenderWindow &window, GameSetti
                              SoundEngine &soundEngine, MusicEngine &musicEngine, std::stack<State *> &states)
     : State(gridSize, window, gameSettings, soundEngine, musicEngine, states), map(map_texture)
 {
+    this->vm = this->gameSettings.resolution;
+    this->page = Page::LOADING;
+    Random::Init();
     this->initGUI();
     this->musicEngine.addMusic("main_menu.ogg");
     this->musicEngine.addMusic("main_menu2.ogg");
@@ -18,27 +21,41 @@ MainMenuState::~MainMenuState()
 
 void MainMenuState::initGUI()
 {
-    this->vm = this->gameSettings.resolution;
-    this->page = 0;
+    initLoadingPage();
+    initMainPage();
+    initCreditsPage();
+    initRanksPage();
+    initChooseMapPage();
+    initChooseHeroPage();
+    initChooseDifficultyPage();
+}
 
+void MainMenuState::resetGUI()
+{
+    this->texts.clear();
+    this->text_buttons.clear();
+    this->sprites.clear();
+    this->sprite_buttons.clear();
+
+    initGUI();
+}
+
+void MainMenuState::initLoadingPage()
+{
     this->fading = false;
     this->appearing = false;
-    this->dimBackground.setSize(sf::Vector2f(static_cast<float>(vm.size.x), static_cast<float>(vm.size.y)));
+    this->dimBackground.setSize({static_cast<float>(vm.size.x), static_cast<float>(vm.size.y)});
     this->dimBackground.setFillColor(sf::Color(0, 0, 0, 0));
-
-    // PAGE 0 - Loading
-
     this->introCooldown = 0.f;
     this->dimAlpha = 0.f;
     this->sprites["LOGO"] = std::make_unique<gui::Sprite>("assets/textures/icon.png", calcX(640, vm), calcY(232, vm),
                                                           calcScale(8, vm), true);
     this->sprites["LOGO"]->setColor(sf::Color(255, 255, 255, 0));
+}
 
-    // PAGE 1
-
-    Random::Init();
-
-    this->mapVelocity = sf::Vector2f(32.f * cos((3.1415f / 180.f)), 32.f * cos((3.1415f / 180.f)));
+void MainMenuState::initMainPage()
+{
+    this->mapVelocity = {32.f * cos(3.1415f / 180.f), 32.f * cos(3.1415f / 180.f)};
     this->mapRotate = Random::Float() * 360.f - 90.f;
 
     this->mapView.setSize(sf::Vector2f(static_cast<float>(vm.size.x), static_cast<float>(vm.size.y)));
@@ -108,9 +125,115 @@ void MainMenuState::initGUI()
                                                                   calcY(306, vm), gui::WHITE, gui::LIGHT_GREY, false);
     this->text_buttons["NO"] = std::make_unique<gui::ButtonText>(this->lang["NO"], calcChar(32, vm), calcX(704, vm),
                                                                  calcY(306, vm), gui::WHITE, gui::LIGHT_GREY, false);
+}
 
-    // PAGE 2
+void MainMenuState::initCreditsPage()
+{
+    this->texts["CREDITS"] = std::make_unique<gui::Text>(this->lang["CREDITS"], calcChar(32, vm), calcX(640, vm),
+                                                         calcY(96, vm), gui::WHITE, true);
+    this->texts["MAIN_CREATOR"] = std::make_unique<gui::Text>(this->lang["MAIN_CREATOR"], calcChar(24, vm),
+                                                              calcX(400, vm), calcY(192, vm), gui::WHITE, false);
+    this->texts["CREATOR_LIST"] =
+        std::make_unique<gui::Text>("Piterson25", calcChar(24, vm), calcX(722, vm), calcY(192, vm), gui::LIME, false);
+    this->texts["ARTIST"] = std::make_unique<gui::Text>(this->lang["ARTIST"], calcChar(24, vm), calcX(400, vm),
+                                                        calcY(292, vm), gui::WHITE, false);
+    this->texts["ARTIST_LIST"] =
+        std::make_unique<gui::Text>("Nithorax", calcChar(24, vm), calcX(722, vm), calcY(292, vm), gui::RED, false);
+    this->texts["SOUNDS"] = std::make_unique<gui::Text>(this->lang["SOUNDS"], calcChar(24, vm), calcX(400, vm),
+                                                        calcY(392, vm), gui::WHITE, false);
+    this->text_buttons["RASPAR"] = std::make_unique<gui::ButtonText>(
+        "Raspar", calcChar(24, vm), calcX(722, vm), calcY(392, vm), gui::LIGHT_BLUE, gui::WHITE, false);
+    this->texts["TESTERS"] = std::make_unique<gui::Text>(this->lang["TESTERS"], calcChar(24, vm), calcX(400, vm),
+                                                         calcY(492, vm), gui::WHITE, false);
+    this->text_buttons["SZMIGIELKO"] = std::make_unique<gui::ButtonText>("Szmigielko", calcChar(24, vm), calcX(722, vm),
+                                                                         calcY(492, vm), gui::GREEN, gui::WHITE, false);
+    this->texts["TESTERS_LIST"] = std::make_unique<gui::Text>("Keku\n\nBadKarma\n\nyouhOrin", calcChar(24, vm),
+                                                              calcX(722, vm), calcY(540, vm), gui::GREEN, false);
+}
 
+void MainMenuState::initRanksPage()
+{
+    this->texts["RANKS"] = std::make_unique<gui::Text>(this->lang["RANKS"], calcChar(32, vm), calcX(640, vm),
+                                                       calcY(96, vm), gui::WHITE, true);
+
+    this->sprites["LEFT_ARROW"] = std::make_unique<gui::Sprite>("assets/textures/selects.png", calcX(192, vm),
+                                                                calcY(192, vm), calcScale(2, vm), false);
+    this->sprites["LEFT_ARROW"]->setTextureRect(gui::RECT_SMALL_ARROW);
+    this->sprites["LEFT_ARROW"]->flipHorizontal();
+    this->sprites["RIGHT_ARROW"] = std::make_unique<gui::Sprite>("assets/textures/selects.png", calcX(592, vm),
+                                                                 calcY(192, vm), calcScale(2, vm), false);
+    this->sprites["RIGHT_ARROW"]->setTextureRect(gui::RECT_SMALL_ARROW);
+
+    int positionY = 192;
+
+    for (int i = PlayerStats::ranks.size() - 1; i >= 0; i--) {
+        const std::string xpRange = std::to_string(PlayerStats::ranks[i].minXP) + "-" +
+                                    (i > 0 ? std::to_string(PlayerStats::ranks[i - 1].minXP - 1) : "0") + " XP";
+
+        this->ranksTexts.push_back(RankText{
+            std::make_unique<gui::Text>(this->lang[PlayerStats::ranks[i].name], calcChar(16, vm), calcX(192, vm),
+                                        calcY(positionY, vm), PlayerStats::ranks[i].color, false),
+            std::make_unique<gui::Text>(xpRange, calcChar(16, vm), calcX(384, vm), calcY(positionY, vm), gui::WHITE,
+                                        false)});
+
+        if (i == 0) {
+            this->ranksTexts.back().xp->setText(std::to_string(PlayerStats::ranks[i].minXP) + "+ XP");
+        }
+
+        positionY += 48;
+    }
+
+    this->texts["PLAYER_XP"] =
+        std::make_unique<gui::Text>(this->lang["TOTAL_XP"] + std::to_string(playerData.xp), calcChar(24, vm),
+                                    calcX(960, vm), calcY(192, vm), gui::WHITE, true);
+
+    this->texts["CURRENT_RANK"] = std::make_unique<gui::Text>(this->lang["CURRENT_RANK"], calcChar(16, vm),
+                                                              calcX(960, vm), calcY(240, vm), gui::WHITE, true);
+
+    this->texts["CURRENT_PLAYER_RANK"] = std::make_unique<gui::Text>(this->lang["NOVICE"], calcChar(16, vm),
+                                                                     this->texts["CURRENT_RANK"]->getPosition().x +
+                                                                         this->texts["CURRENT_RANK"]->getWidth(),
+                                                                     calcY(240, vm), gui::WHITE, false);
+
+    this->texts["CURRENT_RANK"]->setPositionX(
+        calcX(960, vm) -
+        (this->texts["CURRENT_RANK"]->getWidth() + this->texts["CURRENT_PLAYER_RANK"]->getWidth()) / 2);
+
+    this->texts["CURRENT_PLAYER_RANK"]->setPositionX(this->texts["CURRENT_RANK"]->getPosition().x +
+                                                     this->texts["CURRENT_RANK"]->getWidth());
+
+    this->texts["NEXT_RANK"] = std::make_unique<gui::Text>(this->lang["NEXT_RANK"], calcChar(16, vm), calcX(960, vm),
+                                                           calcY(288, vm), gui::WHITE, true);
+
+    this->texts["NEXT_PLAYER_RANK"] =
+        std::make_unique<gui::Text>(this->lang["RECRUIT"], calcChar(16, vm),
+                                    this->texts["NEXT_RANK"]->getPosition().x + this->texts["NEXT_RANK"]->getWidth(),
+                                    calcY(288, vm), gui::LIGHT_GREY, false);
+
+    this->texts["NEXT_RANK"]->setPositionX(
+        calcX(960, vm) - (this->texts["NEXT_RANK"]->getWidth() + this->texts["NEXT_PLAYER_RANK"]->getWidth()) / 2);
+
+    this->texts["NEXT_PLAYER_RANK"]->setPositionX(this->texts["NEXT_RANK"]->getPosition().x +
+                                                  this->texts["NEXT_RANK"]->getWidth());
+
+    this->sprites["XP_BAR"] = std::make_unique<gui::Sprite>("assets/textures/bars.png", calcX(832, vm), calcY(344, vm),
+                                                            calcScale(1, vm), false);
+    this->sprites["XP_BAR"]->setTextureRect(sf::IntRect({0, 0}, {0, 0}));
+    this->sprites["XP_FRAME"] = std::make_unique<gui::Sprite>("assets/textures/bars.png", calcX(960, vm),
+                                                              calcY(336, vm), calcScale(1, vm), true);
+    this->sprites["XP_FRAME"]->setTextureRect(sf::IntRect({0, 100}, {272, 36}));
+    this->texts["PERCENT"] =
+        std::make_unique<gui::Text>("0%", calcChar(16, vm), calcX(960, vm), calcY(347, vm), gui::WHITE, true);
+
+    this->texts["CURRENT_RANK_XP"] =
+        std::make_unique<gui::Text>("0", calcChar(16, vm), calcX(824, vm), calcY(384, vm), gui::WHITE, true);
+
+    this->texts["NEXT_RANK_XP"] =
+        std::make_unique<gui::Text>("99", calcChar(16, vm), calcX(1096, vm), calcY(384, vm), gui::WHITE, true);
+}
+
+void MainMenuState::initChooseMapPage()
+{
     this->sprite_buttons["GO_BACK"] = std::make_unique<gui::ButtonSprite>(gui::RECT_ARROW, calcX(32, vm), calcY(24, vm),
                                                                           calcX(4, vm), gui::GREY, gui::WHITE, false);
 
@@ -135,9 +258,10 @@ void MainMenuState::initGUI()
         std::make_unique<gui::Sprite>(chosenMap.texture, calcX(640, vm), calcY(272, vm), calcScale(0.5f, vm), true);
     this->texts["CHOSEN_MAP"] = std::make_unique<gui::Text>(this->lang[toUpperCase(chosenMap.name)], calcChar(32, vm),
                                                             calcX(640, vm), calcY(200, vm), gui::WHITE, true);
+}
 
-    // PAGE 3
-
+void MainMenuState::initChooseHeroPage()
+{
     this->texts["CHOOSE_HERO"] = std::make_unique<gui::Text>(this->lang["CHOOSE_HERO"], calcChar(32, vm),
                                                              calcX(640, vm), calcY(96, vm), gui::WHITE, true);
     sf::Texture upgradeIcons = sf::Texture("assets/textures/upgrades_icons.png");
@@ -216,9 +340,10 @@ void MainMenuState::initGUI()
         std::make_unique<gui::Sprite>(attribute_vec[8], calcX(1048, vm), calcY(586, vm), calcScale(2, vm), false);
     this->texts["CRITICAL"] =
         std::make_unique<gui::Text>("20%", calcChar(16, vm), calcX(1064, vm), calcY(640, vm), gui::LIGHT_GREY, true);
+}
 
-    // PAGE 4
-
+void MainMenuState::initChooseDifficultyPage()
+{
     this->texts["CHOOSE_DIFFICULTY"] = std::make_unique<gui::Text>(this->lang["CHOOSE_DIFFICULTY"], calcChar(32, vm),
                                                                    calcX(640, vm), calcY(96, vm), gui::WHITE, true);
 
@@ -270,118 +395,6 @@ void MainMenuState::initGUI()
         std::make_unique<gui::Text>("? ? ?", calcChar(32, vm), calcX(304, vm), calcY(638, vm), gui::RED, true);
     this->texts["EXTREME_DESC_2"] =
         std::make_unique<gui::Text>("? ? ?", calcChar(32, vm), calcX(976, vm), calcY(638, vm), gui::RED, true);
-
-    // PAGE 5
-
-    this->texts["CREDITS"] = std::make_unique<gui::Text>(this->lang["CREDITS"], calcChar(32, vm), calcX(640, vm),
-                                                         calcY(96, vm), gui::WHITE, true);
-    this->texts["MAIN_CREATOR"] = std::make_unique<gui::Text>(this->lang["MAIN_CREATOR"], calcChar(24, vm),
-                                                              calcX(400, vm), calcY(192, vm), gui::WHITE, false);
-    this->texts["CREATOR_LIST"] =
-        std::make_unique<gui::Text>("Piterson25", calcChar(24, vm), calcX(722, vm), calcY(192, vm), gui::LIME, false);
-    this->texts["ARTIST"] = std::make_unique<gui::Text>(this->lang["ARTIST"], calcChar(24, vm), calcX(400, vm),
-                                                        calcY(292, vm), gui::WHITE, false);
-    this->texts["ARTIST_LIST"] =
-        std::make_unique<gui::Text>("Nithorax", calcChar(24, vm), calcX(722, vm), calcY(292, vm), gui::RED, false);
-    this->texts["SOUNDS"] = std::make_unique<gui::Text>(this->lang["SOUNDS"], calcChar(24, vm), calcX(400, vm),
-                                                        calcY(392, vm), gui::WHITE, false);
-    this->text_buttons["RASPAR"] = std::make_unique<gui::ButtonText>(
-        "Raspar", calcChar(24, vm), calcX(722, vm), calcY(392, vm), gui::LIGHT_BLUE, gui::WHITE, false);
-    this->texts["TESTERS"] = std::make_unique<gui::Text>(this->lang["TESTERS"], calcChar(24, vm), calcX(400, vm),
-                                                         calcY(492, vm), gui::WHITE, false);
-    this->text_buttons["SZMIGIELKO"] = std::make_unique<gui::ButtonText>("Szmigielko", calcChar(24, vm), calcX(722, vm),
-                                                                         calcY(492, vm), gui::GREEN, gui::WHITE, false);
-    this->texts["TESTERS_LIST"] = std::make_unique<gui::Text>("Keku\n\nBadKarma\n\nyouhOrin", calcChar(24, vm),
-                                                              calcX(722, vm), calcY(540, vm), gui::GREEN, false);
-
-    // PAGE 6
-
-    this->texts["RANKS"] = std::make_unique<gui::Text>(this->lang["RANKS"], calcChar(32, vm), calcX(640, vm),
-                                                       calcY(96, vm), gui::WHITE, true);
-
-    this->sprites["LEFT_ARROW"] = std::make_unique<gui::Sprite>("assets/textures/selects.png", calcX(192, vm),
-                                                                calcY(192, vm), calcScale(2, vm), false);
-    this->sprites["LEFT_ARROW"]->setTextureRect(gui::RECT_SMALL_ARROW);
-    this->sprites["LEFT_ARROW"]->flipHorizontal();
-    this->sprites["RIGHT_ARROW"] = std::make_unique<gui::Sprite>("assets/textures/selects.png", calcX(592, vm),
-                                                                 calcY(192, vm), calcScale(2, vm), false);
-    this->sprites["RIGHT_ARROW"]->setTextureRect(gui::RECT_SMALL_ARROW);
-
-    int positionY = 192;
-
-    for (int i = PlayerStats::ranks.size() - 1; i >= 0; i--) {
-        const std::string xpRange = std::to_string(PlayerStats::ranks[i].minXP) + "-" +
-                                    (i > 0 ? std::to_string(PlayerStats::ranks[i - 1].minXP - 1) : "0") + " XP";
-
-        this->ranksTexts.push_back(RankText{
-            std::make_unique<gui::Text>(this->lang[PlayerStats::ranks[i].name], calcChar(16, vm), calcX(192, vm),
-                                        calcY(positionY, vm), PlayerStats::ranks[i].color, false),
-            std::make_unique<gui::Text>(xpRange, calcChar(16, vm), calcX(384, vm), calcY(positionY, vm), gui::WHITE,
-                                        false)});
-
-        if (i == 0) {
-            this->ranksTexts.back().xp->setText(std::to_string(PlayerStats::ranks[i].minXP) + "+ XP");
-        }
-
-        positionY += 48;
-    }
-
-    this->texts["PLAYER_XP"] =
-        std::make_unique<gui::Text>(this->lang["TOTAL_XP"] + std::to_string(playerData.xp), calcChar(24, vm),
-                                    calcX(960, vm), calcY(192, vm), gui::WHITE, true);
-
-    this->texts["CURRENT_RANK"] = std::make_unique<gui::Text>(this->lang["CURRENT_RANK"], calcChar(16, vm),
-                                                              calcX(960, vm), calcY(240, vm), gui::WHITE, true);
-
-    this->texts["CURRENT_PLAYER_RANK"] = std::make_unique<gui::Text>(this->lang["NOVICE"], calcChar(16, vm),
-                                                                     this->texts["CURRENT_RANK"]->getPosition().x +
-                                                                         this->texts["CURRENT_RANK"]->getWidth(),
-                                                                     calcY(240, vm), gui::WHITE, false);
-
-    this->texts["CURRENT_RANK"]->setPositionX(
-        calcX(960, vm) -
-        (this->texts["CURRENT_RANK"]->getWidth() + this->texts["CURRENT_PLAYER_RANK"]->getWidth()) / 2);
-
-    this->texts["CURRENT_PLAYER_RANK"]->setPositionX(this->texts["CURRENT_RANK"]->getPosition().x +
-                                                     this->texts["CURRENT_RANK"]->getWidth());
-
-    this->texts["NEXT_RANK"] = std::make_unique<gui::Text>(this->lang["NEXT_RANK"], calcChar(16, vm), calcX(960, vm),
-                                                           calcY(288, vm), gui::WHITE, true);
-
-    this->texts["NEXT_PLAYER_RANK"] =
-        std::make_unique<gui::Text>(this->lang["RECRUIT"], calcChar(16, vm),
-                                    this->texts["NEXT_RANK"]->getPosition().x + this->texts["NEXT_RANK"]->getWidth(),
-                                    calcY(288, vm), gui::LIGHT_GREY, false);
-
-    this->texts["NEXT_RANK"]->setPositionX(
-        calcX(960, vm) - (this->texts["NEXT_RANK"]->getWidth() + this->texts["NEXT_PLAYER_RANK"]->getWidth()) / 2);
-
-    this->texts["NEXT_PLAYER_RANK"]->setPositionX(this->texts["NEXT_RANK"]->getPosition().x +
-                                                  this->texts["NEXT_RANK"]->getWidth());
-
-    this->sprites["XP_BAR"] = std::make_unique<gui::Sprite>("assets/textures/bars.png", calcX(832, vm), calcY(344, vm),
-                                                            calcScale(1, vm), false);
-    this->sprites["XP_BAR"]->setTextureRect(sf::IntRect({0, 0}, {0, 0}));
-    this->sprites["XP_FRAME"] = std::make_unique<gui::Sprite>(bars, calcX(960, vm), calcY(336, vm), calcScale(1, vm),
-                                                              true, sf::IntRect({0, 100}, {272, 36}));
-    this->texts["PERCENT"] =
-        std::make_unique<gui::Text>("0%", calcChar(16, vm), calcX(960, vm), calcY(347, vm), gui::WHITE, true);
-
-    this->texts["CURRENT_RANK_XP"] =
-        std::make_unique<gui::Text>("0", calcChar(16, vm), calcX(824, vm), calcY(384, vm), gui::WHITE, true);
-
-    this->texts["NEXT_RANK_XP"] =
-        std::make_unique<gui::Text>("99", calcChar(16, vm), calcX(1096, vm), calcY(384, vm), gui::WHITE, true);
-}
-
-void MainMenuState::resetGUI()
-{
-    this->texts.clear();
-    this->text_buttons.clear();
-    this->sprites.clear();
-    this->sprite_buttons.clear();
-
-    initGUI();
 }
 
 void MainMenuState::update(float dt)
@@ -398,7 +411,7 @@ void MainMenuState::update(float dt)
         this->setPlayerRank();
     }
 
-    if (this->page >= 1) {
+    if (this->page == Page::MAIN) {
         if (!this->map.getGlobalBounds().findIntersection(this->mapView.getViewport())) {
             this->mapVelocity = sf::Vector2f(32.f * cos((3.1415f / 180.f)), 32.f * cos((3.1415f / 180.f)));
             this->mapRotate = Random::Float() * 360.f - 90.f;
@@ -413,9 +426,9 @@ void MainMenuState::update(float dt)
     }
     else {
         switch (this->page) {
-            case 0:
+            case Page::LOADING:
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Enter)) {
-                    this->page = 1;
+                    this->page = Page::MAIN;
                     this->dimAlpha = 1.f;
                     this->fading = true;
                     this->appearing = true;
@@ -426,7 +439,7 @@ void MainMenuState::update(float dt)
 
                 if (this->introCooldown > 1.f) {
                     if (this->introCooldown > 5.f) {
-                        this->page = 1;
+                        this->page = Page::MAIN;
                         this->dimAlpha = 1.f;
                         this->fading = true;
                         this->appearing = true;
@@ -454,7 +467,7 @@ void MainMenuState::update(float dt)
                     }
                 }
                 break;
-            case 1:
+            case Page::MAIN:
                 if (!quitwindow) {
                     if (this->text_buttons["PLAY"]->isPressed(this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
@@ -463,7 +476,7 @@ void MainMenuState::update(float dt)
                         this->texts["CHOSEN_MAP"]->center(calcX(640, vm));
                         this->sprites["CHOSEN_MAP"] = std::make_unique<gui::Sprite>(
                             chosenMap.texture, calcX(640, vm), calcY(272, vm), calcScale(0.5f, vm), true);
-                        this->page = 2;
+                        this->page = Page::CHOOSE_MAP;
                     }
                     else if (this->text_buttons["STATISTICS"]->isPressed(this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
@@ -478,7 +491,7 @@ void MainMenuState::update(float dt)
 
                     else if (this->text_buttons["CREDITS"]->isPressed(this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
-                        this->page = 5;
+                        this->page = Page::CREDITS;
                     }
                     else if (this->text_buttons["QUIT"]->isPressed(this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
@@ -486,7 +499,7 @@ void MainMenuState::update(float dt)
                     }
                     else if (this->text_buttons["RANK"]->isPressed(this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
-                        this->page = 6;
+                        this->page = Page::RANKS;
                     }
                 }
                 else {
@@ -500,10 +513,10 @@ void MainMenuState::update(float dt)
                     }
                 }
                 break;
-            case 2:
+            case Page::CHOOSE_MAP:
                 if (this->sprite_buttons["GO_BACK"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
-                    --this->page;
+                    this->page = Page::MAIN;
                 }
                 else if (this->sprite_buttons["MAP_LEFT_ARROW"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
@@ -534,13 +547,13 @@ void MainMenuState::update(float dt)
                 else if (this->sprite_buttons["CHOSEN_MAP"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     newGame.map = chosenMap.type;
-                    this->page = 3;
+                    this->page = Page::CHOOSE_HERO;
                 }
                 break;
-            case 3:
+            case Page::CHOOSE_HERO:
                 if (this->sprite_buttons["GO_BACK"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
-                    --this->page;
+                    this->page = Page::CHOOSE_MAP;
                     this->choosing_hero = false;
                 }
                 else if (this->sprite_buttons["HERO1"]->isPressed(this->mousePosWindow)) {
@@ -590,21 +603,21 @@ void MainMenuState::update(float dt)
                 else if (this->choosing_hero) {
                     if (this->text_buttons["CHOOSE"]->isPressed(this->mousePosWindow)) {
                         this->soundEngine.addSound("button");
-                        this->page = 4;
+                        this->page = Page::CHOOSE_DIFFICULTY;
                     }
                 }
                 break;
-            case 4:
+            case Page::CHOOSE_DIFFICULTY:
                 if (this->sprite_buttons["GO_BACK"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
-                    --this->page;
+                    this->page = Page::CHOOSE_HERO;
                     this->choosing_hero = false;
                 }
 
                 if (this->sprite_buttons["DIFFICULTY1"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     newGame.difficulty = DIFFICULTY::EASY;
-                    this->page = 1;
+                    this->page = Page::MAIN;
                     this->states.push(new GameState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
                                                     this->musicEngine, this->states, newGame));
                     this->choosing_hero = false;
@@ -613,7 +626,7 @@ void MainMenuState::update(float dt)
                 else if (this->sprite_buttons["DIFFICULTY2"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     newGame.difficulty = DIFFICULTY::NORMAL;
-                    this->page = 1;
+                    this->page = Page::MAIN;
                     this->states.push(new GameState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
                                                     this->musicEngine, this->states, newGame));
                     this->choosing_hero = false;
@@ -622,7 +635,7 @@ void MainMenuState::update(float dt)
                 else if (this->sprite_buttons["DIFFICULTY3"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     newGame.difficulty = DIFFICULTY::HARD;
-                    this->page = 1;
+                    this->page = Page::MAIN;
                     this->states.push(new GameState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
                                                     this->musicEngine, this->states, newGame));
                     this->choosing_hero = false;
@@ -631,17 +644,17 @@ void MainMenuState::update(float dt)
                 else if (this->sprite_buttons["DIFFICULTY4"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
                     newGame.difficulty = DIFFICULTY::EXTREME;
-                    this->page = 1;
+                    this->page = Page::MAIN;
                     this->states.push(new GameState(this->gridSize, this->window, this->gameSettings, this->soundEngine,
                                                     this->musicEngine, this->states, newGame));
                     this->choosing_hero = false;
                     this->loadedPlayerData = false;
                 }
                 break;
-            case 5:
+            case Page::CREDITS:
                 if (this->sprite_buttons["GO_BACK"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
-                    this->page = 1;
+                    this->page = Page::MAIN;
                 }
                 else if (this->text_buttons["RASPAR"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("minotaur_spawn");
@@ -650,10 +663,10 @@ void MainMenuState::update(float dt)
                     this->soundEngine.addSound("hi_hi");
                 }
                 break;
-            case 6:
+            case Page::RANKS:
                 if (this->sprite_buttons["GO_BACK"]->isPressed(this->mousePosWindow)) {
                     this->soundEngine.addSound("button");
-                    this->page = 1;
+                    this->page = Page::MAIN;
                 }
                 break;
         }
@@ -661,16 +674,9 @@ void MainMenuState::update(float dt)
 
     GameInputHandler::updateMouseClick();
 
-    if (!this->quitwindow && this->page > 0) {
-
-        if (GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Key::Escape)) {
-            if (this->page == 1) {
-                this->quitwindow = true;
-            }
-            else {
-                --this->page;
-            }
-        }
+    if (!this->quitwindow && this->page == Page::MAIN &&
+        GameInputHandler::isKeyPressed("Escape", sf::Keyboard::Key::Escape)) {
+        this->quitwindow = true;
     }
 
     if (this->musicEngine.isEmpty()) {
@@ -688,10 +694,10 @@ void MainMenuState::draw(sf::RenderTarget *target)
     }
 
     switch (this->page) {
-        case 0:
+        case Page::LOADING:
             this->sprites["LOGO"]->draw(*target);
             break;
-        case 1:
+        case Page::MAIN:
             target->draw(this->map);
             target->draw(this->dimMap);
 
@@ -715,7 +721,7 @@ void MainMenuState::draw(sf::RenderTarget *target)
                 this->text_buttons["NO"]->draw(*target);
             }
             break;
-        case 2:
+        case Page::CHOOSE_MAP:
             this->sprite_buttons["GO_BACK"]->draw(*target);
 
             this->texts["CHOOSE_MAP"]->draw(*target);
@@ -725,7 +731,7 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->sprites["CHOSEN_MAP"]->draw(*target);
             this->sprite_buttons["CHOSEN_MAP"]->draw(*target);
             break;
-        case 3:
+        case Page::CHOOSE_HERO:
             this->sprite_buttons["GO_BACK"]->draw(*target);
 
             this->texts["CHOOSE_HERO"]->draw(*target);
@@ -765,7 +771,7 @@ void MainMenuState::draw(sf::RenderTarget *target)
                 this->texts["CRITICAL"]->draw(*target);
             }
             break;
-        case 4:
+        case Page::CHOOSE_DIFFICULTY:
             this->sprite_buttons["GO_BACK"]->draw(*target);
 
             this->texts["CHOOSE_DIFFICULTY"]->draw(*target);
@@ -790,7 +796,7 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->texts["EXTREME_DESC_1"]->draw(*target);
             this->texts["EXTREME_DESC_2"]->draw(*target);
             break;
-        case 5:
+        case Page::CREDITS:
             this->sprite_buttons["GO_BACK"]->draw(*target);
             this->texts["CREDITS"]->draw(*target);
             this->texts["MAIN_CREATOR"]->draw(*target);
@@ -803,7 +809,7 @@ void MainMenuState::draw(sf::RenderTarget *target)
             this->text_buttons["SZMIGIELKO"]->draw(*target);
             this->texts["TESTERS_LIST"]->draw(*target);
             break;
-        case 6:
+        case Page::RANKS:
             this->sprite_buttons["GO_BACK"]->draw(*target);
             this->texts["RANKS"]->draw(*target);
             this->sprites["LEFT_ARROW"]->draw(*target);
