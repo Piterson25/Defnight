@@ -91,7 +91,7 @@ void Archer::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
         this->increasedAttack = 5;
         this->increasedAttackSpeed = 2;
         this->increasedSpeed = 2;
-        this->increasedCriticalChance = 20;
+        this->increasedCriticalChance = 30;
         this->abilityComponent->setAbilityStats(20.f, 20.f, 5.f);
     }
     else if (t_name == "SHOOTER") {
