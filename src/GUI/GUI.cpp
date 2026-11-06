@@ -354,7 +354,7 @@ namespace gui {
                 this->sprite.setColor(this->hoverColor);
                 break;
             case ButtonState::BUTTON_PRESSED:
-                this->sprite.setColor(this->hoverColor);
+                this->sprite.setColor(this->idleColor);
                 break;
         }
 
