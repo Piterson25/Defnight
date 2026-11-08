@@ -11,6 +11,7 @@
 #include "ProjectileSystem.hpp"
 
 class Trap;
+enum class TrapType;
 class ProjectileSystem;
 
 class MonsterSystem {
@@ -29,7 +30,7 @@ public:
 
     void monsterIDsClear();
 
-    void placeTrap();
+    void placeTrap(TrapType type);
     void playerAttack();
     void explosionAttack(const std::vector<sf::FloatRect> &particlesBounds);
 
@@ -45,6 +46,7 @@ public:
     void drawShadow(sf::RenderTarget &target);
 
 private:
+    void updateTraps(float dt);
     sf::VideoMode &vm;
     Player &player;
 

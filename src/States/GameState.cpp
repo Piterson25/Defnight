@@ -317,8 +317,14 @@ void GameState::update(float dt)
                         this->projectileSystem->playerAbility(sf::Vector2f(this->window.mapPixelToCoords(
                                                                   sf::Mouse::getPosition(this->window), this->view)),
                                                               *this->player);
-                        if (this->player->getName() == "HUNTER" || this->player->getName() == "RANGER") {
-                            this->monsterSystem->placeTrap();
+                        if (this->player->getName() == "HUNTER") {
+                            this->monsterSystem->placeTrap(TrapType::NORMAL);
+                        }
+                        else if (this->player->getName() == "RANGER") {
+                            this->monsterSystem->placeTrap(TrapType::DAMAGE_DEALING);
+                        }
+                        else if (this->player->getName() == "TRAPPER") {
+                            this->monsterSystem->placeTrap(TrapType::SCENTED);
                         }
                         this->playerGUI->setAbilityIcon();
                     }

@@ -26,6 +26,7 @@ Monster::Monster(const std::string &t_name, sf::VideoMode &t_vm, float t_x, floa
     this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
     this->AI = std::make_unique<AIComponent>(this->vm, obstaclesBounds);
+    this->frozen = false;
 }
 
 Monster::~Monster() = default;
@@ -53,6 +54,11 @@ const bool Monster::hasDeadCountdownExpired() const
 void Monster::setGold(uint32_t gold)
 {
     this->gold = gold;
+}
+
+void Monster::setFrozen(bool t_frozen)
+{
+    this->frozen = t_frozen;
 }
 
 const bool Monster::hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds, Player &player,
@@ -140,7 +146,7 @@ void Monster::calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds, Pla
 {
     this->velocity = sf::Vector2f(0.f, 0.f);
 
-    if (player.isInvisible()) {
+    if (player.isInvisible() || this->frozen) {
         return;
     }
 

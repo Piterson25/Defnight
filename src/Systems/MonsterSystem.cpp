@@ -64,9 +64,10 @@ void MonsterSystem::monsterIDsClear()
     this->monsterIDs.clear();
 }
 
-void MonsterSystem::placeTrap()
+void MonsterSystem::placeTrap(TrapType type)
 {
-    this->traps.emplace_back(std::make_unique<Trap>(vm, player.getPosition(), player.getTrapAttack()));
+    TrapStats stats = {.type = type, .attack = player.getTrapAttack(), .releaseLimit = 25.f, .damageLimit = 5.f};
+    this->traps.emplace_back(std::make_unique<Trap>(vm, player.getPosition(), stats));
 }
 
 void MonsterSystem::playerAttack()
@@ -422,6 +423,29 @@ void MonsterSystem::prepareWave(uint32_t &wave, uint32_t &sumHP)
     }
 }
 
+void MonsterSystem::updateTraps(float dt)
+{
+    for (auto &monster : this->monsters) {
+        const auto boss = dynamic_cast<Boss *>(monster.get());
+        if (!boss) {
+            for (auto trap = this->traps.begin(); trap != this->traps.end();) {
+                (*trap)->checkSteppedOn(&(*monster), soundEngineRef, dt);
+                if ((*trap)->isDamageDealing()) {
+                    (*trap)->dealDamage(playerGUIRef, floatingTextSystemRef, dt);
+                }
+                (*trap)->update(dt);
+
+                if ((*trap)->isBroken()) {
+                    trap = this->traps.erase(trap);
+                }
+                else {
+                    ++trap;
+                }
+            }
+        }
+    }
+}
+
 void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds, bool &paused, bool isExtreme, float dt)
 {
     float slowedDt = dt;
@@ -430,19 +454,7 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds, bo
         slowedDt -= dt * player.getTimeSlowdown();
     }
 
-    for (const auto &monster : this->monsters) {
-        for (auto trap = this->traps.begin(); trap != this->traps.end();) {
-            (*trap)->checkSteppedOn(*monster, playerGUIRef, floatingTextSystemRef, soundEngineRef, dt);
-            (*trap)->update(dt);
-
-            if ((*trap)->getState() == TrapState::CLOSED) {
-                trap = this->traps.erase(trap);
-            }
-            else {
-                ++trap;
-            }
-        }
-    }
+    updateTraps(slowedDt);
 
     for (const auto &monster : this->monsters) {
         if (!monster->hasSpawned()) {

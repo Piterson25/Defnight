@@ -18,6 +18,7 @@ public:
     const bool hasDeadCountdownExpired() const;
 
     void setGold(uint32_t gold);
+    void setFrozen(bool t_frozen);
 
     virtual const bool hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds, Player &player,
                                          SoundEngine &soundEngine, FloatingTextSystem &floatingTextSystem);
@@ -49,6 +50,7 @@ protected:
     float deadCountdown;
 
     bool soundPlayed;
+    bool frozen;
 
     std::unique_ptr<AIComponent> AI;
 };
