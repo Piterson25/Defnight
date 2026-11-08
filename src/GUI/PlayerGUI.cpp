@@ -758,7 +758,7 @@ void PlayerGUI::updateAbilityBuy(const sf::Vector2i &mousePos, SoundEngine &soun
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "TRAP_SCENT_RANGE", &this->floatingTextSystem,
                                                      &soundEngine)) {
-            player.setTrapScentRange(player.getTrapScentRange() + 5.f);
+            player.setTrapScentRange(player.getTrapScentRange() + 2.f);
             this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("TRAP_SCENT_RANGE", this->lang["TRAP_SCENT_RANGE"]);
             this->abilityUpgradeGUI->updateSegments("TRAP_SCENT_RANGE");

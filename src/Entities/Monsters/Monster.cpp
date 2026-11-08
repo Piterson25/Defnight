@@ -27,6 +27,7 @@ Monster::Monster(const std::string &t_name, sf::VideoMode &t_vm, float t_x, floa
 
     this->AI = std::make_unique<AIComponent>(this->vm, obstaclesBounds);
     this->frozen = false;
+    this->target = {{0.f, 0.f}, {0.f, 0.f}, TargetType::PLAYER};
 }
 
 Monster::~Monster() = default;
@@ -141,6 +142,11 @@ void Monster::dyingAnimation(float dt)
     }
 }
 
+void Monster::updateTarget(Target target)
+{
+    this->target = target;
+}
+
 void Monster::calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds, Player &player,
                           const std::vector<sf::Vector2f> &positions, bool isExtreme, float dt)
 {
@@ -153,25 +159,29 @@ void Monster::calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds, Pla
     const float mod = isExtreme ? 1.5f : 1.0f;
     const float vel = ((this->speed * 0.2f + 0.8f) * 2 * this->sprite.getGlobalBounds().size.x) * mod * dt;
 
-    if (!hasLineOfSight(obstaclesBounds, this->getCenter(), player.getCenter())) {
+    if (target.type == TargetType::PLAYER) {
+        target.position = player.getPosition();
+        target.center = player.getCenter();
+    }
 
-        if (player.getCenter().x > this->getCenter().x) {
+    if (!hasLineOfSight(obstaclesBounds, this->getCenter(), target.center)) {
+        if (target.center.x > this->getCenter().x) {
             this->velocity.x += vel;
         }
-        else if (player.getCenter().x < this->getCenter().x) {
+        else if (target.center.x < this->getCenter().x) {
             this->velocity.x += -(vel);
         }
-        if (player.getCenter().y > this->getCenter().y) {
+        if (target.center.y > this->getCenter().y) {
             this->velocity.y += vel;
         }
-        else if (player.getCenter().y < this->getCenter().y) {
+        else if (target.center.y < this->getCenter().y) {
             this->velocity.y += -(vel);
         }
 
         this->AI->disableAI();
     }
     else if (this->name != "MINOTAUR") {
-        this->AI->update(*this, player, positions, vel);
+        this->AI->update(*this, target.position, positions, vel);
     }
 
     if (hasVelocity()) {

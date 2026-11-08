@@ -24,11 +24,10 @@ Trap::Trap(sf::VideoMode &t_vm, const sf::Vector2f &t_position, TrapStats t_stat
     this->shadow_texture = sf::Texture("assets/textures/entity_shadow.png");
     this->shadow = sf::Sprite(this->shadow_texture);
     this->shadow.setTextureRect(sf::IntRect({0, 0}, {8, 4}));
-    this->shadow.setScale({calcScale(2, vm), calcScale(2, vm)});
+    this->shadow.setScale({calcScale(4, vm), calcScale(4, vm)});
     this->shadow.setPosition(
         {this->getDownCenter().x - (this->shadow.getTextureRect().size.x * 0.5f) * this->shadow.getScale().x,
-         this->getDownCenter().y});
-    this->shadow.setColor(sf::Color(255, 255, 255, 0));
+         this->getCenter().y + (this->shadow.getTextureRect().size.y * 0.5f) * this->shadow.getScale().y});
 
     this->state = TrapState::OPENED;
     this->closingCountdown = 0.f;
@@ -63,12 +62,20 @@ const bool Trap::isDamageDealing() const
     return this->type == TrapType::DAMAGE_DEALING;
 }
 
+const bool Trap::isScented() const
+{
+    return this->type == TrapType::SCENTED;
+}
+
 void Trap::detectScent(Monster *monster)
 {
-    if (this->type == TrapType::SCENTED && this->trappedMonster == nullptr) {
-        if (vectorDistance(this->getCenter(), monster->getCenter()) <= calcX(64, this->vm) * scentRange) {
-            // monster->changeTarget(this->getPosition());
-        }
+    if (this->trappedMonster == nullptr &&
+        vectorDistance(this->getCenter(), monster->getCenter()) <= calcX(64, this->vm) * scentRange) {
+        monster->updateTarget({.position = this->getPosition(), .center = this->getCenter(), .type = TargetType::TRAP});
+    }
+    else {
+        monster->updateTarget(
+            {.position = this->getPosition(), .center = this->getCenter(), .type = TargetType::PLAYER});
     }
 }
 
@@ -109,6 +116,9 @@ void Trap::dealDamage(Player &player, PlayerGUI &playerGUI, FloatingTextSystem &
 
 void Trap::update(float dt)
 {
+    if (trappedMonster == nullptr && this->state != TrapState::OPENED) {
+        this->state = TrapState::BROKEN;
+    }
     switch (this->state) {
         case TrapState::CLOSING:
             this->closingCountdown += dt;
@@ -136,10 +146,13 @@ void Trap::update(float dt)
             if (this->releaseCooldown > this->releaseTimeLimit) {
                 this->state = TrapState::BROKEN;
                 if (trappedMonster) {
+                    trappedMonster->updateTarget(
+                        {.position = this->getPosition(), .center = this->getCenter(), .type = TargetType::PLAYER});
                     trappedMonster->setFrozen(false);
                 }
                 trappedMonster = nullptr;
             }
+
             break;
         default:
             break;

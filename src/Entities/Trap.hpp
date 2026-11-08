@@ -22,6 +22,7 @@ public:
     const uint32_t getAttack() const;
     const bool isBroken() const;
     const bool isDamageDealing() const;
+    const bool isScented() const;
     void detectScent(Monster *monster);
     void checkSteppedOn(Monster *monster, SoundEngine &soundEngine, float dt);
     void dealDamage(Player &player, PlayerGUI &playerGUI, FloatingTextSystem &floatingTextSystem, float dt);

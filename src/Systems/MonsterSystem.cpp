@@ -433,7 +433,9 @@ void MonsterSystem::updateTraps(float dt)
         const auto *boss = dynamic_cast<Boss *>(monster.get());
         if (!boss) {
             for (auto trap = this->traps.begin(); trap != this->traps.end();) {
-                (*trap)->detectScent(&(*monster));
+                if ((*trap)->isScented()) {
+                    (*trap)->detectScent(&(*monster));
+                }
                 (*trap)->checkSteppedOn(&(*monster), soundEngineRef, dt);
                 if ((*trap)->isDamageDealing()) {
                     (*trap)->dealDamage(player, playerGUIRef, floatingTextSystemRef, dt);
