@@ -188,6 +188,14 @@ void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name, const std::s
     else if (t_name == "TARGETS") {
         playerStats[t_name]->setText(text + std::to_string(player.getAttackLimit()));
     }
+    else if (t_name == "TRAPPED_TIME") {
+        const float time = player.getTrappedTime();
+
+        text += std::format("{:g}", time);
+
+        text += "s";
+        playerStats[t_name]->setText(text);
+    }
 }
 
 void AbilityUpgradeGUI::draw(sf::RenderTarget &target)

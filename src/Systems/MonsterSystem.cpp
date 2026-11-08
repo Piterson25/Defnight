@@ -66,7 +66,10 @@ void MonsterSystem::monsterIDsClear()
 
 void MonsterSystem::placeTrap(TrapType type)
 {
-    TrapStats stats = {.type = type, .attack = player.getTrapAttack(), .releaseLimit = 25.f, .damageLimit = 5.f};
+    TrapStats stats = {.type = type,
+                       .releaseTimeLimit = player.getTrappedTime(),
+                       .attack = player.getTrapAttack(),
+                       .attackTimeLimit = 5.f};
     this->traps.emplace_back(std::make_unique<Trap>(vm, player.getPosition(), stats));
 }
 

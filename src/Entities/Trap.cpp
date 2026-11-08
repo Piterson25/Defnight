@@ -2,7 +2,7 @@
 
 Trap::Trap(sf::VideoMode &t_vm, const sf::Vector2f &t_position, TrapStats t_stats)
     : Entity("TRAP", t_vm, t_position.x, t_position.y), shadow(shadow_texture), type(t_stats.type),
-      attack(t_stats.attack), releaseLimit(t_stats.releaseLimit), damageLimit(t_stats.damageLimit)
+      releaseTimeLimit(t_stats.releaseTimeLimit), attack(t_stats.attack), attackTimeLimit(t_stats.attackTimeLimit)
 {
     this->texture = sf::Texture("assets/textures/traps.png");
     this->sprite = sf::Sprite(this->texture);
@@ -32,7 +32,7 @@ Trap::Trap(sf::VideoMode &t_vm, const sf::Vector2f &t_position, TrapStats t_stat
     this->state = TrapState::OPENED;
     this->closingCountdown = 0.f;
     this->releaseCooldown = 0.f;
-    this->damageCooldown = 0.f;
+    this->attackCooldown = 0.f;
 
     this->trappedMonster = nullptr;
 }
@@ -40,11 +40,6 @@ Trap::Trap(sf::VideoMode &t_vm, const sf::Vector2f &t_position, TrapStats t_stat
 Trap::~Trap()
 {
     delete this->trappedMonster;
-}
-
-const TrapState Trap::getState() const
-{
-    return this->state;
 }
 
 const TrapType Trap::getType() const
@@ -81,9 +76,9 @@ void Trap::checkSteppedOn(Monster *monster, SoundEngine &soundEngine, float dt)
 
 void Trap::dealDamage(PlayerGUI &playerGUI, FloatingTextSystem &floatingTextSystem, float dt)
 {
-    damageCooldown += dt;
-    if (this->damageCooldown > this->damageLimit) {
-        this->damageCooldown = 0.f;
+    attackCooldown += dt;
+    if (this->attackCooldown > this->attackTimeLimit) {
+        this->attackCooldown = 0.f;
         if (static_cast<int>(trappedMonster->getHP() - attack) < 0) {
             trappedMonster->setHP(0);
             this->state = TrapState::BROKEN;
@@ -124,7 +119,7 @@ void Trap::update(float dt)
             break;
         case TrapState::CLOSED:
             this->releaseCooldown += dt;
-            if (this->releaseCooldown > this->releaseLimit) {
+            if (this->releaseCooldown > this->releaseTimeLimit) {
                 this->state = TrapState::BROKEN;
                 if (trappedMonster) {
                     trappedMonster->setFrozen(false);

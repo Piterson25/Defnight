@@ -300,7 +300,8 @@ void GameState::update(float dt)
             this->player->weaponSound(this->soundEngine);
 
             if (this->mousePosView.y > calcY(128, this->vm)) {
-                if (!this->playerGUI->isShopping() && !this->playerGUI->isBuyingAbility()) {
+                if (!this->playerGUI->isShopping() && !this->playerGUI->isBuyingHero() &&
+                    !this->playerGUI->isBuyingAbility()) {
                     if (GameInputHandler::isMouseClick()) {
                         this->player->doAttack();
                         if (player->getAttackType() == AttackType::RANGED && player->isAttacking() &&
@@ -385,6 +386,21 @@ void GameState::update(float dt)
                 this->gems += 5;
             }
             else {
+
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F3)) {
+                    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::G)) {
+                        player->setGold(player->getGold() + 5);
+                        playerGUI->updateGold();
+                        floatingTextSystem->addFloatingText(gui::GOLD, "+5", calcChar(16, vm), calcX(20, vm),
+                                                            calcX(96, vm), true);
+                        soundEngine.addSound("coin");
+                    }
+                    else if (GameInputHandler::isKeyPressed("X", sf::Keyboard::Key::X) &&
+                             !this->playerGUI->isLeveling() && !this->playerGUI->isUpgrading()) {
+                        player->setPendingXP(player->getMaxXP() - player->getPendingXP());
+                        player->setLeveling(true);
+                    }
+                }
                 if (player->getAttackType() == AttackType::MELEE) {
                     this->monsterSystem->playerAttack();
                 }

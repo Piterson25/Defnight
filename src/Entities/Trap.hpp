@@ -7,9 +7,9 @@ enum class TrapType { NORMAL, DAMAGE_DEALING, SCENTED };
 
 struct TrapStats {
     TrapType type;
+    float releaseTimeLimit;
     uint32_t attack;
-    float releaseLimit;
-    float damageLimit;
+    float attackTimeLimit;
 };
 
 class Trap : public Entity {
@@ -17,7 +17,6 @@ public:
     Trap(sf::VideoMode &t_vm, const sf::Vector2f &t_position, TrapStats t_stats);
     ~Trap();
 
-    const TrapState getState() const;
     const TrapType getType() const;
     const uint32_t getAttack() const;
     const bool isBroken() const;
@@ -34,13 +33,14 @@ protected:
 
     TrapState state;
     TrapType type;
-    int attack;
 
     float closingCountdown;
     float releaseCooldown;
-    float releaseLimit;
-    float damageCooldown;
-    float damageLimit;
+    float releaseTimeLimit;
+
+    int attack;
+    float attackCooldown;
+    float attackTimeLimit;
 
     Monster *trappedMonster;
 };

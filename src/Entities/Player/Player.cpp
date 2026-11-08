@@ -79,6 +79,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
     this->soundPlayed = false;
     this->invisible = false;
     this->trapAttack = 0;
+    this->trappedTime = 20.f;
 
     this->abilityComponent = std::make_unique<AbilityComponent>(this->vm);
 }
@@ -280,10 +281,14 @@ const uint32_t Player::getTrapAttack() const
     return this->trapAttack;
 }
 
+const float Player::getTrappedTime() const
+{
+    return this->trappedTime;
+}
+
 const bool Player::isParticleCooldown(float dt)
 {
     this->particleCooldown += dt;
-
     if (this->particleCooldown > 0.1f) {
         this->particleCooldown = 0.f;
         return true;
@@ -489,6 +494,11 @@ void Player::setInvisible(bool t_invisible)
 void Player::setTrapAttack(uint32_t t_attack)
 {
     this->trapAttack = t_attack;
+}
+
+void Player::setTrappedTime(float t_trappedTime)
+{
+    this->trappedTime = t_trappedTime;
 }
 
 void Player::controls(const std::unordered_map<std::string, int> &keybinds, bool isExtreme, float dt)
