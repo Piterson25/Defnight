@@ -2,7 +2,8 @@
 
 Trap::Trap(sf::VideoMode &t_vm, const sf::Vector2f &t_position, TrapStats t_stats)
     : Entity("TRAP", t_vm, t_position.x, t_position.y), shadow(shadow_texture), type(t_stats.type),
-      releaseTimeLimit(t_stats.releaseTimeLimit), attack(t_stats.attack), attackTimeLimit(t_stats.attackTimeLimit)
+      releaseTimeLimit(t_stats.releaseTimeLimit), attack(t_stats.attack), attackTimeLimit(t_stats.attackTimeLimit),
+      scentRange(t_stats.scentRange)
 {
     this->texture = sf::Texture("assets/textures/traps.png");
     this->sprite = sf::Sprite(this->texture);
@@ -60,6 +61,15 @@ const bool Trap::isBroken() const
 const bool Trap::isDamageDealing() const
 {
     return this->type == TrapType::DAMAGE_DEALING;
+}
+
+void Trap::detectScent(Monster *monster)
+{
+    if (this->type == TrapType::SCENTED && this->trappedMonster == nullptr) {
+        if (vectorDistance(this->getCenter(), monster->getCenter()) <= calcX(64, this->vm) * scentRange) {
+            // monster->changeTarget(this->getPosition());
+        }
+    }
 }
 
 void Trap::checkSteppedOn(Monster *monster, SoundEngine &soundEngine, float dt)

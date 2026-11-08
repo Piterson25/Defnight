@@ -80,6 +80,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
     this->invisible = false;
     this->trapAttack = 0;
     this->trappedTime = 20.f;
+    this->trapScentRange = 5.f;
 
     this->abilityComponent = std::make_unique<AbilityComponent>(this->vm);
 }
@@ -284,6 +285,11 @@ const uint32_t Player::getTrapAttack() const
 const float Player::getTrappedTime() const
 {
     return this->trappedTime;
+}
+
+const uint32_t Player::getTrapScentRange() const
+{
+    return this->trapScentRange;
 }
 
 const bool Player::isParticleCooldown(float dt)
@@ -499,6 +505,11 @@ void Player::setTrapAttack(uint32_t t_attack)
 void Player::setTrappedTime(float t_trappedTime)
 {
     this->trappedTime = t_trappedTime;
+}
+
+void Player::setTrapScentRange(float t_trapScentRange)
+{
+    this->trapScentRange = t_trapScentRange;
 }
 
 void Player::controls(const std::unordered_map<std::string, int> &keybinds, bool isExtreme, float dt)

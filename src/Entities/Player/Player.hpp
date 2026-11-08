@@ -59,6 +59,7 @@ public:
     const bool isInvisible() const;
     const uint32_t getTrapAttack() const;
     const float getTrappedTime() const;
+    const uint32_t getTrapScentRange() const;
 
     void setDamageDealt(uint32_t t_damageDealt);
     void setDamageTaken(uint32_t t_damageTaken);
@@ -94,6 +95,7 @@ public:
     void setInvisible(bool t_invisible);
     void setTrapAttack(uint32_t t_attack);
     void setTrappedTime(float t_trappedTime);
+    void setTrapScentRange(float t_trapScentRange);
 
     void controls(const std::unordered_map<std::string, int> &keybinds, bool isExtreme, float dt);
     void weaponSound(SoundEngine &soundEngine);
@@ -160,6 +162,7 @@ protected:
     bool invisible;
     uint32_t trapAttack;
     float trappedTime;
+    uint32_t trapScentRange;
 
     std::unique_ptr<AbilityComponent> abilityComponent;
 

@@ -260,6 +260,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     this->abilityUpgradeGUI->updatePlayerInfo("GOLD", this->lang["GOLD"]);
     this->abilityUpgradeGUI->updatePlayerInfo("TARGETS", this->lang["TARGETS"]);
     this->abilityUpgradeGUI->updatePlayerInfo("TRAPPED_TIME", this->lang["TRAPPED_TIME"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("TRAP_SCENT_RANGE", this->lang["TRAP_SCENT_RANGE"]);
     player.setHP(player.getMaxHP());
     player.setRegenerating(true);
     updatePlayerAttributes();
@@ -317,6 +318,8 @@ void PlayerGUI::updateLevel(SoundEngine &soundEngine)
         }
         else if (player.getName() == "HUNTER") {
             this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["RANGER"], 4, 7, 1,
+                                            "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["TRAPPER"], 5, 7, 2,
                                             "1");
         }
         else if (player.getName() == "DARK") {
@@ -753,6 +756,13 @@ void PlayerGUI::updateAbilityBuy(const sf::Vector2i &mousePos, SoundEngine &soun
             this->abilityUpgradeGUI->updatePlayerInfo("TRAPPED_TIME", this->lang["TRAPPED_TIME"]);
             this->abilityUpgradeGUI->updateSegments("TRAPPED_TIME");
         }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "TRAP_SCENT_RANGE", &this->floatingTextSystem,
+                                                     &soundEngine)) {
+            player.setTrapScentRange(player.getTrapScentRange() + 5.f);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("TRAP_SCENT_RANGE", this->lang["TRAP_SCENT_RANGE"]);
+            this->abilityUpgradeGUI->updateSegments("TRAP_SCENT_RANGE");
+        }
     }
 }
 
@@ -937,6 +947,14 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
                 this->abilityUpgradeGUI->addAbilityUpgrade("REG", calcX(44, vm), calcY(596, vm), 5, this->lang["REG"],
                                                            "+1", 100 * priceModifier, 5);
                 this->upgradePlayer("PREDATOR");
+            }
+            else if (player.getName() == "HUNTER") {
+                this->abilityUpgradeGUI->addPlayerStat("TRAP_SCENT_RANGE", calcX(32, vm), calcY(244, vm),
+                                                       this->lang["TRAP_SCENT_RANGE"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("TRAP_SCENT_RANGE", calcX(44, vm), calcY(596, vm), 11,
+                                                           this->lang["TRAP_SCENT_RANGE"], "+2", 100 * priceModifier,
+                                                           1);
+                this->upgradePlayer("TRAPPER");
             }
         }
 

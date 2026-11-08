@@ -196,6 +196,9 @@ void AbilityUpgradeGUI::updatePlayerInfo(const std::string &t_name, const std::s
         text += "s";
         playerStats[t_name]->setText(text);
     }
+    else if (t_name == "TRAP_SCENT_RANGE") {
+        playerStats[t_name]->setText(text + std::to_string(player.getTrapScentRange()));
+    }
 }
 
 void AbilityUpgradeGUI::draw(sf::RenderTarget &target)

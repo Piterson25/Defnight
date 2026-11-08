@@ -10,6 +10,7 @@ struct TrapStats {
     float releaseTimeLimit;
     uint32_t attack;
     float attackTimeLimit;
+    uint32_t scentRange;
 };
 
 class Trap : public Entity {
@@ -21,6 +22,7 @@ public:
     const uint32_t getAttack() const;
     const bool isBroken() const;
     const bool isDamageDealing() const;
+    void detectScent(Monster *monster);
     void checkSteppedOn(Monster *monster, SoundEngine &soundEngine, float dt);
     void dealDamage(Player &player, PlayerGUI &playerGUI, FloatingTextSystem &floatingTextSystem, float dt);
 
@@ -41,6 +43,8 @@ private:
     int attack;
     float attackCooldown;
     float attackTimeLimit;
+
+    uint32_t scentRange;
 
     Monster *trappedMonster;
 };
