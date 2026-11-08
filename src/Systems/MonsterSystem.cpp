@@ -428,8 +428,8 @@ void MonsterSystem::prepareWave(uint32_t &wave, uint32_t &sumHP)
 
 void MonsterSystem::updateTraps(float dt)
 {
-    for (auto &monster : this->monsters) {
-        const auto boss = dynamic_cast<Boss *>(monster.get());
+    for (const auto &monster : this->monsters) {
+        const auto *boss = dynamic_cast<Boss *>(monster.get());
         if (!boss) {
             for (auto trap = this->traps.begin(); trap != this->traps.end();) {
                 (*trap)->checkSteppedOn(&(*monster), soundEngineRef, dt);
@@ -471,7 +471,6 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds, bo
             monster->smashed(dt);
         }
         else {
-
             auto boss = dynamic_cast<Boss *>(monster.get());
             if (boss && boss->isSpecialAttackReady()) {
                 boss->specialAttackAnimation(slowedDt);

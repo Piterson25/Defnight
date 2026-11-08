@@ -76,20 +76,23 @@ void Trap::checkSteppedOn(Monster *monster, SoundEngine &soundEngine, float dt)
 
 void Trap::dealDamage(PlayerGUI &playerGUI, FloatingTextSystem &floatingTextSystem, float dt)
 {
-    attackCooldown += dt;
-    if (this->attackCooldown > this->attackTimeLimit) {
-        this->attackCooldown = 0.f;
-        if (static_cast<int>(trappedMonster->getHP() - attack) < 0) {
-            trappedMonster->setHP(0);
-            this->state = TrapState::BROKEN;
+    if (this->trappedMonster != nullptr) {
+        attackCooldown += dt;
+        if (this->attackCooldown > this->attackTimeLimit) {
+            this->attackCooldown = 0.f;
+            this->trappedMonster->punch();
+            floatingTextSystem.addFloatingText(gui::RED, std::to_string(-attack), calcChar(16, vm),
+                                               this->trappedMonster->getPosition().x + calcX(32, vm),
+                                               this->trappedMonster->getPosition().y + calcY(32, vm), false);
+            if (static_cast<int>(this->trappedMonster->getHP() - attack) < 0) {
+                this->trappedMonster->setHP(0);
+                this->state = TrapState::BROKEN;
+                this->trappedMonster = nullptr;
+            }
+            else {
+                this->trappedMonster->setHP(this->trappedMonster->getHP() - attack);
+            }
         }
-        else {
-            trappedMonster->setHP(trappedMonster->getHP() - attack);
-        }
-        trappedMonster->punch();
-        floatingTextSystem.addFloatingText(gui::RED, std::to_string(-attack), calcChar(16, vm),
-                                           trappedMonster->getPosition().x + calcX(32, vm),
-                                           trappedMonster->getPosition().y + calcY(32, vm), false);
     }
 }
 
@@ -123,8 +126,8 @@ void Trap::update(float dt)
                 this->state = TrapState::BROKEN;
                 if (trappedMonster) {
                     trappedMonster->setFrozen(false);
-                    trappedMonster = nullptr;
                 }
+                trappedMonster = nullptr;
             }
             break;
         default:

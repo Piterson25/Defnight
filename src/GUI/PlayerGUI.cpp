@@ -315,10 +315,14 @@ void PlayerGUI::updateLevel(SoundEngine &soundEngine)
             this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["KILLER"], 14, 8, 1,
                                             "10%");
         }
-        else if (player.getName() == "DARK") {
-            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["PHANTOM"], 4, 5, 1,
+        else if (player.getName() == "HUNTER") {
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["RANGER"], 4, 7, 1,
                                             "1");
-            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["PREDATOR"], 5, 8,
+        }
+        else if (player.getName() == "DARK") {
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["PHANTOM"], 16, 5,
+                                            1, "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["PREDATOR"], 17, 8,
                                             1, "10%");
         }
     }
@@ -744,7 +748,7 @@ void PlayerGUI::updateAbilityBuy(const sf::Vector2i &mousePos, SoundEngine &soun
         }
         else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "TRAPPED_TIME", &this->floatingTextSystem,
                                                      &soundEngine)) {
-            player.setTrappedTime(player.getTrappedTime() + 2.5f);
+            player.setTrappedTime(player.getTrappedTime() + 2.f);
             this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("TRAPPED_TIME", this->lang["TRAPPED_TIME"]);
             this->abilityUpgradeGUI->updateSegments("TRAPPED_TIME");
@@ -851,7 +855,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
                 this->abilityUpgradeGUI->addPlayerStat("TRAPPED_TIME", calcX(32, vm), calcY(212, vm),
                                                        this->lang["TRAPPED_TIME"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade("TRAPPED_TIME", calcX(44, vm), calcY(460, vm), 10,
-                                                           this->lang["TRAPPED_TIME"], "+2.5s", 50 * priceModifier, 0);
+                                                           this->lang["TRAPPED_TIME"], "+2s", 50 * priceModifier, 0);
                 this->upgradePlayer("HUNTER");
             }
         }
@@ -882,9 +886,10 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
                 this->upgradePlayer("PHANTOM");
             }
             else if (player.getName() == "HUNTER") {
-                this->abilityUpgradeGUI->addPlayerStat("GOLD", calcX(32, vm), calcY(244, vm), this->lang["GOLD"]);
-                this->abilityUpgradeGUI->addAbilityUpgrade("GOLD", calcX(44, vm), calcY(596, vm), 7, this->lang["GOLD"],
-                                                           "+1", 100 * priceModifier, 1);
+                this->abilityUpgradeGUI->addPlayerStat("TRAP_ATTACK", calcX(32, vm), calcY(244, vm),
+                                                       this->lang["ATTACK"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("TRAP_ATTACK", calcX(44, vm), calcY(596, vm), 1,
+                                                           this->lang["ATTACK"], "+1", 100 * priceModifier, 5);
                 this->upgradePlayer("RANGER");
             }
         }

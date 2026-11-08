@@ -27,7 +27,7 @@ public:
     void update(float dt);
     void drawShadow(sf::RenderTarget &target);
 
-protected:
+private:
     sf::Sprite shadow;
     sf::Texture shadow_texture;
 
