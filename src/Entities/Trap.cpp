@@ -74,13 +74,14 @@ void Trap::checkSteppedOn(Monster *monster, SoundEngine &soundEngine, float dt)
     }
 }
 
-void Trap::dealDamage(PlayerGUI &playerGUI, FloatingTextSystem &floatingTextSystem, float dt)
+void Trap::dealDamage(Player &player, PlayerGUI &playerGUI, FloatingTextSystem &floatingTextSystem, float dt)
 {
     if (this->trappedMonster != nullptr) {
         attackCooldown += dt;
         if (this->attackCooldown > this->attackTimeLimit) {
             this->attackCooldown = 0.f;
             this->trappedMonster->punch();
+            player.setDamageDealt(player.getDamageDealt() + attack);
             floatingTextSystem.addFloatingText(gui::RED, std::to_string(-attack), calcChar(16, vm),
                                                this->trappedMonster->getPosition().x + calcX(32, vm),
                                                this->trappedMonster->getPosition().y + calcY(32, vm), false);

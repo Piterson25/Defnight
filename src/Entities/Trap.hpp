@@ -22,7 +22,7 @@ public:
     const bool isBroken() const;
     const bool isDamageDealing() const;
     void checkSteppedOn(Monster *monster, SoundEngine &soundEngine, float dt);
-    void dealDamage(PlayerGUI &playerGUI, FloatingTextSystem &floatingTextSystem, float dt);
+    void dealDamage(Player &player, PlayerGUI &playerGUI, FloatingTextSystem &floatingTextSystem, float dt);
 
     void update(float dt);
     void drawShadow(sf::RenderTarget &target);

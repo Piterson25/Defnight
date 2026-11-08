@@ -434,7 +434,7 @@ void MonsterSystem::updateTraps(float dt)
             for (auto trap = this->traps.begin(); trap != this->traps.end();) {
                 (*trap)->checkSteppedOn(&(*monster), soundEngineRef, dt);
                 if ((*trap)->isDamageDealing()) {
-                    (*trap)->dealDamage(playerGUIRef, floatingTextSystemRef, dt);
+                    (*trap)->dealDamage(player, playerGUIRef, floatingTextSystemRef, dt);
                 }
                 (*trap)->update(dt);
 
