@@ -1,23 +1,33 @@
 #include "Arrow.hpp"
 
 Arrow::Arrow(const std::string &t_name, sf::VideoMode &t_vm, const sf::Vector2f &t_position, float difficulty_mod,
-             const sf::Vector2f &coords, float coordsOffset, Player &player, bool upgraded)
+             const sf::Vector2f &coords, float coordsOffset, Player &player, ArrowType arrowType)
     : Projectile(t_name, t_vm, t_position.x, t_position.y, difficulty_mod, coords, coordsOffset)
 {
-    if (upgraded) {
-        this->sprite.setTextureRect(sf::IntRect({12, 4}, {6, 3}));
-        this->piercing = player.getProjectilePiercing();
-        this->HP = player.getProjectilePiercing();
-        this->speed = 9;
-    }
-    else {
-        this->sprite.setTextureRect(sf::IntRect({12, 0}, {6, 3}));
-        this->piercing = 1;
-        this->HP = 1;
-        this->speed = 6;
+    switch (arrowType) {
+        case ArrowType::NORMAL:
+            this->sprite.setTextureRect(sf::IntRect({12, 0}, {6, 3}));
+            this->piercing = 1;
+            this->HP = 1;
+            this->speed = 6;
+            this->attack = player.getAttack();
+            break;
+        case ArrowType::UPGRADED:
+            this->sprite.setTextureRect(sf::IntRect({12, 3}, {6, 3}));
+            this->piercing = player.getProjectilePiercing();
+            this->HP = player.getProjectilePiercing();
+            this->attack = player.getAttack();
+            this->speed = 9;
+            break;
+        case ArrowType::CROSSBOW:
+            this->sprite.setTextureRect(sf::IntRect({12, 6}, {8, 3}));
+            this->piercing = player.getProjectilePiercing();
+            this->HP = player.getProjectilePiercing();
+            this->attack = player.getAttack() + player.getProjectileAttack() * 2;
+            this->speed = 12;
+            break;
     }
 
-    this->attack = player.getAttack();
     this->sprite.rotate(sf::degrees(180.f));
 }
 

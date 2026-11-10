@@ -326,6 +326,8 @@ void PlayerGUI::updateLevel(SoundEngine &soundEngine)
         else if (player.getName() == "SHOOTER") {
             this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["ARROWSTORM"], 10,
                                             5, 1, "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["CROSSBOWMAN"], 11,
+                                            8, 1, "10%");
         }
         else if (player.getName() == "DARK") {
             this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["PHANTOM"], 16, 5,
@@ -918,7 +920,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
                 this->abilityUpgradeGUI->addPlayerStat("PROJECTILES_NUMBER", calcX(32, vm), calcY(244, vm),
                                                        this->lang["PROJECTILES_NUMBER"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade("PROJECTILES_NUMBER", calcX(44, vm), calcY(596, vm), 12,
-                                                           this->lang["PROJECTILES_NUMBER"], "+1", 100 * priceModifier,
+                                                           this->lang["PROJECTILES_NUMBER"], "+1", 200 * priceModifier,
                                                            1);
                 this->upgradePlayer("ARROWSTORM");
             }
@@ -975,6 +977,13 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
                                                            this->lang["TRAP_SCENT_RANGE"], "+2", 100 * priceModifier,
                                                            1);
                 this->upgradePlayer("TRAPPER");
+            }
+            else if (player.getName() == "SHOOTER") {
+                this->abilityUpgradeGUI->addPlayerStat("PROJ_ATTACK", calcX(32, vm), calcY(244, vm),
+                                                       this->lang["ATTACK"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("PROJ_ATTACK", calcX(44, vm), calcY(596, vm), 1,
+                                                           this->lang["ATTACK"], "+1", 50 * priceModifier, 0);
+                this->upgradePlayer("CROSSBOWMAN");
             }
         }
 

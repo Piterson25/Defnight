@@ -20,7 +20,7 @@ public:
     ~ProjectileSystem();
 
     void addArrow(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords, float coordsOffset,
-                  Player &player, bool upgraded);
+                  Player &player, ArrowType arrowType);
     void addBomb(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords, float coordsOffset,
                  Player &player);
     void addGroundWave(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,

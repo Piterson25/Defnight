@@ -11,10 +11,10 @@ ProjectileSystem::~ProjectileSystem()
 }
 
 void ProjectileSystem::addArrow(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
-                                float coordsOffset, Player &player, bool upgraded)
+                                float coordsOffset, Player &player, ArrowType arrowType)
 {
-    this->projectiles.emplace_back(
-        std::make_unique<Arrow>("ARROW", this->vm, t_position, difficulty_mod, coords, coordsOffset, player, upgraded));
+    this->projectiles.emplace_back(std::make_unique<Arrow>("ARROW", this->vm, t_position, difficulty_mod, coords,
+                                                           coordsOffset, player, arrowType));
 }
 
 void ProjectileSystem::addBomb(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
@@ -72,7 +72,7 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
         addBomb(player.getCenter(), 0, coords, 0, player);
     }
     else if (player.getName() == "SHOOTER") {
-        addArrow(player.getCenter(), 0, coords, 0, player, true);
+        addArrow(player.getCenter(), 0, coords, 0, player, ArrowType::NORMAL);
     }
     else if (player.getName() == "ARROWSTORM") {
         const float DEG_DIFF = static_cast<float>(180.f / (player.getProjectilesNumber() + 1));
@@ -80,8 +80,11 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
             if (deg == -90.f) {
                 continue;
             }
-            addArrow(player.getCenter(), 0, coords, deg, player, true);
+            addArrow(player.getCenter(), 0, coords, deg, player, ArrowType::UPGRADED);
         }
+    }
+    else if (player.getName() == "CROSSBOWMAN") {
+        addArrow(player.getCenter(), 0, coords, 0, player, ArrowType::CROSSBOW);
     }
 }
 
