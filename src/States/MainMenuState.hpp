@@ -11,7 +11,7 @@ class MainMenuState : public State {
 public:
     MainMenuState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings, SoundEngine &soundEngine,
                   MusicEngine &musicEngine, std::stack<State *> &states);
-    ~MainMenuState();
+    ~MainMenuState() override;
 
     void initGUI() override;
     void resetGUI() override;

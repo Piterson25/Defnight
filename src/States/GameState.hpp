@@ -17,7 +17,7 @@ class GameState : public State {
 public:
     GameState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings, SoundEngine &soundEngine,
               MusicEngine &musicEngine, std::stack<State *> &states, CurrentGame &t_currentGame);
-    ~GameState();
+    ~GameState() override;
 
     void initGUI() override;
     void resetGUI() override;

@@ -56,6 +56,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
     this->projectileAttack = 0;
     this->projectilePiercing = 1;
     this->projectileArea = 1;
+    this->projectilesNumber = 1;
     this->kills = 0;
     this->reach = 1;
     this->upgraded = false;
@@ -170,6 +171,11 @@ const uint32_t Player::getProjectilePiercing() const
 const uint32_t Player::getProjectileArea() const
 {
     return this->projectileArea;
+}
+
+const uint32_t Player::getProjectilesNumber() const
+{
+    return this->projectilesNumber;
 }
 
 const uint32_t Player::getKills() const
@@ -395,6 +401,11 @@ void Player::setProjectilePiercing(uint32_t t_projectilePiercing)
 void Player::setProjectileArea(uint32_t t_projectileArea)
 {
     this->projectileArea = t_projectileArea;
+}
+
+void Player::setProjectilesNumber(uint32_t t_projectilesNumber)
+{
+    this->projectilesNumber = t_projectilesNumber;
 }
 
 void Player::setIncreasedArmor(uint32_t t_increasedArmor)

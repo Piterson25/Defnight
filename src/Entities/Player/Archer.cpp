@@ -54,7 +54,7 @@ void Archer::doAbility(SoundEngine &soundEngine)
     if (this->name == "HUNTER" || this->name == "RANGER" || this->name == "TRAPPER") {
         soundEngine.addSound("trap_place");
     }
-    else if (this->name == "SHOOTER") {
+    else if (this->name == "SHOOTER" || this->name == "ARROWSTORM") {
         soundEngine.addSound("shuriken");
     }
     else if (this->name == "DARK" || this->name == "PHANTOM") {
@@ -93,6 +93,11 @@ void Archer::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
     else if (this->name == "SHOOTER") {
         intRect = sf::IntRect({48, 32}, {16, 16});
         this->setArmor(this->getArmor() + 1);
+        this->abilityComponent->setAbilityStats(2.f, 2.f, 2.f);
+    }
+    else if (this->name == "ARROWSTORM") {
+        intRect = sf::IntRect({64, 32}, {16, 16});
+        this->setAttack(this->getAttack() + 1);
         this->abilityComponent->setAbilityStats(2.f, 2.f, 2.f);
     }
     else if (this->name == "DARK") {

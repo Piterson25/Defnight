@@ -2,9 +2,9 @@
 
 StatsState::StatsState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings, SoundEngine &soundEngine,
                        MusicEngine &musicEngine, std::stack<State *> &states)
-    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states)
+    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states),
+      playerData({0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
 {
-    playerData = PlayerStats::PlayerData{0, 0, 1, 0, 0, 0, 0, 0, 0, 0};
     PlayerStats::loadStats(playerData);
     initGUI();
 }

@@ -7,7 +7,7 @@ class SettingsState : public State {
 public:
     SettingsState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings, SoundEngine &soundEngine,
                   MusicEngine &musicEngine, std::stack<State *> &states);
-    ~SettingsState();
+    ~SettingsState() override;
 
     struct Setting {
         std::unique_ptr<gui::ButtonSprite> leftArrow;
@@ -40,8 +40,8 @@ public:
 
     void addKeybind(const std::string &t_name, float t_x, float t_y, const std::string &desc, const std::string &key);
 
-    void initGUI();
-    void resetGUI();
+    void initGUI() override;
+    void resetGUI() override;
 
     void update(float dt) override;
     void draw(sf::RenderTarget *target = NULL) override;

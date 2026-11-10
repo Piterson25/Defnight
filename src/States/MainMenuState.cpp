@@ -2,7 +2,8 @@
 
 MainMenuState::MainMenuState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings,
                              SoundEngine &soundEngine, MusicEngine &musicEngine, std::stack<State *> &states)
-    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states), map(map_texture)
+    : State(gridSize, window, gameSettings, soundEngine, musicEngine, states), map(map_texture),
+      playerData({0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
 {
     this->vm = this->gameSettings.resolution;
     this->page = Page::LOADING;
@@ -11,7 +12,6 @@ MainMenuState::MainMenuState(float gridSize, sf::RenderWindow &window, GameSetti
     this->musicEngine.addMusic("main_menu.ogg");
     this->musicEngine.addMusic("main_menu2.ogg");
     this->loadedPlayerData = false;
-    playerData = PlayerStats::PlayerData{0, 0, 1, 0, 0, 0, 0, 0, 0, 0};
 }
 
 MainMenuState::~MainMenuState()

@@ -74,6 +74,15 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
     else if (player.getName() == "SHOOTER") {
         addArrow(player.getCenter(), 0, coords, 0, player, true);
     }
+    else if (player.getName() == "ARROWSTORM") {
+        const float DEG_DIFF = static_cast<float>(180.f / (player.getProjectilesNumber() + 1));
+        for (float deg = -90.f; deg < 90.f; deg += DEG_DIFF) {
+            if (deg == -90.f) {
+                continue;
+            }
+            addArrow(player.getCenter(), 0, coords, deg, player, true);
+        }
+    }
 }
 
 void ProjectileSystem::bossSpecialAttack(Boss &boss)
@@ -98,7 +107,6 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui, ParticleSyst
     }
 
     for (auto proj = this->projectiles.begin(); proj != this->projectiles.end();) {
-        const auto *const stone = dynamic_cast<const Stone *>((*proj).get());
         const auto *const groundWave = dynamic_cast<const GroundWave *>((*proj).get());
         if ((*proj)->isParticleCooldown(slowedDt)) {
             if (groundWave) {

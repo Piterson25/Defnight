@@ -261,6 +261,7 @@ void PlayerGUI::upgradePlayer(const std::string &name)
     this->abilityUpgradeGUI->updatePlayerInfo("TARGETS", this->lang["TARGETS"]);
     this->abilityUpgradeGUI->updatePlayerInfo("TRAPPED_TIME", this->lang["TRAPPED_TIME"]);
     this->abilityUpgradeGUI->updatePlayerInfo("TRAP_SCENT_RANGE", this->lang["TRAP_SCENT_RANGE"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("PROJECTILES_NUMBER", this->lang["PROJECTILES_NUMBER"]);
     player.setHP(player.getMaxHP());
     player.setRegenerating(true);
     updatePlayerAttributes();
@@ -321,6 +322,10 @@ void PlayerGUI::updateLevel(SoundEngine &soundEngine)
                                             "1");
             this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["TRAPPER"], 5, 7, 2,
                                             "1");
+        }
+        else if (player.getName() == "SHOOTER") {
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["ARROWSTORM"], 10,
+                                            5, 1, "1");
         }
         else if (player.getName() == "DARK") {
             this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["PHANTOM"], 16, 5,
@@ -763,6 +768,13 @@ void PlayerGUI::updateAbilityBuy(const sf::Vector2i &mousePos, SoundEngine &soun
             this->abilityUpgradeGUI->updatePlayerInfo("TRAP_SCENT_RANGE", this->lang["TRAP_SCENT_RANGE"]);
             this->abilityUpgradeGUI->updateSegments("TRAP_SCENT_RANGE");
         }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "PROJECTILES_NUMBER", &this->floatingTextSystem,
+                                                     &soundEngine)) {
+            player.setProjectilesNumber(player.getProjectilesNumber() + 1);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("PROJECTILES_NUMBER", this->lang["PROJECTILES_NUMBER"]);
+            this->abilityUpgradeGUI->updateSegments("PROJECTILES_NUMBER");
+        }
     }
 }
 
@@ -901,6 +913,14 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
                 this->abilityUpgradeGUI->addAbilityUpgrade("TRAP_ATTACK", calcX(44, vm), calcY(596, vm), 1,
                                                            this->lang["ATTACK"], "+1", 100 * priceModifier, 5);
                 this->upgradePlayer("RANGER");
+            }
+            else if (player.getName() == "SHOOTER") {
+                this->abilityUpgradeGUI->addPlayerStat("PROJECTILES_NUMBER", calcX(32, vm), calcY(244, vm),
+                                                       this->lang["PROJECTILES_NUMBER"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("PROJECTILES_NUMBER", calcX(44, vm), calcY(596, vm), 12,
+                                                           this->lang["PROJECTILES_NUMBER"], "+1", 100 * priceModifier,
+                                                           1);
+                this->upgradePlayer("ARROWSTORM");
             }
         }
 
