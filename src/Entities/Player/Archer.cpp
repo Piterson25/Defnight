@@ -93,17 +93,17 @@ void Archer::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
     else if (this->name == "SHOOTER") {
         intRect = sf::IntRect({48, 32}, {16, 16});
         this->setArmor(this->getArmor() + 1);
-        this->abilityComponent->setAbilityStats(3.f, 3.f, 3.f);
+        this->abilityComponent->setAbilityStats(5.f, 5.f, 5.f);
     }
     else if (this->name == "ARROWSTORM") {
         intRect = sf::IntRect({64, 32}, {16, 16});
         this->setAttack(this->getAttack() + 1);
-        this->abilityComponent->setAbilityStats(3.f, 3.f, 3.f);
+        this->abilityComponent->setAbilityStats(5.f, 5.f, 5.f);
     }
     else if (this->name == "CROSSBOWMAN") {
         intRect = sf::IntRect({80, 32}, {16, 16});
         this->setCriticalChance(this->getCriticalChance() + 10);
-        this->abilityComponent->setAbilityStats(3.f, 3.f, 3.f);
+        this->abilityComponent->setAbilityStats(5.f, 5.f, 5.f);
     }
     else if (this->name == "DARK") {
         intRect = sf::IntRect({48, 48}, {16, 16});
