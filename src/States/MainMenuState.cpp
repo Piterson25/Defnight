@@ -132,18 +132,18 @@ void MainMenuState::initCreditsPage()
     this->texts["CREDITS"] = std::make_unique<gui::Text>(this->lang["CREDITS"], calcChar(32, vm), calcX(640, vm),
                                                          calcY(96, vm), gui::WHITE, true);
     this->texts["MAIN_CREATOR"] = std::make_unique<gui::Text>(this->lang["MAIN_CREATOR"], calcChar(24, vm),
-                                                              calcX(400, vm), calcY(192, vm), gui::WHITE, false);
+                                                              calcX(320, vm), calcY(192, vm), gui::WHITE, false);
     this->texts["CREATOR_LIST"] =
         std::make_unique<gui::Text>("Piterson25", calcChar(24, vm), calcX(722, vm), calcY(192, vm), gui::LIME, false);
-    this->texts["ARTIST"] = std::make_unique<gui::Text>(this->lang["ARTIST"], calcChar(24, vm), calcX(400, vm),
+    this->texts["ARTIST"] = std::make_unique<gui::Text>(this->lang["ARTIST"], calcChar(24, vm), calcX(320, vm),
                                                         calcY(292, vm), gui::WHITE, false);
     this->texts["ARTIST_LIST"] =
         std::make_unique<gui::Text>("Nithorax", calcChar(24, vm), calcX(722, vm), calcY(292, vm), gui::RED, false);
-    this->texts["SOUNDS"] = std::make_unique<gui::Text>(this->lang["SOUNDS"], calcChar(24, vm), calcX(400, vm),
+    this->texts["SOUNDS"] = std::make_unique<gui::Text>(this->lang["SOUNDS"], calcChar(24, vm), calcX(320, vm),
                                                         calcY(392, vm), gui::WHITE, false);
     this->text_buttons["RASPAR"] = std::make_unique<gui::ButtonText>(
         "Raspar", calcChar(24, vm), calcX(722, vm), calcY(392, vm), gui::LIGHT_BLUE, gui::WHITE, false);
-    this->texts["TESTERS"] = std::make_unique<gui::Text>(this->lang["TESTERS"], calcChar(24, vm), calcX(400, vm),
+    this->texts["TESTERS"] = std::make_unique<gui::Text>(this->lang["TESTERS"], calcChar(24, vm), calcX(320, vm),
                                                          calcY(492, vm), gui::WHITE, false);
     this->text_buttons["SZMIGIELKO"] = std::make_unique<gui::ButtonText>("Szmigielko", calcChar(24, vm), calcX(722, vm),
                                                                          calcY(492, vm), gui::GREEN, gui::WHITE, false);
