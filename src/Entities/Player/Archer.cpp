@@ -47,6 +47,9 @@ void Archer::endAbility()
         this->speed -= increasedSpeed;
         this->criticalChance -= increasedCriticalChance;
     }
+    else if (this->name == "PHANTOM") {
+        this->goldReward -= increasedGold;
+    }
 }
 
 void Archer::doAbility(SoundEngine &soundEngine)
@@ -60,6 +63,9 @@ void Archer::doAbility(SoundEngine &soundEngine)
     else if (this->name == "DARK" || this->name == "PHANTOM") {
         soundEngine.addSound("slowtime");
         this->invisible = true;
+    }
+    if (this->name == "PHANTOM") {
+        this->goldReward += increasedGold;
     }
     if (this->name == "PREDATOR") {
         soundEngine.addSound("predator");
@@ -114,6 +120,7 @@ void Archer::upgradeAttributes(const std::string &t_name, sf::IntRect &intRect)
         intRect = sf::IntRect({64, 48}, {16, 16});
         this->setAttack(this->getAttack() + 1);
         this->abilityComponent->setAbilityStats(20.f, 20.f, 5.f);
+        this->increasedGold = 1;
     }
     else if (this->name == "PREDATOR") {
         intRect = sf::IntRect({80, 48}, {16, 16});

@@ -913,7 +913,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
                 this->abilityUpgradeGUI->addPlayerStat("TRAP_ATTACK", calcX(32, vm), calcY(244, vm),
                                                        this->lang["ATTACK"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade("TRAP_ATTACK", calcX(44, vm), calcY(596, vm), 1,
-                                                           this->lang["ATTACK"], "+1", 100 * priceModifier, 5);
+                                                           this->lang["ATTACK"], "+1", 75 * priceModifier, 5);
                 this->upgradePlayer("RANGER");
             }
             else if (player.getName() == "SHOOTER") {
@@ -949,7 +949,7 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
             if (player.getName() == "NINJA") {
                 this->abilityUpgradeGUI->addPlayerStat("AREA", calcX(32, vm), calcY(244, vm), this->lang["AREA"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade("AREA", calcX(44, vm), calcY(596, vm), 3, this->lang["AREA"],
-                                                           "+1", 100 * priceModifier, 2);
+                                                           "+1", 200 * priceModifier, 2);
                 this->upgradePlayer("BOMBER");
             }
             else if (player.getName() == "KNIGHT") {
@@ -974,15 +974,14 @@ const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, Sou
                 this->abilityUpgradeGUI->addPlayerStat("TRAP_SCENT_RANGE", calcX(32, vm), calcY(244, vm),
                                                        this->lang["TRAP_SCENT_RANGE"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade("TRAP_SCENT_RANGE", calcX(44, vm), calcY(596, vm), 11,
-                                                           this->lang["TRAP_SCENT_RANGE"], "+2", 100 * priceModifier,
-                                                           1);
+                                                           this->lang["TRAP_SCENT_RANGE"], "+2", 50 * priceModifier, 1);
                 this->upgradePlayer("TRAPPER");
             }
             else if (player.getName() == "SHOOTER") {
                 this->abilityUpgradeGUI->addPlayerStat("PROJ_ATTACK", calcX(32, vm), calcY(244, vm),
                                                        this->lang["ATTACK"]);
                 this->abilityUpgradeGUI->addAbilityUpgrade("PROJ_ATTACK", calcX(44, vm), calcY(596, vm), 1,
-                                                           this->lang["ATTACK"], "+1", 50 * priceModifier, 0);
+                                                           this->lang["ATTACK"], "+1", 100 * priceModifier, 0);
                 this->upgradePlayer("CROSSBOWMAN");
             }
         }
