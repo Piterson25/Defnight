@@ -72,7 +72,7 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
         addBomb(player.getCenter(), 0, coords, 0, player);
     }
     else if (player.getName() == "SHOOTER") {
-        addArrow(player.getCenter(), 0, coords, 0, player, ArrowType::NORMAL);
+        addArrow(player.getCenter(), 0, coords, 0, player, ArrowType::UPGRADED);
     }
     else if (player.getName() == "ARROWSTORM") {
         const float DEG_DIFF = static_cast<float>(180.f / (player.getProjectilesNumber() + 1));
