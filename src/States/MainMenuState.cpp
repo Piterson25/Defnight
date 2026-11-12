@@ -222,6 +222,7 @@ void MainMenuState::initRanksPage()
     this->sprites["XP_FRAME"] = std::make_unique<gui::Sprite>("assets/textures/bars.png", calcX(960, vm),
                                                               calcY(336, vm), calcScale(1, vm), true);
     this->sprites["XP_FRAME"]->setTextureRect(sf::IntRect({0, 100}, {272, 36}));
+    this->sprites["XP_FRAME"]->center(calcX(960, vm));
     this->texts["PERCENT"] =
         std::make_unique<gui::Text>("0%", calcChar(16, vm), calcX(960, vm), calcY(347, vm), gui::WHITE, true);
 
