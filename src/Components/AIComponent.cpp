@@ -1,8 +1,6 @@
 #include "AIComponent.hpp"
 
-AIComponent::AIComponent(sf::VideoMode &vm,
-                         const std::vector<sf::FloatRect> &obstaclesBounds)
-    : vm(vm)
+AIComponent::AIComponent(sf::VideoMode &vm, const std::vector<sf::FloatRect> &obstaclesBounds) : vm(vm)
 {
     this->Current = nullptr;
     this->End = nullptr;
@@ -10,12 +8,12 @@ AIComponent::AIComponent(sf::VideoMode &vm,
     this->activateAI = false;
     this->BlockSize.x = calcX(64, vm);
     this->BlockSize.y = calcY(64, vm);
-    this->target_position = sf::Vector2f(0.f, 0.f);
+    this->targetPosition = sf::Vector2f(0.f, 0.f);
 
     this->initNodes();
     for (const auto &obstacle : obstaclesBounds) {
-        Nodes[static_cast<size_t>(obstacle.left / this->BlockSize.x)]
-             [static_cast<size_t>(obstacle.top / this->BlockSize.y)]
+        Nodes[static_cast<size_t>(obstacle.position.x / this->BlockSize.x)]
+             [static_cast<size_t>(obstacle.position.y / this->BlockSize.y)]
                  .isWall = true;
     }
 }
@@ -51,31 +49,26 @@ void AIComponent::initNeighbours(size_t x, size_t y)
 {
     if (Nodes[x][y].x > 0) {
         const int tempX = Nodes[x][y].x - 1;
-        Nodes[x][y].Neighbours.push_back(
-            &Nodes[static_cast<size_t>(tempX)][Nodes[x][y].y]);
+        Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(tempX)][Nodes[x][y].y]);
     }
     if (Nodes[x][y].y > 0) {
         const int tempY = Nodes[x][y].y - 1;
-        Nodes[x][y].Neighbours.push_back(
-            &Nodes[Nodes[x][y].x][static_cast<size_t>(tempY)]);
+        Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][static_cast<size_t>(tempY)]);
     }
     if (Nodes[x][y].x < CollumsX - 1) {
         const int tempX = Nodes[x][y].x + 1;
-        Nodes[x][y].Neighbours.push_back(
-            &Nodes[static_cast<size_t>(tempX)][Nodes[x][y].y]);
+        Nodes[x][y].Neighbours.push_back(&Nodes[static_cast<size_t>(tempX)][Nodes[x][y].y]);
     }
     if (Nodes[x][y].y < CollumsY - 1) {
         const int tempY = Nodes[x][y].y + 1;
-        Nodes[x][y].Neighbours.push_back(
-            &Nodes[Nodes[x][y].x][static_cast<size_t>(tempY)]);
+        Nodes[x][y].Neighbours.push_back(&Nodes[Nodes[x][y].x][static_cast<size_t>(tempY)]);
     }
 }
 
-void AIComponent::resetNodes(Entity &e1, Entity &e2,
-                             const std::vector<sf::Vector2f> &positions)
+void AIComponent::resetNodes(Entity &e1, const std::vector<sf::Vector2f> &positions)
 {
-    Start = &Nodes[static_cast<size_t>(e2.getPosition().x / this->BlockSize.x)]
-                  [static_cast<size_t>(e2.getPosition().y / this->BlockSize.y)];
+    Start = &Nodes[static_cast<size_t>(targetPosition.x / this->BlockSize.x)]
+                  [static_cast<size_t>(targetPosition.y / this->BlockSize.y)];
 
     End = &Nodes[static_cast<size_t>(e1.getPosition().x / this->BlockSize.x)]
                 [static_cast<size_t>(e1.getPosition().y / this->BlockSize.y)];
@@ -87,12 +80,9 @@ void AIComponent::resetNodes(Entity &e1, Entity &e2,
     }
 
     for (const auto &p : positions) {
-        Nodes[static_cast<size_t>(p.x / this->BlockSize.x)]
-             [static_cast<size_t>(p.y / this->BlockSize.y)]
-                 .isMonster = true;
-        Nodes[static_cast<size_t>(p.x / this->BlockSize.x)]
-             [static_cast<size_t>(p.y / this->BlockSize.y)]
-                 .isWall = true;
+        Nodes[static_cast<size_t>(p.x / this->BlockSize.x)][static_cast<size_t>(p.y / this->BlockSize.y)].isMonster =
+            true;
+        Nodes[static_cast<size_t>(p.x / this->BlockSize.x)][static_cast<size_t>(p.y / this->BlockSize.y)].isWall = true;
     }
 
     AStarAlg();
@@ -127,16 +117,14 @@ void AIComponent::AStarAlg()
     }
 
     Start->HCost = 0.0f;
-    Start->FCost = vectorDistance(float(Start->x), float(Start->y),
-                                  float(End->x), float(End->y));
+    Start->FCost = vectorDistance(float(Start->x), float(Start->y), float(End->x), float(End->y));
 
     std::vector<Node *> NodesToTest;
     NodesToTest.push_back(Start);
 
     while (!NodesToTest.empty()) {
-        std::sort(
-            NodesToTest.begin(), NodesToTest.end(),
-            [](const Node *a, const Node *b) { return a->FCost < b->FCost; });
+        std::sort(NodesToTest.begin(), NodesToTest.end(),
+                  [](const Node *a, const Node *b) { return a->FCost < b->FCost; });
 
         while (!NodesToTest.empty() && NodesToTest.front()->isVisited) {
             NodesToTest.erase(NodesToTest.begin());
@@ -150,12 +138,10 @@ void AIComponent::AStarAlg()
     }
 }
 
-void AIComponent::processNextNode(Node *currentNode,
-                                  std::vector<Node *> &nodesToTest)
+void AIComponent::processNextNode(Node *currentNode, std::vector<Node *> &nodesToTest)
 {
     auto GetDist = [](const Node *P1, const Node *P2) {
-        return vectorDistance(float(P1->x), float(P1->y), float(P2->x),
-                              float(P2->y));
+        return vectorDistance(float(P1->x), float(P1->y), float(P2->x), float(P2->y));
     };
 
     currentNode->isVisited = true;
@@ -165,25 +151,20 @@ void AIComponent::processNextNode(Node *currentNode,
             nodesToTest.push_back(nodeNeighbour);
         }
 
-        auto BestNode =
-            currentNode->HCost + GetDist(currentNode, nodeNeighbour);
+        auto BestNode = currentNode->HCost + GetDist(currentNode, nodeNeighbour);
 
         if (BestNode < nodeNeighbour->HCost) {
             nodeNeighbour->parent = currentNode;
             nodeNeighbour->HCost = float(BestNode);
 
-            nodeNeighbour->FCost =
-                nodeNeighbour->HCost + float(GetDist(nodeNeighbour, End));
+            nodeNeighbour->FCost = nodeNeighbour->HCost + float(GetDist(nodeNeighbour, End));
         }
     }
 }
 
-void AIComponent::checkPositions(Entity &e1, Entity &e2,
-                                 const std::vector<sf::Vector2f> &positions,
-                                 float vel)
+void AIComponent::checkPositions(Entity &e1, const std::vector<sf::Vector2f> &positions, float vel)
 {
-    sf::Vector2f target_point(Current->x * BlockSize.x,
-                              Current->y * BlockSize.y);
+    sf::Vector2f target_point(Current->x * BlockSize.x, Current->y * BlockSize.y);
 
     if (target_point.x > e1.getPosition().x) {
         if (e1.getPosition().x + vel > target_point.x) {
@@ -224,7 +205,7 @@ void AIComponent::checkPositions(Entity &e1, Entity &e2,
             Current = Current->parent;
         }
         else {
-            resetNodes(e1, e2, positions);
+            resetNodes(e1, positions);
             this->activateAI = true;
         }
     }
@@ -235,11 +216,12 @@ void AIComponent::disableAI()
     this->activateAI = false;
 }
 
-void AIComponent::update(Entity &e1, Entity &e2,
-                         const std::vector<sf::Vector2f> &positions, float vel)
+void AIComponent::update(Entity &e1, const sf::Vector2f &targetPosition, const std::vector<sf::Vector2f> &positions,
+                         float vel)
 {
+    this->targetPosition = targetPosition;
     if (!this->activateAI) {
-        resetNodes(e1, e2, positions);
+        resetNodes(e1, positions);
         this->activateAI = true;
     }
     if (this->activateAI) {
@@ -248,12 +230,11 @@ void AIComponent::update(Entity &e1, Entity &e2,
             sf::RectangleShape t;
             t.setSize(sf::Vector2f(16, 16));
             t.setFillColor(sf::Color::Green);
-            t.setPosition(sf::Vector2f(Current->x * BlockSize.x + 24,
-                                       Current->y * BlockSize.y + 24));
+            t.setPosition(sf::Vector2f(Current->x * BlockSize.x + 24, Current->y * BlockSize.y + 24));
 
             this->greens.push_back(t);
 
-            checkPositions(e1, e2, positions, vel);
+            checkPositions(e1, positions, vel);
         }
         else {
             this->activateAI = false;

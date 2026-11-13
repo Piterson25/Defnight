@@ -52,7 +52,7 @@ void MusicEngine::stopMusic()
 
 const bool MusicEngine::hasStopped() const
 {
-    return (this->music.getStatus() == sf::Music::Stopped);
+    return (this->music.getStatus() == sf::SoundSource::Status::Stopped);
 }
 
 const bool MusicEngine::isEmpty() const

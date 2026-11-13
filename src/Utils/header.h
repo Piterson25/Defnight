@@ -19,14 +19,9 @@
 // SFML
 #include <SFML/Audio.hpp>
 #include <SFML/Graphics.hpp>
-#include <SFML/Network.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Window.hpp>
 
-// Crypto++
-#include <cryptopp/aes.h>
-#include <cryptopp/cryptlib.h>
-#include <cryptopp/files.h>
-#include <cryptopp/filters.h>
-#include <cryptopp/modes.h>
-#include <cryptopp/osrng.h>
+// tiny-AES
+#include "aes.hpp"
+

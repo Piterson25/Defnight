@@ -4,13 +4,11 @@
 
 class AIComponent {
 public:
-    AIComponent(sf::VideoMode &vm,
-                const std::vector<sf::FloatRect> &obstaclesBounds);
+    AIComponent(sf::VideoMode &vm, const std::vector<sf::FloatRect> &obstaclesBounds);
     ~AIComponent();
 
     void disableAI();
-    void update(Entity &e1, Entity &e2,
-                const std::vector<sf::Vector2f> &positions, float vel);
+    void update(Entity &e1, const sf::Vector2f &targetPosition, const std::vector<sf::Vector2f> &positions, float vel);
     void draw(sf::RenderTarget &target);
 
 private:
@@ -32,19 +30,17 @@ private:
 
     void initNodes();
     void initNeighbours(size_t x, size_t y);
-    void resetNodes(Entity &e1, Entity &e2,
-                    const std::vector<sf::Vector2f> &positions);
+    void resetNodes(Entity &e1, const std::vector<sf::Vector2f> &positions);
     void resetSingleNode(size_t x, size_t y);
     void AStarAlg();
     void processNextNode(Node *currentNode, std::vector<Node *> &nodesToTest);
-    void checkPositions(Entity &e1, Entity &e2,
-                        const std::vector<sf::Vector2f> &positions, float vel);
+    void checkPositions(Entity &e1, const std::vector<sf::Vector2f> &positions, float vel);
 
     const size_t CollumsX = 32;
     const size_t CollumsY = 32;
 
     sf::Vector2f position;
-    sf::Vector2f target_position;
+    sf::Vector2f targetPosition;
     sf::VideoMode &vm;
 
     bool activateAI;

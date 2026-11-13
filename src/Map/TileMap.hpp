@@ -12,10 +12,9 @@ public:
     const size_t getSize() const;
     const sf::Vector2f getPosition(const size_t &index) const;
     const sf::FloatRect getGlobalBounds(const size_t &index) const;
-    const std::vector<sf::FloatRect> getTilesGlobalBounds() const;
+    const std::vector<sf::FloatRect> &getTilesGlobalBounds() const;
 
-    void addTile(const std::string &name, const sf::Vector2f &size, float x,
-                 float y);
+    void addTile(const std::string &name, const sf::Vector2f &size, float x, float y);
 
     void drawMap(sf::RenderTarget &target);
     void drawObstacles(sf::RenderTarget &target);
@@ -29,5 +28,4 @@ private:
     sf::VertexArray vertexArray;
     sf::Sprite background;
     sf::Texture backgroundTexture;
-    std::string mapName;
 };

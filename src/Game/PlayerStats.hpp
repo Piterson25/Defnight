@@ -2,6 +2,16 @@
 
 #include "GUI/GUI.hpp"
 
+enum class MAP { RUINS, DESOLATION, PERMAFROST, VOLCANO };
+enum class HERO { WARRIOR, ARCHER };
+enum class DIFFICULTY { EASY, NORMAL, HARD, EXTREME };
+
+struct CurrentGame {
+    MAP map;
+    HERO hero;
+    DIFFICULTY difficulty;
+};
+
 class PlayerStats {
 public:
     struct PlayerData {
@@ -19,9 +29,11 @@ public:
         uint32_t ruins;
         uint32_t desolation;
         uint32_t permafrost;
+        uint32_t volcano;
         uint32_t easy;
         uint32_t normal;
         uint32_t hard;
+        uint32_t extreme;
     };
 
     struct Rank {
@@ -32,16 +44,11 @@ public:
 
     static const std::vector<Rank> ranks;
 
-    static const CryptoPP::byte key[CryptoPP::AES::DEFAULT_KEYLENGTH];
-    static const CryptoPP::byte iv[CryptoPP::AES::BLOCKSIZE];
+    static inline const std::string filePath = "data/player_stats.dat";
+    static const uint8_t key[16];
+    static const uint8_t iv[16];
 
-    static void saveStats(const std::string &filename,
-                          const PlayerData &playerdata);
-    static void loadStats(const std::string &filename, PlayerData &playerdata);
-
-private:
-    static void EncryptData(const std::string &plaintext,
-                            std::string &ciphertext);
-    static void DecryptData(const CryptoPP::byte *ciphertext,
-                            size_t ciphertextLength, std::string &plaintext);
+    static void resetStats();
+    static void saveStats(PlayerData &playerdata);
+    static void loadStats(PlayerData &playerdata);
 };

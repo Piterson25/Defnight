@@ -6,10 +6,12 @@
 
 class StatsState : public State {
 public:
-    StatsState(float gridSize, sf::RenderWindow &window,
-               GameSettings &gameSettings, SoundEngine &soundEngine,
+    StatsState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings, SoundEngine &soundEngine,
                MusicEngine &musicEngine, std::stack<State *> &states);
-    ~StatsState();
+    ~StatsState() override;
+
+    void initGUI() override;
+    void resetGUI() override;
 
     void update(float dt) override;
     void draw(sf::RenderTarget *target = NULL) override;
@@ -17,10 +19,8 @@ public:
 private:
     PlayerStats::PlayerData playerData;
 
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
-        text_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>> text_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>>
-        sprite_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>> sprite_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
 };

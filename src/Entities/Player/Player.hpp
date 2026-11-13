@@ -4,12 +4,16 @@
 #include "Components/AbilityComponent.hpp"
 #include "Entities/Entity.hpp"
 
+enum class AttackType { MELEE, RANGED };
+enum class HeroName { WARRIOR, ARCHER };
+
 class Player : public Entity {
 public:
-    Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
-           float t_y);
+    Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y);
     virtual ~Player();
 
+    const AttackType getAttackType() const;
+    const HeroName getHeroName() const;
     const uint32_t getBoughtItems() const;
     const uint32_t getDamageDealt() const;
     const uint32_t getDamageTaken() const;
@@ -25,15 +29,20 @@ public:
     const uint32_t getProjectileAttack() const;
     const uint32_t getProjectilePiercing() const;
     const uint32_t getProjectileArea() const;
+    const uint32_t getProjectilesNumber() const;
     const uint32_t getKills() const;
     const bool isUpgraded() const;
     const uint32_t getIncreasedArmor() const;
     const uint32_t getIncreasedReg() const;
     const uint32_t getIncreasedAttack() const;
+    const uint32_t getIncreasedAttackSpeed() const;
+    const uint32_t getIncreasedSpeed() const;
+    const uint32_t getIncreasedCriticalChance() const;
     const uint32_t getIncreasedGold() const;
     const uint32_t getIncreasedTargets() const;
     const uint32_t getGoldReward() const;
     const uint32_t getAttackLimit() const;
+    const float getRegCooldown() const;
     const float getTimeSlowdown() const;
     const bool isRegenerating() const;
     const bool isLeveling() const;
@@ -48,6 +57,10 @@ public:
     const float getAbilityMaxTimeModifier() const;
     const uint32_t getAttackIncrease() const;
     const bool isParticleCooldown(float dt);
+    const bool isInvisible() const;
+    const uint32_t getTrapAttack() const;
+    const float getTrappedTime() const;
+    const uint32_t getTrapScentRange() const;
 
     void setDamageDealt(uint32_t t_damageDealt);
     void setDamageTaken(uint32_t t_damageTaken);
@@ -61,6 +74,7 @@ public:
     void setProjectileAttack(uint32_t t_projectileAttack);
     void setProjectilePiercing(uint32_t t_projectilePiercing);
     void setProjectileArea(uint32_t t_projectileArea);
+    void setProjectilesNumber(uint32_t t_projectilesNumber);
     void setIncreasedArmor(uint32_t t_increasedArmor);
     void setIncreasedReg(uint32_t t_increasedReg);
     void setIncreasedAttack(uint32_t t_increasedAttack);
@@ -80,12 +94,15 @@ public:
     void setAbilityMaxTimeModifier(float t_abilityMaxTimeModifier);
     void setAttackIncrease(uint32_t t_attackIncrease);
     void setPlayedSound(bool t_soundPlayed);
+    void setInvisible(bool t_invisible);
+    void setTrapAttack(uint32_t t_attack);
+    void setTrappedTime(float t_trappedTime);
+    void setTrapScentRange(float t_trapScentRange);
 
-    void controls(const std::unordered_map<std::string, int> &keybinds,
-                  float dt);
-    void whooshSound(SoundEngine &soundEngine);
+    void controls(const std::unordered_map<std::string, int> &keybinds, bool isExtreme, float dt);
+    void weaponSound(SoundEngine &soundEngine);
     const bool levelUp();
-    const bool isHPRegenerating(float dt);
+    const bool isHPRegenerating(bool isExtreme, float dt);
     const bool isAbilityActivated();
     void abilityCounter(float dt);
     virtual void setAbilityTexture() = 0;
@@ -93,8 +110,7 @@ public:
     virtual void doAbility(SoundEngine &soundEngine) = 0;
     void spawn(float dt);
     void upgrade(const std::string &t_name, sf::IntRect &intRect);
-    virtual void upgradeAttributes(const std::string &t_name,
-                                   sf::IntRect &intRect) = 0;
+    virtual void upgradeAttributes(const std::string &t_name, sf::IntRect &intRect) = 0;
     void update(float dt);
     void draw(sf::RenderTarget &target);
     void drawShadow(sf::RenderTarget &target);
@@ -104,6 +120,11 @@ protected:
     sf::Texture shadow_texture;
     sf::Sprite ability;
     sf::Texture ability_texture;
+    sf::Sprite glow;
+    sf::Texture glow_texture;
+
+    AttackType attackType;
+    HeroName heroName;
 
     uint32_t damageDealt;
     uint32_t damageTaken;
@@ -120,11 +141,15 @@ protected:
     uint32_t projectileAttack;
     uint32_t projectilePiercing;
     uint32_t projectileArea;
+    uint32_t projectilesNumber;
     uint32_t kills;
     bool upgraded;
     uint32_t increasedArmor;
     uint32_t increasedReg;
     uint32_t increasedAttack;
+    uint32_t increasedAttackSpeed;
+    uint32_t increasedSpeed;
+    uint32_t increasedCriticalChance;
     uint32_t increasedGold;
     uint32_t goldReward;
     uint32_t attackLimit;
@@ -137,6 +162,10 @@ protected:
     bool spawned;
     float spawnCountdown;
     float particleCooldown;
+    bool invisible;
+    uint32_t trapAttack;
+    float trappedTime;
+    uint32_t trapScentRange;
 
     std::unique_ptr<AbilityComponent> abilityComponent;
 

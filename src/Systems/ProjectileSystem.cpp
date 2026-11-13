@@ -2,7 +2,7 @@
 
 ProjectileSystem::ProjectileSystem(sf::VideoMode &vm) : vm(vm)
 {
-    this->textures.loadFromFile("assets/textures/projectiles.png");
+    this->textures = sf::Texture("assets/textures/projectiles.png");
 }
 
 ProjectileSystem::~ProjectileSystem()
@@ -10,37 +10,51 @@ ProjectileSystem::~ProjectileSystem()
     this->projectiles.clear();
 }
 
-void ProjectileSystem::addBomb(const sf::Vector2f &t_position,
-                               float difficulty_mod, const sf::Vector2f &coords,
+void ProjectileSystem::addArrow(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
+                                float coordsOffset, Player &player, ArrowType arrowType)
+{
+    this->projectiles.emplace_back(std::make_unique<Arrow>("ARROW", this->vm, t_position, difficulty_mod, coords,
+                                                           coordsOffset, player, arrowType));
+}
+
+void ProjectileSystem::addBomb(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
                                float coordsOffset, Player &player)
 {
     this->projectiles.emplace_back(
-        std::make_unique<Bomb>("BOMB", this->vm, t_position, difficulty_mod,
-                               coords, coordsOffset, player));
+        std::make_unique<Bomb>("BOMB", this->vm, t_position, difficulty_mod, coords, coordsOffset, player));
 }
 
-void ProjectileSystem::addShuriken(const sf::Vector2f &t_position,
-                                   float difficulty_mod,
-                                   const sf::Vector2f &coords,
-                                   float coordsOffset, Player &player)
-{
-    this->projectiles.emplace_back(std::make_unique<Shuriken>(
-        "SHURIKEN", this->vm, t_position, difficulty_mod, coords, coordsOffset,
-        player));
-}
-
-void ProjectileSystem::addProjectile(const std::string &name, float x, float y,
-                                     float difficulty_mod,
-                                     const sf::Vector2f &coords,
+void ProjectileSystem::addGroundWave(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
                                      float coordsOffset)
 {
+    this->projectiles.emplace_back(
+        std::make_unique<GroundWave>("GROUNDWAVE", this->vm, t_position, difficulty_mod, coords, coordsOffset));
+}
+
+void ProjectileSystem::addShuriken(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
+                                   float coordsOffset, Player &player)
+{
+    this->projectiles.emplace_back(
+        std::make_unique<Shuriken>("SHURIKEN", this->vm, t_position, difficulty_mod, coords, coordsOffset, player));
+}
+
+void ProjectileSystem::addStone(const sf::Vector2f &t_position, float difficulty_mod, const sf::Vector2f &coords,
+                                float coordsOffset)
+{
+    this->projectiles.emplace_back(
+        std::make_unique<Stone>("STONE", this->vm, t_position, difficulty_mod, coords, coordsOffset));
+}
+
+void ProjectileSystem::addProjectile(const std::string &name, const sf::Vector2f &t_position, float difficulty_mod,
+                                     const sf::Vector2f &coords, float coordsOffset)
+{
     if (name == "STONE") {
-        this->projectiles.emplace_back(std::make_unique<Stone>(
-            name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
+        this->projectiles.emplace_back(
+            std::make_unique<Stone>(name, this->vm, t_position, difficulty_mod, coords, coordsOffset));
     }
     else if (name == "GROUNDWAVE") {
-        this->projectiles.emplace_back(std::make_unique<GroundWave>(
-            name, this->vm, x, y, difficulty_mod, coords, coordsOffset));
+        this->projectiles.emplace_back(
+            std::make_unique<GroundWave>(name, this->vm, t_position, difficulty_mod, coords, coordsOffset));
     }
 }
 
@@ -57,112 +71,36 @@ void ProjectileSystem::playerAbility(const sf::Vector2f &coords, Player &player)
     else if (player.getName() == "BOMBER") {
         addBomb(player.getCenter(), 0, coords, 0, player);
     }
+    else if (player.getName() == "SHOOTER") {
+        addArrow(player.getCenter(), 0, coords, 0, player, ArrowType::UPGRADED);
+    }
+    else if (player.getName() == "ARROWSTORM") {
+        const float DEG_DIFF = static_cast<float>(180.f / (player.getProjectilesNumber() + 1));
+        for (float deg = -90.f; deg < 90.f; deg += DEG_DIFF) {
+            if (deg == -90.f) {
+                continue;
+            }
+            addArrow(player.getCenter(), 0, coords, deg, player, ArrowType::UPGRADED);
+        }
+    }
+    else if (player.getName() == "CROSSBOWMAN") {
+        addArrow(player.getCenter(), 0, coords, 0, player, ArrowType::CROSSBOW);
+    }
 }
 
 void ProjectileSystem::bossSpecialAttack(Boss &boss)
 {
     if (boss.getName() == "MINOTAUR") {
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-                      boss.getDifficultyMod(), sf::Vector2f(boss.getUpCenter()),
-                      0);
-        addProjectile(
-            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-            boss.getDifficultyMod(),
-            sf::Vector2f(boss.getRightCenter().x +
-                             (boss.getRightCenter().x - boss.getUpCenter().x) /
-                                 2,
-                         boss.getUpCenter().y),
-            0);
-        addProjectile(
-            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-            boss.getDifficultyMod(),
-            sf::Vector2f(boss.getRightCenter().x, boss.getUpCenter().y), 0);
-        addProjectile(
-            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-            boss.getDifficultyMod(),
-            sf::Vector2f(boss.getRightCenter().x,
-                         boss.getRightCenter().y +
-                             (boss.getRightCenter().y - boss.getUpCenter().y) /
-                                 2),
-            0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-                      boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getRightCenter()), 0);
-        addProjectile(
-            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-            boss.getDifficultyMod(),
-            sf::Vector2f(
-                boss.getRightCenter().x,
-                boss.getDownCenter().y +
-                    (boss.getDownCenter().y - boss.getRightCenter().y) / 2),
-            0);
-        addProjectile(
-            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-            boss.getDifficultyMod(),
-            sf::Vector2f(boss.getRightCenter().x, boss.getDownCenter().y), 0);
-        addProjectile(
-            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-            boss.getDifficultyMod(),
-            sf::Vector2f(
-                boss.getRightCenter().x +
-                    (boss.getRightCenter().x - boss.getDownCenter().x) / 2,
-                boss.getDownCenter().y),
-            0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-                      boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getDownCenter()), 0);
-        addProjectile(
-            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-            boss.getDifficultyMod(),
-            sf::Vector2f(boss.getLeftCenter().x +
-                             (boss.getLeftCenter().x - boss.getDownCenter().x) /
-                                 2,
-                         boss.getDownCenter().y),
-            0);
-        addProjectile(
-            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-            boss.getDifficultyMod(),
-            sf::Vector2f(boss.getLeftCenter().x, boss.getDownCenter().y), 0);
-        addProjectile(
-            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-            boss.getDifficultyMod(),
-            sf::Vector2f(boss.getLeftCenter().x,
-                         boss.getDownCenter().y +
-                             (boss.getDownCenter().y - boss.getLeftCenter().y) /
-                                 2),
-            0);
-        addProjectile("GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-                      boss.getDifficultyMod(),
-                      sf::Vector2f(boss.getLeftCenter()), 0);
-        addProjectile(
-            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-            boss.getDifficultyMod(),
-            sf::Vector2f(boss.getLeftCenter().x,
-                         boss.getUpCenter().y +
-                             (boss.getUpCenter().y - boss.getLeftCenter().y) /
-                                 2),
-            0);
-        addProjectile(
-            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-            boss.getDifficultyMod(),
-            sf::Vector2f(boss.getLeftCenter().x, boss.getUpCenter().y), 0);
-        addProjectile(
-            "GROUNDWAVE", boss.getCenter().x, boss.getCenter().y,
-            boss.getDifficultyMod(),
-            sf::Vector2f(boss.getUpCenter().x +
-                             (boss.getUpCenter().x - boss.getLeftCenter().x) /
-                                 2,
-                         boss.getUpCenter().y),
-            0);
+        for (float deg = 0; deg < 360; deg += 22.5f) {
+            addGroundWave(boss.getCenter(), boss.getDifficultyMod(),
+                          pointCoordsOnCircle(boss.getCenter(), calcX(16, vm), deg), 0);
+        }
     }
 }
 
-void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
-                              ParticleSystem &particleSystem,
-                              MonsterSystem &monsterSystem,
-                              const sf::FloatRect &mapBounds,
-                              const std::vector<sf::FloatRect> &obstaclesBounds,
-                              FloatingTextSystem &floatingTextSystem,
+void ProjectileSystem::update(Player &player, PlayerGUI &playerGui, ParticleSystem &particleSystem,
+                              MonsterSystem &monsterSystem, const sf::FloatRect &mapBounds,
+                              const std::vector<sf::FloatRect> &obstaclesBounds, FloatingTextSystem &floatingTextSystem,
                               SoundEngine &soundEngine, float dt)
 {
     float slowedDt = dt;
@@ -171,22 +109,19 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
         slowedDt -= dt * player.getTimeSlowdown();
     }
 
-    for (auto proj = this->projectiles.begin();
-         proj != this->projectiles.end();) {
-        const Stone *const stone = dynamic_cast<const Stone *>((*proj).get());
-        const GroundWave *const groundWave =
-            dynamic_cast<const GroundWave *>((*proj).get());
-        if (stone || groundWave) {
-            (*proj)->update(slowedDt);
-            if (groundWave && (*proj)->isParticleCooldown(slowedDt)) {
-                particleSystem.addSmallParticle(
-                    (*proj)->getCenter(),
-                    sf::Vector2f(calcX(8, vm), calcY(8, vm)), gui::BROWN);
+    for (auto proj = this->projectiles.begin(); proj != this->projectiles.end();) {
+        const auto *const groundWave = dynamic_cast<const GroundWave *>((*proj).get());
+        if ((*proj)->isParticleCooldown(slowedDt)) {
+            if (groundWave) {
+                particleSystem.addSmallParticle((*proj)->getPosition(), sf::Vector2f(calcX(8, vm), calcY(8, vm)),
+                                                gui::BROWN);
+            }
+            else {
+                particleSystem.addSmallParticle((*proj)->getPosition(), sf::Vector2f(calcX(4, vm), calcY(4, vm)),
+                                                gui::WHITE);
             }
         }
-        else {
-            (*proj)->update(dt);
-        }
+        (*proj)->update(slowedDt);
 
         if (!groundWave) {
             (*proj)->wallCollision(obstaclesBounds);
@@ -195,20 +130,15 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
         monsterSystem.projectileCollision(**proj);
         (*proj)->move();
 
-        if ((*proj)->isBomb() &&
-            ((*proj)->hasCollidedWall() || (*proj)->hasCollidedMonster())) {
-            particleSystem.addParticle(
-                (*proj)->getName(), (*proj)->getPosition().x,
-                (*proj)->getPosition().y, (*proj)->getAttack(),
-                player.getProjectileArea());
+        if ((*proj)->isBomb() && ((*proj)->hasCollidedWall() || (*proj)->hasCollidedMonster())) {
+            particleSystem.addParticle((*proj)->getName(), (*proj)->getPosition().x, (*proj)->getPosition().y,
+                                       (*proj)->getAttack(), player.getProjectileArea());
             soundEngine.addSound("explosion");
             proj = this->projectiles.erase(proj);
         }
         else if ((*proj)->hasExploded()) {
-            particleSystem.addParticle(
-                (*proj)->getName(), (*proj)->getPosition().x,
-                (*proj)->getPosition().y, (*proj)->getAttack(),
-                player.getProjectileArea());
+            particleSystem.addParticle((*proj)->getName(), (*proj)->getPosition().x, (*proj)->getPosition().y,
+                                       (*proj)->getAttack(), player.getProjectileArea());
             soundEngine.addSound("explosion");
             proj = this->projectiles.erase(proj);
         }
@@ -216,11 +146,9 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
             proj = this->projectiles.erase(proj);
         }
         else if ((*proj)->hasCollidedPlayer()) {
-            if (!(player.isAbilityActive() &&
-                  (player.getArmor() + player.getIncreasedArmor()) > 20)) {
-                int attack = static_cast<int>(
-                    round((*proj)->getAttack() -
-                          ((*proj)->getAttack() * player.getArmor() * 0.05f)));
+            if (!(player.isAbilityActive() && (player.getArmor() + player.getIncreasedArmor()) > 20)) {
+                int attack =
+                    static_cast<int>(round((*proj)->getAttack() - ((*proj)->getAttack() * player.getArmor() * 0.05f)));
 
                 if (attack > 0) {
                     if (static_cast<int>(player.getHP() - attack) < 0) {
@@ -234,11 +162,9 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui,
 
                     player.punch();
 
-                    floatingTextSystem.addFloatingText(
-                        gui::FLAMINGO, "-" + std::to_string(attack),
-                        calcChar(16, vm),
-                        player.getPosition().x + calcX(32, vm),
-                        player.getPosition().y + calcY(32, vm), false);
+                    floatingTextSystem.addFloatingText(gui::FLAMINGO, "-" + std::to_string(attack), calcChar(16, vm),
+                                                       player.getPosition().x + calcX(32, vm),
+                                                       player.getPosition().y + calcY(32, vm), false);
                     playerGui.updateHP();
                 }
             }

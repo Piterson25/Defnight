@@ -1,12 +1,10 @@
 #include "UpgradeGUI.hpp"
 
-UpgradeGUI::UpgradeGUI(sf::VideoMode &t_vm, Player &t_player)
-    : vm(t_vm), player(t_player)
+UpgradeGUI::UpgradeGUI(sf::VideoMode &t_vm, Player &t_player) : vm(t_vm), player(t_player)
 {
-    this->abilitiesTexture.loadFromFile("assets/textures/abilities_icons.png");
-    this->attributesTexture.loadFromFile(
-        "assets/textures/attributes_icons.png");
-    this->upgradesTexture.loadFromFile("assets/textures/upgrades_icons.png");
+    this->abilitiesTexture = sf::Texture("assets/textures/abilities_icons.png");
+    this->attributesTexture = sf::Texture("assets/textures/attributes_icons.png");
+    this->upgradesTexture = sf::Texture("assets/textures/upgrades_icons.png");
 }
 
 UpgradeGUI::~UpgradeGUI()
@@ -14,44 +12,33 @@ UpgradeGUI::~UpgradeGUI()
     this->upgrades.clear();
 }
 
-void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y,
-                               const std::string &desc, uint32_t abilityIconID,
-                               uint32_t attributeIconID,
-                               uint32_t attributeValue,
+void UpgradeGUI::changeUpgrade(const std::string &t_name, float t_x, float t_y, const std::string &desc,
+                               uint32_t abilityIconID, uint32_t attributeIconID, uint32_t attributeValue,
                                const std::string &attributeText)
 {
     this->upgrades[t_name] = Upgrade{
-        std::make_unique<gui::Sprite>(this->upgradesTexture, t_x, t_y,
-                                      calcScale(4, vm), false),
-        std::make_unique<gui::ButtonSprite>(
-            gui::RECT_BUTTON, t_x - calcX(12, vm), t_y - calcY(12, vm),
-            calcScale(1, vm), false),
-        std::make_unique<gui::Text>(desc, calcChar(16, vm),
-                                    t_x + calcX(160, vm), t_y + calcY(4, vm),
-                                    sf::Color(255, 255, 255), true),
-        std::make_unique<gui::Sprite>(this->abilitiesTexture,
-                                      t_x + calcX(100, vm), t_y + calcY(28, vm),
+        std::make_unique<gui::Sprite>(this->upgradesTexture, t_x, t_y, calcScale(4, vm), false),
+        std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, t_x - calcX(12, vm), t_y - calcY(12, vm),
+                                            calcScale(1, vm), gui::GREY, gui::WHITE, false),
+        std::make_unique<gui::Text>(desc, calcChar(16, vm), t_x + calcX(160, vm), t_y + calcY(4, vm), gui::WHITE, true),
+        std::make_unique<gui::Sprite>(this->abilitiesTexture, t_x + calcX(100, vm), t_y + calcY(28, vm),
                                       calcScale(2, vm), false),
-        std::make_unique<gui::Sprite>(this->attributesTexture,
-                                      t_x + calcX(152, vm), t_y + calcY(28, vm),
+        std::make_unique<gui::Sprite>(this->attributesTexture, t_x + calcX(152, vm), t_y + calcY(28, vm),
                                       calcScale(2, vm), false),
-        std::make_unique<gui::Text>("+" + attributeText, calcChar(16, vm),
-                                    t_x + calcX(190, vm), t_y + calcY(37, vm),
-                                    sf::Color(255, 255, 255), false),
+        std::make_unique<gui::Text>("+" + attributeText, calcChar(16, vm), t_x + calcX(190, vm), t_y + calcY(37, vm),
+                                    gui::WHITE, false),
         attributeValue,
     };
 
-    const uint32_t positionX = static_cast<uint32_t>(abilityIconID % 3);
-    const uint32_t positionY = static_cast<uint32_t>(abilityIconID / 3);
+    const int positionX = static_cast<uint32_t>(abilityIconID % 6);
+    const int positionY = static_cast<uint32_t>(abilityIconID / 6);
 
-    this->upgrades[t_name].sprite->setTextureRect(
-        sf::IntRect(16 * positionX, 16 * positionY + 16, 16, 16));
+    this->upgrades[t_name].sprite->setTextureRect(sf::IntRect({16 * positionX, 16 * positionY + 16}, {16, 16}));
 
-    this->upgrades[t_name].ability->setTextureRect(
-        sf::IntRect(16 * positionX, 16 * positionY, 16, 16));
+    this->upgrades[t_name].ability->setTextureRect(sf::IntRect({16 * positionX, 16 * positionY}, {16, 16}));
 
     this->upgrades[t_name].attribute->setTextureRect(
-        sf::IntRect(16 * attributeIconID, 0, 16, 16));
+        sf::IntRect({16 * static_cast<int>(attributeIconID), 0}, {16, 16}));
 }
 
 void UpgradeGUI::deleteUpgrade(const std::string &t_name)
@@ -59,8 +46,7 @@ void UpgradeGUI::deleteUpgrade(const std::string &t_name)
     this->upgrades.erase(t_name);
 }
 
-const bool UpgradeGUI::hasClickedUpgrade(const sf::Vector2i &mousePos,
-                                         const std::string &t_name,
+const bool UpgradeGUI::hasClickedUpgrade(const sf::Vector2i &mousePos, const std::string &t_name,
                                          SoundEngine *soundEngine)
 {
     if (this->upgrades.find(t_name) == this->upgrades.end()) {

@@ -35,7 +35,7 @@ void ParticleSystem::addSmallParticle(const sf::Vector2f &position,
     particle.setPosition(position);
     particle.setFillColor(color);
     particle.setSize(size);
-    particle.rotate(Random::Float() * 360.f - 90.f);
+    particle.rotate(sf::degrees(Random::Float() * 360.f - 90.f));
     smallParticles.push_back(particle);
 }
 

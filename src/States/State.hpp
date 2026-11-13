@@ -12,9 +12,13 @@ public:
           std::stack<State *> &states);
     virtual ~State();
 
+    virtual void initGUI() = 0;
+    virtual void resetGUI() = 0;
+
     const bool isReseted() const;
     const bool isQuitted() const;
 
+    void unReset();
     void endState();
     void pauseState();
     void unpauseState();

@@ -1,16 +1,52 @@
 #include "Boss.hpp"
 
-Boss::Boss(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
-           float difficulty_mod, float wave_mod,
+Boss::Boss(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y, float difficulty_mod, float wave_mod,
            const std::vector<sf::FloatRect> &obstaclesBounds)
-    : Monster(t_name, t_vm, t_x, t_y, difficulty_mod, wave_mod,
-              obstaclesBounds),
-      specialAttackTimer(0.f), specialAttackLimit(5.f),
-      specialAttackAnimationReady(false)
+    : Monster(t_name, t_vm, t_x, t_y, difficulty_mod, wave_mod, obstaclesBounds), specialAttackTimer(0.f),
+      specialAttackLimit(5.f), specialAttackAnimationReady(false)
 {
+    reg = 1;
+    regCooldown = 0.f;
+    regenerating = false;
 }
 
 Boss::~Boss() = default;
+
+const uint32_t Boss::getReg() const
+{
+    return this->reg;
+}
+
+const bool Boss::getRegenerating() const
+{
+    return this->regenerating;
+}
+
+void Boss::setReg(uint32_t t_reg)
+{
+    this->reg = t_reg;
+}
+
+void Boss::setRegenerating(bool t_regenerating)
+{
+    this->regenerating = t_regenerating;
+}
+
+const bool Boss::isHPRegenerating(float dt)
+{
+    if (this->regCooldown < 1.f && this->HP < this->maxHP) {
+        this->regCooldown += (this->reg * 0.2f + 0.8f) * dt;
+    }
+
+    if (this->regCooldown >= 1.f) {
+        this->regCooldown = 0.f;
+        if (this->HP < this->maxHP) {
+            this->HP++;
+            return true;
+        }
+    }
+    return false;
+}
 
 const bool Boss::isSpecialAttackReady() const
 {
@@ -50,12 +86,19 @@ void Boss::specialAttackAnimation(float dt)
     }
 }
 
+void Boss::playSpawnSound(SoundEngine &soundEngine)
+{
+    if (!this->soundPlayed) {
+        soundEngine.addSound(toLowerCase(this->getName()) + "_spawn");
+        this->soundPlayed = true;
+    }
+}
+
 void Boss::update(float dt)
 {
-    this->shadow.setPosition(this->getDownCenter().x -
-                                 this->shadow.getTextureRect().width / 2 *
-                                     this->shadow.getScale().x,
-                             this->getDownCenter().y);
+    this->shadow.setPosition(
+        {this->getDownCenter().x - this->shadow.getTextureRect().size.x / 2 * this->shadow.getScale().x,
+         this->getDownCenter().y});
     if (this->soundPlayed && this->frame != 80) {
         this->soundPlayed = false;
     }

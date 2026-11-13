@@ -16,7 +16,21 @@ const float vectorDistance(const sf::Vector2f &vec1, const sf::Vector2f &vec2);
 void center(sf::Text &text, float x);
 void center(sf::Sprite &sprite, float x);
 
-std::string toLowerCase(std::string str);
+static std::string toLowerCase(std::string str)
+{
+    std::transform(str.begin(), str.end(), str.begin(), ::tolower);
+    return str;
+}
 
-const bool isPointVisible(const sf::FloatRect &rect, const sf::Vector2f &a_p1,
-                 const sf::Vector2f &a_p2);
+static std::string toUpperCase(std::string str)
+{
+    std::transform(str.begin(), str.end(), str.begin(), ::toupper);
+    return str;
+}
+
+const bool isPointVisible(const sf::FloatRect &rect, const sf::Vector2f &a_p1, const sf::Vector2f &a_p2);
+
+const float degToRad(float angleInDegrees);
+const float radToDeg(float angleInRadians);
+
+const sf::Vector2f pointCoordsOnCircle(const sf::Vector2f t_pos, float radius, float angle);

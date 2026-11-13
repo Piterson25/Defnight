@@ -24,6 +24,11 @@ const bool State::isQuitted() const
     return this->quit;
 }
 
+void State::unReset()
+{
+    this->reseted = false;
+}
+
 void State::endState()
 {
     this->quit = true;

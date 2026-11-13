@@ -5,59 +5,58 @@
 
 class PlayerGUI {
 public:
-    PlayerGUI(sf::VideoMode &vm, Player &player,
-              FloatingTextSystem &floatingTextSystem,
-              const std::string &difficultyName,
-              std::unordered_map<std::string, std::string> &lang);
+    PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floatingTextSystem, const std::string &mapName,
+              const std::string &t_difficultyName, std::unordered_map<std::string, std::string> &lang);
     ~PlayerGUI();
 
     void levelUpPlayer(uint32_t optionID, uint32_t optionValue);
     void upgradePlayer(const std::string &name);
-    void update_level(SoundEngine &soundEngine);
+    void updateLevel(SoundEngine &soundEngine);
     void updateXP();
     void updateHP();
     void updateSprint();
-    void updatingHP(SoundEngine &soundEngine, float dt);
-    void update_Gold();
-    void update_ability(float dt);
+    void updatingHP(SoundEngine &soundEngine, bool isExtreme, float dt);
+    void updateGold();
+    void updateAbility(float dt);
     void setAbilityIcon();
     void setIsEscape(bool escape);
+    void setWaveBreakLimit(float t_waveBreakLimit);
     void updatePaused(bool &paused);
     void updateArmor();
-    void updateAttack();
     void updateReg();
-    void updateBossHP(float dt);
+    void updateAttack();
+    void updateAttackSpeed();
+    void updateSpeed();
+    void updateCriticalChance();
+    void updateBossHP(bool isExtreme, float dt);
     void updateShopBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
-    void updateAbilityBuy(const sf::Vector2i &mousePos,
-                          SoundEngine &soundEngine);
+    void updateHeroBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
+    void updateAbilityBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
 
     const bool isEscape() const;
     const bool isLeveling() const;
     const bool isUpgrading() const;
     const bool isShopping() const;
+    const bool isBuyingHero() const;
     const bool isBuyingAbility() const;
 
     void updatingSprint(float dt);
     void updateIsShopping();
+    void updateIsBuyingHero();
     void updateIsBuyingAbility();
     void updateKills();
-    void updateMonsterCountWave(const std::string &language, uint32_t wave,
-                                bool bossWave, const size_t &monsterCount,
-                                SoundEngine &soundEngine,
-                                MusicEngine &musicEngine);
+    void updateMonsterCountWave(const std::string &language, uint32_t wave, bool bossWave, const size_t &monsterCount,
+                                SoundEngine &soundEngine, MusicEngine &musicEngine);
     void updateMonsterCount(const size_t &monsterCount);
     const bool hasClickedMenu(const sf::Vector2i &mousePos, bool &paused);
+    const bool hasClickedSkip(const sf::Vector2i &mousePos, bool &paused);
     const uint8_t updateEscapeButton(const sf::Vector2i &mousePos);
-    const bool hasClickedButtons(const sf::Vector2i &mousePos,
-                                 SoundEngine &soundEngine);
-    const bool hasClickedLevelUpButtons(const sf::Vector2i &mousePos,
-                                        SoundEngine &soundEngine);
-    const bool hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
-                                        SoundEngine &soundEngine);
+    const bool hasClickedButtons(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
+    const bool hasClickedLevelUpButtons(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
+    const bool hasClickedUpgradeButtons(const sf::Vector2i &mousePos, SoundEngine &soundEngine);
     const uint8_t updateDeathScreenButtons(const sf::Vector2i &mousePos);
     void updatePlayerAttributes();
-    void update(sf::Vector2f &mousePosView, float waveCountdown, float bossHP,
-                float dt);
+    void update(sf::Vector2f &mousePosView, float waveCountdown, float bossHP, float dt);
     void draw(sf::RenderTarget &target);
 
 private:
@@ -66,10 +65,13 @@ private:
     FloatingTextSystem &floatingTextSystem;
     StatsGUI *statsGUI;
     ShopGUI *shopGUI;
+    HeroGUI *heroGUI;
     UpgradeGUI *upgradeGUI;
     AbilityUpgradeGUI *abilityUpgradeGUI;
 
-    enum class SideGUI { SHOP, ABILITY_UPGRADE, UPGRADE, NONE };
+    enum class SideGUI { SHOP, HERO, ABILITY_UPGRADE, UPGRADE, NONE };
+
+    std::string difficultyName;
 
     SideGUI sideGUI;
 
@@ -99,15 +101,14 @@ private:
 
     float titleCooldown;
     float waveCountdown;
+    float waveBreakLimit;
 
     sf::RectangleShape death_background;
     sf::RectangleShape escape_background;
 
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
-        text_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>> text_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>>
-        sprite_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>> sprite_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
 
     std::unordered_map<std::string, std::string> &lang;

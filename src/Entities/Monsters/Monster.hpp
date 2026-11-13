@@ -6,10 +6,17 @@
 
 class FloatingTextSystem;
 
+enum class TargetType { NONE, PLAYER, TRAP };
+
+struct Target {
+    sf::Vector2f position;
+    sf::Vector2f center;
+    TargetType type;
+};
+
 class Monster : public Entity {
 public:
-    Monster(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
-            float t_y, float difficulty_mod, float wave_mod,
+    Monster(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y, float difficulty_mod, float wave_mod,
             const std::vector<sf::FloatRect> &obstaclesBounds);
     virtual ~Monster();
 
@@ -19,20 +26,19 @@ public:
     const bool hasDeadCountdownExpired() const;
 
     void setGold(uint32_t gold);
+    void setFrozen(bool t_frozen);
 
-    virtual const bool
-    hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
-                      Player &player, SoundEngine &soundEngine,
-                      FloatingTextSystem &floatingTextSystem);
-    const bool hasLineOfSight(const std::vector<sf::FloatRect> &obstaclesBounds,
-                              const sf::Vector2f &a_p1,
+    virtual const bool hasAttackedPlayer(const std::vector<sf::FloatRect> &obstaclesBounds, Player &player,
+                                         SoundEngine &soundEngine, FloatingTextSystem &floatingTextSystem);
+    const bool hasLineOfSight(const std::vector<sf::FloatRect> &obstaclesBounds, const sf::Vector2f &a_p1,
                               const sf::Vector2f &a_p2);
 
+    void playDeadSound(SoundEngine &soundEngine);
     void dyingAnimation(float dt);
+    void updateTarget(Target target);
 
-    void calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds,
-                     Player &player, const std::vector<sf::Vector2f> &positions,
-                     float dt);
+    void calculateAI(const std::vector<sf::FloatRect> &obstaclesBounds, Player &player,
+                     const std::vector<sf::Vector2f> &positions, bool isExtreme, float dt);
 
     void spawn(float dt);
     virtual void update(float dt);
@@ -40,9 +46,7 @@ public:
     virtual void drawShadow(sf::RenderTarget &target);
 
 protected:
-    virtual const bool
-    canAttackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds,
-                    Player &player);
+    virtual const bool canAttackPlayer(const std::vector<sf::FloatRect> &obstaclesBounds, Player &player);
 
     sf::Sprite shadow;
     sf::Texture shadow_texture;
@@ -55,6 +59,9 @@ protected:
     float deadCountdown;
 
     bool soundPlayed;
+    bool frozen;
+
+    Target target;
 
     std::unique_ptr<AIComponent> AI;
 };

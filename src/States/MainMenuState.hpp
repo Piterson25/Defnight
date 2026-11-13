@@ -5,41 +5,56 @@
 #include "SettingsState.hpp"
 #include "StatsState.hpp"
 
-#define VERSION "v0.2.4"
+#define VERSION "v0.2.5"
 
 class MainMenuState : public State {
 public:
-    MainMenuState(float gridSize, sf::RenderWindow &window,
-                  GameSettings &gameSettings, SoundEngine &soundEngine,
+    MainMenuState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings, SoundEngine &soundEngine,
                   MusicEngine &musicEngine, std::stack<State *> &states);
-    ~MainMenuState();
+    ~MainMenuState() override;
 
-    void initGUI();
-    void resetGUI();
+    void initGUI() override;
+    void resetGUI() override;
 
     void update(float dt) override;
     void draw(sf::RenderTarget *target = NULL) override;
 
 private:
+    void initLoadingPage();
+    void initMainPage();
+    void initCreditsPage();
+    void initRanksPage();
+    void initChooseMapPage();
+    void initChooseHeroPage();
+    void initChooseDifficultyPage();
     void fadingEffect(float dt);
     void setPlayerRank();
+
+    enum class Page { LOADING, MAIN, CREDITS, RANKS, CHOOSE_MAP, CHOOSE_HERO, CHOOSE_DIFFICULTY };
+
+    Page page;
 
     struct RankText {
         std::unique_ptr<gui::Text> rank;
         std::unique_ptr<gui::Text> xp;
     };
 
+    struct Map {
+        sf::Texture texture;
+        MAP type;
+        std::string name;
+        uint32_t number;
+    };
+
+    std::vector<Map> maps;
+
     std::vector<RankText> ranksTexts;
     PlayerStats::Rank playerRank;
 
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
-        text_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>> text_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>>
-        sprite_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>> sprite_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
-
-    uint16_t page;
 
     bool loadedPlayerData;
     PlayerStats::PlayerData playerData;
@@ -65,9 +80,9 @@ private:
 
     sf::Texture abilities_texture;
 
-    std::vector<std::unique_ptr<gui::Sprite>> abilties;
+    std::vector<std::unique_ptr<gui::Sprite>> abilities;
 
-    std::string map_name;
-    std::string hero_name;
-    std::string difficulty_name;
+    CurrentGame newGame;
+
+    Map chosenMap;
 };

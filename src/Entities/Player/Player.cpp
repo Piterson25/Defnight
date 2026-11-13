@@ -1,34 +1,39 @@
 #include "Player.hpp"
 
-Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
-               float t_y)
-    : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f)
+Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y)
+    : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f), shadow(shadow_texture), ability(ability_texture),
+      glow(glow_texture)
 {
-    this->texture.loadFromFile("assets/textures/player/" + toLowerCase(t_name) +
-                               ".png");
-    this->sprite.setTexture(this->texture);
-    this->entitySize =
-        static_cast<uint32_t>(this->sprite.getGlobalBounds().width / 128);
-    this->sprite.setTextureRect(sf::IntRect(0, 32, 16, 16));
-    this->sprite.setScale(calcScale(4, vm), calcScale(4, vm));
+    this->attackType = AttackType::MELEE;
+    this->heroName = HeroName::WARRIOR;
+    this->texture = sf::Texture("assets/textures/player/" + toLowerCase(t_name) + ".png");
+    this->sprite = sf::Sprite(this->texture);
+    this->sprite.setPosition({t_x, t_y});
+    this->entitySize = static_cast<uint32_t>(this->sprite.getGlobalBounds().size.x / 128);
+    this->sprite.setTextureRect(sf::IntRect({0, 32}, {16, 16}));
+    this->sprite.setScale({calcScale(4, vm), calcScale(4, vm)});
     this->sprite.setColor(sf::Color(255, 255, 255, 0));
 
-    this->shadow_texture.loadFromFile("assets/textures/entity_shadow.png");
-    this->shadow.setTexture(this->shadow_texture);
-    this->shadow.setTextureRect(sf::IntRect(0, 0, 8, 4));
-    this->shadow.setScale(calcScale(4, vm), calcScale(4, vm));
-    this->shadow.setPosition(this->getDownCenter().x -
-                                 this->shadow.getTextureRect().width / 2 *
-                                     this->shadow.getScale().x,
-                             this->getDownCenter().y);
+    this->shadow_texture = sf::Texture("assets/textures/entity_shadow.png");
+    this->shadow = sf::Sprite(this->shadow_texture);
+    this->shadow.setTextureRect(sf::IntRect({0, 0}, {8, 4}));
+    this->shadow.setScale({calcScale(4, vm), calcScale(4, vm)});
+    this->shadow.setPosition(
+        {this->getDownCenter().x - (this->shadow.getTextureRect().size.x * 0.5f) * this->shadow.getScale().x,
+         this->getDownCenter().y});
     this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
-    this->ability_texture.loadFromFile("assets/textures/abilities.png");
-    this->ability.setTexture(this->ability_texture);
-    this->ability.setScale(calcScale(4, vm), calcScale(4, vm));
-    this->ability.setTextureRect(sf::IntRect(0, 0, 0, 0));
-    this->ability.setPosition(this->sprite.getPosition().x,
-                              this->sprite.getPosition().y + calcY(52, vm));
+    this->glow_texture = sf::Texture("assets/textures/player_glow.png");
+    this->glow = sf::Sprite(this->glow_texture);
+    this->glow.setTextureRect(sf::IntRect({0, 0}, {16, 16}));
+    this->glow.setScale({calcScale(4, vm), calcScale(4, vm)});
+    this->glow.setPosition({this->getPosition().x, this->getPosition().y + calcY(8, vm)});
+    this->glow.setColor(sf::Color(255, 255, 255, 128));
+
+    this->ability_texture = sf::Texture("assets/textures/abilities_icons.png");
+    this->ability = sf::Sprite(this->ability_texture);
+    this->ability.setScale({calcScale(4, vm), calcScale(4, vm)});
+    this->ability.setTextureRect(sf::IntRect({0, 0}, {0, 0}));
     this->ability.setColor(sf::Color(255, 255, 255, 0));
 
     this->damageDealt = 0;
@@ -38,7 +43,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->armor = 0;
     this->reg = 0;
     this->level = 1;
-    this->maxXP = 40;
+    this->maxXP = 50;
     this->pendingXP = 0;
     this->maxHP = 10;
     this->HP = 10;
@@ -51,12 +56,16 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->projectileAttack = 0;
     this->projectilePiercing = 1;
     this->projectileArea = 1;
+    this->projectilesNumber = 1;
     this->kills = 0;
     this->reach = 1;
     this->upgraded = false;
     this->increasedArmor = 0;
     this->increasedReg = 0;
     this->increasedAttack = 0;
+    this->increasedAttackSpeed = 0;
+    this->increasedSpeed = 0;
+    this->increasedCriticalChance = 0;
     this->increasedGold = 0;
     this->increasedTargets = 0;
     this->goldReward = 0;
@@ -69,11 +78,25 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
     this->spawned = false;
     this->spawnCountdown = 0.f;
     this->soundPlayed = false;
+    this->invisible = false;
+    this->trapAttack = 0;
+    this->trappedTime = 20.f;
+    this->trapScentRange = 5.f;
 
     this->abilityComponent = std::make_unique<AbilityComponent>(this->vm);
 }
 
 Player::~Player() = default;
+
+const AttackType Player::getAttackType() const
+{
+    return this->attackType;
+}
+
+const HeroName Player::getHeroName() const
+{
+    return this->heroName;
+}
 
 const uint32_t Player::getBoughtItems() const
 {
@@ -150,6 +173,11 @@ const uint32_t Player::getProjectileArea() const
     return this->projectileArea;
 }
 
+const uint32_t Player::getProjectilesNumber() const
+{
+    return this->projectilesNumber;
+}
+
 const uint32_t Player::getKills() const
 {
     return this->kills;
@@ -175,6 +203,21 @@ const uint32_t Player::getIncreasedAttack() const
     return this->increasedAttack;
 }
 
+const uint32_t Player::getIncreasedAttackSpeed() const
+{
+    return this->increasedAttackSpeed;
+}
+
+const uint32_t Player::getIncreasedSpeed() const
+{
+    return this->increasedSpeed;
+}
+
+const uint32_t Player::getIncreasedCriticalChance() const
+{
+    return this->increasedCriticalChance;
+}
+
 const uint32_t Player::getIncreasedGold() const
 {
     return this->increasedGold;
@@ -193,6 +236,11 @@ const uint32_t Player::getGoldReward() const
 const uint32_t Player::getAttackLimit() const
 {
     return this->attackLimit;
+}
+
+const float Player::getRegCooldown() const
+{
+    return this->regCooldown;
 }
 
 const float Player::getTimeSlowdown() const
@@ -235,10 +283,24 @@ const uint32_t Player::getAttackIncrease() const
     return this->abilityComponent->getAttackIncrease();
 }
 
+const uint32_t Player::getTrapAttack() const
+{
+    return this->trapAttack;
+}
+
+const float Player::getTrappedTime() const
+{
+    return this->trappedTime;
+}
+
+const uint32_t Player::getTrapScentRange() const
+{
+    return this->trapScentRange;
+}
+
 const bool Player::isParticleCooldown(float dt)
 {
     this->particleCooldown += dt;
-
     if (this->particleCooldown > 0.1f) {
         this->particleCooldown = 0.f;
         return true;
@@ -281,6 +343,11 @@ const float Player::getAbilityTotalMaxTime() const
     return this->abilityComponent->getAbilityTotalMaxTime();
 }
 
+const bool Player::isInvisible() const
+{
+    return this->invisible;
+}
+
 void Player::setBoughtItems(uint32_t t_boughtItems)
 {
     this->boughtItems = t_boughtItems;
@@ -303,7 +370,12 @@ void Player::setReg(uint32_t t_reg)
 
 void Player::setSprint(float t_sprint)
 {
-    this->sprint = t_sprint;
+    if (t_sprint > maxSprint) {
+        this->sprint = maxSprint;
+    }
+    else {
+        this->sprint = t_sprint;
+    }
 }
 
 void Player::setMaxSprint(uint32_t t_maxSprint)
@@ -329,6 +401,11 @@ void Player::setProjectilePiercing(uint32_t t_projectilePiercing)
 void Player::setProjectileArea(uint32_t t_projectileArea)
 {
     this->projectileArea = t_projectileArea;
+}
+
+void Player::setProjectilesNumber(uint32_t t_projectilesNumber)
+{
+    this->projectilesNumber = t_projectilesNumber;
 }
 
 void Player::setIncreasedArmor(uint32_t t_increasedArmor)
@@ -426,28 +503,42 @@ void Player::setPlayedSound(bool t_soundPlayed)
     this->soundPlayed = t_soundPlayed;
 }
 
-void Player::controls(const std::unordered_map<std::string, int> &keybinds,
-                      float dt)
+void Player::setInvisible(bool t_invisible)
+{
+    this->invisible = t_invisible;
+}
+
+void Player::setTrapAttack(uint32_t t_attack)
+{
+    this->trapAttack = t_attack;
+}
+
+void Player::setTrappedTime(float t_trappedTime)
+{
+    this->trappedTime = t_trappedTime;
+}
+
+void Player::setTrapScentRange(float t_trapScentRange)
+{
+    this->trapScentRange = t_trapScentRange;
+}
+
+void Player::controls(const std::unordered_map<std::string, int> &keybinds, bool isExtreme, float dt)
 {
     this->velocity = sf::Vector2f(0.f, 0.f);
 
-    const float vel = ((this->speed * 0.2f + 0.8f) * 2.f *
-                       this->sprite.getGlobalBounds().width) *
-                      dt;
+    const float vel = ((this->speed * 0.2f + 0.8f) * 2.f * this->sprite.getGlobalBounds().size.x) * dt;
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_UP")))) {
         this->velocity.y += -(vel);
     }
-    if (sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Key(keybinds.at("MOVE_DOWN")))) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_DOWN")))) {
         this->velocity.y += vel;
     }
-    if (sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Key(keybinds.at("MOVE_LEFT")))) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_LEFT")))) {
         this->velocity.x += -(vel);
     }
-    if (sf::Keyboard::isKeyPressed(
-            sf::Keyboard::Key(keybinds.at("MOVE_RIGHT")))) {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(keybinds.at("MOVE_RIGHT")))) {
         this->velocity.x += vel;
     }
 
@@ -457,7 +548,8 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds,
             this->velocity *= 1.5f;
 
             this->sprinting = true;
-            const float minusSprint = dt * 10.f;
+            const float modifier = isExtreme ? 2.0f : 1.0f;
+            const float minusSprint = dt * 10.f * modifier;
 
             if (this->sprint - minusSprint > 0.f) {
                 this->sprint -= minusSprint;
@@ -482,10 +574,15 @@ void Player::controls(const std::unordered_map<std::string, int> &keybinds,
     }
 }
 
-void Player::whooshSound(SoundEngine &soundEngine)
+void Player::weaponSound(SoundEngine &soundEngine)
 {
     if (this->isAttacking() && this->frame == 80 && !this->soundPlayed) {
-        soundEngine.addSound("whoosh");
+        if (attackType == AttackType::RANGED) {
+            soundEngine.addSound("archer_attack");
+        }
+        else {
+            soundEngine.addSound("warrior_attack");
+        }
         this->soundPlayed = true;
     }
     if (this->soundPlayed && this->frame != 80) {
@@ -505,7 +602,7 @@ const bool Player::levelUp()
     else {
         newXP = this->maxXP - this->XP;
         this->level++;
-        this->maxXP += this->maxXP + this->level * 10;
+        this->maxXP += (sqrtf(5) - 1) * this->maxXP;
         this->pendingXP -= newXP;
         this->setXP(this->getXP() + newXP);
         return true;
@@ -514,10 +611,11 @@ const bool Player::levelUp()
     return false;
 }
 
-const bool Player::isHPRegenerating(float dt)
+const bool Player::isHPRegenerating(bool isExtreme, float dt)
 {
+    const float modifier = isExtreme ? 0.5f : 1.0f;
     if (this->regCooldown < 1.f && this->HP < this->maxHP) {
-        this->regCooldown += ((this->reg * 0.2f + 0.8f) / 4.f) * dt;
+        this->regCooldown += ((this->reg * 0.2f + 0.8f) / 4.f) * modifier * dt;
     }
 
     if (this->regCooldown >= 1.f) {
@@ -532,7 +630,7 @@ const bool Player::isHPRegenerating(float dt)
 
 const bool Player::isAbilityActivated()
 {
-    if (this->upgraded && sf::Mouse::isButtonPressed(sf::Mouse::Right) &&
+    if (this->upgraded && sf::Mouse::isButtonPressed(sf::Mouse::Button::Right) &&
         this->getAbilityCooldown() == this->getAbilityTotalMaxTime()) {
         this->abilityComponent->setAbilityActive(true);
         this->abilityComponent->setAbilityCooldown(0.f);
@@ -554,12 +652,8 @@ void Player::abilityCounter(float dt)
 void Player::spawn(float dt)
 {
     if (this->spawnCountdown < 0.5f) {
-        this->sprite.setColor(
-            sf::Color(255, 255, 255,
-                      static_cast<sf::Uint8>(this->spawnCountdown * 510.f)));
-        this->shadow.setColor(
-            sf::Color(255, 255, 255,
-                      static_cast<sf::Uint8>(this->spawnCountdown * 510.f)));
+        this->sprite.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(this->spawnCountdown * 510.f)));
+        this->shadow.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(this->spawnCountdown * 510.f)));
         this->spawnCountdown += dt;
     }
     if (this->spawnCountdown >= 0.5f) {
@@ -573,17 +667,23 @@ void Player::upgrade(const std::string &t_name, sf::IntRect &intRect)
 {
     this->setAbilityActive(false);
     this->upgradeAttributes(t_name, intRect);
-    this->setTexturePath("assets/textures/player/" +
-                         toLowerCase(this->getName()) + ".png");
+    this->setTexturePath("assets/textures/player/" + toLowerCase(this->getName()) + ".png");
+    switch (level) {
+        case 5:
+            this->glow.setTextureRect(sf::IntRect({16, 0}, {16, 16}));
+            break;
+        case 10:
+            this->glow.setTextureRect(sf::IntRect({32, 0}, {16, 16}));
+    }
     this->setUpgraded(true);
 }
 
 void Player::update(float dt)
 {
-    this->shadow.setPosition(this->getDownCenter().x -
-                                 this->shadow.getTextureRect().width / 2 *
-                                     this->shadow.getScale().x,
-                             this->getDownCenter().y);
+    this->shadow.setPosition(
+        {this->getDownCenter().x - (this->shadow.getTextureRect().size.x * 0.5f) * this->shadow.getScale().x,
+         this->getDownCenter().y});
+    this->glow.setPosition({this->getPosition().x, this->getPosition().y + calcY(8, vm)});
     this->ability.setPosition(this->sprite.getPosition());
 }
 
@@ -598,4 +698,5 @@ void Player::draw(sf::RenderTarget &target)
 void Player::drawShadow(sf::RenderTarget &target)
 {
     target.draw(this->shadow);
+    target.draw(this->glow);
 }

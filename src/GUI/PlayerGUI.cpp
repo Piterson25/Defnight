@@ -1,150 +1,142 @@
 #include "PlayerGUI.hpp"
 
-PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player,
-                     FloatingTextSystem &floatingTextSystem,
-                     const std::string &difficultyName,
+PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floatingTextSystem,
+                     const std::string &mapName, const std::string &t_difficultyName,
                      std::unordered_map<std::string, std::string> &lang)
-    : vm(vm), lang(lang), player(player), floatingTextSystem(floatingTextSystem)
+    : vm(vm), player(player), floatingTextSystem(floatingTextSystem), lang(lang), difficultyName(t_difficultyName)
 {
-    this->attributesTexture.loadFromFile(
-        "assets/textures/attributes_icons.png");
+    this->attributesTexture = sf::Texture("assets/textures/attributes_icons.png");
 
     this->statsGUI = new StatsGUI(this->vm, this->player, this->lang);
 
     this->titleCooldown = 0.f;
     this->texts["WAVE_NEW_MOBS"] =
-        std::make_unique<gui::Text>("", calcChar(16, vm), calcX(640, vm),
-                                    calcY(562, vm), gui::FLAMINGO, true);
-    this->texts["BIG_WAVE_NUMBER"] = std::make_unique<gui::Text>(
-        this->lang["WAVE"], calcChar(64, vm), calcX(640, vm), calcY(256, vm),
-        gui::WHITE, true);
-    this->texts["MOBS_TO_KILL"] = std::make_unique<gui::Text>(
-        this->lang["MONSTER"], calcChar(32, vm), calcX(640, vm), calcY(512, vm),
-        gui::LIGHT_GREY, true);
+        std::make_unique<gui::ShadowText>("", calcChar(16, vm), calcX(640, vm), calcY(562, vm), gui::FLAMINGO, true);
+    this->texts["BIG_WAVE_NUMBER"] = std::make_unique<gui::ShadowText>(
+        this->lang["WAVE"], calcChar(64, vm), calcX(640, vm), calcY(256, vm), gui::WHITE, true);
+    this->texts["MOBS_TO_KILL"] = std::make_unique<gui::ShadowText>(
+        this->lang["MONSTER"], calcChar(32, vm), calcX(640, vm), calcY(512, vm), gui::LIGHT_GREY, true);
     this->waveCountdown = 0.f;
+    this->waveBreakLimit = 10.f;
 
     this->leveling = false;
 
-    this->texts["LEVEL_UP"] = std::make_unique<gui::Text>(
-        "LEVEL UP!", calcChar(32, vm), calcX(640, vm), calcY(256, vm),
-        gui::GOLD, true);
-    this->sprites["LEVEL_UP"] = std::make_unique<gui::Sprite>(
-        "assets/textures/bottom_gui.png", calcX(640, vm), calcY(460, vm),
-        calcScale(1, vm), true);
+    this->texts["LEVEL_UP"] = std::make_unique<gui::ShadowText>("LEVEL UP!", calcChar(32, vm), calcX(640, vm),
+                                                                calcY(256, vm), gui::GOLD, true);
+    this->sprites["LEVEL_UP"] = std::make_unique<gui::Sprite>("assets/textures/bottom_gui.png", calcX(640, vm),
+                                                              calcY(460, vm), calcScale(1, vm), true);
 
     this->option1 = Option{
-        std::make_unique<gui::Sprite>(this->attributesTexture, calcX(516, vm),
-                                      calcY(524, vm), calcScale(4, vm), false),
-        std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, calcX(504, vm),
-                                            calcY(512, vm), calcScale(1, vm),
-                                            false),
-        std::make_unique<gui::Text>("", calcChar(16, vm), calcX(548, vm),
-                                    calcY(608, vm), gui::WHITE, false),
-        std::make_unique<gui::Text>("", calcChar(16, vm), calcX(548, vm),
-                                    calcY(630, vm), gui::WHITE, false),
+        std::make_unique<gui::Sprite>(this->attributesTexture, calcX(516, vm), calcY(524, vm), calcScale(4, vm), false),
+        std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, calcX(504, vm), calcY(512, vm), calcScale(1, vm),
+                                            gui::GREY, gui::WHITE, false),
+        std::make_unique<gui::Text>("", calcChar(16, vm), calcX(548, vm), calcY(608, vm), gui::WHITE, false),
+        std::make_unique<gui::Text>("", calcChar(16, vm), calcX(548, vm), calcY(630, vm), gui::WHITE, false),
         0,
         0};
 
     this->option2 = Option{
-        std::make_unique<gui::Sprite>(this->attributesTexture, calcX(700, vm),
-                                      calcY(524, vm), calcScale(4, vm), false),
-        std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, calcX(688, vm),
-                                            calcY(512, vm), calcScale(1, vm),
-                                            false),
-        std::make_unique<gui::Text>("", calcChar(16, vm), calcX(732, vm),
-                                    calcY(608, vm), gui::WHITE, false),
-        std::make_unique<gui::Text>("", calcChar(16, vm), calcX(732, vm),
-                                    calcY(630, vm), gui::WHITE, false),
+        std::make_unique<gui::Sprite>(this->attributesTexture, calcX(700, vm), calcY(524, vm), calcScale(4, vm), false),
+        std::make_unique<gui::ButtonSprite>(gui::RECT_BUTTON, calcX(688, vm), calcY(512, vm), calcScale(1, vm),
+                                            gui::GREY, gui::WHITE, false),
+        std::make_unique<gui::Text>("", calcChar(16, vm), calcX(732, vm), calcY(608, vm), gui::WHITE, false),
+        std::make_unique<gui::Text>("", calcChar(16, vm), calcX(732, vm), calcY(630, vm), gui::WHITE, false),
         0,
         0};
 
-    this->sprites["UPGRADES"] = std::make_unique<gui::Sprite>(
-        "assets/textures/side_gui.png", calcX(1280, vm), calcY(128, vm),
-        calcScale(1, vm), false);
+    this->sprites["UPGRADES"] = std::make_unique<gui::Sprite>("assets/textures/side_gui.png", calcX(1280, vm),
+                                                              calcY(128, vm), calcScale(1, vm), false);
     this->sprites["UPGRADES"]->flipHorizontal();
 
     this->upgradeGUI = new UpgradeGUI(vm, this->player);
     this->upgrading = false;
-    this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(222, vm),
-                                    this->lang["NINJA"], 0, 7, 1, "1");
-    this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(392, vm),
-                                    this->lang["KNIGHT"], 3, 5, 1, "1");
-    this->upgradeGUI->changeUpgrade("UPGRADE3", calcX(1024, vm), calcY(562, vm),
-                                    this->lang["SCOUT"], 6, 2, 1, "1");
+    switch (player.getHeroName()) {
+        case HeroName::WARRIOR:
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(222, vm), this->lang["NINJA"], 0, 7, 1,
+                                            "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(392, vm), this->lang["KNIGHT"], 6, 5, 1,
+                                            "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE3", calcX(1024, vm), calcY(562, vm), this->lang["SCOUT"], 12, 2, 1,
+                                            "1");
+            break;
+        case HeroName::ARCHER:
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(222, vm), this->lang["HUNTER"], 3, 6, 1,
+                                            "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(392, vm), this->lang["SHOOTER"], 9, 1, 1,
+                                            "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE3", calcX(1024, vm), calcY(562, vm), this->lang["DARK"], 15, 2, 1,
+                                            "1");
+            break;
+    };
 
-    this->death_background.setFillColor(
-        sf::Color(gui::RED.r, gui::RED.g, gui::RED.b, 192));
-    this->death_background.setSize(
-        sf::Vector2f(calcX(1280, vm), calcY(592, vm)));
+    this->death_background.setFillColor(sf::Color(gui::RED.r, gui::RED.g, gui::RED.b, 192));
+    this->death_background.setSize(sf::Vector2f(calcX(1280, vm), calcY(592, vm)));
     this->death_background.setPosition(sf::Vector2f(0, calcY(128, vm)));
 
-    this->texts["YOU_DIED"] = std::make_unique<gui::Text>(
-        this->lang["YOU_DIED"], calcChar(72, vm), calcX(640, vm),
-        calcY(224, vm), gui::WHITE, true);
+    this->texts["YOU_DIED"] = std::make_unique<gui::ShadowText>(this->lang["YOU_DIED"], calcChar(72, vm),
+                                                                calcX(640, vm), calcY(224, vm), gui::WHITE, true);
     this->text_buttons["RESUME"] = std::make_unique<gui::ButtonText>(
-        this->lang["RESUME"], calcChar(32, vm), calcX(640, vm), calcY(296, vm),
-        gui::WHITE, gui::LIGHT_GREY, true);
+        this->lang["RESUME"], calcChar(32, vm), calcX(640, vm), calcY(296, vm), gui::WHITE, gui::LIGHT_GREY, true);
     this->text_buttons["SETTINGS"] = std::make_unique<gui::ButtonText>(
-        this->lang["SETTINGS"], calcChar(32, vm), calcX(640, vm),
-        calcY(392, vm), gui::WHITE, gui::LIGHT_GREY, true);
+        this->lang["SETTINGS"], calcChar(32, vm), calcX(640, vm), calcY(392, vm), gui::WHITE, gui::LIGHT_GREY, true);
     this->text_buttons["MAIN_MENU"] = std::make_unique<gui::ButtonText>(
-        this->lang["MAIN_MENU"], calcChar(32, vm), calcX(640, vm),
-        calcY(488, vm), gui::WHITE, gui::LIGHT_GREY, true);
-    this->text_buttons["QUIT"] = std::make_unique<gui::ButtonText>(
-        this->lang["QUIT"], calcChar(32, vm), calcX(640, vm), calcY(584, vm),
-        gui::WHITE, gui::LIGHT_GREY, true);
+        this->lang["MAIN_MENU"], calcChar(32, vm), calcX(640, vm), calcY(488, vm), gui::WHITE, gui::LIGHT_GREY, true);
+    this->text_buttons["QUIT"] = std::make_unique<gui::ButtonText>(this->lang["QUIT"], calcChar(32, vm), calcX(640, vm),
+                                                                   calcY(584, vm), gui::WHITE, gui::LIGHT_GREY, true);
 
-    this->texts["KILLS"] = std::make_unique<gui::Text>(
-        this->lang["KILLS"] + std::to_string(player.getKills()),
-        calcChar(16, vm), calcX(640, vm), calcY(186, vm), gui::LIGHT_GREY,
-        true);
+    this->texts["KILLS"] =
+        std::make_unique<gui::ShadowText>(this->lang["KILLS"] + std::to_string(player.getKills()), calcChar(16, vm),
+                                          calcX(640, vm), calcY(186, vm), gui::LIGHT_GREY, true);
 
-    this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(
-        this->lang["DIFFICULTY_LEVEL"] + " " + this->lang[difficultyName],
-        calcChar(16, vm), calcX(640, vm), calcY(186, vm), gui::RED, true);
+    this->texts["MAP_NAME"] = std::make_unique<gui::Text>(this->lang[mapName], calcChar(16, vm), calcX(1272, vm),
+                                                          calcY(676, vm), gui::WHITE, false);
+    this->texts["MAP_NAME"]->setPosition(
+        sf::Vector2f(calcX(1272, vm) - this->texts["MAP_NAME"]->getWidth(), calcY(676, vm)));
+
+    this->texts["DIFFICULTY"] =
+        std::make_unique<gui::Text>(this->lang["DIFFICULTY_LEVEL"] + " " + this->lang[t_difficultyName],
+                                    calcChar(16, vm), calcX(1272, vm), calcY(700, vm), gui::RED, false);
+    this->texts["DIFFICULTY"]->setPosition(
+        sf::Vector2f(calcX(1272, vm) - this->texts["DIFFICULTY"]->getWidth(), calcY(700, vm)));
 
     this->escape_background.setFillColor(sf::Color(0, 0, 0, 192));
-    this->escape_background.setSize(
-        sf::Vector2f(calcX(1280, vm), calcY(720, vm)));
+    this->escape_background.setSize(sf::Vector2f(calcX(1280, vm), calcY(720, vm)));
     this->escape = false;
 
     this->sprites["SIDE_GUI"] =
-        std::make_unique<gui::Sprite>("assets/textures/side_gui.png", 0.f,
-                                      calcY(128, vm), calcScale(1, vm), false);
+        std::make_unique<gui::Sprite>("assets/textures/side_gui.png", 0.f, calcY(128, vm), calcScale(1, vm), false);
 
+    const float priceModifier = difficultyName == "EXTREME" ? 1.5f : 1.0f;
     this->abilityUpgradeGUI = new AbilityUpgradeGUI(vm, this->player);
-    this->abilityUpgradeGUI->addAbilityUpgrade("LOWER_COOLDOWN", calcX(44, vm),
-                                               calcY(324, vm), 0, "Cooldown",
-                                               "-10%", 20, 0, 5);
+    this->abilityUpgradeGUI->addAbilityUpgrade("LOWER_COOLDOWN", calcX(44, vm), calcY(324, vm), 0, "Cooldown", "-5%",
+                                               25 * priceModifier, 0);
 
     this->shopGUI = new ShopGUI(vm, this->player);
-    this->shopGUI->addShopItem("FULL_HP", calcX(44, vm), calcY(188, vm), 9,
-                               "Full HP", "+Full", 40, 0, 0);
-    this->shopGUI->addShopItem("MAX_HP", calcX(44, vm), calcY(324, vm), 3,
-                               this->lang["MAX_HP"], "+2", 20, 0, 0);
-    this->shopGUI->addShopItem("ATTACK", calcX(44, vm), calcY(460, vm), 5,
-                               this->lang["ATTACK"], "+1", 20, 0, 0);
-    this->shopGUI->addShopItem("ARMOR", calcX(44, vm), calcY(596, vm), 1,
-                               this->lang["ARMOR"], "+1", 20, player.getArmor(),
-                               10);
+    this->shopGUI->addItem("FULL_HP", calcX(44, vm), calcY(188, vm), 0, "Full", "HP", 40 * priceModifier, 0, 0);
+    this->shopGUI->addItem("HP", calcX(44, vm), calcY(324, vm), 1, "HP", "+5", 15 * priceModifier, 0, 0);
+    this->shopGUI->addItem("FULL_SPRINT", calcX(44, vm), calcY(460, vm), 2, "Full", "Sprint", 40 * priceModifier, 0, 0);
+    this->shopGUI->addItem("SPRINT", calcX(44, vm), calcY(596, vm), 3, "Sprint", "+50", 15 * priceModifier, 0, 0);
+    this->heroGUI = new HeroGUI(vm, this->player);
+    this->heroGUI->addItem("MAX_HP", calcX(44, vm), calcY(188, vm), 3, this->lang["MAX_HP"], "+2", 20 * priceModifier,
+                           0, 0);
+    this->heroGUI->addItem("ATTACK", calcX(44, vm), calcY(324, vm), 5, this->lang["ATTACK"], "+1", 20 * priceModifier,
+                           0, 0);
+    this->heroGUI->addItem("ARMOR", calcX(44, vm), calcY(460, vm), 1, this->lang["ARMOR"], "+1", 15 * priceModifier,
+                           player.getArmor(), 10);
 
     this->sideGUI = SideGUI::NONE;
 
     this->bossWave = false;
     this->bossCooldown = 0.f;
 
-    this->texts["BOSS"] = std::make_unique<gui::Text>(
-        "Minotaur", calcChar(16, vm), calcX(640, vm), calcY(136, vm), gui::PINK,
-        true);
-    this->sprites["BOSS_BAR"] = std::make_unique<gui::Sprite>(
-        "assets/textures/bars.png", calcX(640, vm), calcY(158, vm),
-        calcScale(1, vm), true);
-    this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(0, 60, 512, 20));
-    this->sprites["BOSS_BAR_EMPTY"] = std::make_unique<gui::Sprite>(
-        "assets/textures/bars.png", calcX(640, vm), calcY(158, vm),
-        calcScale(1, vm), true);
-    this->sprites["BOSS_BAR_EMPTY"]->setTextureRect(
-        sf::IntRect(0, 80, 512, 20));
+    this->texts["BOSS"] = std::make_unique<gui::ShadowText>("Minotaur", calcChar(16, vm), calcX(640, vm),
+                                                            calcY(136, vm), gui::FLAMINGO, true);
+    this->sprites["BOSS_BAR"] = std::make_unique<gui::Sprite>("assets/textures/bars.png", calcX(640, vm),
+                                                              calcY(158, vm), calcScale(1, vm), true);
+    this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {512, 20}));
+    this->sprites["BOSS_BAR_EMPTY"] = std::make_unique<gui::Sprite>("assets/textures/bars.png", calcX(640, vm),
+                                                                    calcY(158, vm), calcScale(1, vm), true);
+    this->sprites["BOSS_BAR_EMPTY"]->setTextureRect(sf::IntRect({0, 80}, {512, 20}));
 
     this->boss_bar_percent = 1.f;
 }
@@ -153,12 +145,12 @@ PlayerGUI::~PlayerGUI()
 {
     delete this->statsGUI;
     delete this->shopGUI;
+    delete this->heroGUI;
     delete this->upgradeGUI;
     delete this->abilityUpgradeGUI;
 }
 
-void PlayerGUI::updateOption(Option &option, std::vector<short> &id_vector,
-                             float pos)
+void PlayerGUI::updateOption(Option &option, std::vector<short> &id_vector, float pos)
 {
     const short id = static_cast<short>(Random::Float() * id_vector.size());
 
@@ -203,7 +195,7 @@ void PlayerGUI::updateOption(Option &option, std::vector<short> &id_vector,
     }
     option.optionValue->center(pos);
     id_vector.erase(id_vector.begin() + id);
-    option.optionSprite->setTextureRect(sf::IntRect(option.id * 16, 0, 16, 16));
+    option.optionSprite->setTextureRect(sf::IntRect({static_cast<int>(option.id * 16), 0}, {16, 16}));
     option.optionDesc->center(pos);
 }
 
@@ -212,7 +204,7 @@ void PlayerGUI::levelUpPlayer(uint32_t optionID, uint32_t optionValue)
     switch (optionID) {
         case 1:
             player.setArmor(player.getArmor() + optionValue);
-            shopGUI->updateSegments("ARMOR");
+            heroGUI->updateSegments("ARMOR");
             statsGUI->updateArmor();
             break;
         case 2:
@@ -253,27 +245,30 @@ void PlayerGUI::upgradePlayer(const std::string &name)
         player.endAbility();
     }
 
-    sf::IntRect intRect = sf::IntRect(0, 0, 16, 16);
+    auto intRect = sf::IntRect({0, 0}, {16, 16});
     player.upgrade(name, intRect);
     statsGUI->upgradePlayer(this->lang[name], intRect);
     this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");
-    this->abilityUpgradeGUI->updatePlayerInfo("PROJ_ATTACK",
-                                              this->lang["ATTACK"]);
-    this->abilityUpgradeGUI->updatePlayerInfo("PIERCING",
-                                              this->lang["PIERCING"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("PROJ_ATTACK", this->lang["ATTACK"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("TRAP_ATTACK", this->lang["ATTACK"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("PIERCING", this->lang["PIERCING"]);
     this->abilityUpgradeGUI->updatePlayerInfo("AREA", this->lang["AREA"]);
     this->abilityUpgradeGUI->updatePlayerInfo("ARMOR", this->lang["ARMOR"]);
     this->abilityUpgradeGUI->updatePlayerInfo("ATTACK", this->lang["ATTACK"]);
     this->abilityUpgradeGUI->updatePlayerInfo("REG", this->lang["REG"]);
-    this->abilityUpgradeGUI->updatePlayerInfo("SLOWDOWN",
-                                              this->lang["SLOWDOWN"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("SLOWDOWN", this->lang["SLOWDOWN"]);
     this->abilityUpgradeGUI->updatePlayerInfo("GOLD", this->lang["GOLD"]);
     this->abilityUpgradeGUI->updatePlayerInfo("TARGETS", this->lang["TARGETS"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("TRAPPED_TIME", this->lang["TRAPPED_TIME"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("TRAP_SCENT_RANGE", this->lang["TRAP_SCENT_RANGE"]);
+    this->abilityUpgradeGUI->updatePlayerInfo("PROJECTILES_NUMBER", this->lang["PROJECTILES_NUMBER"]);
+    player.setHP(player.getMaxHP());
+    player.setRegenerating(true);
     updatePlayerAttributes();
-    this->update_Gold();
+    this->updateGold();
 }
 
-void PlayerGUI::update_level(SoundEngine &soundEngine)
+void PlayerGUI::updateLevel(SoundEngine &soundEngine)
 {
     soundEngine.addSound("levelup");
     this->leveling = true;
@@ -305,28 +300,40 @@ void PlayerGUI::update_level(SoundEngine &soundEngine)
 
     if (player.getLevel() == 10) {
         if (player.getName() == "NINJA") {
-            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm),
-                                            calcY(222, vm),
-                                            this->lang["SENSEI"], 1, 6, 1, "1");
-            this->upgradeGUI->changeUpgrade(
-                "UPGRADE2", calcX(1024, vm), calcY(392, vm),
-                this->lang["BOMBER"], 2, 8, 1, "10%");
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(222, vm), this->lang["SENSEI"], 1, 6, 1,
+                                            "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(392, vm), this->lang["BOMBER"], 2, 8, 1,
+                                            "10%");
         }
         else if (player.getName() == "KNIGHT") {
-            this->upgradeGUI->changeUpgrade(
-                "UPGRADE1", calcX(1024, vm), calcY(210, vm),
-                this->lang["CRUSADER"], 4, 3, 2, "2");
-            this->upgradeGUI->changeUpgrade(
-                "UPGRADE2", calcX(1024, vm), calcY(380, vm),
-                this->lang["PALADIN"], 5, 6, 1, "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["CRUSADER"], 7, 3,
+                                            2, "2");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["PALADIN"], 8, 6, 1,
+                                            "1");
         }
         else if (player.getName() == "SCOUT") {
-            this->upgradeGUI->changeUpgrade(
-                "UPGRADE1", calcX(1024, vm), calcY(210, vm),
-                this->lang["ASSASSIN"], 7, 6, 1, "1");
-            this->upgradeGUI->changeUpgrade(
-                "UPGRADE2", calcX(1024, vm), calcY(380, vm),
-                this->lang["KILLER"], 8, 8, 1, "10%");
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["ASSASSIN"], 13, 6,
+                                            1, "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["KILLER"], 14, 8, 1,
+                                            "10%");
+        }
+        else if (player.getName() == "HUNTER") {
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["RANGER"], 4, 7, 1,
+                                            "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["TRAPPER"], 5, 7, 2,
+                                            "1");
+        }
+        else if (player.getName() == "SHOOTER") {
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["ARROWSTORM"], 10,
+                                            5, 1, "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["CROSSBOWMAN"], 11,
+                                            8, 1, "10%");
+        }
+        else if (player.getName() == "DARK") {
+            this->upgradeGUI->changeUpgrade("UPGRADE1", calcX(1024, vm), calcY(210, vm), this->lang["PHANTOM"], 16, 5,
+                                            1, "1");
+            this->upgradeGUI->changeUpgrade("UPGRADE2", calcX(1024, vm), calcY(380, vm), this->lang["PREDATOR"], 17, 8,
+                                            1, "10%");
         }
     }
 }
@@ -350,30 +357,31 @@ void PlayerGUI::updateSprint()
     this->statsGUI->updateSprint();
 }
 
-void PlayerGUI::updatingHP(SoundEngine &soundEngine, float dt)
+void PlayerGUI::updatingHP(SoundEngine &soundEngine, bool isExtreme, float dt)
 {
-    this->statsGUI->updatingHP(dt);
+    this->statsGUI->updatingHP(isExtreme, dt);
 
     if (this->isShopping() && player.getHP() / player.getMaxHP() == 1) {
         this->shopGUI->disableItem("FULL_HP");
+        this->shopGUI->disableItem("HP");
     }
     else if (player.isDead()) {
         soundEngine.addSound("gameover");
     }
 }
 
-void PlayerGUI::update_Gold()
+void PlayerGUI::updateGold()
 {
     statsGUI->updateGold();
     shopGUI->updateItemFrames();
+    heroGUI->updateItemFrames();
     abilityUpgradeGUI->updateItemFrames();
 }
 
-void PlayerGUI::update_ability(float dt)
+void PlayerGUI::updateAbility(float dt)
 {
     if (player.getAbilityCooldown() > 0.f) {
-        const float value = player.getAbilityCooldown() /
-                            (player.getAbilityTotalMaxTime()) * calcX(80, vm);
+        const float value = player.getAbilityCooldown() / (player.getAbilityTotalMaxTime()) * calcX(80, vm);
         if (this->statsGUI->updateAbilityIcon(value)) {
             abilityUpgradeGUI->updateItemFrames();
         }
@@ -386,9 +394,18 @@ void PlayerGUI::setAbilityIcon()
     abilityUpgradeGUI->updateItemFrames();
 }
 
+void PlayerGUI::setWaveBreakLimit(float t_waveBreakLimit)
+{
+    waveBreakLimit = t_waveBreakLimit;
+}
+
 void PlayerGUI::updatingSprint(float dt)
 {
     this->statsGUI->updatingSprint(dt);
+    if (this->isShopping() && player.getSprint() / player.getMaxSprint() == 1) {
+        this->shopGUI->disableItem("FULL_SPRINT");
+        this->shopGUI->disableItem("SPRINT");
+    }
 }
 
 void PlayerGUI::updateIsShopping()
@@ -398,6 +415,16 @@ void PlayerGUI::updateIsShopping()
     }
     else {
         this->sideGUI = SideGUI::SHOP;
+    }
+}
+
+void PlayerGUI::updateIsBuyingHero()
+{
+    if (this->isBuyingHero()) {
+        this->sideGUI = SideGUI::NONE;
+    }
+    else {
+        this->sideGUI = SideGUI::HERO;
     }
 }
 
@@ -413,22 +440,17 @@ void PlayerGUI::updateIsBuyingAbility()
 
 void PlayerGUI::updateKills()
 {
-    this->texts["KILLS"]->setText(this->lang["KILLS"] +
-                                  std::to_string(player.getKills()));
+    this->texts["KILLS"]->setText(this->lang["KILLS"] + std::to_string(player.getKills()));
 }
 
-void PlayerGUI::updateMonsterCountWave(const std::string &language,
-                                       uint32_t wave, bool bossWave,
-                                       const size_t &monsterCount,
-                                       SoundEngine &soundEngine,
-                                       MusicEngine &musicEngine)
+void PlayerGUI::updateMonsterCountWave(const std::string &language, uint32_t wave, bool bossWave,
+                                       const size_t &monsterCount, SoundEngine &soundEngine, MusicEngine &musicEngine)
 {
     this->bossWave = bossWave;
 
     this->statsGUI->updateWaveNumber(this->lang["WAVE"] + std::to_string(wave));
 
-    this->texts["BIG_WAVE_NUMBER"]->setText(this->lang["WAVE"] +
-                                            std::to_string(wave));
+    this->texts["BIG_WAVE_NUMBER"]->setText(this->lang["WAVE"] + std::to_string(wave));
     this->texts["BIG_WAVE_NUMBER"]->center(calcX(640, this->vm));
 
     if (bossWave) {
@@ -437,24 +459,19 @@ void PlayerGUI::updateMonsterCountWave(const std::string &language,
 
     switch (wave) {
         case 1:
-            this->texts["WAVE_NEW_MOBS"]->setText(this->lang["NEW_TYPE"] +
-                                                  this->lang["GOBLIN"]);
+            this->texts["WAVE_NEW_MOBS"]->setText(this->lang["NEW_TYPE"] + this->lang["GOBLIN"]);
             break;
         case 3:
-            this->texts["WAVE_NEW_MOBS"]->setText(this->lang["NEW_TYPE"] +
-                                                  this->lang["SPIDER"]);
+            this->texts["WAVE_NEW_MOBS"]->setText(this->lang["NEW_TYPE"] + this->lang["SPIDER"]);
             break;
         case 5:
-            this->texts["WAVE_NEW_MOBS"]->setText(this->lang["NEW_TYPE"] +
-                                                  this->lang["ORC"]);
+            this->texts["WAVE_NEW_MOBS"]->setText(this->lang["NEW_TYPE"] + this->lang["ORC"]);
             break;
-        case 7:
-            this->texts["WAVE_NEW_MOBS"]->setText(this->lang["NEW_TYPE"] +
-                                                  this->lang["CYCLOPS"]);
+        case 8:
+            this->texts["WAVE_NEW_MOBS"]->setText(this->lang["NEW_TYPE"] + this->lang["CYCLOPS"]);
             break;
         case 10:
-            this->texts["WAVE_NEW_MOBS"]->setText(this->lang["NEW_TYPE"] +
-                                                  this->lang["MINOTAUR"]);
+            this->texts["WAVE_NEW_MOBS"]->setText(this->lang["NEW_TYPE"] + this->lang["MINOTAUR"]);
             break;
         default:
             this->texts["WAVE_NEW_MOBS"]->setText("");
@@ -468,37 +485,30 @@ void PlayerGUI::updateMonsterCountWave(const std::string &language,
     if (language == "polish") {
         if (monsterCount > 10) {
             if (monsterCount % 10 >= 2 && monsterCount % 10 <= 4) {
-                this->texts["MOBS_TO_KILL"]->setText(
-                    std::to_string(monsterCount) + " potwory");
+                this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " potwory");
             }
             else {
-                this->texts["MOBS_TO_KILL"]->setText(
-                    std::to_string(monsterCount) + " potworow");
+                this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " potworow");
             }
         }
         else {
             if (monsterCount == 1) {
-                this->texts["MOBS_TO_KILL"]->setText(
-                    std::to_string(monsterCount) + " potwor");
+                this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " potwor");
             }
             else if (monsterCount < 5) {
-                this->texts["MOBS_TO_KILL"]->setText(
-                    std::to_string(monsterCount) + " potwory");
+                this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " potwory");
             }
             else {
-                this->texts["MOBS_TO_KILL"]->setText(
-                    std::to_string(monsterCount) + " potworow");
+                this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " potworow");
             }
         }
     }
     else {
         if (monsterCount == 1) {
-            this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) +
-                                                 " monster");
+            this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " monster");
         }
         else {
-            this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) +
-                                                 " monsters");
+            this->texts["MOBS_TO_KILL"]->setText(std::to_string(monsterCount) + " monsters");
         }
     }
     this->texts["MOBS_TO_KILL"]->center(calcX(640, this->vm));
@@ -508,8 +518,7 @@ void PlayerGUI::updateMonsterCountWave(const std::string &language,
 
 void PlayerGUI::updateMonsterCount(const size_t &monsterCount)
 {
-    statsGUI->updateMonsterCount(this->lang["MONSTER_COUNT"] +
-                                 std::to_string(monsterCount));
+    statsGUI->updateMonsterCount(this->lang["MONSTER_COUNT"] + std::to_string(monsterCount));
 }
 
 const bool PlayerGUI::hasClickedMenu(const sf::Vector2i &mousePos, bool &paused)
@@ -519,6 +528,15 @@ const bool PlayerGUI::hasClickedMenu(const sf::Vector2i &mousePos, bool &paused)
         return true;
     }
 
+    return false;
+}
+
+const bool PlayerGUI::hasClickedSkip(const sf::Vector2i &mousePos, bool &paused)
+{
+    if (this->waveCountdown < waveBreakLimit - 2.f && statsGUI->hasClickedSkip(mousePos)) {
+        this->waveCountdown = waveBreakLimit - 2.f;
+        return true;
+    }
     return false;
 }
 
@@ -544,174 +562,220 @@ void PlayerGUI::updateArmor()
     this->statsGUI->updateArmor();
 }
 
-void PlayerGUI::updateAttack()
-{
-    this->statsGUI->updateAttack();
-}
-
 void PlayerGUI::updateReg()
 {
     this->statsGUI->updateReg();
 }
 
-void PlayerGUI::updateBossHP(float dt)
+void PlayerGUI::updateAttack()
+{
+    this->statsGUI->updateAttack();
+}
+
+void PlayerGUI::updateAttackSpeed()
+{
+    this->statsGUI->updateAttackSpeed();
+}
+
+void PlayerGUI::updateSpeed()
+{
+    this->statsGUI->updateSpeed();
+}
+
+void PlayerGUI::updateCriticalChance()
+{
+    this->statsGUI->updateCritical();
+}
+
+void PlayerGUI::updateBossHP(bool isExtreme, float dt)
 {
     if (this->bossWave) {
-        const int width = this->sprites["BOSS_BAR"]->getTextureRect().width;
+        const int width = this->sprites["BOSS_BAR"]->getTextureRect().size.x;
         const int barrier = static_cast<int>(this->boss_bar_percent * 512.f);
 
         if (width > barrier) {
             const int distance = static_cast<int>(width - 1000.f * dt);
             if (distance < barrier) {
-                this->sprites["BOSS_BAR"]->setTextureRect(
-                    sf::IntRect(0, 60, barrier, 20));
+                this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {barrier, 20}));
             }
             else if (distance < 0) {
-                this->sprites["BOSS_BAR"]->setTextureRect(
-                    sf::IntRect(0, 60, 0, 20));
+                this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {0, 20}));
             }
             else {
-                this->sprites["BOSS_BAR"]->setTextureRect(
-                    sf::IntRect(0, 60, distance, 20));
+                this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {distance, 20}));
+            }
+        }
+        else if (isExtreme && width < barrier) {
+            const int distance = static_cast<int>(width + 1000.f * dt);
+            if (distance > barrier) {
+                this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {barrier, 20}));
+            }
+            else if (distance > 256) {
+                this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {0, 20}));
+            }
+            else {
+                this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect({0, 60}, {distance, 20}));
             }
         }
     }
 }
 
-void PlayerGUI::updateShopBuy(const sf::Vector2i &mousePos,
-                              SoundEngine &soundEngine)
+void PlayerGUI::updateShopBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine)
 {
     if (statsGUI->hasClickedShop(mousePos)) {
         updateIsShopping();
     }
 
     if (this->isShopping()) {
-        if (player.getHP() < player.getMaxHP() &&
-            shopGUI->hasBoughtItem(mousePos, "FULL_HP",
-                                   &this->floatingTextSystem, &soundEngine)) {
-            player.setHP(player.getMaxHP());
-            this->updateHP();
-            player.setRegenerating(true);
-            this->update_Gold();
+        if (player.getHP() < player.getMaxHP()) {
+            if (shopGUI->hasBoughtItem(mousePos, "FULL_HP", &this->floatingTextSystem, &soundEngine)) {
+                player.setHP(player.getMaxHP());
+                this->updateHP();
+                player.setRegenerating(true);
+                this->updateGold();
+            }
+            else if (shopGUI->hasBoughtItem(mousePos, "HP", &this->floatingTextSystem, &soundEngine)) {
+                player.setHP(player.getHP() + 5);
+                this->updateHP();
+                player.setRegenerating(true);
+                this->updateGold();
+            }
         }
-        else if (shopGUI->hasBoughtItem(mousePos, "MAX_HP",
-                                        &this->floatingTextSystem,
-                                        &soundEngine)) {
-            player.setMaxHP(player.getMaxHP() + 2);
-            this->updateHP();
-            player.setRegenerating(true);
-            this->update_Gold();
-        }
-        else if (shopGUI->hasBoughtItem(mousePos, "ATTACK",
-                                        &this->floatingTextSystem,
-                                        &soundEngine)) {
-            player.setAttack(player.getAttack() + 1);
-            this->update_Gold();
-        }
-        else if (shopGUI->hasBoughtItem(mousePos, "ARMOR",
-                                        &this->floatingTextSystem,
-                                        &soundEngine)) {
-            player.setArmor(player.getArmor() + 1);
-            shopGUI->updateSegments("ARMOR");
-            this->update_Gold();
+        if (player.getSprint() < player.getMaxSprint()) {
+            if (shopGUI->hasBoughtItem(mousePos, "FULL_SPRINT", &this->floatingTextSystem, &soundEngine)) {
+                player.setSprint(player.getMaxSprint());
+                this->updateSprint();
+                this->updateGold();
+            }
+            else if (shopGUI->hasBoughtItem(mousePos, "SPRINT", &this->floatingTextSystem, &soundEngine)) {
+                player.setSprint(player.getSprint() + 50);
+                this->updateSprint();
+                this->updateGold();
+            }
         }
     }
 }
 
-void PlayerGUI::updateAbilityBuy(const sf::Vector2i &mousePos,
-                                 SoundEngine &soundEngine)
+void PlayerGUI::updateHeroBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine)
+{
+    if (statsGUI->hasClickedPlayer(mousePos)) {
+        updateIsBuyingHero();
+    }
+
+    if (this->isBuyingHero()) {
+        if (heroGUI->hasBoughtItem(mousePos, "MAX_HP", &this->floatingTextSystem, &soundEngine)) {
+            player.setMaxHP(player.getMaxHP() + 2);
+            this->updateHP();
+            player.setRegenerating(true);
+            this->updateGold();
+        }
+        else if (heroGUI->hasBoughtItem(mousePos, "ATTACK", &this->floatingTextSystem, &soundEngine)) {
+            player.setAttack(player.getAttack() + 1);
+            this->updateGold();
+        }
+        else if (heroGUI->hasBoughtItem(mousePos, "ARMOR", &this->floatingTextSystem, &soundEngine)) {
+            player.setArmor(player.getArmor() + 1);
+            heroGUI->updateSegments("ARMOR");
+            this->updateGold();
+        }
+    }
+}
+
+void PlayerGUI::updateAbilityBuy(const sf::Vector2i &mousePos, SoundEngine &soundEngine)
 {
     if (this->statsGUI->hasClickedAbilityUpgrade(mousePos)) {
         updateIsBuyingAbility();
     }
 
     if (this->isBuyingAbility() && !player.isAbilityActive()) {
-        if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "LOWER_COOLDOWN",
-                                                &this->floatingTextSystem,
-                                                &soundEngine)) {
-            player.setAbilityMaxTimeModifier(
-                player.getAbilityMaxTimeModifier() - 0.1f);
-            this->update_Gold();
+        if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "LOWER_COOLDOWN", &this->floatingTextSystem, &soundEngine)) {
+            player.setAbilityMaxTimeModifier(player.getAbilityMaxTimeModifier() - 0.05f);
+            this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("COOLDOWN", "Cooldown");
             this->abilityUpgradeGUI->updateSegments("LOWER_COOLDOWN");
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "PROJ_ATTACK",
-                                                     &this->floatingTextSystem,
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "PROJ_ATTACK", &this->floatingTextSystem,
                                                      &soundEngine)) {
             player.setProjectileAttack(player.getProjectileAttack() + 1);
-            this->update_Gold();
-            this->abilityUpgradeGUI->updatePlayerInfo("PROJ_ATTACK",
-                                                      this->lang["ATTACK"]);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("PROJ_ATTACK", this->lang["ATTACK"]);
+            this->abilityUpgradeGUI->updateSegments("PROJ_ATTACK");
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "PIERCING",
-                                                     &this->floatingTextSystem,
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "TRAP_ATTACK", &this->floatingTextSystem,
                                                      &soundEngine)) {
+            player.setTrapAttack(player.getTrapAttack() + 1);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("TRAP_ATTACK", this->lang["ATTACK"]);
+            this->abilityUpgradeGUI->updateSegments("TRAP_ATTACK");
+        }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "PIERCING", &this->floatingTextSystem, &soundEngine)) {
             player.setProjectilePiercing(player.getProjectilePiercing() + 1);
-            this->update_Gold();
-            this->abilityUpgradeGUI->updatePlayerInfo("PIERCING",
-                                                      this->lang["PIERCING"]);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("PIERCING", this->lang["PIERCING"]);
             this->abilityUpgradeGUI->updateSegments("PIERCING");
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "AREA",
-                                                     &this->floatingTextSystem,
-                                                     &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "AREA", &this->floatingTextSystem, &soundEngine)) {
             player.setProjectileArea(player.getProjectileArea() + 1);
-            this->update_Gold();
-            this->abilityUpgradeGUI->updatePlayerInfo("AREA",
-                                                      this->lang["AREA"]);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("AREA", this->lang["AREA"]);
             this->abilityUpgradeGUI->updateSegments("AREA");
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "ARMOR",
-                                                     &this->floatingTextSystem,
-                                                     &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "ARMOR", &this->floatingTextSystem, &soundEngine)) {
             player.setIncreasedArmor(player.getIncreasedArmor() + 1);
-            this->update_Gold();
-            this->abilityUpgradeGUI->updatePlayerInfo("ARMOR",
-                                                      this->lang["ARMOR"]);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("ARMOR", this->lang["ARMOR"]);
             this->abilityUpgradeGUI->updateSegments("ARMOR");
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "ATTACK",
-                                                     &this->floatingTextSystem,
-                                                     &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "ATTACK", &this->floatingTextSystem, &soundEngine)) {
             player.setIncreasedAttack(player.getIncreasedAttack() + 1);
-            this->update_Gold();
-            this->abilityUpgradeGUI->updatePlayerInfo("ATTACK",
-                                                      this->lang["ATTACK"]);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("ATTACK", this->lang["ATTACK"]);
+            this->abilityUpgradeGUI->updateSegments("ATTACK");
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "REG",
-                                                     &this->floatingTextSystem,
-                                                     &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "REG", &this->floatingTextSystem, &soundEngine)) {
             player.setIncreasedReg(player.getIncreasedReg() + 1);
-            this->update_Gold();
+            this->updateGold();
             this->abilityUpgradeGUI->updatePlayerInfo("REG", this->lang["REG"]);
             this->abilityUpgradeGUI->updateSegments("REG");
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "SLOWDOWN",
-                                                     &this->floatingTextSystem,
-                                                     &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "SLOWDOWN", &this->floatingTextSystem, &soundEngine)) {
             player.setTimeSlowdown(player.getTimeSlowdown() + 0.1f);
-            this->update_Gold();
-            this->abilityUpgradeGUI->updatePlayerInfo("SLOWDOWN",
-                                                      this->lang["SLOWDOWN"]);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("SLOWDOWN", this->lang["SLOWDOWN"]);
             this->abilityUpgradeGUI->updateSegments("SLOWDOWN");
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "GOLD",
-                                                     &this->floatingTextSystem,
-                                                     &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "GOLD", &this->floatingTextSystem, &soundEngine)) {
             player.setIncreasedGold(player.getIncreasedGold() + 1);
-            this->update_Gold();
-            this->abilityUpgradeGUI->updatePlayerInfo("GOLD",
-                                                      this->lang["GOLD"]);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("GOLD", this->lang["GOLD"]);
             this->abilityUpgradeGUI->updateSegments("GOLD");
         }
-        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "TARGETS",
-                                                     &this->floatingTextSystem,
-                                                     &soundEngine)) {
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "TARGETS", &this->floatingTextSystem, &soundEngine)) {
             player.setAttackLimit(player.getAttackLimit() + 1);
-            this->update_Gold();
-            this->abilityUpgradeGUI->updatePlayerInfo("TARGETS",
-                                                      this->lang["TARGETS"]);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("TARGETS", this->lang["TARGETS"]);
             this->abilityUpgradeGUI->updateSegments("TARGETS");
+        }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "TRAPPED_TIME", &this->floatingTextSystem,
+                                                     &soundEngine)) {
+            player.setTrappedTime(player.getTrappedTime() + 2.f);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("TRAPPED_TIME", this->lang["TRAPPED_TIME"]);
+            this->abilityUpgradeGUI->updateSegments("TRAPPED_TIME");
+        }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "TRAP_SCENT_RANGE", &this->floatingTextSystem,
+                                                     &soundEngine)) {
+            player.setTrapScentRange(player.getTrapScentRange() + 2.f);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("TRAP_SCENT_RANGE", this->lang["TRAP_SCENT_RANGE"]);
+            this->abilityUpgradeGUI->updateSegments("TRAP_SCENT_RANGE");
+        }
+        else if (abilityUpgradeGUI->hasBoughtUpgrade(mousePos, "PROJECTILES_NUMBER", &this->floatingTextSystem,
+                                                     &soundEngine)) {
+            player.setProjectilesNumber(player.getProjectilesNumber() + 1);
+            this->updateGold();
+            this->abilityUpgradeGUI->updatePlayerInfo("PROJECTILES_NUMBER", this->lang["PROJECTILES_NUMBER"]);
+            this->abilityUpgradeGUI->updateSegments("PROJECTILES_NUMBER");
         }
     }
 }
@@ -734,6 +798,11 @@ const bool PlayerGUI::isUpgrading() const
 const bool PlayerGUI::isShopping() const
 {
     return this->sideGUI == SideGUI::SHOP;
+}
+
+const bool PlayerGUI::isBuyingHero() const
+{
+    return this->sideGUI == SideGUI::HERO;
 }
 
 const bool PlayerGUI::isBuyingAbility() const
@@ -760,8 +829,7 @@ const uint8_t PlayerGUI::updateEscapeButton(const sf::Vector2i &mousePos)
     return 0;
 }
 
-const bool PlayerGUI::hasClickedButtons(const sf::Vector2i &mousePos,
-                                        SoundEngine &soundEngine)
+const bool PlayerGUI::hasClickedButtons(const sf::Vector2i &mousePos, SoundEngine &soundEngine)
 {
     if (this->leveling && this->upgrading) {
         this->hasClickedLevelUpButtons(mousePos, soundEngine);
@@ -776,8 +844,7 @@ const bool PlayerGUI::hasClickedButtons(const sf::Vector2i &mousePos,
     return false;
 }
 
-const bool PlayerGUI::hasClickedLevelUpButtons(const sf::Vector2i &mousePos,
-                                               SoundEngine &soundEngine)
+const bool PlayerGUI::hasClickedLevelUpButtons(const sf::Vector2i &mousePos, SoundEngine &soundEngine)
 {
     if (this->option1.optionButton->isPressed(mousePos)) {
         this->levelUpPlayer(this->option1.id, this->option1.value);
@@ -796,106 +863,148 @@ const bool PlayerGUI::hasClickedLevelUpButtons(const sf::Vector2i &mousePos,
     return false;
 }
 
-const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos,
-                                               SoundEngine &soundEngine)
+const bool PlayerGUI::hasClickedUpgradeButtons(const sf::Vector2i &mousePos, SoundEngine &soundEngine)
 {
-    if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE1",
-                                            &soundEngine)) {
+    const float priceModifier = difficultyName == "EXTREME" ? 1.5f : 1.0f;
+    if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE1", &soundEngine)) {
         if (player.getLevel() == 5) {
-            this->abilityUpgradeGUI->addPlayerStat("PROJ_ATTACK", calcX(32, vm),
-                                                   calcY(212, vm),
-                                                   this->lang["ATTACK"]);
-            this->abilityUpgradeGUI->addAbilityUpgrade(
-                "PROJ_ATTACK", calcX(44, vm), calcY(460, vm), 1,
-                this->lang["ATTACK"], "+1", 30, 0, 0);
-            this->upgradePlayer("NINJA");
+            if (player.getName() == "WARRIOR") {
+                this->abilityUpgradeGUI->addPlayerStat("PROJ_ATTACK", calcX(32, vm), calcY(212, vm),
+                                                       this->lang["ATTACK"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("PROJ_ATTACK", calcX(44, vm), calcY(460, vm), 1,
+                                                           this->lang["ATTACK"], "+1", 50 * priceModifier, 0);
+                this->upgradePlayer("NINJA");
+            }
+            else if (player.getName() == "ARCHER") {
+                this->abilityUpgradeGUI->addPlayerStat("TRAPPED_TIME", calcX(32, vm), calcY(212, vm),
+                                                       this->lang["TRAPPED_TIME"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("TRAPPED_TIME", calcX(44, vm), calcY(460, vm), 10,
+                                                           this->lang["TRAPPED_TIME"], "+2s", 50 * priceModifier, 0);
+                this->upgradePlayer("HUNTER");
+            }
         }
         else if (player.getLevel() == 10) {
             if (player.getName() == "NINJA") {
-                this->abilityUpgradeGUI->addPlayerStat(
-                    "PIERCING", calcX(32, vm), calcY(244, vm),
-                    this->lang["PIERCING"]);
-                this->abilityUpgradeGUI->addAbilityUpgrade(
-                    "PIERCING", calcX(44, vm), calcY(596, vm), 2,
-                    this->lang["PIERCING"], "+1", 50, 1, 5);
+                this->abilityUpgradeGUI->addPlayerStat("PIERCING", calcX(32, vm), calcY(244, vm),
+                                                       this->lang["PIERCING"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("PIERCING", calcX(44, vm), calcY(596, vm), 2,
+                                                           this->lang["PIERCING"], "+1", 50 * priceModifier, 1);
                 this->upgradePlayer("SENSEI");
             }
             else if (player.getName() == "KNIGHT") {
-                this->abilityUpgradeGUI->addPlayerStat("ATTACK", calcX(32, vm),
-                                                       calcY(244, vm),
-                                                       this->lang["ATTACK"]);
-                this->abilityUpgradeGUI->addAbilityUpgrade(
-                    "ATTACK", calcX(44, vm), calcY(596, vm), 1,
-                    this->lang["ATTACK"], "+1", 50, 0, 0);
+                this->abilityUpgradeGUI->addPlayerStat("ATTACK", calcX(32, vm), calcY(244, vm), this->lang["ATTACK"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("ATTACK", calcX(44, vm), calcY(596, vm), 1,
+                                                           this->lang["ATTACK"], "+1", 50 * priceModifier, 0);
                 this->upgradePlayer("CRUSADER");
             }
-            else if (player.getLevel() == 10) {
-                if (player.getName() == "SCOUT") {
-                    this->abilityUpgradeGUI->addPlayerStat(
-                        "GOLD", calcX(32, vm), calcY(244, vm),
-                        this->lang["GOLD"]);
-                    this->abilityUpgradeGUI->addAbilityUpgrade(
-                        "GOLD", calcX(44, vm), calcY(596, vm), 7,
-                        this->lang["GOLD"], "+1", 100, 1, 10);
-                    this->upgradePlayer("ASSASSIN");
-                }
+            else if (player.getName() == "SCOUT") {
+                this->abilityUpgradeGUI->addPlayerStat("GOLD", calcX(32, vm), calcY(244, vm), this->lang["GOLD"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("GOLD", calcX(44, vm), calcY(596, vm), 7, this->lang["GOLD"],
+                                                           "+1", 100 * priceModifier, 1);
+                this->upgradePlayer("ASSASSIN");
+            }
+            else if (player.getName() == "DARK") {
+                this->abilityUpgradeGUI->addPlayerStat("GOLD", calcX(32, vm), calcY(244, vm), this->lang["GOLD"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("GOLD", calcX(44, vm), calcY(596, vm), 7, this->lang["GOLD"],
+                                                           "+1", 100 * priceModifier, 1);
+                this->upgradePlayer("PHANTOM");
+            }
+            else if (player.getName() == "HUNTER") {
+                this->abilityUpgradeGUI->addPlayerStat("TRAP_ATTACK", calcX(32, vm), calcY(244, vm),
+                                                       this->lang["ATTACK"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("TRAP_ATTACK", calcX(44, vm), calcY(596, vm), 1,
+                                                           this->lang["ATTACK"], "+1", 75 * priceModifier, 5);
+                this->upgradePlayer("RANGER");
+            }
+            else if (player.getName() == "SHOOTER") {
+                this->abilityUpgradeGUI->addPlayerStat("PROJECTILES_NUMBER", calcX(32, vm), calcY(244, vm),
+                                                       this->lang["PROJECTILES_NUMBER"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("PROJECTILES_NUMBER", calcX(44, vm), calcY(596, vm), 12,
+                                                           this->lang["PROJECTILES_NUMBER"], "+1", 200 * priceModifier,
+                                                           1);
+                this->upgradePlayer("ARROWSTORM");
             }
         }
 
         this->upgrading = false;
         return true;
     }
-    else if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE2",
-                                                 &soundEngine)) {
+    else if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE2", &soundEngine)) {
         if (player.getLevel() == 5) {
-            this->abilityUpgradeGUI->addPlayerStat(
-                "ARMOR", calcX(32, vm), calcY(212, vm), this->lang["ARMOR"]);
-            this->abilityUpgradeGUI->addAbilityUpgrade(
-                "ARMOR", calcX(44, vm), calcY(460, vm), 4, this->lang["ARMOR"],
-                "+1", 30, 5, 10);
-            this->upgradePlayer("KNIGHT");
+            if (player.getName() == "WARRIOR") {
+                this->abilityUpgradeGUI->addPlayerStat("ARMOR", calcX(32, vm), calcY(212, vm), this->lang["ARMOR"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("ARMOR", calcX(44, vm), calcY(460, vm), 4,
+                                                           this->lang["ARMOR"], "+1", 50 * priceModifier, 5);
+                this->upgradePlayer("KNIGHT");
+            }
+            else if (player.getName() == "ARCHER") {
+                this->abilityUpgradeGUI->addPlayerStat("PIERCING", calcX(32, vm), calcY(212, vm),
+                                                       this->lang["PIERCING"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("PIERCING", calcX(44, vm), calcY(460, vm), 9,
+                                                           this->lang["PIERCING"], "+1", 50 * priceModifier, 0);
+                this->upgradePlayer("SHOOTER");
+            }
         }
         else if (player.getLevel() == 10) {
             if (player.getName() == "NINJA") {
-                this->abilityUpgradeGUI->addPlayerStat(
-                    "AREA", calcX(32, vm), calcY(244, vm), this->lang["AREA"]);
-                this->abilityUpgradeGUI->addAbilityUpgrade(
-                    "AREA", calcX(44, vm), calcY(596, vm), 3,
-                    this->lang["AREA"], "+1", 100, 2, 5);
+                this->abilityUpgradeGUI->addPlayerStat("AREA", calcX(32, vm), calcY(244, vm), this->lang["AREA"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("AREA", calcX(44, vm), calcY(596, vm), 3, this->lang["AREA"],
+                                                           "+1", 200 * priceModifier, 2);
                 this->upgradePlayer("BOMBER");
             }
             else if (player.getName() == "KNIGHT") {
-                this->abilityUpgradeGUI->addPlayerStat(
-                    "REG", calcX(32, vm), calcY(244, vm), this->lang["REG"]);
-                this->abilityUpgradeGUI->addAbilityUpgrade(
-                    "REG", calcX(44, vm), calcY(596, vm), 5, this->lang["REG"],
-                    "+1", 50, 5, 10);
+                this->abilityUpgradeGUI->addPlayerStat("REG", calcX(32, vm), calcY(244, vm), this->lang["REG"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("REG", calcX(44, vm), calcY(596, vm), 5, this->lang["REG"],
+                                                           "+1", 100 * priceModifier, 5);
                 this->upgradePlayer("PALADIN");
             }
             else if (player.getName() == "SCOUT") {
-                this->abilityUpgradeGUI->addPlayerStat("TARGETS", calcX(32, vm),
-                                                       calcY(244, vm),
-                                                       this->lang["TARGETS"]);
-                this->abilityUpgradeGUI->addAbilityUpgrade(
-                    "TARGETS", calcX(44, vm), calcY(596, vm), 8,
-                    this->lang["TARGETS"], "+1", 50, 1, 5);
+                this->abilityUpgradeGUI->addPlayerStat("TARGETS", calcX(32, vm), calcY(244, vm), this->lang["TARGETS"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("TARGETS", calcX(44, vm), calcY(596, vm), 8,
+                                                           this->lang["TARGETS"], "+1", 100 * priceModifier, 1);
                 this->upgradePlayer("KILLER");
+            }
+            else if (player.getName() == "DARK") {
+                this->abilityUpgradeGUI->addPlayerStat("REG", calcX(32, vm), calcY(244, vm), this->lang["REG"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("REG", calcX(44, vm), calcY(596, vm), 5, this->lang["REG"],
+                                                           "+1", 100 * priceModifier, 5);
+                this->upgradePlayer("PREDATOR");
+            }
+            else if (player.getName() == "HUNTER") {
+                this->abilityUpgradeGUI->addPlayerStat("TRAP_SCENT_RANGE", calcX(32, vm), calcY(244, vm),
+                                                       this->lang["TRAP_SCENT_RANGE"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("TRAP_SCENT_RANGE", calcX(44, vm), calcY(596, vm), 11,
+                                                           this->lang["TRAP_SCENT_RANGE"], "+2", 50 * priceModifier, 1);
+                this->upgradePlayer("TRAPPER");
+            }
+            else if (player.getName() == "SHOOTER") {
+                this->abilityUpgradeGUI->addPlayerStat("PROJ_ATTACK", calcX(32, vm), calcY(244, vm),
+                                                       this->lang["ATTACK"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("PROJ_ATTACK", calcX(44, vm), calcY(596, vm), 1,
+                                                           this->lang["ATTACK"], "+1", 100 * priceModifier, 0);
+                this->upgradePlayer("CROSSBOWMAN");
             }
         }
 
         this->upgrading = false;
         return true;
     }
-    else if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE3",
-                                                 &soundEngine)) {
+    else if (this->upgradeGUI->hasClickedUpgrade(mousePos, "UPGRADE3", &soundEngine)) {
         if (player.getLevel() == 5) {
-            this->abilityUpgradeGUI->addPlayerStat("SLOWDOWN", calcX(32, vm),
-                                                   calcY(212, vm),
-                                                   this->lang["SLOWDOWN"]);
-            this->abilityUpgradeGUI->addAbilityUpgrade(
-                "SLOWDOWN", calcX(44, vm), calcY(460, vm), 6,
-                this->lang["SLOWDOWN"], "+10%", 30, 5, 10);
-            this->upgradePlayer("SCOUT");
+            if (player.getName() == "WARRIOR") {
+                this->abilityUpgradeGUI->addPlayerStat("SLOWDOWN", calcX(32, vm), calcY(212, vm),
+                                                       this->lang["SLOWDOWN"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("SLOWDOWN", calcX(44, vm), calcY(460, vm), 6,
+                                                           this->lang["SLOWDOWN"], "+10%", 50 * priceModifier, 5);
+                this->upgradePlayer("SCOUT");
+            }
+            else {
+                this->abilityUpgradeGUI->addPlayerStat("SLOWDOWN", calcX(32, vm), calcY(212, vm),
+                                                       this->lang["SLOWDOWN"]);
+                this->abilityUpgradeGUI->addAbilityUpgrade("SLOWDOWN", calcX(44, vm), calcY(460, vm), 6,
+                                                           this->lang["SLOWDOWN"], "+10%", 50 * priceModifier, 5);
+                this->upgradePlayer("DARK");
+            }
         }
 
         this->upgrading = false;
@@ -930,8 +1039,7 @@ void PlayerGUI::updatePlayerAttributes()
     }
 }
 
-void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
-                       float bossHP, float dt)
+void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown, float bossHP, float dt)
 {
     this->statsGUI->updatingXP(dt);
 
@@ -946,16 +1054,12 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
                 this->bossCooldown = 255.f;
             }
 
-            this->texts["BOSS"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->bossCooldown));
-            this->sprites["BOSS_BAR_EMPTY"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->bossCooldown));
-            this->sprites["BOSS_BAR"]->setTextureRect(sf::IntRect(
-                0, 60, static_cast<int>(this->bossCooldown / 255.f * 512.f),
-                20));
+            this->texts["BOSS"]->setAlphaColor(static_cast<uint8_t>(this->bossCooldown));
+            this->sprites["BOSS_BAR_EMPTY"]->setAlphaColor(static_cast<uint8_t>(this->bossCooldown));
+            this->sprites["BOSS_BAR"]->setTextureRect(
+                sf::IntRect({0, 60}, {static_cast<int>(this->bossCooldown / 255.f * 512.f), 20}));
 
-            this->sprites["BOSS_BAR"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->bossCooldown));
+            this->sprites["BOSS_BAR"]->setAlphaColor(static_cast<uint8_t>(this->bossCooldown));
         }
         else if (this->boss_bar_percent == 0.f && this->bossCooldown > 0.f) {
             this->bossCooldown -= dt * 255.f;
@@ -963,50 +1067,40 @@ void PlayerGUI::update(sf::Vector2f &mousePosView, float waveCountdown,
                 this->bossCooldown = 0.f;
             }
 
-            this->texts["BOSS"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->bossCooldown));
-            this->sprites["BOSS_BAR_EMPTY"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->bossCooldown));
-            this->sprites["BOSS_BAR"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->bossCooldown));
+            this->texts["BOSS"]->setAlphaColor(static_cast<uint8_t>(this->bossCooldown));
+            this->sprites["BOSS_BAR_EMPTY"]->setAlphaColor(static_cast<uint8_t>(this->bossCooldown));
+            this->sprites["BOSS_BAR"]->setAlphaColor(static_cast<uint8_t>(this->bossCooldown));
         }
     }
 
     this->statsGUI->update(mousePosView);
 
-    if (this->waveCountdown < 10.f) {
+    if (this->waveCountdown < waveBreakLimit) {
+
         this->statsGUI->setWaveCountdownText(
-            this->lang["NEXT_WAVE"] +
-            std::to_string(static_cast<int>(11.f - this->waveCountdown)));
-        if (this->waveCountdown > 8.f && this->waveCountdown < 9.f &&
+            this->lang["NEXT_WAVE"] + std::to_string(static_cast<int>(waveBreakLimit + 1.f - this->waveCountdown)));
+        if (this->waveCountdown > waveBreakLimit - 2.f && this->waveCountdown < waveBreakLimit - 1.f &&
             this->titleCooldown < 255.f) {
             this->titleCooldown += dt * 1000.f;
             if (this->titleCooldown > 255.f) {
                 this->titleCooldown = 255.f;
             }
-            this->texts["BIG_WAVE_NUMBER"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->titleCooldown));
-            this->texts["WAVE_NEW_MOBS"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->titleCooldown));
-            this->texts["MOBS_TO_KILL"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->titleCooldown));
+            this->texts["BIG_WAVE_NUMBER"]->setAlphaColor(static_cast<uint8_t>(this->titleCooldown));
+            this->texts["WAVE_NEW_MOBS"]->setAlphaColor(static_cast<uint8_t>(this->titleCooldown));
+            this->texts["MOBS_TO_KILL"]->setAlphaColor(static_cast<uint8_t>(this->titleCooldown));
         }
-        else if (this->waveCountdown > 9.f && this->titleCooldown > 0.f) {
+        else if (this->waveCountdown > waveBreakLimit - 1.f && this->titleCooldown > 0.f) {
             this->titleCooldown -= dt * 1000.f;
             if (this->titleCooldown < 0.f) {
                 this->titleCooldown = 0.f;
             }
-            this->texts["BIG_WAVE_NUMBER"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->titleCooldown));
-            this->texts["WAVE_NEW_MOBS"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->titleCooldown));
-            this->texts["MOBS_TO_KILL"]->setAlphaColor(
-                static_cast<sf::Uint8>(this->titleCooldown));
+            this->texts["BIG_WAVE_NUMBER"]->setAlphaColor(static_cast<uint8_t>(this->titleCooldown));
+            this->texts["WAVE_NEW_MOBS"]->setAlphaColor(static_cast<uint8_t>(this->titleCooldown));
+            this->texts["MOBS_TO_KILL"]->setAlphaColor(static_cast<uint8_t>(this->titleCooldown));
         }
 
-        this->statsGUI->setWaveCountdownText(
-            this->lang["NEXT_WAVE"] +
-            std::to_string(static_cast<int>(10.f - this->waveCountdown)));
+        this->statsGUI->setWaveCountdownText(this->lang["NEXT_WAVE"] +
+                                             std::to_string(static_cast<int>(waveBreakLimit - this->waveCountdown)));
     }
 }
 
@@ -1018,6 +1112,10 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         this->sprites["SIDE_GUI"]->draw(target);
         this->shopGUI->draw(target);
     }
+    else if (isBuyingHero()) {
+        this->sprites["SIDE_GUI"]->draw(target);
+        this->heroGUI->draw(target);
+    }
 
     if (player.isUpgraded()) {
         statsGUI->drawAbility(target);
@@ -1027,15 +1125,19 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         }
     }
 
-    if (this->waveCountdown < 10.f) {
+    if (this->waveCountdown < waveBreakLimit) {
         this->statsGUI->drawWaveCountdown(target);
-        if (this->waveCountdown > 8.f) {
+        if (this->waveCountdown < waveBreakLimit - 3.f) {
+            this->statsGUI->drawSkip(target);
+        }
+
+        if (this->waveCountdown > waveBreakLimit - 2.f) {
             this->texts["BIG_WAVE_NUMBER"]->draw(target);
             this->texts["WAVE_NEW_MOBS"]->draw(target);
             this->texts["MOBS_TO_KILL"]->draw(target);
         }
     }
-    else if (this->waveCountdown >= 10.f) {
+    else if (this->waveCountdown >= waveBreakLimit) {
         this->statsGUI->drawMonsterCount(target);
         if (this->leveling) {
             this->texts["LEVEL_UP"]->draw(target);
@@ -1071,6 +1173,7 @@ void PlayerGUI::draw(sf::RenderTarget &target)
     }
     else if (this->escape) {
         target.draw(this->escape_background);
+        this->texts["MAP_NAME"]->draw(target);
         this->texts["DIFFICULTY"]->draw(target);
         this->text_buttons["RESUME"]->draw(target);
         this->text_buttons["MAIN_MENU"]->draw(target);

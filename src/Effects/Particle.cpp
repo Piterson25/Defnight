@@ -2,17 +2,18 @@
 
 Particle::Particle(sf::VideoMode &vm, const std::string &name, float x, float y,
                    std::uint32_t attack, std::uint32_t area)
-    : vm(vm), name(name), attack(attack)
+    : vm(vm), name(name), attack(attack), texture(sf::Texture("assets/textures/explosion.png")), 
+      sprite(this->texture)
 {
     if (this->name == "BOMB") {
-        this->texture.loadFromFile("assets/textures/explosion.png");
+        this->texture = sf::Texture("assets/textures/explosion.png");
     }
-    this->sprite.setTexture(this->texture);
-    this->sprite.setScale(calcScale(4 * static_cast<float>(area) / 2.f, vm),
-                          calcScale(4 * static_cast<float>(area) / 2.f, vm));
-    this->sprite.setTextureRect(sf::IntRect(0, 0, 32, 32));
-    this->sprite.setPosition(x - this->sprite.getGlobalBounds().width / 2.f,
-                             y - this->sprite.getGlobalBounds().height / 2.f);
+    this->sprite = sf::Sprite(this->texture);
+    this->sprite.setScale({calcScale(4 * static_cast<float>(area) / 2.f, vm),
+                          calcScale(4 * static_cast<float>(area) / 2.f, vm)});
+    this->sprite.setTextureRect(sf::IntRect({0, 0}, {32, 32}));
+    this->sprite.setPosition({x - this->sprite.getGlobalBounds().size.x / 2.f,
+                             y - this->sprite.getGlobalBounds().size.y / 2.f});
 
     this->animationCooldown = 0;
     this->frame = 0;
@@ -50,7 +51,7 @@ void Particle::update(float dt)
                 this->frame = 192;
             }
             else {
-                sf::IntRect intRect(this->frame, 0, 32, 32);
+                sf::IntRect intRect({static_cast<int>(this->frame), 0}, {32, 32});
                 this->sprite.setTextureRect(intRect);
                 this->frame += 32;
             }

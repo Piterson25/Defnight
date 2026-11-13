@@ -14,7 +14,9 @@ public:
     uint32_t fpsLimit;
     bool fpsCounterOn;
     float musicVolume;
-    float soundsVolume;
+    float gameSoundsVolume;
+    float playerSoundsVolume;
+    float monsterSoundsVolume;
 
     std::string language;
     sf::VideoMode resolution;

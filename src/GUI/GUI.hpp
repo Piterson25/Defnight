@@ -5,6 +5,7 @@
 namespace gui {
 
     const sf::Color WHITE = sf::Color(255, 255, 255);
+    const sf::Color BLACK = sf::Color(0, 0, 0);
     const sf::Color GOLD = sf::Color(255, 246, 76);
     const sf::Color RED = sf::Color(182, 60, 53);
     const sf::Color ORANGE = sf::Color(233, 134, 39);
@@ -22,124 +23,122 @@ namespace gui {
     const sf::Color BLUE = sf::Color(0, 64, 81);
     const sf::Color PINK = sf::Color(113, 43, 59);
 
-    const sf::IntRect RECT_DIFFICULTY = sf::IntRect(0, 0, 384, 504);
-    const sf::IntRect RECT_MAP = sf::IntRect(384, 0, 304, 304);
-    const sf::IntRect RECT_BUTTON = sf::IntRect(384, 304, 88, 88);
-    const sf::IntRect RECT_ARROW = sf::IntRect(384, 392, 16, 10);
-    const sf::IntRect RECT_BURGER = sf::IntRect(384, 402, 10, 10);
-    const sf::IntRect RECT_SMALL_ARROW = sf::IntRect(394, 400, 8, 14);
+    const sf::IntRect RECT_DIFFICULTY = sf::IntRect({0, 0}, {400, 400});
+    const sf::IntRect RECT_DIFFICULTY_EXTREME = sf::IntRect({0, 400}, {880, 96});
+    const sf::IntRect RECT_MAP = sf::IntRect({400, 0}, {304, 304});
+    const sf::IntRect RECT_BUTTON = sf::IntRect({400, 304}, {88, 88});
+    const sf::IntRect RECT_ARROW = sf::IntRect({488, 304}, {16, 10});
+    const sf::IntRect RECT_BURGER = sf::IntRect({488, 314}, {10, 10});
+    const sf::IntRect RECT_SMALL_ARROW = sf::IntRect({498, 312}, {8, 14});
 
-    enum button_states { BUTTON_IDLE, BUTTON_HOVER, BUTTON_PRESSED };
+    enum class ButtonState { BUTTON_IDLE, BUTTON_HOVER, BUTTON_PRESSED };
+
+    static inline sf::Font *font = nullptr;
 
     void initVM(const sf::VideoMode &t_vm);
     void initFont();
     void initTextures();
-
-    class ButtonText {
-    public:
-        ButtonText(const std::string &text, unsigned charSize, float posX,
-                   float posY, const sf::Color &idleColor,
-                   const sf::Color &hoverColor, bool center);
-        ~ButtonText();
-
-        bool isPressed(const sf::Vector2i &mousePosWindow);
-
-        const sf::Vector2f &getPosition() const;
-
-        const std::string getText() const;
-        const float getWidth() const;
-
-        void setPosition(const sf::Vector2f &position);
-        void setText(const std::string &text);
-
-        void center(float posX);
-        void draw(sf::RenderTarget &target);
-
-    private:
-        uint32_t buttonState;
-        sf::Text text;
-
-        sf::Color idleColor;
-        sf::Color hoverColor;
-    };
+    void clean();
 
     class Text {
     public:
-        Text(const std::string &text, unsigned charSize, float posX, float posY,
-             const sf::Color &color, bool center);
-        ~Text();
+        Text(const std::string &text, unsigned charSize, float x, float y, const sf::Color &color, bool center);
+        virtual ~Text() = default;
 
-        const sf::Vector2f &getPosition() const;
+        const sf::Vector2f getPosition() const;
         const std::string getText() const;
         const float getWidth() const;
         const sf::Color getFillColor() const;
 
-        void move(float x, float y);
-        void setAlphaColor(sf::Uint8 alpha);
-        void setPositionX(float x);
-        void setPositionY(float y);
-        void setPosition(const sf::Vector2f &position);
+        virtual void move(float x, float y);
+        virtual void setAlphaColor(uint8_t alpha);
+        virtual void setPositionX(float x);
+        virtual void setPosition(const sf::Vector2f &position);
+        virtual void setPosition(float x, float y);
         void setFillColor(const sf::Color &color);
-        void setText(const std::string &text);
+        virtual void setText(const std::string &text);
 
-        void center(float posX);
-        void draw(sf::RenderTarget &target);
+        virtual void center(float x);
+        virtual void draw(sf::RenderTarget &target);
 
-    private:
+    protected:
         sf::Text text;
+        bool centered;
     };
 
-    class ButtonSprite {
+    class ShadowText : public Text {
     public:
-        ButtonSprite(const sf::IntRect &intRect, float t_x, float t_y,
-                     float scale, bool center);
-        ~ButtonSprite();
+        ShadowText(const std::string &text, unsigned charSize, float x, float y, const sf::Color &color, bool center);
+        virtual ~ShadowText() = default;
+
+        void move(float x, float y) override;
+        void setAlphaColor(uint8_t alpha) override;
+        void setPositionX(float x) override;
+        void setPosition(const sf::Vector2f &position) override;
+        void setText(const std::string &text) override;
+        void center(float x) override;
+        void draw(sf::RenderTarget &target) override;
+
+    private:
+        sf::Text shadowText;
+    };
+
+    class ButtonText : public Text {
+    public:
+        ButtonText(const std::string &text, unsigned charSize, float x, float y, const sf::Color &idleColor,
+                   const sf::Color &hoverColor, bool center);
+        virtual ~ButtonText() = default;
 
         bool isPressed(const sf::Vector2i &mousePosWindow);
 
-        void flipHorizontal();
-
-        const sf::Color getColor() const;
-        const sf::IntRect getTextureRect() const;
-
-        void setColor(const sf::Color &t_color);
-        void center(float posX);
-
-        void draw(sf::RenderTarget &target);
-
     private:
-        uint16_t buttonState;
-        sf::Texture texture;
-        sf::Sprite sprite;
-        sf::Color color;
+        ButtonState buttonState;
+        sf::Color idleColor;
+        sf::Color hoverColor;
     };
 
     class Sprite {
     public:
-        Sprite(const std::string &texturePath, float posX, float posY,
-               float scale, bool center);
-        Sprite(const sf::Texture &texture, float posX, float posY, float scale,
-               bool center);
-        Sprite(const sf::Texture &texture, float posX, float posY, float scale,
-               bool center, const sf::IntRect &intRect);
-        Sprite(sf::Sprite &sprite, float posX, float posY, float scale,
-               bool center);
-        ~Sprite();
+        Sprite(const std::string &texturePath, float x, float y, float scale, bool center);
+        Sprite(const sf::Texture &texture, float x, float y, float scale, bool center);
+        Sprite(const sf::Texture &texture, float x, float y, float scale, bool center, const sf::IntRect &intRect);
+        Sprite(sf::Sprite &sprite, float x, float y, float scale, bool center);
+        virtual ~Sprite() = default;
 
         const sf::Vector2f getPosition() const;
         const sf::FloatRect getGlobalBounds() const;
         const sf::IntRect getTextureRect() const;
 
-        void setAlphaColor(sf::Uint8 alpha);
+        void setAlphaColor(uint8_t alpha);
         void setColor(const sf::Color &color);
+        void setPosition(const sf::Vector2f &position);
+        void setPosition(float x, float y);
         void setTextureRect(const sf::IntRect &intRect);
 
         void flipHorizontal();
-        void center(float posX);
+        void center(float x);
         void draw(sf::RenderTarget &target);
 
-    private:
+    protected:
         sf::Texture texture;
         sf::Sprite sprite;
+        bool centered;
     };
+
+    class ButtonSprite : public Sprite {
+    public:
+        ButtonSprite(const sf::IntRect &intRect, float t_x, float t_y, float scale, const sf::Color &idleColor,
+                     const sf::Color &hoverColor, bool center);
+        virtual ~ButtonSprite() = default;
+
+        bool isPressed(const sf::Vector2i &mousePosWindow);
+        const sf::Color getColor() const;
+        void setIdleColor(const sf::Color color);
+
+    private:
+        ButtonState buttonState;
+        sf::Color idleColor;
+        sf::Color hoverColor;
+    };
+
 } // namespace gui

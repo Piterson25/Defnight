@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Entities/Player/Archer.hpp"
 #include "Entities/Player/Warrior.hpp"
 #include "GUI/PlayerGUI.hpp"
 #include "Game/PlayerStats.hpp"
@@ -14,15 +15,12 @@
 
 class GameState : public State {
 public:
-    GameState(float gridSize, sf::RenderWindow &window,
-              GameSettings &gameSettings, SoundEngine &soundEngine,
-              MusicEngine &musicEngine, std::stack<State *> &states,
-              const std::string &mapName, const std::string &playerName,
-              const std::string &difficultyName);
-    ~GameState();
+    GameState(float gridSize, sf::RenderWindow &window, GameSettings &gameSettings, SoundEngine &soundEngine,
+              MusicEngine &musicEngine, std::stack<State *> &states, CurrentGame &t_currentGame);
+    ~GameState() override;
 
-    void initGUI();
-    void resetGUI();
+    void initGUI() override;
+    void resetGUI() override;
 
     void update(float dt) override;
     void draw(sf::RenderTarget *target = NULL) override;
@@ -34,15 +32,12 @@ private:
     sf::View view;
     sf::View viewHUD;
 
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>>
-        text_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>> text_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
-    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>>
-        sprite_buttons;
+    std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>> sprite_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Sprite>> sprites;
 
-    std::string mapName;
-    std::string difficultyName;
+    CurrentGame currentGame;
 
     PlayerGUI *playerGUI;
     Player *player;
@@ -57,4 +52,5 @@ private:
     uint32_t sumHP;
     uint32_t gems;
     float waveCountdown;
+    float waveBreakLimit;
 };
