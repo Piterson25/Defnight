@@ -42,7 +42,7 @@ public:
 
     void update(const std::vector<sf::FloatRect> &obstaclesBounds, bool &paused, bool isExtreme, float dt);
     void draw(sf::RenderTarget &target, sf::RenderStates &states) const;
-    void drawTraps(sf::RenderTarget &target);
+    void drawTraps(sf::RenderTarget &target, sf::RenderStates &states) const;
     void drawShadow(sf::RenderTarget &target);
 
 private:

@@ -159,6 +159,12 @@ void Trap::update(float dt)
     };
 }
 
+void Trap::draw(sf::RenderTarget &target, sf::RenderStates &states) const
+{
+    states.texture = &texture;
+    target.draw(this->sprite, states);
+}
+
 void Trap::drawShadow(sf::RenderTarget &target)
 {
     target.draw(this->shadow);

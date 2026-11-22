@@ -555,10 +555,10 @@ void MonsterSystem::draw(sf::RenderTarget &target, sf::RenderStates &states) con
     }
 }
 
-void MonsterSystem::drawTraps(sf::RenderTarget &target)
+void MonsterSystem::drawTraps(sf::RenderTarget &target, sf::RenderStates &states) const
 {
     for (const auto &trap : this->traps) {
-        trap->draw(target);
+        trap->draw(target, states);
     }
 }
 

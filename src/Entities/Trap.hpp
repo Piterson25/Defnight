@@ -28,6 +28,7 @@ public:
     void dealDamage(Player &player, PlayerGUI &playerGUI, FloatingTextSystem &floatingTextSystem, float dt);
 
     void update(float dt);
+    void draw(sf::RenderTarget &target, sf::RenderStates &states) const;
     void drawShadow(sf::RenderTarget &target);
 
 private:

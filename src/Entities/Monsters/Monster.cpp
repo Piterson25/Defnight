@@ -200,7 +200,7 @@ void Monster::update(float dt)
     }
 }
 
-void Monster::draw(sf::RenderTarget &target, sf::RenderStates &states)
+void Monster::draw(sf::RenderTarget &target, sf::RenderStates &states) const
 {
     states.texture = &texture;
     target.draw(this->sprite, states);

@@ -72,8 +72,8 @@ GameState::GameState(float gridSize, sf::RenderWindow &window, GameSettings &gam
                                     this->gameSettings.lang);
     this->playerGUI->setWaveBreakLimit(waveBreakLimit);
 
-    this->view.setSize(sf::Vector2f(static_cast<float>(vm.size.x), static_cast<float>(vm.size.y)));
-    this->view.setCenter(this->player->getCenter());
+    this->viewGame.setSize(sf::Vector2f(static_cast<float>(vm.size.x), static_cast<float>(vm.size.y)));
+    this->viewGame.setCenter(this->player->getCenter());
 
     this->viewHUD.setSize(sf::Vector2f(static_cast<float>(vm.size.x), static_cast<float>(vm.size.y)));
     this->viewHUD.setCenter(sf::Vector2f(static_cast<float>(vm.size.x) / 2.f, static_cast<float>(vm.size.y) / 2.f));
@@ -137,39 +137,25 @@ void GameState::draw(sf::RenderTarget *target)
     if (!target) {
         target = &this->window;
     }
-
-    target->setView(this->view);
-
     sf::RenderStates states;
     states.shader = &shader;
+
+    target->setView(this->viewGame);
     this->tileMap->drawMap(*target, states);
-
     this->monsterSystem->drawShadow(*target);
-
     this->player->drawShadow(*target);
-
     this->particleSystem->drawSmallParticles(*target);
-
     this->tileMap->drawObstacles(*target, states);
-
-    this->monsterSystem->drawTraps(*target);
-
+    this->monsterSystem->drawTraps(*target, states);
     this->projectileSystem->draw(*target);
-
     this->dropSystem->draw(*target);
-
     this->player->draw(*target);
-
     this->monsterSystem->draw(*target, states);
-
     this->particleSystem->draw(*target);
-
     this->floatingTextSystem->draw(*target);
 
     target->setView(this->viewHUD);
-
     this->playerGUI->draw(*target);
-
     this->floatingTextSystem->drawGui(*target);
 }
 
@@ -292,16 +278,16 @@ void GameState::update(float dt)
                                  this->player->getPosition().x >= this->tileMap->getMapSize().x - calcX(672, this->vm);
 
                 if (osX && osY) {
-                    this->view.setCenter(this->view.getCenter());
+                    this->viewGame.setCenter(this->viewGame.getCenter());
                 }
                 else if (osX) {
-                    this->view.setCenter(sf::Vector2f(this->view.getCenter().x, this->player->getCenter().y));
+                    this->viewGame.setCenter(sf::Vector2f(this->viewGame.getCenter().x, this->player->getCenter().y));
                 }
                 else if (osY) {
-                    this->view.setCenter(sf::Vector2f(this->player->getCenter().x, view.getCenter().y));
+                    this->viewGame.setCenter(sf::Vector2f(this->player->getCenter().x, this->viewGame.getCenter().y));
                 }
                 else {
-                    this->view.setCenter(this->player->getCenter());
+                    this->viewGame.setCenter(this->player->getCenter());
                 }
             }
 
@@ -317,16 +303,17 @@ void GameState::update(float dt)
                             player->getFrame() == 80) {
                             projectileSystem->addArrow(player->getCenter(), 0,
                                                        sf::Vector2f(this->window.mapPixelToCoords(
-                                                           sf::Mouse::getPosition(this->window), this->view)),
+                                                           sf::Mouse::getPosition(this->window), this->viewGame)),
                                                        0, *this->player, ArrowType::NORMAL);
                             player->setAttacking(false);
                         }
                     }
                     if (this->player->isAbilityActivated()) {
                         this->player->doAbility(this->soundEngine);
-                        this->projectileSystem->playerAbility(sf::Vector2f(this->window.mapPixelToCoords(
-                                                                  sf::Mouse::getPosition(this->window), this->view)),
-                                                              *this->player);
+                        this->projectileSystem->playerAbility(
+                            sf::Vector2f(
+                                this->window.mapPixelToCoords(sf::Mouse::getPosition(this->window), this->viewGame)),
+                            *this->player);
                         if (this->player->getName() == "HUNTER") {
                             this->monsterSystem->placeTrap(TrapType::NORMAL);
                         }

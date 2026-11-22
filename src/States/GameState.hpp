@@ -29,7 +29,7 @@ private:
     void savePlayerData();
 
     sf::Clock clock;
-    sf::View view;
+    sf::View viewGame;
     sf::View viewHUD;
 
     sf::Shader shader;
