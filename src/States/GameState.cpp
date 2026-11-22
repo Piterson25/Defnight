@@ -101,7 +101,8 @@ GameState::GameState(float gridSize, sf::RenderWindow &window, GameSettings &gam
     }
 
     shader.setUniform("texture", sf::Shader::CurrentTexture);
-    shader.setUniform("color", sf::Vector3f(1.f, 1.f, 1.f));
+    shader.setUniform("time", 0.f);
+    shader.setUniform("state", 0);
 }
 
 GameState::~GameState()
@@ -359,6 +360,15 @@ void GameState::update(float dt)
         }
 
         if (this->waveCountdown < waveBreakLimit) {
+            if (this->wave > 0 && this->waveCountdown < 3.f) {
+                shader.setUniform("time", waveCountdown * 0.33f);
+                shader.setUniform("state", 3);
+            }
+            else if (this->waveCountdown > waveBreakLimit - 3.f) {
+                shader.setUniform("time", (waveBreakLimit - waveCountdown) * 0.33f);
+                shader.setUniform("state", 1);
+            }
+
             this->waveCountdown += dt;
 
             if (this->playerGUI->hasClickedSkip(mousePosWindow, paused)) {
@@ -367,13 +377,13 @@ void GameState::update(float dt)
 
             if (this->waveCountdown >= waveBreakLimit) {
                 this->monsterSystem->spawnMonsters(this->tileMap->getTilesGlobalBounds(), this->wave);
+                shader.setUniform("state", 2);
             }
             else if (this->waveCountdown > waveBreakLimit - 2.f && this->monsterSystem->isMonsterIDsEmpty()) {
                 this->monsterSystem->prepareWave(this->wave, this->sumHP);
                 this->playerGUI->updateMonsterCountWave(
                     this->gameSettings.language, this->wave, this->monsterSystem->isBossWave(),
                     this->monsterSystem->monsterIDsSize(), this->soundEngine, this->musicEngine);
-                shader.setUniform("color", mapDimming);
             }
         }
         else {
@@ -381,7 +391,6 @@ void GameState::update(float dt)
                 this->waveCountdown = 0.f;
                 this->monsterSystem->monsterIDsClear();
                 this->gems += 5;
-                shader.setUniform("color", sf::Vector3f(1.f, 1.f, 1.f));
             }
             else {
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F3)) {
