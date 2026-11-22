@@ -42,7 +42,7 @@ public:
 
     void spawn(float dt);
     virtual void update(float dt);
-    void draw(sf::RenderTarget &target);
+    void draw(sf::RenderTarget &target, sf::RenderStates &states);
     virtual void drawShadow(sf::RenderTarget &target);
 
 protected:

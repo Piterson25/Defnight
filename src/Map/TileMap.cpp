@@ -120,12 +120,13 @@ void TileMap::addTile(const std::string &name, const sf::Vector2f &size, float x
     tilesGlobalBounds.emplace_back(sf::FloatRect(sf::Vector2f(x, y), size));
 }
 
-void TileMap::drawMap(sf::RenderTarget &target)
+void TileMap::drawMap(sf::RenderTarget &target, sf::RenderStates &states) const
 {
-    target.draw(background);
+    target.draw(background, states);
 }
 
-void TileMap::drawObstacles(sf::RenderTarget &target)
+void TileMap::drawObstacles(sf::RenderTarget &target, sf::RenderStates &states) const
 {
-    target.draw(this->vertexArray, &this->tilesTexture);
+    states.texture = &tilesTexture;
+    target.draw(this->vertexArray, states);
 }

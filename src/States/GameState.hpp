@@ -32,6 +32,9 @@ private:
     sf::View view;
     sf::View viewHUD;
 
+    sf::Shader shader;
+    sf::Vector3f mapDimming = sf::Vector3f(0.33f, 0.33f, 0.33f);
+
     std::unordered_map<std::string, std::unique_ptr<gui::ButtonText>> text_buttons;
     std::unordered_map<std::string, std::unique_ptr<gui::Text>> texts;
     std::unordered_map<std::string, std::unique_ptr<gui::ButtonSprite>> sprite_buttons;

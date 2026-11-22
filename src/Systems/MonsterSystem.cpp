@@ -548,10 +548,10 @@ void MonsterSystem::update(const std::vector<sf::FloatRect> &obstaclesBounds, bo
     }
 }
 
-void MonsterSystem::draw(sf::RenderTarget &target)
+void MonsterSystem::draw(sf::RenderTarget &target, sf::RenderStates &states) const
 {
     for (const auto &monster : this->monsters) {
-        monster->draw(target);
+        monster->draw(target, states);
     }
 }
 

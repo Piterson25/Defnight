@@ -200,9 +200,10 @@ void Monster::update(float dt)
     }
 }
 
-void Monster::draw(sf::RenderTarget &target)
+void Monster::draw(sf::RenderTarget &target, sf::RenderStates &states)
 {
-    target.draw(this->sprite);
+    states.texture = &texture;
+    target.draw(this->sprite, states);
 }
 
 void Monster::drawShadow(sf::RenderTarget &target)

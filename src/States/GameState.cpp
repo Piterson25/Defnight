@@ -95,6 +95,13 @@ GameState::GameState(float gridSize, sf::RenderWindow &window, GameSettings &gam
     this->gems = 0;
 
     this->playerGUI->updateGold();
+
+    if (!shader.loadFromFile("shaders/vertex_shader.glsl", "shaders/fragment_shader.glsl")) {
+        throw("ERROR - COULDN'T FIND SHADERS");
+    }
+
+    shader.setUniform("texture", sf::Shader::CurrentTexture);
+    shader.setUniform("color", sf::Vector3f(1.f, 1.f, 1.f));
 }
 
 GameState::~GameState()
@@ -133,7 +140,9 @@ void GameState::draw(sf::RenderTarget *target)
 
     target->setView(this->view);
 
-    this->tileMap->drawMap(*target);
+    sf::RenderStates states;
+    states.shader = &shader;
+    this->tileMap->drawMap(*target, states);
 
     this->monsterSystem->drawShadow(*target);
 
@@ -141,7 +150,7 @@ void GameState::draw(sf::RenderTarget *target)
 
     this->particleSystem->drawSmallParticles(*target);
 
-    this->tileMap->drawObstacles(*target);
+    this->tileMap->drawObstacles(*target, states);
 
     this->monsterSystem->drawTraps(*target);
 
@@ -151,7 +160,7 @@ void GameState::draw(sf::RenderTarget *target)
 
     this->player->draw(*target);
 
-    this->monsterSystem->draw(*target);
+    this->monsterSystem->draw(*target, states);
 
     this->particleSystem->draw(*target);
 
@@ -377,6 +386,7 @@ void GameState::update(float dt)
                 this->playerGUI->updateMonsterCountWave(
                     this->gameSettings.language, this->wave, this->monsterSystem->isBossWave(),
                     this->monsterSystem->monsterIDsSize(), this->soundEngine, this->musicEngine);
+                shader.setUniform("color", mapDimming);
             }
         }
         else {
@@ -384,9 +394,9 @@ void GameState::update(float dt)
                 this->waveCountdown = 0.f;
                 this->monsterSystem->monsterIDsClear();
                 this->gems += 5;
+                shader.setUniform("color", sf::Vector3f(1.f, 1.f, 1.f));
             }
             else {
-
                 if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::F3)) {
                     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::G)) {
                         player->setGold(player->getGold() + 5);

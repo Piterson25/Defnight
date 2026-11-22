@@ -15,9 +15,8 @@ public:
     const std::vector<sf::FloatRect> &getTilesGlobalBounds() const;
 
     void addTile(const std::string &name, const sf::Vector2f &size, float x, float y);
-
-    void drawMap(sf::RenderTarget &target);
-    void drawObstacles(sf::RenderTarget &target);
+    void drawMap(sf::RenderTarget &target, sf::RenderStates &states) const;
+    void drawObstacles(sf::RenderTarget &target, sf::RenderStates &states) const;
 
 private:
     sf::VideoMode &vm;
