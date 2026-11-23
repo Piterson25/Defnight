@@ -5,9 +5,8 @@
 
 class Projectile : public Entity {
 public:
-    Projectile(const std::string &t_name, sf::VideoMode &t_vm, float t_x,
-               float t_y, float difficulty_mod, const sf::Vector2f &coords,
-               float coordsOffset);
+    Projectile(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y, float difficulty_mod,
+               const sf::Vector2f &coords, float coordsOffset);
     virtual ~Projectile();
 
     const bool hasCollidedWall() const;
@@ -24,9 +23,9 @@ public:
     void wallCollision(const std::vector<sf::FloatRect> &obstacles);
     void checkWallCollision(const sf::FloatRect &obstacleBounds);
     virtual void playerCollision(Player &player) = 0;
-    virtual void monsterCollision(Monster &monster, Player &player,
-                                  FloatingTextSystem &floatingTextSystem) = 0;
+    virtual void monsterCollision(Monster &monster, Player &player, FloatingTextSystem &floatingTextSystem) = 0;
     virtual void update(float dt);
+    void draw(sf::RenderTarget &target, sf::RenderStates &states) const;
 
 protected:
     float particleCooldown;

@@ -41,13 +41,13 @@ void DropSystem::update(Player &player, PlayerGUI &playerGUI, FloatingTextSystem
     }
 }
 
-void DropSystem::draw(sf::RenderTarget &target)
+void DropSystem::draw(sf::RenderTarget &target, sf::RenderStates &states) const
 {
     for (const auto &drop : this->drops) {
         drop->drawShadow(target);
     }
 
     for (const auto &drop : this->drops) {
-        drop->draw(target);
+        drop->draw(target, states);
     }
 }

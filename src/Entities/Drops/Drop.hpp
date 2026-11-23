@@ -4,8 +4,7 @@
 
 class Drop : public Entity {
 public:
-    Drop(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y,
-         uint32_t t_worth, bool t_vanishing);
+    Drop(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y, uint32_t t_worth, bool t_vanishing);
     virtual ~Drop();
 
     const uint32_t getWorth() const;
@@ -15,11 +14,11 @@ public:
     void spawn(float dt);
     virtual void spin(float dt);
     void move(float posX, float posY, float dt);
-    virtual const bool isPickedByPlayer(Player &player, PlayerGUI &playerGUI,
-                                        FloatingTextSystem &floatingTextSystem,
+    virtual const bool isPickedByPlayer(Player &player, PlayerGUI &playerGUI, FloatingTextSystem &floatingTextSystem,
                                         SoundEngine &soundEngine, float dt);
 
     void update(float dt);
+    void draw(sf::RenderTarget &target, sf::RenderStates &states) const;
     void drawShadow(sf::RenderTarget &target);
 
 protected:

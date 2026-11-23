@@ -35,7 +35,7 @@ public:
     void update(Player &player, PlayerGUI &playerGui, ParticleSystem &particleSystem, MonsterSystem &monsterSystem,
                 const sf::FloatRect &mapBounds, const std::vector<sf::FloatRect> &obstaclesBounds,
                 FloatingTextSystem &floatingTextSystem, SoundEngine &soundEngine, float dt);
-    void draw(sf::RenderTarget &target);
+    void draw(sf::RenderTarget &target, sf::RenderStates &states) const;
 
 private:
     std::list<std::unique_ptr<Projectile>> projectiles;

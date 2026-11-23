@@ -126,6 +126,11 @@ void Drop::update(float dt)
     }
 }
 
+void Drop::draw(sf::RenderTarget &target, sf::RenderStates &states) const
+{
+    target.draw(this->sprite, states);
+}
+
 void Drop::drawShadow(sf::RenderTarget &target)
 {
     target.draw(this->shadow);

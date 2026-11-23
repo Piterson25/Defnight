@@ -11,13 +11,11 @@ public:
     DropSystem(sf::VideoMode &vm, float difficulty_mod);
     ~DropSystem();
 
-    void addDrop(const std::string &name, float posX, float posY,
-                 uint32_t worth);
+    void addDrop(const std::string &name, float posX, float posY, uint32_t worth);
 
-    void update(Player &player, PlayerGUI &playerGUI,
-                FloatingTextSystem &floatingTextSystem,
-                SoundEngine &soundEngine, float dt);
-    void draw(sf::RenderTarget &target);
+    void update(Player &player, PlayerGUI &playerGUI, FloatingTextSystem &floatingTextSystem, SoundEngine &soundEngine,
+                float dt);
+    void draw(sf::RenderTarget &target, sf::RenderStates &states) const;
 
 private:
     std::list<std::unique_ptr<Drop>> drops;

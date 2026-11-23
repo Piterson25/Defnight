@@ -195,3 +195,8 @@ void Projectile::update(float dt)
         this->sprite.rotate(sf::degrees(90.f / dt));
     }
 }
+
+void Projectile::draw(sf::RenderTarget &target, sf::RenderStates &states) const
+{
+    target.draw(this->sprite, states);
+}

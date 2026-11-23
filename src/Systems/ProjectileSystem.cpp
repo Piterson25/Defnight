@@ -180,9 +180,9 @@ void ProjectileSystem::update(Player &player, PlayerGUI &playerGui, ParticleSyst
     }
 }
 
-void ProjectileSystem::draw(sf::RenderTarget &target)
+void ProjectileSystem::draw(sf::RenderTarget &target, sf::RenderStates &states) const
 {
     for (const auto &proj : this->projectiles) {
-        proj->draw(target);
+        proj->draw(target, states);
     }
 }

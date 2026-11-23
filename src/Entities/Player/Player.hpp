@@ -112,16 +112,17 @@ public:
     void upgrade(const std::string &t_name, sf::IntRect &intRect);
     virtual void upgradeAttributes(const std::string &t_name, sf::IntRect &intRect) = 0;
     void update(float dt);
-    void draw(sf::RenderTarget &target);
-    void drawShadow(sf::RenderTarget &target);
+    void draw(sf::RenderTarget &target) const;
+    void drawLight(sf::RenderTarget &target);
 
 protected:
-    sf::Sprite shadow;
-    sf::Texture shadow_texture;
     sf::Sprite ability;
     sf::Texture ability_texture;
     sf::Sprite glow;
     sf::Texture glow_texture;
+
+    sf::RectangleShape lightRect;
+    sf::Shader shader;
 
     AttackType attackType;
     HeroName heroName;

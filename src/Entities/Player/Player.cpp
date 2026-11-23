@@ -1,8 +1,7 @@
 #include "Player.hpp"
 
 Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float t_y)
-    : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f), shadow(shadow_texture), ability(ability_texture),
-      glow(glow_texture)
+    : Entity(t_name, t_vm, t_x, t_y), particleCooldown(0.f), ability(ability_texture), glow(glow_texture)
 {
     this->attackType = AttackType::MELEE;
     this->heroName = HeroName::WARRIOR;
@@ -13,15 +12,6 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
     this->sprite.setTextureRect(sf::IntRect({0, 32}, {16, 16}));
     this->sprite.setScale({calcScale(4, vm), calcScale(4, vm)});
     this->sprite.setColor(sf::Color(255, 255, 255, 0));
-
-    this->shadow_texture = sf::Texture("assets/textures/entity_shadow.png");
-    this->shadow = sf::Sprite(this->shadow_texture);
-    this->shadow.setTextureRect(sf::IntRect({0, 0}, {8, 4}));
-    this->shadow.setScale({calcScale(4, vm), calcScale(4, vm)});
-    this->shadow.setPosition(
-        {this->getDownCenter().x - (this->shadow.getTextureRect().size.x * 0.5f) * this->shadow.getScale().x,
-         this->getDownCenter().y});
-    this->shadow.setColor(sf::Color(255, 255, 255, 0));
 
     this->glow_texture = sf::Texture("assets/textures/player_glow.png");
     this->glow = sf::Sprite(this->glow_texture);
@@ -84,6 +74,17 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
     this->trapScentRange = 5.f;
 
     this->abilityComponent = std::make_unique<AbilityComponent>(this->vm);
+
+    if (!shader.loadFromFile("shaders/player_fragment.glsl", sf::Shader::Type::Fragment)) {
+        throw("ERROR - COULDN'T FIND PLAYER SHADER");
+    }
+
+    shader.setUniform("lightColor", sf::Glsl::Vec4(sf::Color(255, 150, 40, 180)));
+
+    const float LIGHT_RADIUS = calcX(256, vm);
+    lightRect = sf::RectangleShape({LIGHT_RADIUS * 2.f, LIGHT_RADIUS * 2.f});
+    lightRect.setOrigin({LIGHT_RADIUS, LIGHT_RADIUS});
+    lightRect.setFillColor(sf::Color::White);
 }
 
 Player::~Player() = default;
@@ -653,13 +654,11 @@ void Player::spawn(float dt)
 {
     if (this->spawnCountdown < 0.5f) {
         this->sprite.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(this->spawnCountdown * 510.f)));
-        this->shadow.setColor(sf::Color(255, 255, 255, static_cast<uint8_t>(this->spawnCountdown * 510.f)));
         this->spawnCountdown += dt;
     }
     if (this->spawnCountdown >= 0.5f) {
         this->spawned = true;
         this->sprite.setColor(sf::Color::White);
-        this->shadow.setColor(sf::Color::White);
     }
 }
 
@@ -680,14 +679,11 @@ void Player::upgrade(const std::string &t_name, sf::IntRect &intRect)
 
 void Player::update(float dt)
 {
-    this->shadow.setPosition(
-        {this->getDownCenter().x - (this->shadow.getTextureRect().size.x * 0.5f) * this->shadow.getScale().x,
-         this->getDownCenter().y});
     this->glow.setPosition({this->getPosition().x, this->getPosition().y + calcY(8, vm)});
     this->ability.setPosition(this->sprite.getPosition());
 }
 
-void Player::draw(sf::RenderTarget &target)
+void Player::draw(sf::RenderTarget &target) const
 {
     target.draw(this->sprite);
     if (this->isAbilityActive()) {
@@ -695,8 +691,22 @@ void Player::draw(sf::RenderTarget &target)
     }
 }
 
-void Player::drawShadow(sf::RenderTarget &target)
+void Player::drawLight(sf::RenderTarget &target)
 {
-    target.draw(this->shadow);
-    target.draw(this->glow);
+    const float LIGHT_RADIUS = calcX(256, vm);
+    lightRect.setPosition(getCenter());
+
+    const auto &view = target.getView();
+    const sf::Vector2i centerPx = target.mapCoordsToPixel(getCenter(), view);
+    const sf::Vector2i edgePx = target.mapCoordsToPixel(getCenter() + sf::Vector2f(LIGHT_RADIUS, 0.f), view);
+
+    shader.setUniform("lightCenter", sf::Glsl::Vec2(static_cast<float>(centerPx.x), static_cast<float>(centerPx.y)));
+    shader.setUniform("lightRadius", static_cast<float>(std::abs(edgePx.x - centerPx.x)));
+    shader.setUniform("windowSizeY", static_cast<float>(vm.size.y));
+
+    sf::RenderStates states;
+    states.shader = &shader;
+    states.blendMode = sf::BlendAdd;
+    target.draw(glow);
+    target.draw(lightRect, states);
 }

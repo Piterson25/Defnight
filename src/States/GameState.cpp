@@ -144,12 +144,12 @@ void GameState::draw(sf::RenderTarget *target)
     target->setView(this->viewGame);
     this->tileMap->drawMap(*target, states);
     this->monsterSystem->drawShadow(*target);
-    this->player->drawShadow(*target);
     this->particleSystem->drawSmallParticles(*target);
     this->tileMap->drawObstacles(*target, states);
     this->monsterSystem->drawTraps(*target, states);
-    this->projectileSystem->draw(*target);
-    this->dropSystem->draw(*target);
+    this->projectileSystem->draw(*target, states);
+    this->dropSystem->draw(*target, states);
+    this->player->drawLight(*target);
     this->player->draw(*target);
     this->monsterSystem->draw(*target, states);
     this->particleSystem->draw(*target);
