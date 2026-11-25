@@ -17,11 +17,15 @@ public:
     void addTile(const std::string &name, const sf::Vector2f &size, float x, float y);
     void drawMap(sf::RenderTarget &target, sf::RenderStates &states) const;
     void drawObstacles(sf::RenderTarget &target, sf::RenderStates &states) const;
+    void drawLights(sf::RenderTarget &target);
 
 private:
     sf::VideoMode &vm;
     std::vector<std::unique_ptr<Tile>> tiles;
+    std::vector<sf::RectangleShape> lightRects;
     std::vector<sf::FloatRect> tilesGlobalBounds;
+
+    sf::Shader shader;
 
     sf::Texture tilesTexture;
     sf::VertexArray vertexArray;

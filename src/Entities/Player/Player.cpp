@@ -75,8 +75,8 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
 
     this->abilityComponent = std::make_unique<AbilityComponent>(this->vm);
 
-    if (!shader.loadFromFile("shaders/player_fragment.glsl", sf::Shader::Type::Fragment)) {
-        throw("ERROR - COULDN'T FIND PLAYER SHADER");
+    if (!shader.loadFromFile("shaders/light_fragment.glsl", sf::Shader::Type::Fragment)) {
+        throw("ERROR - COULDN'T FIND LIGHT SHADER");
     }
 
     shader.setUniform("lightColor", sf::Glsl::Vec4(sf::Color(255, 150, 40, 180)));

@@ -23,6 +23,14 @@ TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName)
         offsetX = 144.f;
     }
 
+    if (!shader.loadFromFile("shaders/light_fragment.glsl", sf::Shader::Type::Fragment)) {
+        throw("ERROR - COULDN'T FIND LIGHT SHADER");
+    }
+
+    const float LIGHT_RADIUS = calcX(256, vm);
+    shader.setUniform("lightRadius", LIGHT_RADIUS);
+    shader.setUniform("lightColor", sf::Glsl::Vec4(sf::Color(255, 150, 40, 180)));
+
     const auto tile = sf::Vector2f(calcX(64, vm), calcY(64, vm));
     if (map.is_open()) {
         float x = 0.f, y = 0.f;
@@ -68,6 +76,14 @@ TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName)
                 }
                 else if (temp[i] == 'L') {
                     addTile("wall", tile, x, y);
+                }
+                else if (temp[i] == 'T') {
+                    sf::RectangleShape lightRect;
+                    lightRect.setSize({LIGHT_RADIUS * 2.f, LIGHT_RADIUS * 2.f});
+                    lightRect.setOrigin({LIGHT_RADIUS, LIGHT_RADIUS});
+                    lightRect.setFillColor(sf::Color::White);
+                    lightRect.setPosition({x, y});
+                    lightRects.emplace_back(lightRect);
                 }
                 x += pos;
                 t++;
@@ -129,4 +145,24 @@ void TileMap::drawObstacles(sf::RenderTarget &target, sf::RenderStates &states) 
 {
     states.texture = &tilesTexture;
     target.draw(this->vertexArray, states);
+}
+
+void TileMap::drawLights(sf::RenderTarget &target)
+{
+    const float LIGHT_RADIUS = calcX(256, vm);
+    const auto &view = target.getView();
+
+    sf::RenderStates states;
+    states.blendMode = sf::BlendAdd;
+
+    for (const auto &light : lightRects) {
+        const sf::Vector2i centerPx =
+            target.mapCoordsToPixel({light.getPosition().x + calcX(32, vm), light.getPosition().y + calcY(32, vm)});
+        shader.setUniform("lightCenter",
+                          sf::Glsl::Vec2(static_cast<float>(centerPx.x), static_cast<float>(centerPx.y)));
+
+        shader.setUniform("windowSizeY", static_cast<float>(vm.size.y));
+        states.shader = &shader;
+        target.draw(light, states);
+    }
 }

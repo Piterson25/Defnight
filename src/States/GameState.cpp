@@ -153,6 +153,7 @@ void GameState::draw(sf::RenderTarget *target)
     this->player->draw(*target);
     this->monsterSystem->draw(*target, states);
     this->particleSystem->draw(*target);
+    this->tileMap->drawLights(*target);
     this->floatingTextSystem->draw(*target);
 
     target->setView(this->viewHUD);
