@@ -79,9 +79,9 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
         throw("ERROR - COULDN'T FIND LIGHT SHADER");
     }
 
-    shader.setUniform("lightColor", sf::Glsl::Vec4(sf::Color(255, 150, 40, 180)));
+    shader.setUniform("lightColor", sf::Glsl::Vec4(sf::Color(255, 150, 40, 128)));
 
-    const float LIGHT_RADIUS = calcX(256, vm);
+    const float LIGHT_RADIUS = calcX(64, vm);
     lightRect = sf::RectangleShape({LIGHT_RADIUS * 2.f, LIGHT_RADIUS * 2.f});
     lightRect.setOrigin({LIGHT_RADIUS, LIGHT_RADIUS});
     lightRect.setFillColor(sf::Color::White);
@@ -693,12 +693,15 @@ void Player::draw(sf::RenderTarget &target) const
 
 void Player::drawLight(sf::RenderTarget &target)
 {
-    const float LIGHT_RADIUS = calcX(256, vm);
-    lightRect.setPosition(getCenter());
+    const float LIGHT_RADIUS = calcX(64, vm);
+
+    const sf::Vector2f lightPos = {glow.getPosition().x + calcX(32, vm), glow.getPosition().y + calcY(64, vm)};
+
+    lightRect.setPosition(lightPos);
 
     const auto &view = target.getView();
-    const sf::Vector2i centerPx = target.mapCoordsToPixel(getCenter(), view);
-    const sf::Vector2i edgePx = target.mapCoordsToPixel(getCenter() + sf::Vector2f(LIGHT_RADIUS, 0.f), view);
+    const sf::Vector2i centerPx = target.mapCoordsToPixel(lightPos, view);
+    const sf::Vector2i edgePx = target.mapCoordsToPixel(lightPos + sf::Vector2f(LIGHT_RADIUS, 0.f), view);
 
     shader.setUniform("lightCenter", sf::Glsl::Vec2(static_cast<float>(centerPx.x), static_cast<float>(centerPx.y)));
     shader.setUniform("lightRadius", static_cast<float>(std::abs(edgePx.x - centerPx.x)));

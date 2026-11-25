@@ -149,10 +149,10 @@ void GameState::draw(sf::RenderTarget *target)
     this->monsterSystem->drawTraps(*target, states);
     this->projectileSystem->draw(*target, states);
     this->dropSystem->draw(*target, states);
-    this->player->drawLight(*target);
     this->player->draw(*target);
     this->monsterSystem->draw(*target, states);
     this->particleSystem->draw(*target);
+    this->player->drawLight(*target);
     this->tileMap->drawLights(*target);
     this->floatingTextSystem->draw(*target);
 
