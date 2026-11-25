@@ -88,13 +88,13 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
         std::make_unique<gui::ShadowText>(this->lang["KILLS"] + std::to_string(player.getKills()), calcChar(16, vm),
                                           calcX(640, vm), calcY(186, vm), gui::LIGHT_GREY, true);
 
-    this->texts["MAP_NAME"] = std::make_unique<gui::Text>(this->lang[mapName], calcChar(16, vm), calcX(1272, vm),
-                                                          calcY(676, vm), gui::WHITE, false);
+    this->texts["MAP_NAME"] = std::make_unique<gui::ShadowText>(this->lang[mapName], calcChar(16, vm), calcX(1272, vm),
+                                                                calcY(676, vm), gui::WHITE, false);
     this->texts["MAP_NAME"]->setPosition(
         sf::Vector2f(calcX(1272, vm) - this->texts["MAP_NAME"]->getWidth(), calcY(676, vm)));
 
-    this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(this->lang[t_difficultyName], calcChar(16, vm),
-                                                            calcX(1272, vm), calcY(700, vm), gui::RED, false);
+    this->texts["DIFFICULTY"] = std::make_unique<gui::ShadowText>(this->lang[t_difficultyName], calcChar(16, vm),
+                                                                  calcX(1272, vm), calcY(700, vm), gui::RED, false);
     this->texts["DIFFICULTY"]->setPosition(
         sf::Vector2f(calcX(1272, vm) - this->texts["DIFFICULTY"]->getWidth(), calcY(700, vm)));
 
@@ -1167,6 +1167,8 @@ void PlayerGUI::draw(sf::RenderTarget &target)
         target.draw(this->death_background);
         this->texts["YOU_DIED"]->draw(target);
         this->texts["KILLS"]->draw(target);
+        this->texts["MAP_NAME"]->draw(target);
+        this->texts["DIFFICULTY"]->draw(target);
         this->text_buttons["MAIN_MENU"]->draw(target);
         this->text_buttons["QUIT"]->draw(target);
     }
