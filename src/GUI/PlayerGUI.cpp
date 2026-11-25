@@ -93,9 +93,8 @@ PlayerGUI::PlayerGUI(sf::VideoMode &vm, Player &player, FloatingTextSystem &floa
     this->texts["MAP_NAME"]->setPosition(
         sf::Vector2f(calcX(1272, vm) - this->texts["MAP_NAME"]->getWidth(), calcY(676, vm)));
 
-    this->texts["DIFFICULTY"] =
-        std::make_unique<gui::Text>(this->lang["DIFFICULTY_LEVEL"] + " " + this->lang[t_difficultyName],
-                                    calcChar(16, vm), calcX(1272, vm), calcY(700, vm), gui::RED, false);
+    this->texts["DIFFICULTY"] = std::make_unique<gui::Text>(this->lang[t_difficultyName], calcChar(16, vm),
+                                                            calcX(1272, vm), calcY(700, vm), gui::RED, false);
     this->texts["DIFFICULTY"]->setPosition(
         sf::Vector2f(calcX(1272, vm) - this->texts["DIFFICULTY"]->getWidth(), calcY(700, vm)));
 
