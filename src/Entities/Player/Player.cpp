@@ -79,7 +79,7 @@ Player::Player(const std::string &t_name, sf::VideoMode &t_vm, float t_x, float 
         throw("ERROR - COULDN'T FIND LIGHT SHADER");
     }
 
-    shader.setUniform("lightColor", sf::Glsl::Vec4(sf::Color(255, 150, 40, 128)));
+    shader.setUniform("lightColor", sf::Glsl::Vec4(sf::Color(255, 177, 8, 127)));
 
     const float LIGHT_RADIUS = calcX(64, vm);
     lightRect = sf::RectangleShape({LIGHT_RADIUS * 2.f, LIGHT_RADIUS * 2.f});

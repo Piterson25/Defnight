@@ -28,8 +28,8 @@ TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName)
     }
 
     const float LIGHT_RADIUS = calcX(256, vm);
-    shader.setUniform("lightRadius", LIGHT_RADIUS);
-    shader.setUniform("lightColor", sf::Glsl::Vec4(sf::Color(255, 150, 40, 180)));
+    shader.setUniform("windowSizeY", static_cast<float>(vm.size.y));
+    shader.setUniform("lightColor", sf::Glsl::Vec4(sf::Color(255, 240, 43, 127)));
 
     const auto tile = sf::Vector2f(calcX(64, vm), calcY(64, vm));
     if (map.is_open()) {
@@ -75,6 +75,12 @@ TileMap::TileMap(sf::VideoMode &t_vm, const std::string &mapName)
                     triangles[5].texCoords = sf::Vector2f(64 + offsetX, 80);
                 }
                 else if (temp[i] == 'L') {
+                    sf::RectangleShape lightRect;
+                    lightRect.setSize({calcX(256, vm), calcY(256, vm)});
+                    lightRect.setOrigin({calcX(128, vm), calcY(128, vm)});
+                    lightRect.setFillColor(sf::Color::Yellow);
+                    lightRect.setPosition({x, y});
+                    lightRects.emplace_back(lightRect);
                     addTile("wall", tile, x, y);
                 }
                 else if (temp[i] == 'T') {
@@ -149,9 +155,6 @@ void TileMap::drawObstacles(sf::RenderTarget &target, sf::RenderStates &states) 
 
 void TileMap::drawLights(sf::RenderTarget &target)
 {
-    const float LIGHT_RADIUS = calcX(256, vm);
-    const auto &view = target.getView();
-
     sf::RenderStates states;
     states.blendMode = sf::BlendAdd;
 
@@ -160,8 +163,7 @@ void TileMap::drawLights(sf::RenderTarget &target)
             target.mapCoordsToPixel({light.getPosition().x + calcX(32, vm), light.getPosition().y + calcY(32, vm)});
         shader.setUniform("lightCenter",
                           sf::Glsl::Vec2(static_cast<float>(centerPx.x), static_cast<float>(centerPx.y)));
-
-        shader.setUniform("windowSizeY", static_cast<float>(vm.size.y));
+        shader.setUniform("lightRadius", light.getSize().x * 0.5f);
         states.shader = &shader;
         target.draw(light, states);
     }
